@@ -1,0 +1,21 @@
+[Unit]
+Description=apnscp
+Requires=mariadb.service postgresql.service
+After=local-fs.target mariadb.service postgresql.service
+
+[Service]
+User=root
+Type=simple
+EnvironmentFile=-/etc/sysconfig/apnscp
+PIDFile=/usr/local/apnscp/storage/run/apnscp.pid
+ExecStart=/etc/systemd/user/apnscp.init start
+ExecReload=/etc/systemd/user/apnscp.init reload
+ExecStop=/etc/systemd/user/apnscp.init stop
+KillSignal=SIGCONT
+PrivateTmp=false
+OOMScoreAdjust=150
+RemainAfterExit=yes
+Nice=0
+
+[Install]
+WantedBy=multi-user.target

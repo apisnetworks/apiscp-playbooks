@@ -1,0 +1,3 @@
+---
+- name: Restart apnscp
+  systemd: state=restarted name=apnscp enabled=yes

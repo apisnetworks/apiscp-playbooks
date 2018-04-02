@@ -1,0 +1,97 @@
+#!/bin/sh
+#
+# apnscp:       apnscp control panel startup routines
+#
+# chkconfig: 5 90 80
+# description:  Loads up.
+#
+#
+
+# Source function library.
+SYSTEMCTL_SKIP_REDIRECT=1
+. /etc/rc.d/init.d/functions
+
+# Prevent runaway logging
+ulimit -f 4096000
+CP_DIR=/usr/local/apnscp
+
+HTTPD_ARGS=""
+
+if [ $HOSTNAME == "santa.apisnetworks.com" ] ; then
+        HTTPD_ARGS="-DDEVELOPMENT"
+        export DEVELOPMENT=1
+fi
+start() {
+	chown nobody $CP_DIR/storage
+	echo -n $"Starting apnscp Web server: "
+	/usr/sbin/httpd -f $CP_DIR/config/httpd.conf -k start $HTTPD_ARGS
+	RETVAL=$?
+	if [ $RETVAL -eq 0 ] ; then
+    success "$prog startup"
+  else
+    failure "$prog startup"
+  fi
+  echo
+	echo -n $"Starting apnscp backend: "
+	daemon $CP_DIR/bin/apnscpd 
+	ps faux | grep apnscpd > /dev/null
+	RETVAL=$?
+  if [ $RETVAL -eq 0 ] ; then
+    success "$prog startup"
+  else
+    failure "$prog startup"
+  fi
+  echo 
+  return $RETVAL
+}
+
+
+stop() {
+	echo -n $"Stoppping apnscp Web server: "
+	/usr/sbin/httpd -f $CP_DIR/config/httpd.conf -k stop $HTTPD_ARGS
+	sleep 1
+	RETVAL=$?
+	if [ $RETVAL -eq 0 ] ; then
+    success "$prog startup"
+	else
+		failure "$prog startup"
+	fi
+	echo
+	echo -n $"Stopping apnscp backend: "
+	$CP_DIR/bin/apnscpd stop
+	RETVAL=$?
+
+	if [ $? -eq 0 ] ; then
+	 success "$prog startup"
+	else
+	 failure "$prog startup"
+	fi
+
+	echo
+	return $RETVAL
+}
+
+# See how we were called.
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    condrestart)
+        ;;
+    reload)
+        restart
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|condrestart|reload}"
+        ;;
+esac
+exit 0

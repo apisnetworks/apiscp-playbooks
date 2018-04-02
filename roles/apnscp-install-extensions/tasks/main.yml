@@ -1,0 +1,28 @@
+---
+- name: "Query PHP API version"
+  command: "{{ apnscp_root }}/bin/php-bins/apnscp_php-config --extension-dir"
+  register: res
+- set_fact:
+    php_module_dir: "{{ res.stdout }}"
+- debug: msg="{{ php_module_dir }}"
+- include_role: 
+    name: php-pecl
+  vars:    
+    phpconfig: "{{apnscp_root}}/bin/php-bins/apnscp_php-config"
+    phpize: "{{apnscp_root}}/bin/php-bins/apnscp_phpize"
+    pecl_extensions:
+      - https://github.com/phpredis/phpredis.git
+      - https://github.com/igbinary/igbinary.git
+      - https://github.com/krakjoe/apcu.git
+  when: false
+- include_role:
+    name: ioncube-loader
+  vars:
+    php_version: "{{ apnscp_php_version | regex_replace('\\.\\d+$') }}"
+    php_ioncube_loader_module_path: "{{ php_module_dir }}" 
+    php_ioncube_loader_module_filename: "ioncube_loader_lin_{{ php_version }}.so"
+    php_ioncube_loader_config_filename: "ioncube.ini"
+    php_extension_conf_paths:
+      - "{{ apnscp_root }}/config/php.d"
+    notify:
+      - Restart apnscp

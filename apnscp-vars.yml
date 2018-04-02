@@ -4,3 +4,4 @@ php_module_api: "20160303-zts"
 apnscp_php_version: "7.1.16"
 # development build of apnscp
 apnscp_debug: false
+apnscp_ca_rpm: http://yum.apnscp.com/apnscp-latest.rpm

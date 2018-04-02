@@ -5,20 +5,12 @@
   vars_files:
     - 'apnscp-vars.yml'
   roles:
-    - apnscp-bootstrap
+    # - apnscp-bootstrap
     #- epel
     #- packages
     #- pgsql
     # - mysql
     #- browscap
-    - apnscp-build-php
+    #- apnscp-build-php
     # TODO Build apnscp php
-    #- role: php-pecl
-    #  php_config={{apnscp_home}}/bin/php-scripts/apnscp-php-config
-    #  phpize={{apnscp_home}}/bin/php-scripts/apnscp-phpize
-    #  pecl_extensions:
-    #    - xdebug
-    #    - redis
-    #    - memcached
-    #    - apcu
-    #    - igbinary
+    - apnscp-install-extensions

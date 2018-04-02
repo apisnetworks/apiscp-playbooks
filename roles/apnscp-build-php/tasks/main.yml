@@ -11,7 +11,6 @@
   with_items:
     - tokyocabinet-devel
     - httpd-devel
-    - memcached-devel
     - libdb-devel
 
 - block: 
@@ -19,11 +18,12 @@
       shell: "../php.config"
       args:
         chdir: "{{ builddir }}"
-    - make: 
-        chdir: "{{ builddir }}"
-        target: all
-    - make:
-        chdir: "{{ builddir }}"
-        target: install
+    - make: chdir="{{ builddir }}" target=all
+    - make: chdir="{{ builddir }}" target=install
+    - file:
+        src: "{{ apnscp_root }}/bin/php-bins/apnscp_php"
+        path: /usr/bin/apnscp_php
+        state: link    
     - shell: strip "{{ apnscp_root }}/sys/httpd/private/modules/libphp7.so"
       when: not apnscp_debug
+      notify: "Restart apnscp"    
