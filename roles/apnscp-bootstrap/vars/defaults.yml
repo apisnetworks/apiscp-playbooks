@@ -1,0 +1,3 @@
+---
+apnscp_home: /usr/local/apnscp
+apnscp_ca_url: http://yum.apnscp.com/apnscp.ca

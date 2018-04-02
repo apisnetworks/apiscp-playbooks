@@ -1,0 +1,12 @@
+#%PAM-1.0
+auth	   required	pam_apnscpvwh.so
+auth       include  system-auth
+auth	   required	/lib/security/pam_listfile.so \
+			onerr=fail item=user sense=allow file=/etc/proftpd.pamlist
+auth       required	/lib/security/pam_nologin.so
+account	   required	pam_apnscpvwh.so canonical
+account    include  system-auth
+password   include  system-auth
+session    include  system-auth
+session     optional      pam_cgroup.so
+session	   required pam_apnscpvwh.so

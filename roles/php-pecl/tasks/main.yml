@@ -1,0 +1,14 @@
+---
+- name: Import variables
+  include_vars: apnscp.yml
+
+- name: Verify if PECL extension installed.
+  stat:
+    path: "{{ php_module_dir }}/{{ item }}.so"
+  register: stres
+  with_items: "{{ pecl_extensions }}"
+
+- name: Build and install PECL library.
+  command: "{{ role_path }}/files/installPecl.sh {{ item }}"
+  with_items: "{{ pecl_extensions }}"
+  when: stres.stat.exists == True

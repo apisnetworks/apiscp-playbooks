@@ -1,0 +1,6 @@
+apnscp_root: "/usr/local/apnscp"
+# apnscp module API, ZTS is with event MPM
+php_module_api: "20160303-zts"
+apnscp_php_version: "7.1.16"
+# development build of apnscp
+apnscp_debug: false

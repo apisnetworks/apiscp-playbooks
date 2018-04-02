@@ -1,0 +1,149 @@
+ServerRoot /usr/local/apnscpnew
+
+
+PidFile storage/run/httpd.pid
+
+Timeout 300
+KeepAlive On
+KeepAliveTimeout 3
+MaxClients 25
+
+<IfModule prefork.c>
+MinSpareServers 1
+MaxSpareServers 3
+StartServers 1
+MaxRequestsPerChild 1024
+</IfModule>
+
+LoadModule env_module         /usr/lib/httpd/modules/mod_env.so
+LoadModule log_config_module  /usr/lib/httpd/modules/mod_log_config.so
+LoadModule mime_module        /usr/lib/httpd/modules/mod_mime.so
+LoadModule status_module      /usr/lib/httpd/modules/mod_status.so
+LoadModule include_module    /usr/lib/httpd/modules/mod_include.so
+LoadModule dir_module         /usr/lib/httpd/modules/mod_dir.so
+LoadModule rewrite_module     /usr/lib/httpd/modules/mod_rewrite.so
+LoadModule expires_module     /usr/lib/httpd/modules/mod_expires.so
+LoadModule headers_module     /usr/lib/httpd/modules/mod_headers.so
+LoadModule setenvif_module    /usr/lib/httpd/modules/mod_setenvif.so
+LoadModule php7_module        /usr/lib/httpd/modules/libphpesprit.so
+LoadModule ssl_module /usr/lib/httpd/modules/mod_ssl.so
+LoadModule proxy_module /usr/lib/httpd/modules/mod_proxy.so
+LoadModule proxy_http_module /usr/lib/httpd/modules/mod_proxy_http.so
+LoadModule alias_module       /usr/lib/httpd/modules/mod_alias.so
+LoadModule deflate_module     /usr/lib/httpd/modules/mod_deflate.so
+LoadModule authz_host_module /usr/lib/httpd/modules/mod_authz_host.so
+LoadModule logio_module /usr/lib/httpd/modules/mod_logio.so 
+#LoadModule mpm_prefork_module /usr/lib/httpd/modules/mom_mpm_prefork.so
+LoadModule mpm_event_module /usr/lib/httpd/modules/mod_mpm_event.so
+LoadModule filter_module /usr/lib/httpd/modules/mod_filter.so
+LoadModule reqtimeout_module /usr/lib/httpd/modules/mod_reqtimeout.so
+LoadModule unixd_module /usr/lib/httpd/modules/mod_unixd.so
+LoadModule socache_shmcb_module /usr/lib/httpd/modules/mod_socache_shmcb.so
+LoadModule authz_core_module /usr/lib/httpd/modules/mod_authz_core.so
+LoadModule macro_module /usr/lib/httpd/modules/mod_macro.so
+User nobody
+Group nobody
+TypesConfig /etc/httpd/conf/mime.types
+
+Listen 127.0.0.1:2082
+
+DocumentRoot public/
+
+LogLevel error
+ErrorLog storage/logs/error_log
+CustomLog storage/logs/access_log combined
+LogFormat "%h %{SITE_ID}n %{USERNAME}n %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+
+UseCanonicalName Off
+HostnameLookups Off
+ServerSignature Off
+
+AddType text/xml rss ffkar opml soap sn2 tb tbrss wsdl xss
+AddType text/plain txt esf
+AddType application/xml atom
+AddType application/xhtml+xml xhtml
+AddType application/rss+xml rss2 rss21 rss11
+AddType application/rdf+xml rdf
+AddType application/x-netcdf cdf
+AddType application/x-httpd-php php
+
+AddOutputFilterByType DEFLATE text/xml text/css text/plain text/javascript application/x-javascript      application/javascript text/html application/vnd.ms-fontobject
+
+AddType text/css .scss
+
+SSLPassPhraseDialog  builtin
+SSLSessionCache         shmcb:storage/cache/ssl_scache
+SSLSessionCacheTimeout  300
+#SSLMutex  file:var/ssl_mutex
+SSLRandomSeed startup builtin
+SSLRandomSeed connect builtin
+
+SSLCertificateFile /etc/httpd/conf/ssl.crt/server.crt
+SSLCertificateKeyFile /etc/httpd/conf/ssl.key/server.key
+
+SetEnvIf User-Agent ".*MSIE.*" nokeepalive ssl-unclean-shutdown
+
+DirectoryIndex index.php index.html
+
+<Macro VHost $ip>
+    Listen $ip:2082 http 
+    Listen $ip:2083 https
+    Listen $ip:2077 http
+    Listen $ip:2078 https
+</Macro>
+
+<VirtualHost *:443>
+	SSLEngine On
+	SSLProxyEngine On
+	RewriteEngine on
+</VirtualHost>
+
+<VirtualHost *:80 *:2082>
+	RewriteEngine on
+</VirtualHost>
+<VirtualHost *:2077>
+	DocumentRoot public/dav
+</VirtualHost>
+<VirtualHost *:2078>
+	php_flag html_errors off
+##	RewriteEngine On
+	DocumentRoot public/dav
+	SSLEngine On
+</VirtualHost>
+
+AddOutputFilterByType DEFLATE text/html application/x-javascript application/javascript text/css
+
+SSLProtocol all -SSLv2
+SSLCipherSuite RSA:!EXP:!NULL:+HIGH:+MEDIUM:-LOW
+TraceEnable Off
+ServerTokens prod
+
+LogFormat "%{SITE_ID}n %{USERNAME}n %{MODE}n %{esprit_id}C %p %{%s}t %I %O"
+
+# Siphoned by log_bandwidth in bin/scripts/
+TransferLog /var/log/bw/cp
+
+ExpiresActive on
+ExpiresByType application/javascript "access plus 1 month"
+ExpiresByType text/css "access plus 1 month"
+FileETag None
+
+
+<FilesMatch "^\.">
+	Require all denied
+</FilesMatch>
+
+<IfDefine DEVELOPMENT>
+	PHPIniDir etc/debug
+	php_flag xdebug.profiler_enable_trigger on
+	php_flag display_startup_errors on
+	php_flag display_errors on
+	php_flag html_errors on
+	php_flag apc.stat on
+	SetEnv DEVELOPMENT 1	
+</IfDefine>
+
+<Directory /usr/local/apnscpnew/public>
+  	AllowOverride all
+</Directory>
+Include conf/httpd-custom.conf

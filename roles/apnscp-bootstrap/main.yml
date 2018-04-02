@@ -1,0 +1,10 @@
+---
+
+include_vars:
+  - vars/defaults.yml
+tasks:
+  - name: Download apnscp Certificate Authority
+    block:
+      - stat: path={{ apnscp_home }}/resources/apnscp.ca
+        register: apnscp_ca_present
+      - get_url: url={{ apnscp_ca_url }} dest={{ apnscp_home }}/resources/apnscp.ca

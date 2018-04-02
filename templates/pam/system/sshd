@@ -1,0 +1,14 @@
+#%PAM-1.0
+auth	   required	pam_apnscpvwh.so debug 
+#auth	   required	pam_ensimvwh.so debug mountpts
+auth	   required	pam_listfile.so \
+			onerr=succeed item=user sense=deny file=/etc/ssh_deny.pamlist
+auth       include  system-auth
+auth       required	pam_nologin.so
+#account	   required	pam_ensimvwh.so debug mountpts
+#account	   required	pam_apnscpvwh.so canonical
+account    include	system-auth
+password   include  system-auth
+#session	   required	pam_ensimvwh.so debug mountpts
+session    include  system-auth
+session    optional	pam_console.so

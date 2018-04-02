@@ -1,0 +1,2 @@
+---
+builddir: "{{ apnscp_root }}/build/php/php-{{ apnscp_php_version }}"

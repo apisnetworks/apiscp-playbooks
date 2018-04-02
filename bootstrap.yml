@@ -1,0 +1,24 @@
+---
+- hosts: localhost
+  become: yes
+  gather_facts: yes
+  vars_files:
+    - 'apnscp-vars.yml'
+  roles:
+    - apnscp-bootstrap
+    #- epel
+    #- packages
+    #- pgsql
+    # - mysql
+    #- browscap
+    - apnscp-build-php
+    # TODO Build apnscp php
+    #- role: php-pecl
+    #  php_config={{apnscp_home}}/bin/php-scripts/apnscp-php-config
+    #  phpize={{apnscp_home}}/bin/php-scripts/apnscp-phpize
+    #  pecl_extensions:
+    #    - xdebug
+    #    - redis
+    #    - memcached
+    #    - apcu
+    #    - igbinary

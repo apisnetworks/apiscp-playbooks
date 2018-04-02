@@ -1,0 +1,7 @@
+auth       required     pam_apnscpvwh.so saveroot
+auth       required     pam_listfile.so \
+                        onerr=fail sense=allow file=/etc/imap.pamlist item=user
+auth       include  password-auth
+account    include password-auth
+session    include password-auth
+session    required pam_apnscpvwh.so restorelogin restoreroot

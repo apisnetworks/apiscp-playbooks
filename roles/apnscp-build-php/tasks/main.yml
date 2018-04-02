@@ -1,0 +1,29 @@
+---
+- name: Download PHP {{ apnscp_php_version }}
+  unarchive:
+    dest: "{{ apnscp_root }}/build/php"
+    src: "http://php.net/get/php-{{ apnscp_php_version }}.tar.bz2/from/this/mirror"
+    remote_src: yes
+    creates: "{{ builddir }}"
+
+- name: Install apnscp build RPMs
+  yum: name={{item}} state=installed
+  with_items:
+    - tokyocabinet-devel
+    - httpd-devel
+    - memcached-devel
+    - libdb-devel
+
+- block: 
+    - name: Compile PHP {{ apnscp_php_version }} for apnscp
+      shell: "../php.config"
+      args:
+        chdir: "{{ builddir }}"
+    - make: 
+        chdir: "{{ builddir }}"
+        target: all
+    - make:
+        chdir: "{{ builddir }}"
+        target: install
+    - shell: strip "{{ apnscp_root }}/sys/httpd/private/modules/libphp7.so"
+      when: not apnscp_debug

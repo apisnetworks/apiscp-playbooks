@@ -1,0 +1,30 @@
+- name: noop    
+  debug: msg="noop handler" verbosity=4
+- name: start mariadb
+  service: name=mariadb state=started
+- name: symlink pgsql include
+  file: src=/usr/pgsql-{{ pgversion }}/include  dest=/usr/include/pgsql state=link
+- name: alias pgsql 
+  file:
+    src: /usr/lib/systemd/system/postgresql-{{pgversion}}.service
+    dest: /etc/systemd/system/postgresql.service
+    state: link
+    force: yes
+  listen: install pgsql
+- name: initialize pgsql
+  shell: /usr/pgsql-{{pgversion}}/bin/postgresql-{{pgversion}}-setup initdb
+  args:
+    creates: /var/lib/pgsql/{{pgversion}}/postgresql.conf     
+  listen: install pgsql
+- name: copy pg_hba.conf
+  copy: 
+    src: templates/pg_hba.conf
+    dest: /var/lib/pgsql/{{pgversion}}/data/pg_hba.conf
+  listen: install pgsql
+- name: enable postgresql
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    state: started
+    name: postgresql-{{pgversion}}
+  listen: install pgsql
