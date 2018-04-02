@@ -1,3 +1,3 @@
-[submodule "roles/ioncube-loader"]
-	path = roles/ioncube-loader
+[submodule "roles/php-ioncube"]
+	path = roles/php-ioncube
 	url = https://github.com/apisnetworks/ansible-role-ioncube-loader.git
