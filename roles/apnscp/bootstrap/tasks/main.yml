@@ -1,0 +1,33 @@
+---
+- name: Verify apnscp bootstrapper completed
+  stat: path={{ apnscp_root }}/resources/apnscp.ca
+  register: s
+- fail:
+    msg: "apnscp bootstrapper isn't completed properly"
+  when: not s.stat.exists
+
+- copy: src=templates/apnscp.init dest=/etc/systemd/user mode=755 backup=yes
+- copy: src=templates/apnscp.service dest=/etc/systemd/system mode=644
+  register: copied
+- systemd: daemon_reload=yes enabled=yes name=apnscp
+  when: copied.changed
+
+- name: Create shared filesystem slice {{ apnscp_shared_root }}
+  file: 
+    path: "{{ apnscp_shared_root }}"
+    mode: 0711
+    state: directory
+
+- name: Create apnscp user {{ apnscp_system_user }}
+  user: 
+    home: "{{ apnscp_root }}/storage"
+    createhome: no
+    shell: /sbin/nologin
+    name: "{{ apnscp_system_user }}"
+    comment: "apnscp System User"
+    system: yes
+    state: present
+    seuser: system_u
+  notify: Change apnscp ownership
+# Ensure apnscp ownership is correct
+- meta: flush_handlers

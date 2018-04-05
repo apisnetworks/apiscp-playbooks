@@ -1,0 +1,10 @@
+---
+- include_vars: "{{ role_path }}/../build-from-source/vars/main.yml"
+- include_role:
+    name: php/common
+    tasks_from: query-extension-dir  
+- name: Populate OPCache configuration
+  template:
+    src: templates/opcache.ini.j2
+    dest: "{{ scan_dir }}/01-opcache.ini"
+#- name: Create session structure

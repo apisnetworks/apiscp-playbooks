@@ -66,7 +66,6 @@ rpms:
   - cronie
   - crontabs
   - cups-libs
-  - cvs
   - cyrus-sasl
   - cyrus-sasl-devel
   - cyrus-sasl-lib
@@ -220,6 +219,8 @@ rpms:
   - libselinux-utils
   - libsemanage
   - libsepol
+  - libsodium
+  - libsodium-devel
   - libSM
   - libSM-devel
   - libss
@@ -354,6 +355,7 @@ rpms:
   - rpm-libs
   - rsync
   - screen
+  - setools-console
   - sed
   - shadow-utils
   - snappy
@@ -368,6 +370,7 @@ rpms:
   - subversion-ruby
   - sudo
   - systemd-libs
+  - systemd-devel
   - sysvinit-tools
   - tar
   - tcl

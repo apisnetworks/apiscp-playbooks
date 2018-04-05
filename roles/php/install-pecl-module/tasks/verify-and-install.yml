@@ -1,0 +1,21 @@
+---
+- include_role:
+    name: php/common
+    tasks_from: query-extension-dir  
+- name: Update channel protocols
+  command: pecl channel-update pecl.php.net
+  run_once: true
+- name: Verify if PECL extension installed.
+  vars: 
+    modname: "{{ extension | basename | regex_replace('\\..+$', '') }}"
+  block: 
+    - name: "Verify {{ modname }} module installed"
+      stat: path="{{ php_module_directory }}/{{ modname }}.so"
+      register: stres
+    - name: "Build and install {{ modname }} library."
+      command: "{{ role_path }}/files/installPecl.sh {{ extension }}"
+      environment:
+        PHPIZE: "{{ phpize }}"
+        PHPCONFIG: "{{ phpconfig }}"
+        XTRACFG: "{{ xtracfg }}"    
+      when: not stres.stat.exists

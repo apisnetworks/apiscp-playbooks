@@ -1,0 +1,88 @@
+---
+- set_fact:
+    __apnscp_password: "{{ apnscp_password }}"
+- name: Verify {{ apnscp_db }} database exists
+  mysql_db: 
+    name: "{{ apnscp_db }}"
+    state: present
+  register: exists
+- name: Create {{ apnscp_db }} database
+  mysql_db: 
+    name: "{{ apnscp_db }}" 
+    state: import 
+    config_file: /root/.my.cnf 
+    target: "{{ role_path }}/files/mysql/apnscp.sql"
+  when: exists.changed
+
+- name: Verify {{ apnscp_user }} user exists
+  mysql_user:
+    name: "{{ apnscp_user }}"
+    password: "{{__apnscp_password}}"
+    priv: "{{apnscp_db}}.*:ALL"
+    host: localhost
+    state: present
+  register: user_exists
+
+- include_role: name=common/merge-yaml-config
+  vars:
+    file: "{{apnscp_db_config}}"
+    position: "{{ db_config_name }}"
+    items:
+      - {'user': "{{apnscp_user}}"}
+      - {'password': "{{__apnscp_password}}"}
+      - {'host': "localhost"}
+      - {'database': "{{ apnscp_db }}"}
+  with_items: "{{ db_population_names }}"
+  loop_control:
+    loop_var: db_config_name
+  when: user_exists.changed
+
+- block:
+  - set_fact: 
+      __appliance_password: "{{ appliance_password}}"
+  - name: Verify {{ appliance_user }} user exists
+    postgresql_user:
+      name: "{{ appliance_user }}"
+      encrypted: yes
+      password: "{{__appliance_password}}"
+      state: present
+    register: user_exists
+
+  - name: Verify {{ appliance_db }} database exists
+    postgresql_db: 
+      name: "{{ appliance_db}}"
+      owner: "{{ appliance_user }}"
+      template: template1
+      state: present
+    register: db_exists
+
+  - name: Create {{ appliance_db }} database
+    postgresql_db: 
+      name: "{{ appliance_db}}"
+      state: import
+      target: "{{ role_path}}/files/pgsql/appldb.sql"
+      owner: "{{ appliance_user }}"
+      login_password: "{{ __appliance_password }}"
+      login_host: 127.0.0.1
+    when: db_exists.changed
+
+  - name: Verify {{appliance_user}} grants
+    postgresql_privs:
+      db: template1
+      privs: ALL
+      obj: "{{ appliance_db }}"
+      role: "{{ appliance_user }}"
+      type: database
+      state: present 
+  become_user: postgres
+
+- include_role: name=common/merge-yaml-config
+  vars:
+      file: "{{ apnscp_db_config}}"
+      position: "{{ appliance_db}}"
+      items:
+        - {'user': "{{appliance_user}}"}
+        - {'password': "{{__appliance_password}}"}
+        - {'host': "localhost"}
+        - {'database': "{{ appliance_db }}"}
+  when: user_exists.changed

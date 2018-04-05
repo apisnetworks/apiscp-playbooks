@@ -1,0 +1,69 @@
+---
+- shell: "grep -E '\\s+/\\s+xfs' /proc/mounts"
+  register: xfs
+  ignore_errors: true
+- block:
+  - shell: "grep -E '\\s+/\\s+ext4' /proc/mounts"
+    register: ext4
+  rescue:
+    - fail: msg="No supported filesystem detected"
+  when: xfs.rc != 0
+- debug: msg="{{ xfs}} {{ ext4}} {{ ansible_mounts }}"
+
+- name: Alter mount options for / (ext4)
+  mount:
+    path: /
+    src: "{{ ansible_mounts | json_query('[?mount==`/`] | [0].device') }}"
+    fstype: ext4
+    opts: "noatime,user_xattr,acl,jqfmt=vfsv1,usrjquota=aquota.user,grpjquota=aquota.group"
+    state: present
+  register: ext4
+  when: xfs.rc != 0 and ext4.rc == 0
+- block:
+    - name: Building quotas 
+      command: quotaoff -augv
+    - command: quotacheck -augvm
+    - command: quotaon -augv
+  when: xfs.rc != 0 and ext4.changed
+
+- name: Alter mount options for / (xfs)
+  block: 
+    - mount:
+        path: /
+        src: "{{ ansible_mounts | json_query('[?mount==`/`] | [0].device') }}"
+        fstype: xfs
+        opts: "attr2,inode64,uquota,gquota"
+        state: present
+      register: update
+    - lineinfile: >
+        dest=/etc/sysconfig/grub regexp='^GRUB_CMDLINE_LINUX\s*='
+        line='GRUB_CMDLINE_LINUX="quiet rhgb crashkernel=auto rootflags=uquota,gquota"'
+      notify: Update grub
+      when: update.changed
+  when: xfs.rc == 0
+- name: Mount tmpfs
+  mount: 
+    path: /tmp 
+    state: mounted 
+    fstype: tmpfs
+    src: tmpfs
+    opts: "size={{ [ansible_memtotal_mb *0.25, 1024] | min | int}}M"
+  notify:
+    - Restart services
+# cf. https://chrisdown.name/2018/01/02/in-defence-of-swap.html
+- name: Check for presence of swap
+  command: "swapon -s"
+  register: r
+- include_role: name=filesystem/swap
+  vars:
+    swapfile_size: "{{ [ansible_memtotal_mb * 0.5, 1024 ]  | min | int }}"
+    swapfile_swappiness: 50
+    swapfile_location: /swap
+    swapfile_use_dd: True
+  when: r.stdout == ""
+
+- name: "Disable binfmt mount"
+  systemd: name="{{ item }}" masked=yes state=stopped
+  with_items:
+    - proc-sys-fs-binfmt_misc.automount
+    - systemd-binfmt.service 

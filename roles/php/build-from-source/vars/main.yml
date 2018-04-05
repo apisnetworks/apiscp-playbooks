@@ -1,0 +1,8 @@
+---
+work_dir: "/root"
+__php_version: "{{ php_version | default(system_php_version) }}"
+build_dir: "{{ work_dir }}/php-{{ __php_version }}"
+php_configure: "{{role_path}}/files/php.config"
+php_debug: false
+xtrabuild: ""
+scan_dir: "/etc/php{{ __php_version | regex_replace('^(\\d+)\\.([^.]+).*$', '\\1\\2')}}.d"

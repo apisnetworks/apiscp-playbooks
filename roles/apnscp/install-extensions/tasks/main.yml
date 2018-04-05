@@ -1,0 +1,25 @@
+---
+- set_fact:
+    phpconfig: "{{apnscp_root}}/bin/php-bins/apnscp_php-config"
+- include_role:
+    name: php/common
+    tasks_from: query-extension-dir 
+- include_role: 
+    name: php/install-pecl-module
+  vars:    
+    phpize: "{{apnscp_root}}/bin/php-bins/apnscp_phpize"
+    pecl_extensions:
+      - https://github.com/phpredis/phpredis.git
+      - https://github.com/igbinary/igbinary.git
+      - https://github.com/krakjoe/apcu.git  
+- include_role:
+    name: php/ioncube-loader
+  vars:
+    php_version: "{{ apnscp_php_version | regex_replace('\\.\\d+$') }}{{ php_module_directory | regex_search('-zts$') | ternary('_ts','')}}"
+    php_ioncube_loader_module_path: "{{ php_module_directory }}" 
+    php_ioncube_loader_module_filename: "ioncube_loader_lin_{{ php_version }}.so"
+    php_ioncube_loader_config_filename: "00-ioncube.ini"
+    php_extension_conf_paths:
+      - "{{ apnscp_root }}/config/php.d"
+    handlers:
+      - Restart apnscp

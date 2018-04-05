@@ -1,0 +1,6 @@
+---
+- name: "Query PHP API version"
+  command: "{{ phpconfig | default('/usr/bin/php-config') }} --extension-dir"
+  register: res
+- set_fact:
+    php_module_directory: "{{ res.stdout }}"

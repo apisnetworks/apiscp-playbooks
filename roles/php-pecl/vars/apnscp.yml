@@ -1,5 +1,0 @@
----
-php_pecl_package: pecl
-php_phpize: "{{ apnscp_root }}/bin/php-bins/apnscp_phpize"
-php_phpconfig: "{{ apnscp_root }}/bin/php-bins/apnscp_phpconfig"
-php_module_dir: "{{ apnscp_root }}/sys/php/{{ php_module_api }}"

@@ -1,7 +1,15 @@
+# Default PHP interpreter
+system_php_version: "7.2.4"
+# Development build of apnscp, includes symbols in php
+apnscp_debug: false
+
+####################################
+#     Don't change below here      #
+####################################
 apnscp_root: "/usr/local/apnscp"
+apnscp_system_user: apnscp
 # apnscp module API, ZTS is with event MPM
 php_module_api: "20160303-zts"
 apnscp_php_version: "7.1.16"
-# development build of apnscp
-apnscp_debug: false
+apnscp_shared_root: /.socket
 apnscp_ca_rpm: http://yum.apnscp.com/apnscp-latest.rpm

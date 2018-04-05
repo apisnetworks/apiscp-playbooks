@@ -1,0 +1,15 @@
+---
+- block:
+  - composer:
+      command: config 
+      arguments: --global github-protocols https
+      working_dir: "{{composer_working_dir}}"
+      executable: "{{ composer_php_executable }}"
+  - command: git config --global url."https://".insteadOf "git://"
+  - name: Install vendor libraries
+    composer:
+      command: install
+      optimize_autoloader: yes
+      working_dir: "{{composer_working_dir}}"
+      executable: "{{ composer_php_executable }}"
+  become_user: "{{ apnscp_system_user }}" 

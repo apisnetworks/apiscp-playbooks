@@ -4,13 +4,24 @@
   gather_facts: yes
   vars_files:
     - 'apnscp-vars.yml'
-  roles:
-    # - apnscp-bootstrap
+  roles:      
+    #- filesystem/make-mounts
     #- epel
     #- packages
-    #- pgsql
-    # - mysql
+    #- pgsql/install
+    #- mysql/install
     #- browscap
-    #- apnscp-build-php
-    # TODO Build apnscp php
-    - apnscp-install-extensions
+    #- apnscp/bootstrap
+    #- php/install  
+    #- php/create-configuration  
+    #- apnscp/build-php
+    #- apnscp/install-extensions  
+    #- apnscp/initialize-db
+    - apnscp/install-vendor-library
+    #- network/setup-firewall
+    #- fail2ban/whitelist-self
+    #- fail2ban/configure-jails
+    #- apnscp/register-ssl
+    #- apnscp/create-admin
+    
+
