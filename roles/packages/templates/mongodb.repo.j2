@@ -1,0 +1,6 @@
+[mongodb-org-{{ mongodb.version | default (mongodb.default) }}]
+name=MongoDB Repository
+baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/{{ mongodb.version | default(mongodb.default) }}/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=https://www.mongodb.org/static/pgp/server-{{ mongodb.version | default(mongodb.default) }}.asc

@@ -1,0 +1,13 @@
+---
+- name: Create fcgid directory
+  stat:
+    path: "{{ fcgi_path }}"
+  register: st
+
+- file:
+    path: "{{ fcgi_path }}"
+    owner: "{{ apache_user }}"
+    group: "{{ apache_user }}"
+    state: directory
+    mode: 0700
+  when: not st.stat.exists

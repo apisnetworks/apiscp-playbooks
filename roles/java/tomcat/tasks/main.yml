@@ -1,0 +1,11 @@
+---
+- name: Create Tomcat log directory
+  stat:
+    path: /var/log/tomcat
+  register: st
+- file: 
+    path: /var/log/tomcat
+    state: directory
+  when: not st.stat.exists
+- include_tasks: configure-tomcat.yml
+  when: tomcat_enable

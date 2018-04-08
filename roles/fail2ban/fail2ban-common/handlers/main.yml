@@ -1,0 +1,2 @@
+- name: Reload fail2ban
+  command: "{{fail2ban_client}} reload"

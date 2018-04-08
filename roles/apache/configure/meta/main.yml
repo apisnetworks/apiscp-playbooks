@@ -1,0 +1,5 @@
+---
+dependencies:
+  # conflicts with roles/common otherwise
+  - "apache-vars"
+  - "common"

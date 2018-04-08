@@ -1,14 +1,7 @@
 # Copyright (c) 2017 Apis Networks
 # vim:ft=ansible:
 ---
-- name: "Load database configuration"
-  tags: ['install', 'sql', 'mysql', 'pgsql']
-  block:
-    - include_vars: "defaults/main.yml"
-    - include_vars: "{{ item }}"
-      with_first_found: 
-        - files: [/root/apnscp-ansible-defaults.yml]
-          skip: true
+- include_tasks: configure-default-vars.yml
         
 - name: "Install MariaDB"
   tags: ['install', 'sql', 'mysql']
@@ -27,6 +20,14 @@
         pg_pkgversion: "{{ pgsql.version | default(pgsql.default) | regex_replace('\\.','') }}"
     - include_vars: "vars/rpms/pgdg.yml"
     - yum: name="{{ repo_location[pgversion] }}" state=present    
+
+- name: "Install MongoDB"
+  tags: ['install', 'sql', 'mongodb']
+  block: 
+    - stat: path=/etc/yum.repos.d/mongodb.repo        
+      register: mongodb_stat
+    - template: src=mongodb.repo.j2 dest=/etc/yum.repos.d/mongodb.repo owner=root group=root mode=0644    
+      when: mongodb_stat is defined and mongodb_stat.stat.exists == False
 
 - name: "Install CloudFlare"
   tags: ['cloudflare', 'apache']
@@ -59,6 +60,7 @@
     - mariadb.yml  
     - pgdg.yml 
     - apnscp.yml  
+    - mongodb.yml
   loop_control:
     loop_var: repo
 

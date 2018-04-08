@@ -21,7 +21,7 @@
     - bootstrap.repo_key is defined
 
 - name: "Install packages"  
-  yum: state="{{ rpm_state | default('installed') }}" name="{{ pkg }}" skip_broken=yes
+  yum: state="{{ rpm_state | default('installed') }}" name="{{ pkg }}" skip_broken=yes disablerepo="*" enablerepo="{{repo_name | default('channel')}}"
   with_items: "{{ rpms }}"
   loop_control:
     loop_var: pkg  

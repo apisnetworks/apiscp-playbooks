@@ -1,27 +1,33 @@
 ---
 - hosts: localhost
   become: yes
+  connection: local
   gather_facts: yes
   vars_files:
     - 'apnscp-vars.yml'
   roles:      
-    #- filesystem/make-mounts
-    #- epel
-    #- packages
-    #- pgsql/install
-    #- mysql/install
-    #- browscap
-    #- apnscp/bootstrap
-    #- php/install  
-    #- php/create-configuration  
-    #- apnscp/build-php
-    #- apnscp/install-extensions  
-    #- apnscp/initialize-db
+    - filesystem/make-mounts
+    - epel
+    - packages
+    - pgsql/install
+    - mysql/install
+    - browscap
+    - apnscp/bootstrap
+    - php/install  
+    - php/create-configuration  
+    - java/tomcat
+    - apache/configure
+    - apnscp/build-php
+    - apnscp/install-extensions  
+    - apnscp/initialize-db
     - apnscp/install-vendor-library
-    #- network/setup-firewall
-    #- fail2ban/whitelist-self
-    #- fail2ban/configure-jails
+    - apnscp/initialize-filesystem-template
+    # Admin should work fine at this point
+    - apnscp/assert-admin-works
+    - fail2ban/whitelist-self
     #- apnscp/register-ssl
+    #- network/setup-firewall
+    #- fail2ban/configure-jails
     #- apnscp/create-admin
     
 

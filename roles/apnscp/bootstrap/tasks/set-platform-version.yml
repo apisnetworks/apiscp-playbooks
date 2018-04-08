@@ -1,0 +1,3 @@
+---
+- name: Set apnscp version {{ version }}
+  copy: content="{{ version }}" dest="{{ apnscp_root }}/.platform.version"

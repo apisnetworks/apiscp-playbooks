@@ -1,0 +1,13 @@
+---
+opcenter_links:
+  - {path: virtualhosting/mappings, src: storage/opcenter/mappings}
+  - {path: '', src: storage/opcenter/mappings/domainmap}
+  - {path: '', src: storage/opcenter/mappings/domainmap.tch}
+  - {path: virtualhosting/plans, src: resources/templates/plans}
+  - {path: virtualhosting/filelists, src: storage/opcenter/filelists}
+  - {path: virtualhosting/dnsbypass, src: storage/opcenter/dnsbypass }
+  - {path: virtualhosting/interface, src: storage/opcenter/interface }
+  - {path: virtualhosting/ipranges, src: storage/opcenter/ipranges }
+  - {path: virtualhosting/namebased_ip_addrs, src: config/custom/namebased_ip_addrs }
+  - {path: '', src: storage/opcenter/passwd}
+  - {path: opcenter/webhost/passwd, src: storage/opcenter/passwd }

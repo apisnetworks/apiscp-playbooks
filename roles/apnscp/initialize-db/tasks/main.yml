@@ -1,6 +1,17 @@
 ---
 - set_fact:
     __apnscp_password: "{{ apnscp_password }}"
+    __appliance_password: "{{ appliance_password}}"
+- stat: path="{{ apnscp_db_config }}"
+  register: exists
+# Override random passwords if config exists
+- block:
+  - set_fact:
+      oldconfig: "{{ lookup('file', apnscp_db_config ) | from_yaml }}"
+  - set_fact: 
+      __apnscp_password: "{{ oldconfig['apnscp']['password'] }}"
+      __appliance_password: "{{ oldconfig['appldb']['password'] }}"
+  when: exists.stat.exists
 - name: Verify {{ apnscp_db }} database exists
   mysql_db: 
     name: "{{ apnscp_db }}"
@@ -38,8 +49,6 @@
   when: user_exists.changed
 
 - block:
-  - set_fact: 
-      __appliance_password: "{{ appliance_password}}"
   - name: Verify {{ appliance_user }} user exists
     postgresql_user:
       name: "{{ appliance_user }}"
@@ -59,10 +68,11 @@
   - name: Create {{ appliance_db }} database
     postgresql_db: 
       name: "{{ appliance_db}}"
-      state: import
+      state: restore
       target: "{{ role_path}}/files/pgsql/appldb.sql"
       owner: "{{ appliance_user }}"
       login_password: "{{ __appliance_password }}"
+      login_user: "{{appliance_user}}"
       login_host: 127.0.0.1
     when: db_exists.changed
 

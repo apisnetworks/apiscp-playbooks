@@ -1,0 +1,8 @@
+---
+- include_role: name="fail2ban/fail2ban-common"
+- set_fact:
+    ssh_ip: "{{ lookup('env', 'SSH_CLIENT') | regex_replace(' .+$', '') }}"
+- include_tasks: "{{ role_path }}/../fail2ban-common/tasks/whitelist-ip.yml" 
+  vars: 
+    ip: "{{ ssh_ip }}"
+  when: ssh_ip != ""

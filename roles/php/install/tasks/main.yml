@@ -8,8 +8,8 @@
   block: 
     - file: path="{{apnscp_shared_root}}/php" state=directory
     - command: "mv /usr/share/pear {{ apnscp_shared_root }}/php"
-  when: not stdest.stat.exists
-  block:
+  when: not stdst.stat.exists
+- block:
     - file: path=/usr/share/pear state=absent
     - file: src="{{ apnscp_shared_root }}/php/pear" dest="/usr/share/pear" state=link
   when: stdst.stat.exists and not stsrc.stat.exists

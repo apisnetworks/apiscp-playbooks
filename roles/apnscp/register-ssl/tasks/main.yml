@@ -1,0 +1,6 @@
+---
+- include_tasks: "{{ role_path }}/../bootstrap/tasks/set-config.yml" 
+  vars: 
+    section: core 
+    option: filesystem_shared 
+    value: "{{ apnscp_shared_root }}"

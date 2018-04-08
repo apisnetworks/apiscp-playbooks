@@ -8,7 +8,6 @@
     src: "http://php.net/get/php-{{ __php_version }}.tar.bz2/from/this/mirror"
     remote_src: yes
   when: not st.stat.exists
-
 - block:   
     - name: Compile PHP {{ __php_version }}      
       shell: "{{ php_configure }} {{ xtrabuild }}"

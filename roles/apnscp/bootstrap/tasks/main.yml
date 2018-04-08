@@ -17,6 +17,12 @@
     path: "{{ apnscp_shared_root }}"
     mode: 0711
     state: directory
+  register: dir_created
+- include_tasks: "set-config.yml" 
+  vars: 
+    section: core 
+    option: filesystem_shared 
+    value: "{{ apnscp_shared_root }}"
 
 - name: Create apnscp user {{ apnscp_system_user }}
   user: 
@@ -28,6 +34,24 @@
     system: yes
     state: present
     seuser: system_u
-  notify: Change apnscp ownership
+  register: system_user_created
 # Ensure apnscp ownership is correct
+- command: /bin/true
+  notify: Change apnscp ownership
 - meta: flush_handlers
+
+- ini_file:
+    owner: "{{ apnscp_system_user }}"
+    path: "{{apnscp_root}}/config/custom/config.ini"
+    section: core
+    option: apnscp_system_user
+    value: "{{ apnscp_system_user }}"
+
+- file: path=/var/log/bw state=directory
+- file: path=/etc/virtualhosting state=directory 
+- file: path=/etc/opcenter/webhost state=directory 
+
+- include_vars: "vars/opcenter-links.yml"
+- name: Link opcenter resources to /etc
+  include_tasks: create-link-opcenter-controls.yml path="{{ item.path }}"  src="{{item.src}}"
+  with_items: "{{ opcenter_links }}"

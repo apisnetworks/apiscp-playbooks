@@ -1,0 +1,6 @@
+---
+- name: Change ownership
+  file: 
+    path: /var/log/tomcat
+    owner: tomcat
+    group: tomcat

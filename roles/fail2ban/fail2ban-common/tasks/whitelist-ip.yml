@@ -1,0 +1,10 @@
+- include_vars: "../defaults/main.yml"
+- set_fact:
+    ignoreip: "{{ lookup('ini', 'ignoreip section=DEFAULT file={{ fail2ban_jail_config }}') }}"
+- ini_file:
+    path: "{{ fail2ban_jail_config }}"
+    section: DEFAULT
+    option: ignoreip
+    value: "127.0.0.1/8 {{ ip }}"
+  notify: Reload fail2ban
+  when: ignoreip and ip not in ignoreip.split(" ")

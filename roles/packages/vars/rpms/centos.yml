@@ -2,6 +2,7 @@
 # All packages derive from CentOS repo
 ---
 title: CentOS
+repo_name: "base,updates"
 rpms:
   - acl
   - alsa-lib
@@ -344,6 +345,7 @@ rpms:
   - python
   - python-devel
   - python-libs
+  - python-netaddr
   - python-setuptools
   - python-virtualenv
   - qrencode

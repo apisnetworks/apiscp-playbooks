@@ -1,0 +1,539 @@
+---
+synchronizer: "{{apnscp_root}}/bin/php-bins/php {{ apnscp_root }}/bin/scripts/yum-post.php"
+relocated_paths:
+  - {
+    service: siteinfo, 
+    src: "{{ apnscp_shared_root }}/php/pear", 
+    dest: /usr/share/pear 
+  }
+  - {
+      service: siteinfo, 
+      src: "{{ apnscp_shared_root }}/perl/lib64", 
+      dest: /usr/lib64/perl5,
+      handler: Restart spamassassin
+    }
+  - { service: siteinfo, src: "{{ apnscp_shared_root }}/perl/share", dest: /usr/share/perl5 }
+  - { 
+      service: siteinfo, 
+      src: "{{ apnscp_shared_root }}/fcgi", 
+      dest: /var/tmp/fcgi 
+    }
+  - {
+      service: siteinfo, 
+      src: "{{ apnscp_shared_root }}/postfix", 
+      dest: /var/spool/postfix,
+      handler: Restart postfix
+    }
+  - {
+      service: siteinfo,
+      src: "{{ apnscp_shared_root }}/ssl/pki",
+      dest: /etc/pki
+    }
+  - {
+      service: siteinfo,
+      src: "{{ apnscp_shared_root }}/ssl/pki/tls/certs",
+      dest: /etc/ssl/certs
+    }
+  - { 
+      service: siteinfo,
+      src: "{{ apnscp_shared_root }}/wtmp",
+      dest: "/var/log/wtmp",    
+      logrotate_vars: { 
+        file: /etc/logrotate.conf,
+        old: /var/log/wtmp,
+        new: /.socket/wtmp
+      }
+    }
+  - { 
+      service: siteinfo,
+      src: "{{ apnscp_shared_root }}/wtmp",
+      dest: "/var/log/btmp",    
+      logrotate_vars: { 
+        file: /etc/logrotate.conf,
+        old: /var/log/btmp,
+        new: /.socket/btmp
+      }
+    }
+  - { 
+      service: siteinfo,
+      src: "{{ apnscp_shared_root }}/majordomo",
+      dest: "/usr/lib/majordomo",  
+    }
+  - { service: tomcat, src: "{{ apnscp_shared_root }}/tomcat", dest: /var/log/tomcat }
+packages:
+  - { package: sudo, service: siteinfo }
+  - { package: acl, service: siteinfo }
+  - { package: alsa-lib, service: siteinfo }
+  - { package: apr-util, service: siteinfo }
+  - { package: apr, service: siteinfo }
+  - { package: aspell, service: siteinfo }
+  - { package: audit-libs, service: siteinfo }
+  - { package: authconfig, service: siteinfo }
+  - { package: avahi-libs, service: siteinfo }
+  - { package: bash-completion, service: siteinfo }
+  - { package: bash, service: siteinfo }
+  - { package: bc, service: siteinfo }
+  - { package: bind-libs, service: siteinfo }
+  - { package: bind-utils, service: siteinfo }
+  - { package: boost, service: siteinfo }
+  - { package: bzip2-libs, service: siteinfo }
+  - { package: bzip2, service: siteinfo }
+  - { package: ca-certificates, service: siteinfo }
+  - { package: cairo, service: siteinfo }
+  - { package: c-ares, service: siteinfo }
+  - { package: chkconfig, service: siteinfo }
+  - { package: compat-libtidy, service: siteinfo }
+  - { package: coolkey, service: siteinfo }
+  - { package: coreutils, service: siteinfo }
+  - { package: courier-unicode, service: siteinfo }
+  - { package: cpio, service: siteinfo }
+  - { package: cracklib-dicts, service: siteinfo }
+  - { package: cracklib, service: siteinfo }
+  - { package: crontabs, service: siteinfo }
+  - { package: cups-libs, service: siteinfo }
+  - { package: curl, service: siteinfo }
+  - { package: cyrus-sasl-lib, service: siteinfo }
+  - { package: cyrus-sasl, service: siteinfo }
+  - { package: dbus-libs, service: siteinfo }
+  - { package: diffutils, service: siteinfo }
+  - { package: dos2unix, service: siteinfo }
+  - { package: e2fsprogs-libs, service: siteinfo }
+  - { package: e2fsprogs, service: siteinfo }
+  - { package: ed, service: siteinfo }
+  - { package: elfutils-libelf, service: siteinfo }
+  - { package: elfutils-libs, service: siteinfo }
+  - { package: expat, service: siteinfo }
+  - { package: fcgi, service: siteinfo }
+  - { package: fetchmail, service: siteinfo }
+  - { package: file-libs, service: siteinfo }
+  - { package: file, service: siteinfo }
+  - { package: findutils, service: siteinfo }
+  - { package: fontconfig, service: siteinfo }
+  - { package: freetype, service: siteinfo }
+  - { package: ftp, service: siteinfo }
+  - { package: gamin, service: siteinfo }
+  - { package: gawk, service: siteinfo }
+  - { package: gdbm, service: siteinfo }
+  - { package: gd, service: siteinfo }
+  - { package: GeoIP, service: siteinfo }
+  - { package: gettext-libs, service: siteinfo }
+  - { package: gettext, service: siteinfo }
+  - { package: ghostscript-fonts, service: siteinfo }
+  - { package: ghostscript, service: siteinfo }
+  - { package: giflib, service: siteinfo }
+  - { package: glib2, service: siteinfo }
+  - { package: glibc-common, service: siteinfo }
+  - { package: glibc-static, service: siteinfo }
+  - { package: glibc, service: siteinfo }
+  - { package: gmp, service: siteinfo }
+  - { package: gnutls-c++, service: siteinfo }
+  - { package: gnutls-dane, service: siteinfo }
+  - { package: gnutls, service: siteinfo }
+  - { package: gpgme, service: siteinfo }
+  - { package: grep, service: siteinfo }
+  - { package: groff-base, service: siteinfo }
+  - { package: groff, service: siteinfo }
+  - { package: gsl, service: siteinfo }
+  - { package: gzip, service: siteinfo }
+  - { package: hesiod, service: siteinfo }
+  - { package: httpd-tools, service: siteinfo }
+  - { package: http-parser, service: siteinfo }
+  - { package: icu, service: siteinfo }
+  - { package: ImageMagick-c++, service: siteinfo }
+  - { package: ImageMagick-perl, service: siteinfo }
+  - { package: ImageMagick, service: siteinfo }
+  - { package: info, service: siteinfo }
+  - { package: iputils, service: siteinfo }
+  - { package: jasper-libs, service: siteinfo }
+  - { package: jbigkit-libs, service: siteinfo }
+  - { package: js, service: siteinfo }
+  - { package: keyutils-libs, service: siteinfo }
+  - { package: krb5-libs, service: siteinfo }
+  - { package: lcms2, service: siteinfo }
+  - { package: libacl, service: siteinfo }
+  - { package: libaio, service: siteinfo }
+  - { package: libattr, service: siteinfo }
+  - { package: libblkid, service: siteinfo }
+  - { package: libcap-ng, service: siteinfo }
+  - { package: libcap, service: siteinfo }
+  - { package: libc-client, service: siteinfo }
+  - { package: libcgroup-pam, service: siteinfo }
+  - { package: libcgroup-tools, service: siteinfo }
+  - { package: libcgroup, service: siteinfo }
+  - { package: libcom_err, service: siteinfo }
+  - { package: libcroco, service: siteinfo }
+  - { package: libcurl, service: siteinfo }
+  - { package: libdb4, service: siteinfo }
+  - { package: libdb, service: siteinfo }
+  - { package: libffi, service: siteinfo }
+  - { package: libgcc, service: siteinfo }
+  - { package: libgcrypt, service: siteinfo }
+  - { package: libgomp, service: siteinfo }
+  - { package: libgpg-error, service: siteinfo }
+  - { package: libICE, service: siteinfo }
+  - { package: libicu, service: siteinfo }
+  - { package: libidn, service: siteinfo }
+  - { package: libjpeg-turbo, service: siteinfo }
+  - { package: libmcrypt, service: siteinfo }
+  - { package: libmount, service: siteinfo }
+  - { package: libmpc, service: siteinfo }
+  - { package: libnghttp2, service: siteinfo }
+  - { package: libpipeline, service: siteinfo }
+  - { package: libpng, service: siteinfo }
+  - { package: libpwquality, service: siteinfo }
+  - { package: libselinux, service: siteinfo }
+  - { package: libsemanage, service: siteinfo }
+  - { package: libsepol, service: siteinfo }
+  - { package: libSM, service: siteinfo }
+  - { package: libssh2, service: siteinfo }
+  - { package: libss, service: siteinfo }
+  - { package: libstdc++, service: siteinfo }
+  - { package: libtasn1, service: siteinfo }
+  - { package: libtiff, service: siteinfo }
+  - { package: libtool-ltdl, service: siteinfo }
+  - { package: libunistring, service: siteinfo }
+  - { package: libusb, service: siteinfo }
+  - { package: libuser, service: siteinfo }
+  - { package: libutempter, service: siteinfo }
+  - { package: libuuid, service: siteinfo }
+  - { package: libuv, service: siteinfo }
+  - { package: libX11, service: siteinfo }
+  - { package: libXau, service: siteinfo }
+  - { package: libxcb, service: siteinfo }
+  - { package: libXdmcp, service: siteinfo }
+  - { package: libXext, service: siteinfo }
+  - { package: libxml2-python, service: siteinfo }
+  - { package: libxml2, service: siteinfo }
+  - { package: libXmu, service: siteinfo }
+  - { package: libXpm, service: siteinfo }
+  - { package: libXrender, service: siteinfo }
+  - { package: libxslt-python, service: siteinfo }
+  - { package: libxslt, service: siteinfo }
+  - { package: libXt, service: siteinfo }
+  - { package: libyaml, service: siteinfo }
+  - { package: lm_sensors-libs, service: siteinfo }
+  - { package: logrotate, service: siteinfo }
+  - { package: lua, service: siteinfo }
+  - { package: mailx, service: siteinfo }
+  - { package: man-db, service: siteinfo }
+  - { package: man-pages, service: siteinfo }
+  - { package: MariaDB-client, service: siteinfo }
+  - { package: MariaDB-common, service: siteinfo }
+  - { package: MariaDB-compat, service: siteinfo }
+  - { package: mpfr, service: siteinfo }
+  - { package: ncftp, service: siteinfo }
+  - { package: ncurses-libs, service: siteinfo }
+  - { package: ncurses, service: siteinfo }
+  - { package: net-snmp-agent-libs, service: siteinfo }
+  - { package: net-snmp-libs, service: siteinfo }
+  - { package: net-snmp, service: siteinfo }
+  - { package: nettle, service: siteinfo }
+  - { package: net-tools, service: siteinfo }
+  - { package: nspr, service: siteinfo }
+  - { package: nss-mdns, service: siteinfo }
+  - { package: nss-pem, service: siteinfo }
+  - { package: nss-softokn-freebl, service: siteinfo }
+  - { package: nss-softokn, service: siteinfo }
+  - { package: nss-sysinit, service: siteinfo }
+  - { package: nss-util, service: siteinfo }
+  - { package: nss, service: siteinfo }
+  - { package: openjpeg-libs, service: siteinfo }
+  - { package: openldap-devel, service: siteinfo }
+  - { package: openldap, service: siteinfo }
+  - { package: openssl-libs, service: siteinfo }
+  - { package: openssl, service: siteinfo }
+  - { package: p11-kit-trust, service: siteinfo }
+  - { package: pam-devel, service: siteinfo }
+  - { package: pam, service: siteinfo }
+  - { package: passwd, service: siteinfo }
+  - { package: patch, service: siteinfo }
+  - { package: pcre, service: siteinfo }
+  - { package: pcsc-lite-libs, service: siteinfo }
+  - { package: perl, service: siteinfo }
+  - { package: pixman, service: siteinfo }
+  - { package: poppler, service: siteinfo }
+  - { package: popt, service: siteinfo }
+  - { package: postfix, service: siteinfo }
+  - { package: "postgresql{{pg_pkgversion}}-contrib", service: siteinfo }
+  - { package: "postgresql{{pg_pkgversion}}-devel", service: siteinfo }
+  - { package: "postgresql{{pg_pkgversion}}-libs", service: siteinfo }
+  - { package: procps-ng, service: siteinfo }
+  - { package: pth, service: siteinfo }
+  - { package: pyOpenSSL, service: siteinfo }
+  - { package: python2-crypto, service: siteinfo }
+  - { package: python2-pip, service: siteinfo }
+  - { package: python-backports-ssl_match_hostname, service: siteinfo }
+  - { package: python-backports, service: siteinfo }
+  - { package: python-libs, service: siteinfo }
+  - { package: python-setuptools, service: siteinfo }
+  - { package: python, service: siteinfo }
+  - { package: pyzor, service: siteinfo }
+  - { package: qrencode-libs, service: siteinfo }
+  - { package: qrencode, service: siteinfo }
+  - { package: quota, service: siteinfo }
+  - { package: readline, service: siteinfo }
+  - { package: rpm-libs, service: siteinfo }
+  - { package: sed, service: siteinfo }
+  - { package: shadow-utils, service: siteinfo }
+  - { package: source-highlight, service: siteinfo }
+  - { package: sqlite, service: siteinfo }
+  - { package: systemd-libs, service: siteinfo }
+  - { package: sysvinit-tools, service: siteinfo }
+  - { package: tar, service: siteinfo }
+  - { package: tcl, service: siteinfo }
+  - { package: tcp_wrappers-libs, service: siteinfo }
+  - { package: tcp_wrappers, service: siteinfo }
+  - { package: tcsh, service: siteinfo }
+  - { package: telnet, service: siteinfo }
+  - { package: texlive-latex, service: siteinfo }
+  - { package: texlive, service: siteinfo }
+  - { package: tmpwatch, service: siteinfo }
+  - { package: traceroute, service: siteinfo }
+  - { package: tree, service: siteinfo }
+  - { package: trousers, service: siteinfo }
+  - { package: tzdata, service: siteinfo }
+  - { package: unixODBC, service: siteinfo }
+  - { package: unzip, service: siteinfo }
+  - { package: urw-fonts, service: siteinfo }
+  - { package: ustr, service: siteinfo }
+  - { package: util-linux, service: siteinfo }
+  - { package: wget, service: siteinfo }
+  - { package: which, service: siteinfo }
+  - { package: whois, service: siteinfo }
+  - { package: xz-devel, service: siteinfo }
+  - { package: xz-libs, service: siteinfo }
+  - { package: xz, service: siteinfo }
+  - { package: yaml-cpp, service: siteinfo }
+  - { package: zip, service: siteinfo }
+  - { package: zlib, service: siteinfo }
+  - { package: asciidoc, service: ssh }
+  - { package: aspell-devel, service: ssh }
+  - { package: atlas, service: ssh }
+  - { package: autoconf213, service: ssh }
+  - { package: autoconf, service: ssh }
+  - { package: automake, service: ssh }
+  - { package: binutils, service: ssh }
+  - { package: bison, service: ssh }
+  - { package: boost-atomic, service: ssh }
+  - { package: boost-chrono, service: ssh }
+  - { package: boost-context, service: ssh }
+  - { package: boost-date-time, service: ssh }
+  - { package: boost-devel, service: ssh }
+  - { package: boost-filesystem, service: ssh }
+  - { package: boost-graph, service: ssh }
+  - { package: boost-iostreams, service: ssh }
+  - { package: boost-locale, service: ssh }
+  - { package: boost-math, service: ssh }
+  - { package: boost-program-options, service: ssh }
+  - { package: boost-python, service: ssh }
+  - { package: boost-random, service: ssh }
+  - { package: boost-regex, service: ssh }
+  - { package: boost-serialization, service: ssh }
+  - { package: boost-signals, service: ssh }
+  - { package: boost-system, service: ssh }
+  - { package: boost-test, service: ssh }
+  - { package: boost-thread, service: ssh }
+  - { package: boost-timer, service: ssh }
+  - { package: boost-wave, service: ssh }
+  - { package: byacc, service: ssh }
+  - { package: bzip2-devel, service: ssh }
+  - { package: bzr, service: ssh }
+  - { package: c-ares-devel, service: ssh }
+  - { package: compat-libtidy-devel, service: ssh }
+  - { package: cpp, service: ssh }
+  - { package: cronie, service: ssh }
+  - { package: cyrus-sasl-devel, service: ssh }
+  - { package: darcs, service: ssh }
+  - { package: e2fsprogs-devel, service: ssh }
+  - { package: elinks, service: ssh }
+  - { package: emacs-common, service: ssh }
+  - { package: emacs-mercurial, service: ssh }
+  - { package: emacs-nox, service: ssh }
+  - { package: expat-devel, service: ssh }
+  - { package: expect, service: ssh }
+  - { package: file-devel, service: ssh }
+  - { package: fipscheck-lib, service: ssh }
+  - { package: freetype-devel, service: ssh }
+  - { package: gamin-devel, service: ssh }
+  - { package: gcc-c++, service: ssh }
+  - { package: gcc, service: ssh }
+  - { package: gd-devel, service: ssh }
+  - { package: GeoIP-devel, service: ssh }
+  - { package: gettext-devel, service: ssh }
+  - { package: ghc-array, service: ssh }
+  - { package: ghc-base, service: ssh }
+  - { package: ghc-binary, service: ssh }
+  - { package: ghc-bytestring, service: ssh }
+  - { package: ghc-containers, service: ssh }
+  - { package: ghc-dataenc, service: ssh }
+  - { package: ghc-deepseq, service: ssh }
+  - { package: ghc-directory, service: ssh }
+  - { package: ghc-extensible-exceptions, service: ssh }
+  - { package: ghc-filepath, service: ssh }
+  - { package: ghc-hashed-storage, service: ssh }
+  - { package: ghc-haskeline, service: ssh }
+  - { package: ghc-html, service: ssh }
+  - { package: ghc-mmap, service: ssh }
+  - { package: ghc-mtl, service: ssh }
+  - { package: ghc-old-locale, service: ssh }
+  - { package: ghc-old-time, service: ssh }
+  - { package: ghc-parsec, service: ssh }
+  - { package: ghc-primitive, service: ssh }
+  - { package: ghc-process, service: ssh }
+  - { package: ghc-random, service: ssh }
+  - { package: ghc-regex-base, service: ssh }
+  - { package: ghc-regex-compat, service: ssh }
+  - { package: ghc-regex-posix, service: ssh }
+  - { package: ghc-tar, service: ssh }
+  - { package: ghc-terminfo, service: ssh }
+  - { package: ghc-text, service: ssh }
+  - { package: ghc-time, service: ssh }
+  - { package: ghc-transformers, service: ssh }
+  - { package: ghc-unix, service: ssh }
+  - { package: ghc-utf8-string, service: ssh }
+  - { package: ghc-vector, service: ssh }
+  - { package: ghc-zlib, service: ssh }
+  - { package: ghostscript-devel, service: ssh }
+  - { package: giflib-devel, service: ssh }
+  - { package: git-daemon, service: ssh }
+  - { package: git, service: ssh }
+  - { package: glibc-devel, service: ssh }
+  - { package: glibc-headers, service: ssh }
+  - { package: glibc-utils, service: ssh }
+  - { package: gmp-devel, service: ssh }
+  - { package: gnutls-devel, service: ssh }
+  - { package: golang-src, service: ssh }
+  - { package: golang, service: ssh }
+  - { package: gperftools-libs, service: ssh }
+  - { package: gpm-libs, service: ssh }
+  - { package: gsl-devel, service: ssh }
+  - { package: gyp, service: ssh }
+  - { package: http-parser-devel, service: ssh }
+  - { package: ImageMagick-c++-devel, service: ssh }
+  - { package: ImageMagick-devel, service: ssh }
+  - { package: jemalloc, service: ssh }
+  - { package: kernel-headers, service: ssh }
+  - { package: krb5-devel, service: ssh }
+  - { package: lcms2-devel, service: ssh }
+  - { package: less, service: ssh }
+  - { package: libassuan, service: ssh }
+  - { package: libblkid-devel, service: ssh }
+  - { package: libcom_err-devel, service: ssh }
+  - { package: libcurl-devel, service: ssh }
+  - { package: libdb4-devel, service: ssh }
+  - { package: libdb-devel, service: ssh }
+  - { package: libdrm, service: ssh }
+  - { package: libedit, service: ssh }
+  - { package: libevent, service: ssh }
+  - { package: libffi-devel, service: ssh }
+  - { package: libgcrypt-devel, service: ssh }
+  - { package: libgfortran, service: ssh }
+  - { package: libgpg-error-devel, service: ssh }
+  - { package: libICE-devel, service: ssh }
+  - { package: libicu-devel, service: ssh }
+  - { package: libidn-devel, service: ssh }
+  - { package: libjpeg-turbo-devel, service: ssh }
+  - { package: libmcrypt-devel, service: ssh }
+  - { package: libmemcached-devel, service: ssh }
+  - { package: libmemcached, service: ssh }
+  - { package: libmodman, service: ssh }
+  - { package: libnghttp2-devel, service: ssh }
+  - { package: libpcap, service: ssh }
+  - { package: libpng-devel, service: ssh }
+  - { package: libproxy, service: ssh }
+  - { package: libquadmath, service: ssh }
+  - { package: libSM-devel, service: ssh }
+  - { package: libstdc++-devel, service: ssh }
+  - { package: libstemmer, service: ssh }
+  - { package: libtasn1-devel, service: ssh }
+  - { package: libtool-ltdl-devel, service: ssh }
+  - { package: libtool, service: ssh }
+  - { package: libunwind, service: ssh }
+  - { package: libuuid-devel, service: ssh }
+  - { package: libuv-devel, service: ssh }
+  - { package: libXdamage, service: ssh }
+  - { package: libXext-devel, service: ssh }
+  - { package: libXfixes, service: ssh }
+  - { package: libxml2-devel, service: ssh }
+  - { package: libXmu-devel, service: ssh }
+  - { package: libXpm-devel, service: ssh }
+  - { package: libXrender-devel, service: ssh }
+  - { package: libxslt-devel, service: ssh }
+  - { package: libXt-devel, service: ssh }
+  - { package: libXxf86vm, service: ssh }
+  - { package: libyaml-devel, service: ssh }
+  - { package: lm_sensors-devel, service: ssh }
+  - { package: lsof, service: ssh }
+  - { package: m4, service: ssh }
+  - { package: make, service: ssh }
+  - { package: MariaDB-devel, service: ssh }
+  - { package: memcached-devel, service: ssh }
+  - { package: memcached, service: ssh }
+  - { package: mercurial, service: ssh }
+  - { package: mesa-libEGL, service: ssh }
+  - { package: mesa-libgbm, service: ssh }
+  - { package: mesa-libglapi, service: ssh }
+  - { package: mesa-libGL, service: ssh }
+  - { package: mongodb-org-mongos, service: ssh }
+  - { package: mongodb-org-server, service: ssh }
+  - { package: mongodb-org-shell, service: ssh }
+  - { package: mongodb-org-tools, service: ssh }
+  - { package: mongodb-org, service: ssh }
+  - { package: mutt, service: ssh }
+  - { package: nano, service: ssh }
+  - { package: ncurses-base, service: ssh }
+  - { package: ncurses-devel, service: ssh }
+  - { package: neon-devel, service: ssh }
+  - { package: neon, service: ssh }
+  - { package: net-snmp-devel, service: ssh }
+  - { package: nspr-devel, service: ssh }
+  - { package: nss_compat_ossl, service: ssh }
+  - { package: openjpeg-devel, service: ssh }
+  - { package: openssh-clients, service: ssh }
+  - { package: openssh, service: ssh }
+  - { package: openssl-devel, service: ssh }
+  - { package: p11-kit-devel, service: ssh }
+  - { package: p11-kit, service: ssh }
+  - { package: pakchois, service: ssh }
+  - { package: passivetex, service: ssh }
+  - { package: pcre-devel, service: ssh }
+  - { package: pixman-devel, service: ssh }
+  - { package: pkgconfig, service: ssh }
+  - { package: postgresql96, service: ssh }
+  - { package: pth-devel, service: ssh }
+  - { package: python-devel, service: ssh }
+  - { package: python-redis, service: ssh }
+  - { package: python-virtualenv, service: ssh }
+  - { package: rcs, service: ssh }
+  - { package: readline-devel, service: ssh }
+  - { package: redis, service: ssh }
+  - { package: rsync, service: ssh }
+  - { package: ruby-devel, service: ssh }
+  - { package: ruby-irb, service: ssh }
+  - { package: ruby-libs, service: ssh }
+  - { package: ruby, service: ssh }
+  - { package: screen, service: ssh }
+  - { package: snappy, service: ssh }
+  - { package: sqlite-devel, service: ssh }
+  - { package: strace, service: ssh }
+  - { package: subversion-devel, service: ssh }
+  - { package: subversion-libs, service: ssh }
+  - { package: subversion-perl, service: ssh }
+  - { package: subversion-ruby, service: ssh }
+  - { package: subversion, service: ssh }
+  - { package: tcl-devel, service: ssh }
+  - { package: tmux, service: ssh }
+  - { package: tokyocabinet, service: ssh }
+  - { package: unixODBC-devel, service: ssh }
+  - { package: v8-devel, service: ssh }
+  - { package: v8, service: ssh }
+  - { package: vim-common, service: ssh }
+  - { package: vim-enhanced, service: ssh }
+  - { package: vim-minimal, service: ssh }
+  - { package: Xaw3d, service: ssh }
+  - { package: xmlto, service: ssh }
+  - { package: zlib-devel, service: ssh }
+  - { package: zsh, service: ssh }
+  - { package: java-1.7.0-openjdk-headless, service: tomcat }
+  - { package: java-1.7.0-openjdk, service: tomcat }
+  - { package: javapackages-tools, service: tomcat }

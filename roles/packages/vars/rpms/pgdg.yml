@@ -1,6 +1,7 @@
 ---
 # pgversion is fact after importing config
 title: PostgreSQL v{{ pgversion }}
+repo_name: "pgdg{{ pg_pkgversion }}"
 rpms: 
   - postgis24_{{ pg_pkgversion }}
   - postgresql{{ pg_pkgversion }}

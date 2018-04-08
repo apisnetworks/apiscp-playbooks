@@ -1,4 +1,6 @@
 ---
+- name: noop    
+  debug: msg="noop handler" verbosity=4
 - name: Restart apnscp
   systemd: state=restarted name=apnscp enabled=yes
   listen: Restart services
@@ -10,3 +12,12 @@
   listen: Restart services
 - name: Change apnscp ownership
   command: chown -R {{ apnscp_system_user }}:{{ apnscp_system_user }} {{ apnscp_root }}
+- name: Restart spamassassin
+  block:
+    - command: rpm -q spamassassin
+      ignore_errors: true
+      register: sa_present
+    - systemd: state=restarted name=spamassassin
+      when: sa_present.rc == 0
+- name: Restart postfix
+  systemd: state=restarted name=postfix enabled=yes

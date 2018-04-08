@@ -1,0 +1,5 @@
+- ini_file:
+    path: "{{apnscp_root}}/config/custom/config.ini"
+    section: "{{ section }}"
+    option: "{{ option }}"
+    value: "{{ value }}"

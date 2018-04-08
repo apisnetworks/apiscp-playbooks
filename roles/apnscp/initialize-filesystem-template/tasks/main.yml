@@ -1,0 +1,28 @@
+---
+- name: Initialize FILESYSTEMTEMPLATE
+  file:
+    path: "{{apnscp_filesystem_template}}"
+    state: directory
+  register: fst_created
+
+- ini_file:
+    path: "{{apnscp_root}}/config/custom/config.ini"
+    section: core
+    option: filesystem_template
+    value: "{{ apnscp_filesystem_template }}"
+
+- include_tasks: "{{ role_path }}/../../packages/tasks/configure-default-vars.yml"
+- include_tasks: install-package.yml package="{{ item.package }}"  service="{{item.service}}"
+  with_items: "{{ packages }}"
+
+- include_tasks: "{{ role_path }}/tasks/relocate-shared-directory.yml" 
+  vars: 
+    service: "{{ item.service }}"
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    logrotate_vars: "{{ item.logrotate_vars | default(None) }}"
+  with_items: "{{ relocated_paths }}"
+
+- include_tasks: "{{ role_path }}/../bootstrap/tasks/set-platform-version.yml"
+  vars:
+    version: "{{apnscp_platform_version}}"

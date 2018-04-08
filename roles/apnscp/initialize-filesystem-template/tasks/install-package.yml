@@ -1,0 +1,29 @@
+---
+- name: "Install {{ package }} to {{ service }}"
+  file: 
+    name: "{{ apnscp_filesystem_template }}/{{ service }}"
+    state: directory
+  register: fstnew
+- file:
+    path: "{{apnscp_filesystem_template}}/{{service}}/{{sitem.src}}"
+    state: link
+    src: "{{sitem.dest}}"
+    force: yes
+  with_items:
+    - {src: bin, dest: usr/bin}
+    - {src: lib, dest: usr/lib}
+    - {src: lib64, dest: usr/lib64}
+    - {src: run, dest: var/run}
+    - {src: sbin, dest: usr/sbin}
+  loop_control:
+    loop_var: sitem
+  when: fstnew.changed
+
+- yum:
+    name: "{{ package }}"
+    state: present
+- command: "{{ synchronizer }} install {{ package }} {{ service }}"
+  args:
+    chdir: "{{ apnscp_root }}"
+  register: result
+  failed_when: "result.rc != 0 and 'already installed under `' + service + '\\'' not in result.stdout+result.stderr"

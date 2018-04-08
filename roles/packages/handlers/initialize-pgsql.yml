@@ -1,0 +1,12 @@
+---
+- stat: path="/var/lib/pgsql/{{pgversion}}/"
+  register: ddir
+- shell: /usr/pgsql-{{pgversion}}/bin/postgresql-{{pgversion}}-setup initdb
+  args:
+    creates: /var/lib/pgsql/{{pgversion}}/postgresql.conf     
+  when: not ddir.stat.exists
+- name: copy pg_hba.conf
+  copy: 
+    src: templates/pg_hba.conf
+    dest: /var/lib/pgsql/{{pgversion}}/data/pg_hba.conf
+  when: not ddir.stat.exists

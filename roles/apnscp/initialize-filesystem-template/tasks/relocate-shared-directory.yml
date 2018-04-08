@@ -1,0 +1,32 @@
+# (c) 2018 Apis Networks
+---
+- name: "Relocate {{ dest }} to {{ src }}"
+  block: 
+    - file: 
+        path: "{{ src | dirname }}"
+        state: directory
+    - stat: path="{{ dest }}"
+      register: res
+    - command: creates="{{ src }}" mv "{{ dest }}" "{{ src }}"
+      when: res.stat.exists
+    - file: path="{{ dest }}" src="{{ src }}" state=link
+- name: "Edit {{ logrotate_vars.file }}"
+  replace:
+    path: "{{ logrotate_vars.file }}"
+    regexp: '(^|\b){{logrotate_vars.old}}\b'
+    replace: '{{ logrotate_vars.new }}'
+  when: logrotate_vars
+
+- name: Link {{ apnscp_filesystem_template }}/{{ service }}{{ dest }} to {{ src }}
+  block:
+    - file: 
+        path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest }}"
+        state: absent
+        follow: no
+    - file: 
+        path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest }} | dirname"
+        state: directory
+    - file: 
+        path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest }}"
+        state: link
+        src: "{{ src }}"   
