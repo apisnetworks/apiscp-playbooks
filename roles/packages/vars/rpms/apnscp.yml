@@ -6,7 +6,8 @@ rpm_state: latest
 bootstrap:    
   - repo_rpm: "http://yum.apnscp.com/apnscp-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
     repo_key: "/etc/pki/rpm-gpg/RPM-GPG-KEY-apnscp-{{ ansible_distribution_major_version }}"
-repo_name: apnscp
+# Enable pulling in epel dependencies for curl
+repo_name: apnscp,epel
 rpms:
   - apr
   - apr-devel
@@ -33,9 +34,9 @@ rpms:
   - mod_socache_dc
   - monit
   - nss-apnscp
-  #- pam-apnscp
+  - pam-apnscp
   - postfix
-  - spamassassin
+  #- spamassassin
   - uw-imap
   - uw-imap-devel
   - uw-imap-static

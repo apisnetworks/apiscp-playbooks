@@ -3,6 +3,7 @@ title: Fedora Extra Packages Library
 bootstrap:    
   - repo_rpm: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
     repo_key: "/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"
+repo_name: epel
 rpms:
   - clamav
   - clamav-data
@@ -27,8 +28,6 @@ rpms:
   - fcgi-devel
   - gyp
   - hdf5
-  - http-parser
-  - http-parser-devel
   - iperf
   - jemalloc
   - libbsd
@@ -44,6 +43,8 @@ rpms:
   - libnghttp2
   - libnghttp2-devel
   - libopendkim
+  - libsodium
+  - libsodium-devel
   - libstemmer
   - libuv
   - libuv-devel

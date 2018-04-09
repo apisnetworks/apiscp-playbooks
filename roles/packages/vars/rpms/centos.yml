@@ -85,7 +85,6 @@ rpms:
   - emacs-nox
   - expat
   - expect
-  - fcgi
   - fetchmail
   - file
   - file-devel
@@ -139,9 +138,10 @@ rpms:
   - groff-base
   - gsl
   - gsl-devel 
-  - gyp
   - gzip
   - hesiod
+  - http-parser
+  - http-parser-devel
   - icu
   - ImageMagick-c++
   - ImageMagick-c++-devel
@@ -180,8 +180,6 @@ rpms:
   - libcroco
   - libdb
   - libdb-devel
-  - libdb4
-  - libdb4-devel
   - libdrm
   - libedit
   - libevent
@@ -220,8 +218,6 @@ rpms:
   - libselinux-utils
   - libsemanage
   - libsepol
-  - libsodium
-  - libsodium-devel
   - libSM
   - libSM-devel
   - libss
@@ -402,7 +398,6 @@ rpms:
   - wget
   - which
   - whois
-  - Xaw3d
   - xmlto
   - xz
   - xz-devel
