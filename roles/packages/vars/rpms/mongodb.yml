@@ -1,7 +1,6 @@
 ---
-# pgversion is fact after importing config
 title: MongoDB v{{ mongodb.version | default (mongodb.default) }}
-repo_name: mongodb-org-{{ mongodb.version | default (mongodb.default) }}
+repo_name: "mongodb-org-{{ mongodb.version | default (mongodb.default) }}"
 rpms: 
   - mongodb-org
   - mongodb-org-mongos

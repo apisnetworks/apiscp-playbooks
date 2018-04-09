@@ -1,4 +1,5 @@
 ---
+repo_name: mariadb
 rpms:
   - MariaDB-client
   - MariaDB-compat
