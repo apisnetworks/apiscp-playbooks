@@ -42,13 +42,13 @@
       notify: Update grub
       when: update.changed
   when: xfs.rc == 0
-- name: Mount tmpfs
-  mount: 
-    path: /tmp 
-    state: mounted 
-    fstype: tmpfs
-    src: tmpfs
-    opts: "size={{ [ansible_memtotal_mb *0.25, 1024] | min | int}}M"
+- file: 
+    path: "{{ tmpfs_config | dirname }}"
+    state: directory
+- copy:
+    content: "[Mount]\nOptions={{ tmpfs_attrs }}"
+    dest: "{{ tmpfs_config }}"
+- systemd: service=tmp.mount state=started enabled=yes
   notify:
     - Restart services
 # cf. https://chrisdown.name/2018/01/02/in-defence-of-swap.html
