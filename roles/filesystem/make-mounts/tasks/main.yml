@@ -20,6 +20,7 @@
   register: ext4
   when: xfs.rc != 0 and ext4.rc == 0
 - block:
+    - yum: name=quota state=present
     - name: Building quotas 
       command: quotaoff -augv
     - command: quotacheck -augvm
