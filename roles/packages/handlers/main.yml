@@ -2,17 +2,8 @@
   debug: msg="noop handler" verbosity=4
 - name: start mariadb
   service: name=mariadb state=started
-- name: symlink pgsql include
-  file: src=/usr/pgsql-{{ pgversion }}/include  dest=/usr/include/pgsql state=link
-- name: alias pgsql 
-  file:
-    src: /usr/lib/systemd/system/postgresql-{{pgversion}}.service
-    dest: /etc/systemd/system/postgresql.service
-    state: link
-    force: yes
-  listen: install pgsql
 - name: initialize pgsql
-  include: initialize-pgsql.yml
+  include_tasks: "{{ role_path }}/handlers/initialize-pgsql.yml"
   listen: install pgsql
 - name: enable postgresql
   systemd:

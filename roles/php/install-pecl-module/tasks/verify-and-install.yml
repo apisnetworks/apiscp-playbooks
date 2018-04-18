@@ -7,7 +7,7 @@
   block:
     - command: "{{ phpconfig }} --php-binary"
       register: bin
-    - command: "{{ bin.stdout }} -r 'print PHP_CONFIG_FILE_SCAN_DIR;'"
+    - command: "{{ bin.stdout }} -r 'print PHP_CONFIG_FILE_SCAN_DIR; exit(defined("PHP_CONFIG_FILE_SCAN_DIR") ? 0 : 1);'"
       register: scandir
     - set_fact: scandir="{{scandir.stdout}}"
 - name: Update channel protocols

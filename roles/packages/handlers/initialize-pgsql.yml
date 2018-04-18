@@ -1,4 +1,14 @@
+PostgreSQL first-run routines
 ---
+- name: symlink pgsql include
+  file: src=/usr/pgsql-{{ pgversion }}/include  dest=/usr/include/pgsql state=link
+- name: alias pgsql 
+  file:
+    src: /usr/lib/systemd/system/postgresql-{{pgversion}}.service
+    dest: /etc/systemd/system/postgresql.service
+    state: link
+    force: yes
+  listen: install pgsql
 - stat: path="/var/lib/pgsql/{{pgversion}}/"
   register: ddir
 - shell: /usr/pgsql-{{pgversion}}/bin/postgresql-{{pgversion}}-setup initdb
