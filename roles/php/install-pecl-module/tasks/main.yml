@@ -6,3 +6,4 @@
   with_items: "{{ pecl_extensions }}"
   loop_control: 
     loop_var: extension
+  when: pecl_extensions is defined

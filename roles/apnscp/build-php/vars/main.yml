@@ -1,2 +1,6 @@
 ---
 builddir: "{{ apnscp_root }}/build/php/php-{{ apnscp_php_version }}"
+work_dir: "{{ apnscp_root }}/build/php"
+php_version: "{{ apnscp_php_version }}"
+php_configure: "{{work_dir}}/php.config"
+build_dir: "{{work_dir}}/php-{{php_version}}"

@@ -3,15 +3,9 @@
   yum: name={{item}} state=installed
   with_items:
     - tokyocabinet-devel
-    - httpd-devel
-    - libdb-devel
+    - httpd-devel  
 - include_role:
     name: php/build-from-source  
-  vars: 
-    work_dir: "{{ apnscp_root }}/build/php"
-    php_version: "{{ apnscp_php_version }}"
-    php_configure: "{{work_dir}}/php.config"
-    build_dir: "{{work_dir}}/php-{{php_version}}"
   notify: "Restart apnscp"
 - file:
     src: "{{ apnscp_root }}/bin/php-bins/apnscp_php"

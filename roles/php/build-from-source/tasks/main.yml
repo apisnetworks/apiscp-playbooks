@@ -10,7 +10,7 @@
   when: not st.stat.exists
 - block:   
     - name: Compile PHP {{ __php_version }}      
-      shell: "{{ php_configure }} {{ xtrabuild }}"
+      shell: "{{ php_configure }} {{ extra_flags }}"
       args:
         chdir: "{{ build_dir }}"       
       environment:

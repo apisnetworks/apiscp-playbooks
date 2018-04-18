@@ -34,7 +34,7 @@ function download {
 			popd
 			return $?
 		fi
-		wget $EXTENSION && tar -xvaf $EXTENSION extension
+		wget $EXTENSION
 	else
 		pecl download $extension
 	fi
@@ -46,15 +46,24 @@ function download {
 }
 
 download $extension
-pushd $(ls -d */ | head -n 1)
+pushd $(ls -d */ | head -n 1) 2> /dev/null
 
 [[ $? -ne 0 ]] && fatal "extension \`$extension' not found"
 
 if [[ ! -f config.m4 ]] ; then
   DIR=`find . -mindepth 1 -type f -name config.m4 -printf "%h" -quit`
-  [[ -z $DIR ]] && fatal "unable to find config.m4 in archive"
-  echo $DIR
-  cd $DIR
+  if [[ ! -z $DIR ]]; then  
+	  echo "Moved to $DIR"
+	  pushd $DIR
+  fi
+  if [[ -f autogen.sh ]]; then
+  	./autogen.sh
+	elif [[ -f configure.ac ]]; then
+		autoreconf
+	fi
+  if [[ ! -f config.m4 ]]; then 
+  	fatal "unable to find config.m4 in archive"
+  fi
 fi
 
 $PHPIZE && ./configure --with-php-config=$PHPCONFIG $XTRACFG && make && make install

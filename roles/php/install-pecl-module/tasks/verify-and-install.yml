@@ -1,13 +1,21 @@
+# Force PECL install with --extra-vars 'force_install'
 ---
 - include_role:
     name: php/common
     tasks_from: query-extension-dir  
+- name: Register ini directory
+  block:
+    - command: "{{ phpconfig }} --php-binary"
+      register: bin
+    - command: "{{ bin.stdout }} -r 'print PHP_CONFIG_FILE_SCAN_DIR;'"
+      register: scandir
+    - set_fact: scandir="{{scandir.stdout}}"
 - name: Update channel protocols
   command: pecl channel-update pecl.php.net
   run_once: true
 - name: Verify if PECL extension installed.
   vars: 
-    modname: "{{ extension | basename | regex_replace('\\..+$', '') }}"
+    modname: "{{ extension | basename | regex_replace('^([^-.]+).*$', '\\1') }}"
   block: 
     - name: "Verify {{ modname }} module installed"
       stat: path="{{ php_module_directory }}/{{ modname }}.so"
@@ -17,5 +25,19 @@
       environment:
         PHPIZE: "{{ phpize }}"
         PHPCONFIG: "{{ phpconfig }}"
-        XTRACFG: "{{ xtracfg }}"    
-      when: not stres.stat.exists
+        XTRACFG: "{{ extra_flags }}"    
+      notify: Restart apache
+      when: not stres.stat.exists or force is defined and force
+      register: module_install
+    - name: "Verify {{ scandir }}/{{modname}}.ini exists"
+      stat:
+        path: "{{ scandir }}/{{ modname }}.ini"
+      register: st
+    - name: Add PECL module configuration
+      copy: 
+        dest: "{{ scandir }}/{{modname}}.ini"
+        content: "extension={{modname}}.so\n"
+      when: > 
+        module_install.changed and 
+        not st.stat.exists and
+        bypass_pecl_ini is not defined

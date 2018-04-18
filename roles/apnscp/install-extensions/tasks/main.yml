@@ -6,7 +6,8 @@
     tasks_from: query-extension-dir 
 - include_role: 
     name: php/install-pecl-module
-  vars:    
+  vars:
+    bypass_pecl_ini: 1
     phpize: "{{apnscp_root}}/bin/php-bins/apnscp_phpize"
     pecl_extensions:
       - https://github.com/phpredis/phpredis.git

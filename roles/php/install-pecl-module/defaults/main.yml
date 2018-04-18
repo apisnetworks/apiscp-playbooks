@@ -5,4 +5,4 @@ php_pecl_install_command: "pecl install"
 php_pecl_extensions: []
 phpconfig: /usr/bin/php-config
 phpize: /usr/bin/phpize
-xtracfg: ""
+extra_flags: ""

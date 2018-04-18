@@ -14,6 +14,7 @@
     - browscap
     - apnscp/bootstrap
     - php/install  
+    - php/install-pecl-module
     - php/create-configuration  
     - java/tomcat
     - apache/configure
