@@ -1,9 +1,6 @@
 ---  
 - set_fact:
     password: "{{ lookup('password', '/dev/null chars=ascii_letters length=15') }}"
-
-- debug: msg="{{ password }}"
-
 - name: Enable root PostgreSQL user
   become_user: postgres
   become: True
