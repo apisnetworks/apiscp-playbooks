@@ -67,3 +67,5 @@
 - name: Update all packages
   yum: name=* state=latest
   when: False
+
+- meta: flush_handlers

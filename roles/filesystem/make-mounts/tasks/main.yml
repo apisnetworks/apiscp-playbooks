@@ -8,8 +8,6 @@
   rescue:
     - fail: msg="No supported filesystem detected"
   when: xfs.rc != 0
-- debug: msg="{{ xfs}} {{ ext4}} {{ ansible_mounts }}"
-
 - name: Alter mount options for / (ext4)
   mount:
     path: /

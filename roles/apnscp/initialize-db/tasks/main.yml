@@ -12,6 +12,9 @@
       __apnscp_password: "{{ oldconfig['apnscp']['password'] }}"
       __appliance_password: "{{ oldconfig['appldb']['password'] }}"
   when: exists.stat.exists
+- file: path="{{ apnscp_db_config}}" state=touch
+  when: not exists.stat.exists
+
 - name: Verify {{ apnscp_db }} database exists
   mysql_db: 
     name: "{{ apnscp_db }}"

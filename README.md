@@ -17,7 +17,7 @@ ansible-playbook --tags=apnscp/build-php --extra-vars 'php_version=7.1.18' boots
 Similar to building a PHP distribution for apnscp, the primary PHP interpreter may be rebuilt. Additional configure-time flags are passed via `extra_flags`.
 
 ```shell
-ansible-playbook --tags=php/install --extra-vars 'php_version=7.2.1 extra_flags="--with-recode --with-pcre-jit' bootstrap.yml
+ansible-playbook --tags=php/install --extra-vars 'php_version=7.2.1 extra_flags="--with-recode --with-pcre-jit"' bootstrap.yml
 ```
 
 ## Installing PECL modules

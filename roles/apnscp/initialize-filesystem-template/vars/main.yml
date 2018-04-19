@@ -46,7 +46,7 @@ relocated_paths:
     }
   - { 
       service: siteinfo,
-      src: "{{ apnscp_shared_root }}/wtmp",
+      src: "{{ apnscp_shared_root }}/btmp",
       dest: "/var/log/btmp",    
       logrotate_vars: { 
         file: /etc/logrotate.conf,
@@ -499,7 +499,7 @@ packages:
   - { package: pcre-devel, service: ssh }
   - { package: pixman-devel, service: ssh }
   - { package: pkgconfig, service: ssh }
-  - { package: postgresql96, service: ssh }
+  - { package: "postgresql{{pg_pkgversion}}", service: ssh }
   - { package: pth-devel, service: ssh }
   - { package: python-devel, service: ssh }
   - { package: python-redis, service: ssh }

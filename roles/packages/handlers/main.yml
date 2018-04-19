@@ -1,7 +1,8 @@
 - name: noop    
   debug: msg="noop handler" verbosity=4
 - name: start mariadb
-  service: name=mariadb state=started
+  systemd: name=mariadb state=started enabled=yes
+  listen: start mariadb
 - name: initialize pgsql
   include_tasks: "{{ role_path }}/handlers/initialize-pgsql.yml"
   listen: install pgsql

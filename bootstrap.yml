@@ -12,10 +12,10 @@
     - pgsql/install
     - mysql/install
     - browscap
-    - apnscp/bootstrap
     - php/install  
     - php/install-pecl-module
     - php/create-configuration  
+    - apnscp/bootstrap
     - java/tomcat
     - apache/configure
     - apnscp/build-php
