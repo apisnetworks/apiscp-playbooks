@@ -1,0 +1,11 @@
+---
+- ini_file:
+    section: commands
+    option: apply_updates
+    value: "yes"
+    path: "{{ update_config }}"
+- ini_file:
+    section: base
+    option: skip_broken
+    value: "yes"
+    path: "{{ update_config }}"

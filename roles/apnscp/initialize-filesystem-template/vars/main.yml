@@ -245,6 +245,7 @@ packages:
   - { package: p11-kit-trust, service: siteinfo }
   - { package: pam-devel, service: siteinfo }
   - { package: pam, service: siteinfo }
+  - { package: pam-apnscp, service: siteinfo }
   - { package: passwd, service: siteinfo }
   - { package: patch, service: siteinfo }
   - { package: pcre, service: siteinfo }

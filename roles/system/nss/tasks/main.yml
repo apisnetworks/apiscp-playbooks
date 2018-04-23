@@ -1,0 +1,6 @@
+---
+- name: Add apnscp to nsswitch.conf
+  replace: 
+    path: /etc/nsswitch.conf
+    regexp: '^[^#]*(passwd:\s*(?:(?!apnscpvwh).)*)$'
+    replace: '\1 apnscpvwh'

@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  become: yes
+  connection: local
+  gather_facts: yes
+  vars_files:
+    - 'apnscp-vars.yml'
+  roles:      
+    - apnscp/install-services
+  #tasks:
+  #  - include_tasks: roles/apnscp/initialize-filesystem-template/tasks/setup-dev.yml

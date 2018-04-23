@@ -1,0 +1,5 @@
+---
+nscd_replacements: 
+  - {field: passwd, state: "no"}
+  - {field: group, state: "yes"}
+  - {field: hosts, state: "yes"}

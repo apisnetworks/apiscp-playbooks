@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# chkconfig: 345 01 99
+# description: Build /tmp if necessary
+
+
+# Check that all necessary files exist first
+
+# See how we were called.
+prog="fstmp"
+
+SESSIONDIR=/tmp/sessions
+[ -d $SESSIONDIR ] && exit 0
+
+RANGE="a b c d e f g h i j k l m n o \
+    p q r s t u v w x y z 0 1 2 3 4 5 \
+    6 7 8 9"
+echo -n "Populating /tmp: "
+
+mkdir $SESSIONDIR
+for dir in $RANGE ; do
+    mkdir $SESSIONDIR/$dir
+    for subdir in $RANGE ; do
+        mkdir $SESSIONDIR/$dir/$subdir
+    done
+done
+chown -R apache:apache $SESSIONDIR
+
+mkdir -p /tmp/fcgi/dynamic
+chown -R apache:apache /tmp/fcgi
+chmod -R 0700 /tmp/fcgi
+chmod 1777 /tmp /tmp/fcgi
+exit 0

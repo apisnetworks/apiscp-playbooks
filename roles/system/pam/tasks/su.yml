@@ -1,0 +1,7 @@
+---
+- copy:
+    src: ./templates/su
+    dest: "{{ apnscp_filesystem_template }}/siteinfo/etc/pam.d/su"
+- include_tasks: cgroup.yml
+  vars:
+    pam_file: "{{ apnscp_filesystem_template }}/siteinfo/etc/pam.d/su"

@@ -1,0 +1,21 @@
+---
+- include_vars: vars/sshd.yml
+- lineinfile: 
+    path: "{{ pam_file }}"
+    regexp: '^[^#]*auth.*{{vwh_module}}'
+    line: 'auth\trequired\t{{ vwh_module }}'
+    insertbefore: '^[^#]*auth.*password-auth'
+    state: present  
+- copy:
+    src: ./templates/sshd
+    dest: "{{ apnscp_filesystem_template }}/ssh/etc/pam.d/sshd"
+- include_tasks: cgroup.yml
+  vars:
+    file: "{{ apnscp_filesystem_template }}/ssh/etc/pam.d/sshd"
+- include_tasks: "{{ role_path }}/tasks/listfile.yml"
+  vars:
+    file: /etc/ssh.pamlist
+- include_tasks: ./cgroup.yml
+  vars:
+    aftermodule: '^[^#]*session\s+\S+\s+pam_loginuid.so'
+  

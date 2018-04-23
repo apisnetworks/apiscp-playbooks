@@ -1,0 +1,9 @@
+# Ensure loading when loaded outside packages role
+- include_vars: ../defaults/main.yml
+- include_vars: "{{ item }}"
+  with_first_found:
+    - files: [/root/apnscp-ansible-defaults.yml]
+      skip: true
+- set_fact:
+    pgversion: "{{ pgsql.version | default(pgsql.default) }}"
+    pg_pkgversion: "{{ pgsql.version | default(pgsql.default) | regex_replace('\\.','') }}"

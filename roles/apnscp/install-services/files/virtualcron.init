@@ -1,0 +1,47 @@
+#!/bin/sh
+# chkconfig: 234 99 20
+# description: virtual cron daemon utility for sites
+FST=/home/virtual
+case "$1" in
+  start)
+	find ${FST}/site*/shadow/var/spool/cron -maxdepth 0 -not -empty | while read SITE ; do
+		SITE=${SITE##${FST}/}
+		SITE=${SITE%%/*}
+		
+		echo "Starting Virtual Cron for $SITE"
+echo ${FST}/$SITE
+		nice -20 /usr/sbin/chroot ${FST}/$SITE/fst /usr/sbin/crond
+		OLDSITE=$SITE
+	done 
+    ;;
+  stop)
+  	find ${FST}/site*/fst/var/spool/cron -maxdepth 0 -not -empty | while read SITE ; do
+		SITE=${SITE##${FST}/}
+		SITE=${SITE%%/*}
+		echo "Stopping Virtual Cron for $SITE"
+		FILE=${FST}/${SITE}/shadow/var/run/crond.pid
+		PID=`cat $FILE`
+		if [ -d /proc/$PID ] ; then
+			kill -9 $PID
+			rm -f $FILE
+		fi
+	done
+    ;;
+  status)
+    ;;
+  restart|reload)
+    $0 stop
+    $0 start
+    # PRXXXX
+    # restarting fsmount causes crond to dump its rtd
+    /sbin/service virtualcron restart
+    RETVAL=$?
+    ;;
+  *)
+    echo "Usage: virtualcron {start|stop|restart|status}"
+    exit 1
+esac
+
+exit $RETVAL
+
+

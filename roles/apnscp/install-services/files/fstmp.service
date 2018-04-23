@@ -1,0 +1,13 @@
+[Unit]
+Description=Create synthetic /tmp filesystems
+After=local-fs.target tmp.mount
+Before=httpd.target
+
+[Service]
+Type=oneshot
+ExecStart=/etc/systemd/user/fstmp.init start
+ExecReload=/etc/systemd/user/fstmp.init restart
+ExecStop=/bin/true
+
+[Install]
+WantedBy=multi-user.target

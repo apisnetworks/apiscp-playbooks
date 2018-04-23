@@ -7,3 +7,6 @@
 [submodule "roles/filesystem/swap"]
 	path = roles/filesystem/swap
 	url = https://github.com/kamaln7/ansible-swapfile.git
+[submodule "roles/packages/priorities"]
+	path = roles/packages/priorities
+	url = https://github.com/davidmnoriega/ansible-role-yum-plugin-priorities.git

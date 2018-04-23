@@ -1,0 +1,4 @@
+---
+repo_name: cloudflare
+rpms:
+  - mod_cloudflare

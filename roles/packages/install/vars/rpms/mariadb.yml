@@ -1,0 +1,11 @@
+---
+repo_name: mariadb
+rpms:
+  - MariaDB-client
+  - MariaDB-compat
+  - MariaDB-common
+  - MariaDB-devel
+  - MariaDB-server
+  - MariaDB-shared
+notify: 
+  - start mariadb

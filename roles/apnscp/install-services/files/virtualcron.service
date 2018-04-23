@@ -1,0 +1,20 @@
+[Unit]
+Description=Virtual Cron
+After=fsmount.target
+
+[Service]
+Type=simple
+ExecStart=/etc/systemd/user/virtualcron.init start
+ExecReload=/etc/systemd/user/virtualcron.init restart
+ExecStop=/etc/systemd/user/virtualcron.init stop
+RemainAfterExit=yes
+# We want systemd to give httpd some time to finish gracefully, but still want
+# it to kill httpd after TimeoutStopSec if something went wrong during the
+# graceful stop. Normally, Systemd sends SIGTERM signal right after the
+# ExecStop, which would kill httpd. We are sending useless SIGCONT here to give
+# httpd time to finish.
+#KillSignal=SIGCONT
+#PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

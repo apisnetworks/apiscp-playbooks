@@ -22,7 +22,7 @@
 - yum:
     name: "{{ package }}"
     state: present
-- command: "{{ synchronizer }} install {{ package }} {{ service }}"
+- command: "{{ synchronizer }} install {{ force | ternary('--force', None)}} {{ package }} {{ service }}"
   args:
     chdir: "{{ apnscp_root }}"
   register: result

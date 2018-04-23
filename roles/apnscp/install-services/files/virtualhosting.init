@@ -1,0 +1,83 @@
+#!/bin/bash
+#
+# virtualhosting Brings up virtual IP addresses plus those configured
+#                in /etc/sysconfig/virtualhosting
+#
+# chkconfig: 345 12 99
+# description: Virtualhosting is a wrapper to the ip binary \
+#              that brings up listed interfaces
+# processname: virtualhosting
+
+#SYSTEMCTL_SKIP_REDIRECT=1
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+# Check that networking is up.
+#[ ${NETWORKING} = "no" ] && exit 0
+
+RETVAL=0
+prog="virtualhosting"
+ETH=`head -n1 /etc/virtualhosting/interface`
+
+start() {
+        # Start daemons.
+	files="/etc/virtualhosting/namebased_ip_addrs /etc/sysconfig/virtualhosting"
+        for file in $files ; do 
+		[[ -f $file ]] && for addr in $(cat $file) ; do
+		        echo -n $"Bringing up $addr: "
+			/sbin/ip addr add ${addr}/32 dev $ETH
+		echo
+		done
+	done
+	[[ -f /etc/virtualhosting/mappings/ipmap ]] || return $RETVAL 
+	for addr in $(cat /etc/virtualhosting/mappings/ipmap | awk '{ if ($2 == "=" && system("[[ -f /home/virtual/"$3"/info/disabled ]]")) { print $1 } }') ; do
+		echo -n $"Bringing up VH $addr: "
+		/sbin/ip addr add ${addr}/32 dev $ETH
+	done
+        return 0
+}
+
+stop() {
+        # Stop daemons.
+        echo -n $"Shutting down $prog: "
+        [[ -f /etc/virtualhosting/mappings/ipmap ]] && for addr in $(cat /etc/virtualhosting/mappings/ipmap | awk '{ if ($2 == "=") { print $1 } }') ; do
+        echo -n $"Shutting down VH $addr: "
+        /sbin/ip addr del ${addr}/32 dev $ETH
+	done
+        echo
+        return 0
+}
+
+# See how we were called.
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        #stop
+        ;;
+  restart|reload)
+        stop
+        start
+        RETVAL=$?
+        ;;
+  condrestart)
+        if [ -f /var/lock/subsys/$prog ]; then
+            stop
+            start
+            RETVAL=$?
+        fi
+        ;;
+  status)
+        status $prog
+        RETVAL=$?
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|restart|condrestart|status}"
+        exit 1
+esac
+
+exit 0

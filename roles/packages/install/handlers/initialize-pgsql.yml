@@ -1,0 +1,20 @@
+---
+- name: symlink pgsql include
+  file: src=/usr/pgsql-{{ pgversion }}/include  dest=/usr/include/pgsql state=link
+- name: alias pgsql 
+  file:
+    src: /usr/lib/systemd/system/postgresql-{{pgversion}}.service
+    dest: /etc/systemd/system/postgresql.service
+    state: link
+    force: yes
+- stat: path="/var/lib/pgsql/{{pgversion}}/data/base"
+  register: ddir
+- shell: /usr/pgsql-{{pgversion}}/bin/postgresql-{{pgversion}}-setup initdb
+  args:
+    creates: /var/lib/pgsql/{{pgversion}}/postgresql.conf     
+  when: not ddir.stat.exists
+- name: copy pg_hba.conf
+  copy: 
+    src: templates/pg_hba.conf
+    dest: /var/lib/pgsql/{{pgversion}}/data/pg_hba.conf
+  when: not ddir.stat.exists

@@ -1,0 +1,2 @@
+---
+pam_file: "{{ pam_path }}/ftp"

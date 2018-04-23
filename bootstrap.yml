@@ -8,7 +8,7 @@
   roles:      
     - filesystem/make-mounts
     - epel
-    - packages
+    - packages/install
     - pgsql/install
     - mysql/install
     - browscap
@@ -16,19 +16,24 @@
     - php/install-pecl-module
     - php/create-configuration  
     - apnscp/bootstrap
-    - java/tomcat
     - apache/configure
     - apnscp/build-php
     - apnscp/install-extensions  
     - apnscp/initialize-db
     - apnscp/install-vendor-library
     - apnscp/initialize-filesystem-template
+    - system/nscd
+    - system/nss
+    - system/pam
     # Admin should work fine at this point
     - apnscp/assert-admin-works
     - fail2ban/whitelist-self
+    - fail2ban/configure-jails
     #- apnscp/register-ssl
-    #- network/setup-firewall
-    #- fail2ban/configure-jails
+    #- network/setup-firewall    
     #- apnscp/create-admin
+    - java/tomcat
+    # Odds and ends
+    - system/yum
     
 

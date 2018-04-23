@@ -1,0 +1,10 @@
+---
+- name: Handler 1
+  debug: msg="Top-level"
+  listen: Test
+- name: Handler 2
+  debug: msg="Top-level again"
+  listen: Test
+- name: Include
+  include_tasks: "{{ role_path }}/handlers/included.yml"
+  listen: Test

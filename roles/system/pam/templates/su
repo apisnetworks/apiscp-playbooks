@@ -1,0 +1,13 @@
+#%PAM-1.0
+auth            sufficient      pam_rootok.so
+# Allow main user to su at will to everyone except root
+auth            sufficient      pam_wheel.so trust use_uid
+auth            substack        system-auth
+auth            include         postlogin
+account         sufficient      pam_succeed_if.so uid = 0  quiet use_uid
+account         include         system-auth
+password        include         system-auth
+session         include         system-auth
+session         include         postlogin
+session         required        pam_lastlog.so  nowtmp
+session         optional        pam_xauth.so

@@ -1,0 +1,12 @@
+[Unit]
+Description=Populate /tmp
+After=local-fs.target
+Requires=httpd.service
+
+[Service]
+Type=oneshot
+ExecStart=/etc/systemd/user/fstmp.init start
+ExecReload=/bin/true
+
+[Install]
+WantedBy=multi-user.target

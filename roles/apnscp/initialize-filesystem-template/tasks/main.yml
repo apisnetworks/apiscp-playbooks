@@ -11,9 +11,12 @@
     option: filesystem_template
     value: "{{ apnscp_filesystem_template }}"
 
-- include_tasks: "{{ role_path }}/../../packages/tasks/configure-default-vars.yml"
+- include_tasks: "{{ role_path }}/../../packages/install/tasks/configure-default-vars.yml"
 - include_tasks: install-package.yml package="{{ item.package }}"  service="{{item.service}}"
   with_items: "{{ packages }}"
+
+- name: "Build synchronizer RPM index"
+  command: "{{ synchronizer }} generate"
 
 - include_tasks: "{{ role_path }}/tasks/relocate-shared-directory.yml" 
   vars: 
@@ -26,3 +29,5 @@
 - include_tasks: "{{ role_path }}/../bootstrap/tasks/set-platform-version.yml"
   vars:
     version: "{{apnscp_platform_version}}"
+- name: "Setup /dev on {{ apnscp_filesystem_template }}"
+  include_tasks: setup-dev.yml

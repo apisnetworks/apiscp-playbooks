@@ -1,0 +1,2 @@
+---
+update_config: /etc/yum/yum-cron.conf

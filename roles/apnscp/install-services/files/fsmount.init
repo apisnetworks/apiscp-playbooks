@@ -1,0 +1,229 @@
+#!/bin/sh
+#
+# chkconfig: 345 11 99
+# description: Build hosting filesystems from template
+#. /etc/rc.d/init.d/functions
+
+# (c) 2018 Apis Networks
+
+# Check that all necessary files exist first
+
+# See how we were called.
+prog="fsmount"
+PREFIX="/etc/sysconfig/fsmount"
+VHOSTDIR=${VHOSTDIR:-"/home/virtual"}
+SVCROOT=${SVCROOT:-"$VHOSTDIR/FILESYSTEMTEMPLATE"}
+SCRATCH="/.scratch"
+shopt -s nullglob
+# Thanks systemd...
+success() {
+	echo -n ""
+}
+
+failure() {
+	echo -n "FAILED"
+}
+
+function mount_all_sites {
+	[[ -L /.socket/proc/self ]] || mount -n -t proc -o hidepid=2 --make-slave proc /.socket/proc
+	for site in $VHOSTDIR/site[0-9]*/shadow ; do
+		site=${site%%/shadow}
+		site=${site##*/}
+		mount_site $site
+	done
+}
+
+function mount_site {
+	SITE=$1
+	SERVICES=`get_services $SITE`
+	[[ -z $SERVICES ]] && return
+	CMD="/bin/mount -n -t overlay -o 
+		upperdir=$VHOSTDIR/$SITE/shadow,lowerdir=`synthesize $SERVICES`,workdir=${SCRATCH} 
+		none $VHOSTDIR/$SITE/fst"
+	eval $CMD
+	mount_socket $SITE
+	
+	RETVAL=$?
+	return $RETVAL
+}
+
+function mount_socket {
+	SITE=$1
+	mount -n --make-slave --rbind -o bind  /.socket $VHOSTDIR/$SITE/fst/.socket
+}
+
+function initialize_site {
+	# siteinfo always present for accounts, populate this first
+	
+	CMD="/bin/mount -n -t overlay -o 
+                upperdir=$VHOSTDIR/$SITE/shadow,lowerdir=${SVCROOT}/siteinfo,workdir=${SCRATCH} 
+                none $VHOSTDIR/$SITE/fst"
+	eval $CMD 2>/dev/null
+	mount_socket $SITE
+	RETVAL=$?
+	return $RETVAL	
+}
+
+
+function mount_service {
+	SITE=$1 
+	SERVICE=$2
+	declare -a SERVICES=`get_services $SITE`
+	SERVICES+=($SERVICE)
+	#unmount_site $SITE
+        #exit
+	#unmount_site $SITE
+	/bin/mount -T/proc/mounts -n -t overlay \
+		-o lowerdir=`synthesize $SERVICES` \
+		$VHOSTDIR/$SITE/fst
+	mount_socket $SITE
+}
+
+function still_mounted {
+	SITE=$1
+	grep -q "$VHOSTDIR/$SITE/" /proc/mounts
+	return $?
+}
+
+function unmount_all_sites {
+	for site in $VHOSTDIR/site[0-9]* ; do
+		site=${site##*/}
+		unmount_site $site
+	done
+}
+
+function unmount_service {
+	SITE=$1
+	SERVICE=$2
+	declare -a SERVICES=`get_services $SITE`
+	LAYERS=`synthesize ${SERVICES[@]/$SERVICE}`
+	unmount_site $SITE
+	/bin/mount -T/proc/mounts -n -t overlay \
+                -o "upperdir=$VHOSTDIR/$SITE/shadow,lowerdir=$LAYERS,workdir=$SCRATCH" \
+		$VHOSTDIR/$SITE/fst $VHOSTDIR/$SITE/fst
+	mount_socket $SITE
+}
+
+function synthesize {
+	declare -a SERVICES=$@
+	STR=''
+	for s in $SERVICES ; do
+		STR="${STR}${SVCROOT}/${s}:"
+	done
+	echo ${STR%?}
+	#echo ${STR:0:-1}
+}
+
+function unmount_site {
+	SITE=$1
+	let MNTCNT=1
+	while `still_mounted $SITE` ; do
+		env LIBMOUNT_MTAB=/proc/mounts /bin/umount -l $VHOSTDIR/$SITE/fst/.socket \
+			$VHOSTDIR/$SITE/fst  2> /dev/null	
+		let MNTCNT++
+		# layer mounted over 50 times!?!!
+		[[ $MNTCNT > 50 ]] && break
+	done
+}
+
+
+function get_services {
+	SITE=$1
+	for i in $VHOSTDIR/$SITE/info/services/* ; do
+		echo ${i##*/}
+	done	
+}
+
+function reload_site {
+	SITE=$1
+	env LIBMOUNT_MTAB=/proc/mounts mount -n -t overlay -o remount $VHOSTDIR/$SITE/fst
+}
+
+
+function reload {
+    for path in $VHOSTDIR/site[0-9]*/fst ; do
+	env LIBMOUNT_MTAB=/proc/mounts mount -n -t overlay -o remount $path
+    done
+}
+
+function usage 
+{
+	echo $"Usage: $prog $1 site service|ALL"
+	exit 1
+}
+
+case "$1" in
+  start)
+        echo -n "Starting $prog: "		
+		mount_all_sites
+		success
+		echo
+        ;;
+  stop)
+		echo -n "Stopping $prog: "
+		unmount_all_sites
+		success
+		echo
+        ;;
+  init)
+        if [ -z $2 ] ; then
+		echo $"Usage: $prog $1 SITE"
+		exit 1
+	fi
+	SITE=$2       
+	initialize_site $SITE
+        echo -n "Initializing $SITE: "
+	initialize_site $SITE
+	RETVAL=$?
+	if [[ $RETVAL -eq 0 ]] ; then
+		success
+	else
+		failure
+	fi
+	echo
+	;;
+  restart)
+        $0 stop
+        $0 start
+	#/usr/sbin/service vmount restart 
+        ;;
+  mount)
+  		if [ -z $3 ] ; then
+			usage $1
+		fi
+		if [ $3 = "ALL" ] ; then
+			mount_site $2
+		else
+	  		mount_service $2 $3
+		fi
+		;;
+  unmount)
+  		if [ -z $3 ] ; then
+			usage $1
+		fi
+		if [ $3 = "ALL" ] ; then
+			unmount_site $2
+		else
+	  		unmount_service $2 $3
+		fi
+		;;
+  mounted)
+  		if [ -z $3 ] ; then
+			usage $1
+		fi
+		import_info $3
+		same_file $2 $3
+		exit $?
+		;;
+  reload)
+  		reload
+		;;	
+  reload_site)
+		reload_site $2
+		;;
+  *)
+        echo $"Usage: $prog {start|stop|restart|mount|unmount|mounted|reload|reload_site}"
+        exit 1
+esac
+
+exit 0

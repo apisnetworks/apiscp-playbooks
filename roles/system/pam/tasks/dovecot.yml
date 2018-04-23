@@ -1,0 +1,15 @@
+---
+- include_vars: vars/dovecot.yml
+- lineinfile: 
+    path: "{{ pam_file }}"
+    regexp: '^[^#]*auth.*{{vwh_module}}'
+    line: "auth\trequired\t{{ vwh_module }}\tsaveroot"
+    insertbefore: '^[^#]*auth.*password-auth'
+    state: present  
+# cgroup provided by dovecot22-apnscp    
+- lineinfile: 
+    path: "{{ pam_file }}"
+    regexp: '^[^#]*auth.*{{vwh_module}}'
+    line: "session\trequired\t{{ vwh_module }}\trestoreroot restorelogin"
+    insertafter: EOF
+    state: present  

@@ -1,0 +1,10 @@
+# @XXX Experimental
+---
+- name: Toggle caching
+  replace:
+    path: /etc/nscd.conf
+    regexp: '\b(enable-cache\s+{{item.field}}[^\S]+).*$'
+    replace: '\1{{item.state}}'
+  with_items: "{{ nscd_replacements }}"
+- name: Verify nscd active 
+  systemd: name=nscd state=restarted enabled=yes

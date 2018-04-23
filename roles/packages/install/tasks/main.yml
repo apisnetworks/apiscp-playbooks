@@ -1,0 +1,78 @@
+# Copyright (c) 2017 Apis Networks
+# vim:ft=ansible:
+---
+- include_tasks: configure-default-vars.yml
+- name: "Verify apnscp priority"        
+  ini_file:
+    path: /etc/yum.repos.d/apnscp.repo
+    section: apnscp
+    option: priority
+    value: 1
+    state: present
+- name: "Install MariaDB"
+  tags: ['install', 'sql', 'mysql']
+  block: 
+    - stat: path=/etc/yum.repos.d/mariadb.repo        
+      register: mariadb_stat
+    - template: src=mariadb.repo.j2 dest=/etc/yum.repos.d/mariadb.repo owner=root group=root mode=0644    
+      when: mariadb_stat is defined and mariadb_stat.stat.exists == False
+
+- name: "Install PostgreSQL"      
+  tags: ['install', 'sql', 'pgsql']
+  block:
+    - set_fact:       
+        # PostgreSQL packages are xx-<MAJOR><MINOR> sans period
+        pgversion: "{{ pgsql.version | default(pgsql.default) }}"
+        pg_pkgversion: "{{ pgsql.version | default(pgsql.default) | regex_replace('\\.','') }}"
+    - include_vars: "vars/rpms/pgdg.yml"
+    - yum: name="{{ repo_location[pgversion] }}" state=present    
+
+- name: "Install MongoDB"
+  tags: ['install', 'sql', 'mongodb']
+  block: 
+    - stat: path=/etc/yum.repos.d/mongodb.repo        
+      register: mongodb_stat
+    - template: src=mongodb.repo.j2 dest=/etc/yum.repos.d/mongodb.repo owner=root group=root mode=0644    
+      when: mongodb_stat is defined and mongodb_stat.stat.exists == False
+
+- name: "Install CloudFlare"
+  tags: ['cloudflare', 'apache']
+  block: 
+    - stat: path=/etc/yum.repos.d/mod_cloudflare.repo
+      register: cf_stat
+    - yum: 
+        name: "http://pkg.cloudflare.com/cloudflare-release-latest.el{{ ansible_distribution_major_version }}.rpm"
+        state: present
+      when: 
+        - cf_stat.stat is defined and not cf_stat.stat.exists
+
+- name: "Install Google Pagespeed"
+  tags: ['pagespeed', 'apache']
+  block:
+    - stat: path=/etc/yum.repos.d/mod-pagespeed.repo
+      register: ps_stat
+    - yum:
+        # Installing mod-pagespeed automatically pulls in repo config
+        name: "https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_{{ ansible_machine }}.rpm"
+        state: present    
+      when: ps_stat.stat is defined and not ps_stat.stat.exists
+
+- include_tasks: tasks/setup-channel.yml channel={{ repo }}
+  tags: ["install"]
+  with_items: 
+    - apnscp.yml  
+    - centos.yml      
+    - epel.yml
+    - cloudflare.yml
+    - mariadb.yml  
+    - pgdg.yml 
+    - mongodb.yml
+    - remove.yml
+  loop_control:
+    loop_var: repo
+
+- name: Update all packages
+  yum: name=* state=latest
+  when: False
+
+- meta: flush_handlers

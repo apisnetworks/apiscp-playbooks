@@ -1,0 +1,6 @@
+---
+- name: "Configure {{ jail }}"
+  debug: msg="foo"
+  with_items: "{{ jails }}"
+  loop_control:
+    loop_var: jail

@@ -1,4 +1,3 @@
-# (c) 2018 Apis Networks
 ---
 - name: "Relocate {{ dest }} to {{ src }}"
   block: 
@@ -29,4 +28,11 @@
     - file: 
         path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest }}"
         state: link
-        src: "{{ src }}"   
+        src: "{{ src }}"
+
+- name: "Link /proc to {{ apnscp_shared_root }}"
+  file:
+    path: "{{ apnscp_filesystem_template }}/siteinfo/proc"
+    src: "{{ apnscp_shared_root }}/proc"
+    state: link
+    force: yes

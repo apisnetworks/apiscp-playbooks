@@ -1,0 +1,44 @@
+# Baseline apnscp libraries necessary
+# All RPMs derive from rpm.apnscp.com
+---
+title: apnscp Packages Library
+bootstrap:    
+  - repo_rpm: "http://yum.apnscp.com/apnscp-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
+    repo_key: "/etc/pki/rpm-gpg/RPM-GPG-KEY-apnscp-{{ ansible_distribution_major_version }}"
+repo_name: apnscp
+rpms:
+  - apr
+  - apr-devel
+  - apr-util
+  - apr-util-devel
+  - courier-authlib
+  - courier-authlib-devel
+  - courier-authlib-pgsql
+  - courier-unicode-devel
+  - courier-unicode
+  - curl
+  - dovecot
+  - dovecot22-apnscp
+  - httpd
+  - httpd-tools
+  - httpd-devel
+  - httpd-manual
+  - libc-client
+  - libcurl
+  - libcurl-devel
+  - maildrop
+  - maildrop-devel
+  - majordomo
+  - mod_ssl
+  - mod_evasive
+  - mod_socache_dc
+  - monit
+  - nss-apnscp
+  - pam-apnscp
+  - postfix
+  #- spamassassin
+  - uw-imap
+  - uw-imap-devel
+  - uw-imap-static
+  - uw-imap-utils
+  - vsftpd

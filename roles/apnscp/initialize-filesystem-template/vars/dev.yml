@@ -1,0 +1,17 @@
+---
+base: "{{ apnscp_filesystem_template }}"
+services:
+  - siteinfo
+  - ssh
+svcdirs:
+  siteinfo:
+    - random
+    - stderr
+    - stdin 
+    - stdout 
+    - urandom
+    - zero
+    - null
+  ssh:
+    - ptmx
+    - fd

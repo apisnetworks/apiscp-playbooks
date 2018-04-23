@@ -1,0 +1,11 @@
+---
+- include_tasks: ./sshd.yml
+- include_tasks: ./su.yml
+- include_tasks: ./ftp.yml
+  #include_tasks: ./dovecot.yml
+- name: "Edit {{ apnscp_filesystem_template }} system-auth-ac"
+  lineinfile:
+    path: "{{ apnscp_filesystem_template }}/siteinfo/etc/pam.d/system-auth-ac"
+    regexp: 'session\s+.*pam_cgroup\.so'
+    line: 'session\toptional\tpam_cgroup.so'
+    state: present

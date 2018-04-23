@@ -1,0 +1,11 @@
+- name: "Create {{ base }}/{{ svcname }}/dev"
+  file:
+    path: "{{ base }}/{{ svcname }}/dev"
+    state: directory
+- name: "Link devices for {{ svcname }}"
+  command: >
+    rsync -a "/dev/{{ device }}" "{{ base }}/{{ svcname }}/dev/"
+  creates: "{{ base }}/{{ svcname }}/dev/{{ device }}" 
+  with_items: "{{ svcdirs[svcname] }}"
+  loop_control:
+    loop_var: device
