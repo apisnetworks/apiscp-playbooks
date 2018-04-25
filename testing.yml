@@ -7,6 +7,5 @@
     - 'apnscp-vars.yml'
     - 'roles/common/vars/apnscp-internals.yml'
   roles:      
-    - system/selinux
-    #- apnscp/initialize-filesystem-template
-    #- apnscp/install-services
+    #- system/selinux
+    - fail2ban/configure-jails

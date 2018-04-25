@@ -21,6 +21,8 @@
   when: xfs.rc != 0 and ext4.rc == 0
 - block:
     - yum: name=quota state=present
+    # Make sure new options are picked up
+    - command: mount -o remount /
     - name: Building quotas 
       command: quotaoff -augv
     - command: quotacheck -augvm
