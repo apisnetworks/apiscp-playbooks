@@ -5,10 +5,12 @@
   gather_facts: yes
   vars_files:
     - 'apnscp-vars.yml'
+    - 'roles/common/vars/apnscp-internals.yml'
   roles:      
     - filesystem/make-mounts
     - epel
     - packages/install
+    - system/selinux
     - pgsql/install
     - mysql/install
     - browscap
@@ -22,11 +24,13 @@
     - apnscp/initialize-db
     - apnscp/install-vendor-library
     - apnscp/initialize-filesystem-template
+    # Checkpoint: admin should work fine at this point
+    - apnscp/assert-admin-works
+    # Onto provisioning a test account
+    - apnscp/install-services
     - system/nscd
     - system/nss
     - system/pam
-    # Admin should work fine at this point
-    - apnscp/assert-admin-works
     - fail2ban/whitelist-self
     - fail2ban/configure-jails
     #- apnscp/register-ssl

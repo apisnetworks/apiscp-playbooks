@@ -1,2 +1,13 @@
 ---
+# @XXX apnscp/init-fst/tasks/setup-dev include vars/dev.yml 
+# clobbers "packages" variable
+# no way to limit scope of include_vars to a task yet, i.e. "private: True"
+- include_vars: vars/main.yml
+- debug: msg="{{ DEV_TAG }}"
 - name: "Install systemd services"
+  include_tasks: install-service.yml
+  vars: 
+    name: "{{ item.name }}"
+    files: "{{ item.files }}"
+    systemd: "{{ item.systemd | default(None) }}"
+  with_items: "{{ services }}"

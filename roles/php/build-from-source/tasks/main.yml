@@ -1,22 +1,37 @@
 ---
 - stat: path="{{ build_dir }}"
   register: st
+- command: >
+    {{ php_bin }} -r 'print(PHP_VERSION);'
+  changed_when: false
+  register: installed_php_version
+- stat:
+    path: "{{ php_configure }}"
+  register: s1
+- stat:
+    path: "{{ php_bin }}"
+  register: s2
+- set_fact:
+    do_install_php: >
+      force or extra_flags or installed_php_version.stdout != php_version 
+      or s1.stat.exists and s2.stat.exists and s1.stat.mtime > s2.stat.mtime
 
-- name: Download PHP {{ __php_version }}
-  unarchive:
-    dest: "{{ work_dir }}"
-    src: "http://php.net/get/php-{{ __php_version }}.tar.bz2/from/this/mirror"
-    remote_src: yes
-  when: not st.stat.exists
 - block:   
-    - name: Compile PHP {{ __php_version }}      
+    - name: Download PHP {{ php_version }}
+      unarchive:
+        dest: "{{ work_dir }}"
+        src: "http://php.net/get/php-{{ php_version }}.tar.bz2/from/this/mirror"
+        remote_src: yes
+      when: not st.stat.exists
+    - name: Compile PHP {{ php_version }}      
       shell: "{{ php_configure }} {{ extra_flags }}"
       args:
         chdir: "{{ build_dir }}"       
       environment:
         SCANDIR: "{{ scan_dir }}"
     - make: chdir="{{ build_dir }}" target=all      
-    - command: "strip {{ build_dir }}/.libs/libphp{{__php_version | regex_replace('^(\\d+)\\..*$', '\\1') }}.so"
+    - command: "strip {{ build_dir }}/.libs/libphp{{php_version | regex_replace('^(\\d+)\\..*$', '\\1') }}.so"
       when: not php_debug
     - make: chdir="{{ build_dir }}" target=install    
     - file: path="{{ scan_dir }}" state=directory
+  when: do_install_php

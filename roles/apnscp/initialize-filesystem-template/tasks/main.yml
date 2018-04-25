@@ -31,3 +31,10 @@
     version: "{{apnscp_platform_version}}"
 - name: "Setup /dev on {{ apnscp_filesystem_template }}"
   include_tasks: setup-dev.yml
+- name: "Replace /bin/hostname"
+  copy:
+    content: |
+      #!/bin/sh 
+      cat /etc/HOSTNAME
+    dest: "{{ apnscp_filesystem_template }}/siteinfo/bin/hostname"
+    mode: 0755

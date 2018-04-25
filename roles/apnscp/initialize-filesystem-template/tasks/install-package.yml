@@ -27,3 +27,4 @@
     chdir: "{{ apnscp_root }}"
   register: result
   failed_when: "result.rc != 0 and 'already installed under `' + service + '\\'' not in result.stdout+result.stderr"
+  changed_when: result.rc == 0

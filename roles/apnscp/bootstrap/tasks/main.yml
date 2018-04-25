@@ -48,8 +48,8 @@
     value: "{{ apnscp_system_user }}"
 
 - file: path=/var/log/bw state=directory
-- file: path=/etc/virtualhosting state=directory 
-- file: path=/etc/opcenter/webhost state=directory 
+- file: path=/etc/virtualhosting state=directory mode=0700 owner="{{ apnscp_system_user }}"
+- file: path=/etc/opcenter/webhost state=directory mode=0700 owner="{{ apnscp_system_user }}"
 
 - include_vars: "vars/opcenter-links.yml"
 - name: Link opcenter resources to /etc

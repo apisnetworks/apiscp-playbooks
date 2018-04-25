@@ -22,7 +22,6 @@ rpms:
   - httpd
   - httpd-tools
   - httpd-devel
-  - httpd-manual
   - libc-client
   - libcurl
   - libcurl-devel
@@ -31,7 +30,6 @@ rpms:
   - majordomo
   - mod_ssl
   - mod_evasive
-  - mod_socache_dc
   - monit
   - nss-apnscp
   - pam-apnscp

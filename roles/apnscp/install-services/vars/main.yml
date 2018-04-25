@@ -1,0 +1,53 @@
+---
+services:
+  - name: cgroupmake
+    files: 
+      - src: cgroupmake.init
+        dest: /etc/systemd/user/cgroupmake.init
+        perm: "0755"
+      - src: cgroupmake.service
+        dest: /etc/systemd/system/cgroupmake.service
+    systemd:
+      state: started
+  - name: fsmount
+    files: 
+      - src: fsmount.init
+        dest: /etc/systemd/user/fsmount.init
+        perm: "0755"
+      - src: fsmount.service
+        dest: /etc/systemd/system/fsmount.service
+    systemd:
+      state: started
+  - name: populate-tmp
+    files: 
+      - src: fstmp.init
+        dest: /etc/systemd/user/fstmp.init
+        perm: "0755"
+      - src: populate-tmp.service
+        dest: /etc/systemd/system/populate-tmp.service
+    systemd:
+      state: started
+  - name: virtualcroncleanstate
+    files: 
+      - src: virtualcroncleanstate.service
+        dest: /etc/systemd/system/virtualcroncleanstate.service
+    systemd:
+      state: stopped
+  - name: virtualcron
+    files: 
+      - src: virtualcron.init
+        dest: /etc/systemd/system/virtualcron.init
+        perm: "0755"
+      - src: virtualcron.service
+        dest: /etc/systemd/system/virtualcron.service
+    systemd:
+      state: started
+  - name: virtualhosting
+    files: 
+      - src: virtualhosting.init
+        dest: /etc/systemd/system/virtualhosting.init
+        perm: "0755"
+      - src: virtualhosting.service
+        dest: /etc/systemd/system/virtualhosting.service
+    systemd:
+      state: started

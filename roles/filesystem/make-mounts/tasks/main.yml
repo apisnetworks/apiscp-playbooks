@@ -2,9 +2,11 @@
 - shell: "grep -E '\\s+/\\s+xfs' /proc/mounts"
   register: xfs
   ignore_errors: true
+  changed_when: false
 - block:
   - shell: "grep -E '\\s+/\\s+ext4' /proc/mounts"
     register: ext4
+    changed_when: false
   rescue:
     - fail: msg="No supported filesystem detected"
   when: xfs.rc != 0
@@ -31,12 +33,12 @@
         path: /
         src: "{{ ansible_mounts | json_query('[?mount==`/`] | [0].device') }}"
         fstype: xfs
-        opts: "attr2,inode64,uquota,gquota"
+        opts: "attr2,inode64,usrquota,grpquota"
         state: present
       register: update
     - lineinfile: >
         dest=/etc/sysconfig/grub regexp='^GRUB_CMDLINE_LINUX\s*='
-        line='GRUB_CMDLINE_LINUX="quiet rhgb crashkernel=auto rootflags=uquota,gquota"'
+        line='GRUB_CMDLINE_LINUX="quiet rhgb crashkernel=auto rootflags=usrquota,grpquota"'
       notify: Update grub
       when: update.changed
   when: xfs.rc == 0
@@ -53,6 +55,7 @@
 - name: Check for presence of swap
   command: "swapon -s"
   register: r
+  changed_when: false
 - include_role: name=filesystem/swap
   vars:
     swapfile_size: "{{ [ansible_memtotal_mb * 0.5, 1024 ]  | min | int }}"

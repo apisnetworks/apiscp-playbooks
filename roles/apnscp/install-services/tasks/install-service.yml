@@ -1,0 +1,19 @@
+---
+- name: "Install {{name}}"
+  copy:
+    src: "{{ file.src }}"
+    dest: "{{ file.dest }}"
+    mode: "{{ file.perm | default('0644') }}"
+  with_items: "{{ files }}"
+  loop_control:
+    loop_var:  file
+    label: "Copy {{ file.src }} -> {{ file.dest }}"
+  register: svc
+- name: "Enable {{ name }} service"
+  systemd: 
+    daemon_reload: true
+    state: "{{ systemd.state }}"
+    enabled: "{{ systemd.enabled | default('yes') }}"
+    name: "{{ name }}"
+    no_block: "{{ systemd.no_block | default('yes') }}"
+  when: systemd and svc.changed

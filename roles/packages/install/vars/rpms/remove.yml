@@ -1,4 +1,4 @@
 ---
-rpm_state: remove
+rpm_state: absent
 rpms:
-	- authconfig
+  - authconfig

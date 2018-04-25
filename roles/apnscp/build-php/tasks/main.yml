@@ -1,18 +1,17 @@
 ---
+- include_vars: "{{ role_path }}/vars/main.yml"
+  when: php_bin is defined
 - name: Install apnscp build RPMs
   yum: name={{item}} state=installed
   with_items:
     - tokyocabinet-devel
-    - httpd-devel  
-- include_role:
-    name: php/build-from-source  
-  vars: 
-    work_dir: "{{ apnscp_root }}/build/php"
-    php_version: "{{ apnscp_php_version }}"
-    php_configure: "{{work_dir}}/php.config"
-    build_dir: "{{work_dir}}/php-{{php_version}}"
-  notify: "Restart apnscp"
+    - httpd-devel 
+# @XXX php_bin overwritten by including php/build-from-source
 - file:
-    src: "{{ apnscp_root }}/bin/php-bins/apnscp_php"
+    src: "{{ php_bin }}"
     path: /usr/bin/apnscp_php
     state: link 
+- include_role:
+    name: php/build-from-source  
+  when: 
+  notify: "Restart apnscp"

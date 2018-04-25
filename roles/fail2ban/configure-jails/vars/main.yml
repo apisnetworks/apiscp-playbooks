@@ -1,1 +1,8 @@
 ---
+jails: 
+  - name: postfix
+  - name: evasive
+  - name: recidive
+  - name: dovecot
+  - name: ssh
+  - name: spambots

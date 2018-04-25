@@ -1,0 +1,57 @@
+---
+- debug: msg="{{ DEV_TAG }}"
+- set_fact:
+    selinux: disabled
+    selinuxtype: minimum
+  when: not use_selinux
+- set_fact: 
+    selinux: permissive
+    selinuxtype: targeted
+  when: use_selinux == "debug"
+- set_fact:
+    selinux: enforcing
+    selinuxtype: targeted
+  when: use_selinux == true and use_selinux != "debug"
+
+- block:
+  - name: Disable SELinux security policy
+    ini_file:
+      section: null
+      path: /etc/selinux/config
+      option: SELINUX
+      value: "{{ selinux }}"
+      no_extra_spaces: yes
+    register: c1
+  - name: Change SELinux targeting policy
+    ini_file:
+      section: null
+      path: /etc/selinux/config
+      option: SELINUXTYPE
+      value: "{{ selinuxtype }}"      
+      no_extra_spaces: yes
+    register: c2
+- get_argv:
+- copy:
+    content: |
+      #!/bin/sh
+      cd {{ ansible_env['PWD'] }} && {{ argv | join(" ") }} && \
+        rm -f /root/resume_apnscp_setup.sh
+    dest: /root/resume_apnscp_setup.sh
+    mode: 0777
+  when: c1.changed or c2.changed and use_selinux != false
+- fail: 
+    msg: |
+      >>> IMPORTANT <<<
+      SELINUX POLICY HAS CHANGED. REBOOT SERVER, THEN CONTINUE
+      RUNNING PLAYBOOK TO RESUME
+
+      TO RESUME PROVISIONING, RUN:
+
+      cd {{ ansible_env['PWD'] }} && {{ argv | join(" ") }}
+
+      OR RUN THE FOLLOWING FROM THE SHELL:
+
+      /root/resume_apnscp_setup.sh
+      
+      >>> IMPORTANT <<<
+  when: c1.changed or c2.changed

@@ -1,1 +1,5 @@
 ---
+# 5 retries in a 5 minute period results in a 10 minute ban
+bantime: 600
+findtime: 300
+maxretry: 5

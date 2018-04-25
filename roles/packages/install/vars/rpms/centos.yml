@@ -70,6 +70,7 @@ rpms:
   - cyrus-sasl-devel
   - cyrus-sasl-lib
   - dbus-libs
+  - deltarpm
   - diffutils
   - dos2unix
   - e2fsprogs
