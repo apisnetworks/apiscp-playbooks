@@ -8,9 +8,9 @@
     - 'roles/common/vars/apnscp-internals.yml'
   roles:      
     - filesystem/make-mounts
+    - system/selinux
     - epel
     - packages/install
-    - system/selinux
     - pgsql/install
     - mysql/install
     - browscap

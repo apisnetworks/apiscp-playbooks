@@ -6,7 +6,7 @@
 - name: Restart apache
   systemd: state=restarted name=httpd enabled=yes
   listen: Restart services
-- name: Restart PostgreSQL
+- name: Restart postgresql
   systemd: state=restarted name=postgresql 
   listen: Restart services
 - name: Change apnscp ownership

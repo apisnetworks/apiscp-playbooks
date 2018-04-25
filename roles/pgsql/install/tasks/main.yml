@@ -1,6 +1,32 @@
----  
+---
+- name: Symlink include/pgsql
+  file: src=/usr/pgsql-{{ pgversion }}/include  dest=/usr/include/pgsql state=link
+- name: alias pgsql 
+  file:
+    src: /usr/lib/systemd/system/postgresql-{{pgversion}}.service
+    dest: /etc/systemd/system/postgresql.service
+    state: link
+    force: yes
+- stat: path="/var/lib/pgsql/{{pgversion}}/data/base"
+  register: ddir
+- name: Initialize PostgreSQL data dictionary
+  shell: /usr/pgsql-{{pgversion}}/bin/postgresql-{{pgversion}}-setup initdb
+  args:
+    creates: /var/lib/pgsql/{{pgversion}}/postgresql.conf     
+  when: not ddir.stat.exists
+- name: copy pg_hba.conf
+  copy: 
+    src: templates/pg_hba.conf
+    dest: /var/lib/pgsql/{{pgversion}}/data/pg_hba.conf
+  when: not ddir.stat.exists
 - set_fact:
     password: "{{ lookup('password', '/dev/null chars=ascii_letters length=15') }}"
+- name: Enable PostgreSQL
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    state: started
+    name: postgresql-{{pgversion}}
 - name: Enable root PostgreSQL user
   become_user: postgres
   become: True

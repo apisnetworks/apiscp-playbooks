@@ -1,20 +1,23 @@
 ---
 - stat: path="{{ build_dir }}"
   register: st
-- command: >
-    {{ php_bin }} -r 'print(PHP_VERSION);'
-  changed_when: false
-  register: installed_php_version
 - stat:
     path: "{{ php_configure }}"
   register: s1
 - stat:
     path: "{{ php_bin }}"
   register: s2
+- command: >
+    {{ php_bin }} -r 'print(PHP_VERSION);'
+  changed_when: false
+  when: s2.stat.exists
+  register: installed_php_version
 - set_fact:
     do_install_php: >
-      force or extra_flags or installed_php_version.stdout != php_version 
-      or s1.stat.exists and s2.stat.exists and s1.stat.mtime > s2.stat.mtime
+      force or extra_flags or 
+      installed_php_version.skipped is defined or 
+      installed_php_version.stdout != php_version or 
+      s1.stat.exists and s2.stat.exists and s1.stat.mtime > s2.stat.mtime
 
 - block:   
     - name: Download PHP {{ php_version }}
@@ -33,5 +36,6 @@
     - command: "strip {{ build_dir }}/.libs/libphp{{php_version | regex_replace('^(\\d+)\\..*$', '\\1') }}.so"
       when: not php_debug
     - make: chdir="{{ build_dir }}" target=install    
-    - file: path="{{ scan_dir }}" state=directory
+      notify: "{{ notify_handler }}"        
+    - file: path="{{ scan_dir }}" state=directory    
   when: do_install_php

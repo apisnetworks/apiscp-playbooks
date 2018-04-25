@@ -12,7 +12,8 @@
     selinux: enforcing
     selinuxtype: targeted
   when: use_selinux == true and use_selinux != "debug"
-
+- stat: path=/etc/selinux/config
+  register: seconfig
 - block:
   - name: Disable SELinux security policy
     ini_file:
@@ -30,6 +31,7 @@
       value: "{{ selinuxtype }}"      
       no_extra_spaces: yes
     register: c2
+  when: seconfig.stat.exists
 - get_argv:
 - copy:
     content: |
@@ -44,6 +46,10 @@
       >>> IMPORTANT <<<
       SELINUX POLICY HAS CHANGED. REBOOT SERVER, THEN CONTINUE
       RUNNING PLAYBOOK TO RESUME
+
+      TO REBOOT SERVER, RUN:
+
+      shutdown -r now
 
       TO RESUME PROVISIONING, RUN:
 

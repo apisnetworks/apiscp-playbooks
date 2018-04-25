@@ -7,5 +7,3 @@ rpms:
   - MariaDB-devel
   - MariaDB-server
   - MariaDB-shared
-notify: 
-  - start mariadb

@@ -13,5 +13,5 @@
     state: link 
 - include_role:
     name: php/build-from-source  
-  when: 
-  notify: "Restart apnscp"
+  vars:
+    install_handler: Restart apnscp 
