@@ -25,4 +25,5 @@
   with_items: "{{ rpms }}"
   loop_control:
     loop_var: pkg  
+  # @XXX Broken in Ansible 2.5.1...
   notify: "{{ notify | default('noop') }}"

@@ -33,31 +33,10 @@
     register: c2
   when: seconfig.stat.exists
 - get_argv:
-- copy:
-    content: |
-      #!/bin/sh
-      cd {{ ansible_env['PWD'] }} && {{ argv | join(" ") }} && \
-        rm -f /root/resume_apnscp_setup.sh
-    dest: /root/resume_apnscp_setup.sh
-    mode: 0777
-  when: c1.changed or c2.changed and use_selinux != false
-- fail: 
-    msg: |
-      >>> IMPORTANT <<<
+- include_role: name=common/fail-and-save
+  vars: 
+    reboot: true
+    msg: |      
       SELINUX POLICY HAS CHANGED. REBOOT SERVER, THEN CONTINUE
-      RUNNING PLAYBOOK TO RESUME
-
-      TO REBOOT SERVER, RUN:
-
-      shutdown -r now
-
-      TO RESUME PROVISIONING, RUN:
-
-      cd {{ ansible_env['PWD'] }} && {{ argv | join(" ") }}
-
-      OR RUN THE FOLLOWING FROM THE SHELL:
-
-      /root/resume_apnscp_setup.sh
-      
-      >>> IMPORTANT <<<
-  when: c1.changed or c2.changed
+      RUNNING PLAYBOOK TO RESUME.
+  when: c1.changed or c2.changed and use_selinux != false

@@ -401,6 +401,7 @@ rpms:
   - whois
   - xmlto
   - yum-cron
+  - yum-plugin-post-transaction-actions
   - xz
   - xz-devel
   - xz-libs

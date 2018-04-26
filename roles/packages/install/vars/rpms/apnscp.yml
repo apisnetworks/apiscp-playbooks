@@ -34,7 +34,7 @@ rpms:
   - nss-apnscp
   - pam-apnscp
   - postfix
-  #- spamassassin
+  - spamassassin
   - uw-imap
   - uw-imap-devel
   - uw-imap-static

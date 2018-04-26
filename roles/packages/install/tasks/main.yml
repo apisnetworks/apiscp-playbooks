@@ -71,14 +71,22 @@
   loop_control:
     loop_var: repo
 
-- name: Update all packages
-  yum: name=* state=latest
-  when: False
+#- name: Update all packages
+#  yum: name=* state=latest
+#  when: False
 #
 # @XXX 2.5.2 bug with appending to vars via set_fact
 # https://github.com/ansible/ansible/pull/38302
 #
-- name: Downgrade Ansible
-  yum: name=ansible-2.4.2.0-2.el7 state=installed allow_downgrade=yes
+- block:
+  - name: Downgrade Ansible
+    yum: name=ansible-2.4.2.0-2.el7 state=installed allow_downgrade=yes
+  - include_role: name=common/fail-and-save
+    vars:
+      msg: |
+          Ansible 2.5.1 is installed and has been downgraded automatically to
+          2.4.2. A restart is necessary.
+
+          See ansible/ansible#38271 for details of downgrade.
   when: ansible_version['full'] == "2.5.1"
 - meta: flush_handlers

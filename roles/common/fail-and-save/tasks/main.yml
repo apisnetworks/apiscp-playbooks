@@ -1,0 +1,12 @@
+---
+- get_argv:
+- copy:
+    content: |
+      #!/bin/sh
+      cd {{ ansible_env['PWD'] }} && {{ argv | join(" ") }} && \
+        rm -f /root/resume_apnscp_setup.sh
+    dest: /root/resume_apnscp_setup.sh
+    mode: 0777
+- name: Fail and save operation
+  fail:
+    msg: "{{ __failure_template }}"

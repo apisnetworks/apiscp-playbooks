@@ -36,6 +36,8 @@
     - system/pam
     - fail2ban/whitelist-self
     - fail2ban/configure-jails
+    #- mail/globalize-spamassassin-bayes
+    
     #- apnscp/register-ssl
     #- network/setup-firewall    
     #- apnscp/create-admin

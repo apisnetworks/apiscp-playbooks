@@ -1,0 +1,22 @@
+---
+reboot: false
+msg: Someone forgot to set "msg"!
+__failure_template: |
+  >>> IMPORTANT <<<
+
+  {{ msg }}
+  {% if reboot %}
+  TO REBOOT SERVER, RUN:
+
+  shutdown -r now
+  {% endif %}
+
+  TO RESUME PROVISIONING, RUN:
+
+  cd {{ ansible_env['PWD'] }} && {{ argv | join(" ") }}
+
+  OR RUN THE FOLLOWING FROM THE SHELL:
+
+  /root/resume_apnscp_setup.sh
+  
+  >>> IMPORTANT <<<

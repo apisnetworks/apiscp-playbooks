@@ -3,7 +3,7 @@
 - lineinfile: 
     path: "{{ pam_file }}"
     regexp: '^[^#]*auth.*{{vwh_module}}'
-    line: 'auth\trequired\t{{ vwh_module }}'
+    line: "auth\trequired\t{{ vwh_module }}"
     insertbefore: '^[^#]*auth.*password-auth'
     state: present  
 - copy:
@@ -14,8 +14,10 @@
     file: "{{ apnscp_filesystem_template }}/ssh/etc/pam.d/sshd"
 - include_tasks: "{{ role_path }}/tasks/listfile.yml"
   vars:
-    file: /etc/ssh.pamlist
+    file: "{{ apnscp_filesystem_template }}/ssh/etc/ssh.pamlist"
 - include_tasks: ./cgroup.yml
   vars:
+    file: "{{ pam_file }}"
     aftermodule: '^[^#]*session\s+\S+\s+pam_loginuid.so'
+
   

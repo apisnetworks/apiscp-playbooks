@@ -70,7 +70,9 @@ rpms:
   - perl-Mail-Sender
   - perl-MIME-tools
   - perl-MIME-Types
+  - perl-Net-CIDR-Lite
   - perl-Net-IP
+  - perl-Net-Patricia
   - perl-PerlIO-via-Timeout
   - perl-Razor-Agent
   - perl-Redis
