@@ -33,7 +33,6 @@
   become_user: postgres
   become: True
   postgresql_user: name=root role_attr_flags=SUPERUSER no_password_changes=yes password={{password}} db=template1 encrypted=yes 
-  notify: Save PostgreSQL password
   register: user_changed
 - name: "Save PostgreSQL password"
   lineinfile: 

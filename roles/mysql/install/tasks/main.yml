@@ -1,0 +1,40 @@
+---  
+- systemd: name=mariadb state=started enabled=yes
+- set_fact:
+    password: "{{ lookup('password', '/dev/null chars=ascii_letters length=15') }}"
+
+- name: Check for password presence
+  stat: path={{ passwdfile }}
+  register: s
+
+- name: Enable root MySQL user
+  mysql_user: 
+    name: root 
+    password: "{{password}}" 
+    host: localhost 
+    priv: "*.*:ALL,GRANT" 
+    update_password: always 
+    state: present 
+    check_implicit_admin: yes 
+    encrypted: no 
+  register: user_enabled
+  when: not s.stat.exists
+- name: Save MySQL password
+  template: 
+    src: templates/my.cnf.j2
+    dest: "{{ passwdfile }}"
+    mode: 0600
+  when: user_enabled is defined and user_enabled.changed
+- mysql_user: 
+    name: root 
+    host: localhost 
+    check_implicit_admin: yes
+    # ALL excludes GRANT. GRANT itself yields syntax error 
+    priv: "*.*:ALL,GRANT" 
+    append_privs: yes 
+    state: present
+- name: Remove passwordless users
+  shell: >
+    echo "DELETE FROM user WHERE password = ''; FLUSH PRIVILEGES;" | mysql mysql
+  changed_when: false
+
