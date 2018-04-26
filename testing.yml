@@ -1,12 +1,12 @@
 ---
-- hosts: localhost
-  become: yes
-  connection: local
-  gather_facts: yes
-  vars_files:
-    - 'apnscp-vars.yml'
-    - 'roles/common/vars/apnscp-internals.yml'
-    - ['/root/apnscp-ansible-defaults.yml', 'roles/common/vars/apnscp-internals.yml']    
-  roles:      
-    #- system/selinux
-    - fail2ban/configure-jails
+- hosts: localhost  
+  tasks:
+    - set_fact:
+        str: "foo"
+    - name: Append
+      set_fact:
+        str: "{{ str + item }}"
+      with_items: 
+        - bar
+        - baz
+    - debug: msg="{{ str }}"

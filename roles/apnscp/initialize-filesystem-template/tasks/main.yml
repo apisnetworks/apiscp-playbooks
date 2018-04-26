@@ -10,13 +10,19 @@
     section: core
     option: filesystem_template
     value: "{{ apnscp_filesystem_template }}"
-
+- set_fact: __populate_filesystem_template=false
+- set_fact: __populate_filesystem_template=true
+  when: >
+    populate_filesystem_template == "auto" and fst_created.changed or
+    populate_filesystem_template == true
 - include_tasks: "{{ role_path }}/../../packages/install/tasks/configure-default-vars.yml"
 - include_tasks: install-package.yml package="{{ item.package }}"  service="{{item.service}}"
   with_items: "{{ packages }}"
+  when: __populate_filesystem_template
 
 - name: "Build synchronizer RPM index"
   command: "{{ synchronizer }} generate"
+  when: __populate_filesystem_template
 
 - include_tasks: "{{ role_path }}/tasks/relocate-shared-directory.yml" 
   vars: 

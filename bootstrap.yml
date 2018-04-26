@@ -7,7 +7,7 @@
     - 'apnscp-vars.yml'
     - 'roles/common/vars/apnscp-internals.yml'
     - ['/root/apnscp-ansible-defaults.yml', 'roles/common/vars/apnscp-internals.yml']
-  roles:      
+  roles:
     - filesystem/make-mounts
     - system/selinux
     - epel
@@ -19,6 +19,7 @@
     - php/install-pecl-module
     - php/create-configuration
     - java/tomcat
+    #- mail/configure-postfix
     - apnscp/bootstrap
     - apache/configure
     - apnscp/build-php

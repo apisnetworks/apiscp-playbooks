@@ -3,6 +3,11 @@ system_php_version: "7.2.4"
 # Development build of apnscp, includes symbols in php
 apnscp_debug: false
 
+# Filesystem template population can take several minutes to complete
+# - auto detects if apnscp_filesystem_template exists and populates if not
+# - yes populates all packages from apnscp/initialize-filesystem-template/vars/main.yml
+# - no bypasses fst creation
+populate_filesystem_template: auto
 ####################################
 #     Don't change below here      #
 ####################################
