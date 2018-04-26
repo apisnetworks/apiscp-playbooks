@@ -39,3 +39,4 @@
       notify: "{{ notify_handler }}"        
     - file: path="{{ scan_dir }}" state=directory    
   when: do_install_php
+- meta: flush_handlers

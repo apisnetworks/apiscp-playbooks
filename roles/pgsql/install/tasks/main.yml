@@ -14,11 +14,13 @@
   args:
     creates: /var/lib/pgsql/{{pgversion}}/postgresql.conf     
   when: not ddir.stat.exists
+- stat: path="/var/lib/pgsql/{{pgversion}}/data/pg_hba.conf"
+  register: pghba
 - name: copy pg_hba.conf
   copy: 
     src: templates/pg_hba.conf
     dest: /var/lib/pgsql/{{pgversion}}/data/pg_hba.conf
-  when: not ddir.stat.exists
+  when: not pghba.stat.exists or not pghba.stat.exists
 - set_fact:
     password: "{{ lookup('password', '/dev/null chars=ascii_letters length=15') }}"
 - name: Enable PostgreSQL
@@ -32,3 +34,12 @@
   become: True
   postgresql_user: name=root role_attr_flags=SUPERUSER no_password_changes=yes password={{password}} db=template1 encrypted=yes 
   notify: Save PostgreSQL password
+  register: user_changed
+- name: "Save PostgreSQL password"
+  lineinfile: 
+    path: "{{ passwdfile }}"
+    regexp: '^([^:]+:){3}root:'
+    create: yes
+    line: localhost:*:*:root:{{password}}
+    mode: 0600
+  when: user_changed.changed

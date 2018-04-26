@@ -6,6 +6,7 @@
   vars_files:
     - 'apnscp-vars.yml'
     - 'roles/common/vars/apnscp-internals.yml'
+    - ['/root/apnscp-ansible-defaults.yml', 'roles/common/vars/apnscp-internals.yml']    
   roles:      
     #- system/selinux
     - fail2ban/configure-jails

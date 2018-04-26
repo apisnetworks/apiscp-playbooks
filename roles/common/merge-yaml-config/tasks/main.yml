@@ -5,6 +5,7 @@
     name: baseconfig
 - block:
   - name: Update {{ position | default() }} config in {{ file }}
+    # Broken in 2.5.1
     set_fact:
       newconfig: "{{ newconfig | default(baseconfig) | combine({position: item}, recursive=True)}}"
     with_items: "{{ items }}"

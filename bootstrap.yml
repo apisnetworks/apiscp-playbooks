@@ -6,6 +6,7 @@
   vars_files:
     - 'apnscp-vars.yml'
     - 'roles/common/vars/apnscp-internals.yml'
+    - ['/root/apnscp-ansible-defaults.yml', 'roles/common/vars/apnscp-internals.yml']
   roles:      
     - filesystem/make-mounts
     - system/selinux
@@ -16,17 +17,18 @@
     - browscap
     - php/install  
     - php/install-pecl-module
-    - php/create-configuration  
+    - php/create-configuration
+    - java/tomcat
     - apnscp/bootstrap
     - apache/configure
     - apnscp/build-php
     - apnscp/install-extensions  
     - apnscp/initialize-db
     - apnscp/install-vendor-library
-    - apnscp/initialize-filesystem-template
     # Checkpoint: admin should work fine at this point
     - apnscp/assert-admin-works
     # Onto provisioning a test account
+    - apnscp/initialize-filesystem-template
     - apnscp/install-services
     - system/nscd
     - system/nss
@@ -36,7 +38,6 @@
     #- apnscp/register-ssl
     #- network/setup-firewall    
     #- apnscp/create-admin
-    - java/tomcat
     # Odds and ends
     - system/yum
     

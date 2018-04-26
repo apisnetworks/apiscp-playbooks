@@ -6,12 +6,12 @@
   with_items:
     - tokyocabinet-devel
     - httpd-devel 
+- include_role:
+    name: php/build-from-source  
+  vars:
+    install_handler: Restart apnscp 
 # @XXX php_bin overwritten by including php/build-from-source
 - file:
     src: "{{ php_bin }}"
     path: /usr/bin/apnscp_php
     state: link 
-- include_role:
-    name: php/build-from-source  
-  vars:
-    install_handler: Restart apnscp 

@@ -8,6 +8,9 @@
 - block:
   - set_fact:
       oldconfig: "{{ lookup('file', apnscp_db_config ) | from_yaml }}"
+  - set_fact:
+      exists: {stat: {exists: false} }
+    when: not 'password' in oldconfig['apnscp']
   - set_fact: 
       __apnscp_password: "{{ oldconfig['apnscp']['password'] }}"
       __appliance_password: "{{ oldconfig['appldb']['password'] }}"
@@ -69,14 +72,26 @@
     register: db_exists
 
   - name: Create {{ appliance_db }} database
-    postgresql_db: 
-      name: "{{ appliance_db}}"
-      state: restore
-      target: "{{ role_path}}/files/pgsql/appldb.sql"
-      owner: "{{ appliance_user }}"
-      login_password: "{{ __appliance_password }}"
-      login_user: "{{appliance_user}}"
-      login_host: 127.0.0.1
+    block:
+      - tempfile:
+          path: /tmp
+          state: file
+          prefix: appldb
+        register: temp
+      - template:
+          src: "{{ role_path }}/files/pgsql/appldb.sql.j2"
+          dest: "{{ temp.path }}"
+      - postgresql_db: 
+          name: "{{ appliance_db}}"
+          state: restore
+          target: "{{ temp.path }}"
+          owner: "{{ appliance_user }}"
+          login_password: "{{ __appliance_password }}"
+          login_user: "{{appliance_user}}"
+          login_host: 127.0.0.1
+      - file:
+          path: "{{ temp.path }}"
+          state: absent
     when: db_exists.changed
 
   - name: Verify {{appliance_user}} grants

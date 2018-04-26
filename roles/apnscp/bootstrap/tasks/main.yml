@@ -33,7 +33,6 @@
     comment: "apnscp System User"
     system: yes
     state: present
-    seuser: system_u
   register: system_user_created
 # Ensure apnscp ownership is correct
 - command: /bin/true
