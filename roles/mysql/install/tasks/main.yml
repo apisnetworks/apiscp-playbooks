@@ -1,10 +1,13 @@
 ---  
+- name: Override systemd defaults
+  include_tasks: set-systemd-defaults.yml
+
 - systemd: name=mariadb state=started enabled=yes
 - set_fact:
     password: "{{ lookup('password', '/dev/null chars=ascii_letters length=15') }}"
 
 - name: Check for password presence
-  stat: path={{ passwdfile }}
+  stat: path={{ mysql_pass_file }}
   register: s
 
 - name: Enable root MySQL user
@@ -22,10 +25,9 @@
 - name: Save MySQL password
   template: 
     src: templates/my.cnf.j2
-    dest: "{{ passwdfile }}"
+    dest: "{{ mysql_pass_file }}"
     mode: 0600
-  when: user_enabled is defined and user_enabled.changed
-- mysql_user: 
+  when: user_enabled is defined and user_enabled.changed- mysql_user: 
     name: root 
     host: localhost 
     check_implicit_admin: yes

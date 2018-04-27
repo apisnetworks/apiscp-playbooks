@@ -56,8 +56,8 @@ function initialize_site {
 	# siteinfo always present for accounts, populate this first
 	
 	CMD="/bin/mount -n -t overlay -o 
-                upperdir=$VHOSTDIR/$SITE/shadow,lowerdir=${SVCROOT}/siteinfo,workdir=${SCRATCH} 
-                none $VHOSTDIR/$SITE/fst"
+	      upperdir=$VHOSTDIR/$SITE/shadow,lowerdir=${SVCROOT}/siteinfo,workdir=${SCRATCH} 
+	      none $VHOSTDIR/$SITE/fst"
 	eval $CMD 2>/dev/null
 	mount_socket $SITE
 	RETVAL=$?
@@ -141,9 +141,12 @@ function reload_site {
 
 
 function reload {
-    for path in $VHOSTDIR/site[0-9]*/fst ; do
-	env LIBMOUNT_MTAB=/proc/mounts mount -n -t overlay -o remount $path
-    done
+  for path in $VHOSTDIR/site[0-9]*/fst ; do
+		env LIBMOUNT_MTAB=/proc/mounts mount -n -t overlay -o remount $path
+  done
+  # crond loses rtd otherwise
+  # should move to systemd BindTo= in future
+  systemctl virtualcron reload
 }
 
 function usage 
@@ -154,7 +157,7 @@ function usage
 
 case "$1" in
   start)
-        echo -n "Starting $prog: "		
+    echo -n "Starting $prog: "		
 		mount_all_sites
 		success
 		echo
@@ -164,66 +167,65 @@ case "$1" in
 		unmount_all_sites
 		success
 		echo
-        ;;
+  ;;
   init)
-        if [ -z $2 ] ; then
-		echo $"Usage: $prog $1 SITE"
-		exit 1
-	fi
-	SITE=$2       
-	initialize_site $SITE
-        echo -n "Initializing $SITE: "
-	initialize_site $SITE
-	RETVAL=$?
-	if [[ $RETVAL -eq 0 ]] ; then
-		success
-	else
-		failure
-	fi
-	echo
+    if [ -z $2 ] ; then
+			echo $"Usage: $prog $1 SITE"
+			exit 1
+		fi
+		SITE=$2       
+		initialize_site $SITE
+    echo -n "Initializing $SITE: "
+		initialize_site $SITE
+		RETVAL=$?
+		if [[ $RETVAL -eq 0 ]] ; then
+			success
+		else
+			failure
+		fi
+		echo
 	;;
   restart)
-        $0 stop
-        $0 start
-	#/usr/sbin/service vmount restart 
-        ;;
+    $0 stop
+    $0 start
+  ;;
   mount)
-  		if [ -z $3 ] ; then
+		if [ -z $3 ] ; then
 			usage $1
 		fi
 		if [ $3 = "ALL" ] ; then
 			mount_site $2
 		else
-	  		mount_service $2 $3
+  		mount_service $2 $3
 		fi
-		;;
+	;;
   unmount)
-  		if [ -z $3 ] ; then
+		if [ -z $3 ] ; then
 			usage $1
 		fi
 		if [ $3 = "ALL" ] ; then
 			unmount_site $2
 		else
-	  		unmount_service $2 $3
+  		unmount_service $2 $3
 		fi
-		;;
+	;;
   mounted)
-  		if [ -z $3 ] ; then
+		if [ -z $3 ] ; then
 			usage $1
 		fi
 		import_info $3
 		same_file $2 $3
 		exit $?
-		;;
+	;;
   reload)
-  		reload
-		;;	
+		reload
+	;;	
   reload_site)
 		reload_site $2
-		;;
+	;;
   *)
-        echo $"Usage: $prog {start|stop|restart|mount|unmount|mounted|reload|reload_site}"
-        exit 1
+    echo $"Usage: $prog {start|stop|restart|mount|unmount|mounted|reload|reload_site}"
+	  exit 1
 esac
 
 exit 0

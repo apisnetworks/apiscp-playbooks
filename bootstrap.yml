@@ -6,14 +6,18 @@
   vars_files:
     - 'apnscp-vars.yml'
     - 'roles/common/vars/apnscp-internals.yml'
-    - ['/root/apnscp-ansible-defaults.yml', 'roles/common/vars/apnscp-internals.yml']
+    - ['/root/apnscp-ansible-defaults.yml', '/dev/null']
   roles:
+    - setup/gather-input
     - filesystem/make-mounts
     - system/selinux
     - epel
+    - systemd/mask-services
     - packages/install
     - pgsql/install
     - mysql/install
+    # Disable mongodb startup, same for Redis
+    #- mongodb/install
     - browscap
     - php/install  
     - php/install-pecl-module
@@ -37,7 +41,6 @@
     - fail2ban/whitelist-self
     - fail2ban/configure-jails
     #- mail/globalize-spamassassin-bayes
-    
     #- apnscp/register-ssl
     #- network/setup-firewall    
     #- apnscp/create-admin

@@ -1,0 +1,30 @@
+# Mange /etc/systemd/system/<service>.d/override.conf config
+# Accepts:
+# override_file, service, 
+---
+- set_fact: 
+    __systemd_svc_path: /etc/systemd/system/{{service | regex_replace('\.(service|timer|target|path)$', '.\1') | regex_replace('\.?$', '.service')}}
+- set_fact:
+    __systemd_svc_name: "{{ __systemd_svc_path | basename }}"
+- set_fact:
+    __systemd_svc_installed: "{{ systemd_service_path }}"
+  with_first_found:
+    - files: '{{ systemd_lookup_paths | map("regex_replace", "(.*)", "\1/" + __systemd_svc_name) | list }}'
+      skip: true
+  loop_control:
+    loop_var: systemd_service_path
+- fail: msg="Unknown service {{ service }}"
+  when: __systemd_svc_installed is not defined
+- file:
+    path: '/etc/systemd/system/{{__systemd_svc_name}}.d'
+    state: directory
+- name: "Override {{__systemd_service_name}}"
+  include_tasks: write-config.yml
+  vars:
+    file: '/etc/systemd/system/{{__systemd_svc_name}}.d/{{ override_file | default("override.conf") }}'
+    cfgvars: "{{ config_grp.vars }}"
+    group: "{{ config_grp.group }}"    
+  with_items: "{{ config }}"
+  loop_control:
+    loop_var: config_grp
+- systemd: daemon_reload=yes

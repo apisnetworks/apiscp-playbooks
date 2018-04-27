@@ -1,2 +1,4 @@
 ---
-passwdfile: /root/.my.cnf
+mysql_pass_file: /root/.my.cnf
+mysql_systemd_service: mariadb
+mysql_check_path: /etc/systemd/user/mysqlcheck.sh

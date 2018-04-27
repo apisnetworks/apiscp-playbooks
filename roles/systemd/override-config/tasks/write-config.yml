@@ -1,0 +1,12 @@
+---
+- name: "Edit {{ file }}"
+  ini_file: 
+    path: "{{ file }}"
+    section: "{{ group }}"
+    option: "{{ item.key }}"
+    value: "{{ item.value | default(None) }}"
+    state: "{{ (item.value is defined) | ternary('present', 'absent') }}"
+    no_extra_spaces: true
+  with_dict: "{{ cfgvars }}"
+  loop_control:
+    label: "Set {{ group }} => {{ item.key }} = {{ item.value }}"

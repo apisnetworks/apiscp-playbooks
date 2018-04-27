@@ -6,8 +6,9 @@ Before=httpd.target
 [Service]
 Type=oneshot
 ExecStart=/etc/systemd/user/fsmount.init start
-ExecReload=/etc/systemd/user/fsmount.init restart
+ExecReload=/etc/systemd/user/fsmount.init reload
 ExecStop=/bin/true
+RemainAfterExit=yes
 
 [Install]
 WantedBy=multi-user.target

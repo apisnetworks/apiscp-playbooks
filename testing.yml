@@ -1,11 +1,11 @@
 ---
 - hosts: localhost  
-  tasks:
-    - include_role: name=common/fail-and-save
-      vars:
-        msg: |
-            Ansible 2.5.1 is installed and has been downgraded automatically to
-            2.4.2. A restart is necessary.
-
-            See ansible/ansible#38271 for details of downgrade.
-      when: true
+  vars_files:
+    - './apnscp-vars.yml'
+    - 'roles/common/vars/apnscp-internals.yml'
+    - ['/root/apnscp-ansible-defaults.yml', '/dev/null']
+  roles:
+    - setup/gather-input
+  #tasks:
+  #  - name: Override systemd defaults
+  #    include_role: name=mysql/install tasks_from=set-systemd-defaults.yml    

@@ -8,6 +8,14 @@ apnscp_debug: false
 # - yes populates all packages from apnscp/initialize-filesystem-template/vars/main.yml
 # - no bypasses fst creation
 populate_filesystem_template: auto
+# Bypass initial questionnaire by providing a set of responses
+# Can be generated with:
+# ansible-playbook --tags=setup/gather-input --extra-vars='save_output=/root/host-facts.yml' bootstrap.yml
+# then running,
+# ansible-playbook --extra-vars="apnscp_setup_file=/root/host-facts.yml" bootstrap.yml
+# or uncommitting below and defining it
+#apnscp_setup_file:
+
 ####################################
 #     Don't change below here      #
 ####################################

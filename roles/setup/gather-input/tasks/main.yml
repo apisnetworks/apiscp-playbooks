@@ -1,0 +1,9 @@
+---
+- stat:
+    path: "{{ setup_file }}"
+  register: st_setup
+  when: setup_file != None
+#- block:
+  #- prompt_vars:
+  #  with_items: "{{ input_prompts }}"
+#  when: not setup_file.stat.exists

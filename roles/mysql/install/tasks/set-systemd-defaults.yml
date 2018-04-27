@@ -1,0 +1,19 @@
+---
+- name: Copy deadlock checker
+  copy:
+    src: files/mysqlcheck.sh
+    dest: "{{ mysql_check_path }}"
+    mode: "0755"
+- name: Override mariadb.service 
+  include_role: name=systemd/override-config
+  vars:
+    service: "{{ mysql_systemd_service }}"
+    config: 
+      - group: Service
+        vars:
+          ProtectSystem: false
+          ProtectHome: false
+          Type: simple
+          OOMScoreAdjust: -500
+          LimitNOFILE: 65535
+          ExecStartPre: "{{ mysql_check_path }}"
