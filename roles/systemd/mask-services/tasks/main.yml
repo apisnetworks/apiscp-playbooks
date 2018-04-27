@@ -1,12 +1,12 @@
 ---
 - name: Disable TTY password prompt on service
-  systemd: name="{{ service }}" status=masked
+  systemd: name="{{ item }}" masked=yes
   with_items:
     - systemd-ask-password-wall.path
     - systemd-ask-password-wall.service
 # Emergency blocks network access
 - name: Disable emergency mode
-  systemd: name="{{ service }}" status=masked
+  systemd: name="{{ item }}" masked=yes
   with_items:
     - emergency.service
     - emergency.target
