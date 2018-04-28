@@ -10,7 +10,8 @@
       oldconfig: "{{ lookup('file', apnscp_db_config ) | from_yaml }}"
   - set_fact:
       exists: {stat: {exists: false} }
-    when: not 'password' in oldconfig['apnscp']
+    # db.yaml.dist leaves field empty
+    when: not 'password' in oldconfig['apnscp'] or not oldconfig['apnscp']['password']
   - set_fact: 
       __apnscp_password: "{{ oldconfig['apnscp']['password'] }}"
       __appliance_password: "{{ oldconfig['appldb']['password'] }}"
