@@ -25,7 +25,8 @@
       environment:
         PHPIZE: "{{ phpize }}"
         PHPCONFIG: "{{ phpconfig }}"
-        XTRACFG: "{{ extra_flags }}"    
+        XTRACFG: "{{ extra_flags }}"
+        MAKEFLAGS: "-j{{ ansible_processor_vcpus }}"    
       notify: Restart apache
       when: not stres.stat.exists or force is defined and force
       register: module_install

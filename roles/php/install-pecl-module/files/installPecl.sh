@@ -65,5 +65,6 @@ if [[ ! -f config.m4 ]] ; then
   	fatal "unable to find config.m4 in archive"
   fi
 fi
-
+# From install-pecl-module/tasks/verify-and-install.yml
+declare -x MAKEFLAGS
 $PHPIZE && ./configure --with-php-config=$PHPCONFIG $XTRACFG && make && make install
