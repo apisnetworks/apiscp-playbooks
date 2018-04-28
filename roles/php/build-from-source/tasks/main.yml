@@ -32,7 +32,11 @@
         chdir: "{{ build_dir }}"       
       environment:
         SCANDIR: "{{ scan_dir }}"
-    - make: chdir="{{ build_dir }}" target=all params="-j{{ ansible_processor_vcpus | int }}"      
+    - make: 
+        chdir: "{{ build_dir }}" 
+        target: all 
+        params:
+          NUM_THREADS: "{{ ansible_processor_vcpus | int }}"    
     - command: "strip {{ build_dir }}/.libs/libphp{{php_version | regex_replace('^(\\d+)\\..*$', '\\1') }}.so"
       when: not php_debug
     - make: chdir="{{ build_dir }}" target=install    

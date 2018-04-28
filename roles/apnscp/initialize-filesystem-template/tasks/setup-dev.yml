@@ -16,7 +16,7 @@
     - set_fact:
         dev: '{{ mount.stdout | regex_search("/dev/\S+")}}'
     # device points to mapper, mapper points to symlink, copy referent
-    - command: rsync -axL "{{ dev }}" "{{ base }}/siteinfo/{{ dev }}"
+    - command: rsync -axL "{{ dev }}" "{{ base }}/siteinfo/{{ dev | dirname }}"
       args:
         creates: "{{ base }}/siteinfo/{{ dev }}"
   when: mount.rc == 0
