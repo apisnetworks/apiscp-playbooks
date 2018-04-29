@@ -14,7 +14,8 @@
     file: "{{ apnscp_filesystem_template }}/ssh/etc/pam.d/sshd"
 - include_tasks: "{{ role_path }}/tasks/listfile.yml"
   vars:
-    file: "{{ apnscp_filesystem_template }}/ssh/etc/ssh.pamlist"
+    pam_file: "{{ apnscp_filesystem_template }}/ssh/etc/pam.d/sshd"
+    file: "/etc/ssh.pamlist"
 - include_tasks: ./cgroup.yml
   vars:
     file: "{{ pam_file }}"
