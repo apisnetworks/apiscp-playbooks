@@ -1,6 +1,8 @@
 ---
 - include_tasks: "{{ role_path }}/../bootstrap/tasks/set-config.yml" 
   vars: 
-    section: core 
-    option: filesystem_shared 
-    value: "{{ apnscp_shared_root }}"
+    section: letsencrypt 
+    option: additional_certs 
+    value: "{{ ssl_hostnames }}"
+  when: ssl_hostnames
+  register: config

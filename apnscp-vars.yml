@@ -28,6 +28,8 @@ apnscp_php_version: 7.1.16
 apnscp_shared_root: /.socket
 apnscp_ca_rpm: http://yum.apnscp.com/apnscp-latest.rpm
 apnscp_platform_version: 7.5
+# Default hostnames to request SSL for
+ssl_hostnames: "{{ ansible_fqdn }}"
 # Enable SELinux
 # true is absolutely guaranteed to break your system
 # debug places selinux in permissive mode

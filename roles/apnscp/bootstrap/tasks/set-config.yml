@@ -3,3 +3,4 @@
     section: "{{ section }}"
     option: "{{ option }}"
     value: "{{ value }}"
+  notify: Restart apnscp
