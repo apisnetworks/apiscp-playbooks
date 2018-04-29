@@ -22,4 +22,7 @@
   when: mount.rc == 0
 - debug: msg="Failed to detect rootfs, ignoring device creation in {{ apnscp_filesystem_template }}"
   when: mount.rc != 0
-
+- file: 
+    path: "{{ apnscp_filesystem_template }}/siteinfo/dev/log"
+    src: "{{ apnscp_shared_root }}/log"
+    state: link

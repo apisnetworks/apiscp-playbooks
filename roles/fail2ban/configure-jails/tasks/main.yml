@@ -1,6 +1,19 @@
 ---
-- name: "Configure {{ jail }}"
-  debug: msg="foo"
+- name: "Set fail2ban/jail.conf"
+  include_tasks: roles/common/tasks/write-config.yml
+  vars:
+    file: '/etc/fail2ban/jail.conf'
+    cfgvars: "{{ config_grp.vars }}"
+    group: "{{ config_grp.name }}"  
+    notify: Restart fail2ban
   with_items: "{{ jails }}"
   loop_control:
-    loop_var: jail
+    loop_var: config_grp
+  label: "Configuring jail {{ config_grp.name }}"
+- copy: 
+    src: files/spambots.conf
+    dest: /etc/fail2ban/filter.d/spambots.conf
+- copy:
+    src: files/apnscp.conf
+    dest: /etc/fail2ban/jail.d/01-apnscp.conf
+- meta: flush_handlers

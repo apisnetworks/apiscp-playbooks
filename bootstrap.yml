@@ -15,15 +15,18 @@
     - systemd/mask-services
     - packages/install
     - pgsql/install
-    - mysql/install
-    # Disable mongodb startup, same for Redis
+    - mysql/install    
+    - system/rsyslog
+    #- vsftpd/configure
+    #- mail/configure-dovecot
+    #- mail/configure-postfix
+    # Disable mongodb startup, same for Redis except if rspamd
     #- mongodb/install
     - browscap
     - php/install  
     - php/install-pecl-module
     - php/create-configuration
     - java/tomcat
-    #- mail/configure-postfix
     - apnscp/bootstrap
     - apache/configure
     - apnscp/build-php
@@ -46,5 +49,7 @@
     #- apnscp/create-admin
     # Odds and ends
     - system/yum
+    # Last checkpoint, validate a mock account
+    #- apnscp/assert-account-works
     
 

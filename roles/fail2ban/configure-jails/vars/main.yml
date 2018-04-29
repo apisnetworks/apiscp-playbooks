@@ -1,8 +1,58 @@
 ---
 jails: 
   - name: postfix
+    vars:
+      port: 25,587
+      logpath: "%(dovecot_log)s"
+      banaction: "iptables-multiport"    
+      enabled: true
+      bantime: "{{ f2b_bantime }}"
+      findtime: "{{ f2b_findtime }}"
+      maxretry: "{{ f2b_maxretry }}"
   - name: evasive
+    vars:
+      port: 80,443
+      logpath: "%(syslog_daemon)s"
+      banaction: "iptables-multiport"
+      ignoreip: 127.0.0.1
+      filter: "apache-modevasive"
+      bantime: "{{ f2b_evasive_bantime | default(120) }}"
+      maxretry: "{{ f2b_evasive_maxretry | default (1) }}"
+      findtime: "{{ f2b_evasive_findtime | default(3600) }}"
+      enabled: true
   - name: recidive
+    vars:
+      protocol: all
+      port: all
+      action: iptables-allports
+      enabled: true
+      # 1 week
+      bantime: "{{ f2b_recidive_bantime }}"
+      # 1 day
+      findtime: "{{ f2b_recidive_findtime }}"
+      maxretry: "{{ f2b_recidive_maxretry }}"
   - name: dovecot
-  - name: ssh
+    vars:
+      port: 110,995,143,993
+      bantime: "{{ f2b_bantime }}"
+      findtime: "{{ f2b_findtime }}"
+      maxretry: "{{ f2b_maxretry }}"
+      logpath: "%(dovecot_log)s"
+      enabled: true
+  - name: sshd
+    vars:
+      port: 22
+      bantime: "{{ f2b_bantime }}"
+      findtime: "{{ f2b_findtime }}"
+      maxretry: "{{ f2b_maxretry }}"
+      logpath: "%(sshd_log)s"
+      enabled: true
   - name: spambots
+    vars:
+      port: 25,587
+      bantime: "{{ f2b_bantime }}"
+      findtime: "{{ f2b_findtime }}"
+      maxretry: "{{ f2b_maxretry }}"
+      logpath: "%(postfix_log)s"
+      enabled: true
+      banaction: iptables-multiport

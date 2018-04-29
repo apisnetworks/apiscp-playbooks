@@ -1,0 +1,8 @@
+---
+- name: Ignore session slice log entries
+  template: src="templates/{{ item }}" dest="/etc/rsyslog.d/{{ item }}"
+  with_items:
+    - ignore-systemd-session-slice.conf
+    - apnscp.conf
+  notify: Restart rsyslog
+- meta: flush_handlers

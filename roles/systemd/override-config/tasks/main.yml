@@ -19,7 +19,7 @@
     path: '/etc/systemd/system/{{__systemd_svc_name}}.d'
     state: directory
 - name: "Override {{__systemd_service_name}}"
-  include_tasks: write-config.yml
+  include_tasks: roles/common/tasks/write-config.yml
   vars:
     file: '/etc/systemd/system/{{__systemd_svc_name}}.d/{{ override_file | default("override.conf") }}'
     cfgvars: "{{ config_grp.vars }}"

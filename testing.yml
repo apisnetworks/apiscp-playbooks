@@ -6,6 +6,3 @@
     - ['/root/apnscp-ansible-defaults.yml', '/dev/null']
   roles:
     - setup/gather-input
-  #tasks:
-  #  - name: Override systemd defaults
-  #    include_role: name=mysql/install tasks_from=set-systemd-defaults.yml    

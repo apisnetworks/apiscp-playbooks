@@ -12,6 +12,7 @@ svcdirs:
     - urandom
     - zero
     - null
+    - tty
   ssh:
     - ptmx
     - fd

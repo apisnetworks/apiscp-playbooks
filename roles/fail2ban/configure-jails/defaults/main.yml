@@ -1,5 +1,9 @@
 ---
-# 5 retries in a 5 minute period results in a 10 minute ban
-bantime: 600
-findtime: 300
-maxretry: 5
+# 3 retries in a 5 minute period results in a 10 minute ban
+f2b_bantime: 600
+f2b_findtime: 300
+f2b_maxretry: 3
+# Chronic offenders that need a good hoof up the ass
+f2b_recidive_bantime:  604800
+f2b_recidive_findtime: 86400
+f2b_recidive_maxretry: 5

@@ -1,6 +1,8 @@
 ---
 - name: noop    
-  debug: msg="noop handler" verbosity=4
+  debug: msg=noop verbosity=4
+- name: Restart rsyslog
+  systemd: state=restarted name=rsyslog enabled=yes
 - name: Restart apnscp
   systemd: state=restarted name=apnscp enabled=yes
 - name: Restart apache
@@ -20,3 +22,5 @@
       when: sa_present.rc == 0
 - name: Restart postfix
   systemd: state=restarted name=postfix enabled=yes
+- name: Restart fail2ban
+  systemd: state=restarted name=fail2ban enabled=yes

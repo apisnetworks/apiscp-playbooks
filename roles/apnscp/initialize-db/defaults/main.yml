@@ -3,8 +3,8 @@ apnscp_db: apnscp
 appliance_db: appldb
 apnscp_user: apnscp
 appliance_user: apnscp
-apnscp_password: "{{ lookup('password', '/dev/null chars=ascii_letters length=15') }}"
-appliance_password: "{{ lookup('password', '/dev/null chars=ascii_letters length=15') }}"
+apnscp_password: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=30') }}"
+appliance_password: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=30') }}"
 apnscp_db_config: "{{ apnscp_root }}/config/db.yaml"
 db_population_names:
   - api
