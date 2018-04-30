@@ -1,8 +1,11 @@
 ---
-- include_tasks: "{{ role_path }}/../bootstrap/tasks/set-config.yml" 
+- name: "Enabling SSL certificate"
+  include_tasks: "{{ role_path }}/../bootstrap/tasks/set-config.yml" 
   vars: 
     section: letsencrypt 
-    option: additional_certs 
-    value: "{{ ssl_hostnames }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+    - {option: additional_certs, value: "{{ ssl_hostnames }}"}
+    - {option: debug, value: false}
   when: ssl_hostnames
-  register: config

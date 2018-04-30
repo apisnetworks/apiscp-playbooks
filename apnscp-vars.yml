@@ -1,5 +1,6 @@
 # Default PHP interpreter
 system_php_version: "7.2.4"
+
 # Development build of apnscp, includes symbols in php
 apnscp_debug: false
 
@@ -8,6 +9,7 @@ apnscp_debug: false
 # - yes populates all packages from apnscp/initialize-filesystem-template/vars/main.yml
 # - no bypasses fst creation
 populate_filesystem_template: auto
+
 # Bypass initial questionnaire by providing a set of responses
 # Can be generated with:
 # ansible-playbook --tags=setup/gather-input --extra-vars='save_output=/root/host-facts.yml' bootstrap.yml
@@ -16,6 +18,22 @@ populate_filesystem_template: auto
 # or uncommitting below and defining it
 #apnscp_setup_file:
 
+# Default IPv4 address for apnscp to listen to. If undefined will 
+# use the first address that has external routing
+#apnscp_ip4_address:
+#
+# Default hostnames to request SSL for
+# Additional SSL hostnames may be requested by running apnscp/register-ssl
+ssl_hostnames: "{{ ansible_fqdn }}"
+# Email address of the owner of the server
+# Used for Let's Encrypt registration, login notifications,
+# and other events 
+apnscp_admin_email:
+# Use the following password. Note, can be changed at a later date using
+# apnscp/bin/cmd auth_change_password NEWPASSWORD
+apnscp_admin_password: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=16') }}"
+# Optional admin to user otherwise "admin"
+apnscp_admin_user: admin
 ####################################
 #     Don't change below here      #
 ####################################
@@ -28,8 +46,6 @@ apnscp_php_version: 7.1.16
 apnscp_shared_root: /.socket
 apnscp_ca_rpm: http://yum.apnscp.com/apnscp-latest.rpm
 apnscp_platform_version: 7.5
-# Default hostnames to request SSL for
-ssl_hostnames: "{{ ansible_fqdn }}"
 # Enable SELinux
 # true is absolutely guaranteed to break your system
 # debug places selinux in permissive mode

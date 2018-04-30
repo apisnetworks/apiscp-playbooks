@@ -15,12 +15,8 @@ SYSTEMCTL_SKIP_REDIRECT=1
 ulimit -f 4096000
 CP_DIR=/usr/local/apnscp
 
+declare -x HOSTNAME=`hostname`
 HTTPD_ARGS=""
-
-if [ $HOSTNAME == "santa.apisnetworks.com" ] ; then
-        HTTPD_ARGS="-DDEVELOPMENT"
-        export DEVELOPMENT=1
-fi
 start() {
 	chown nobody $CP_DIR/storage
 	echo -n $"Starting apnscp Web server: "

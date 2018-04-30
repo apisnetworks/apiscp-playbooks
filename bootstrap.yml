@@ -34,6 +34,7 @@
     - apnscp/initialize-db
     - apnscp/install-vendor-library
     # Checkpoint: admin should work fine at this point
+    - apnscp/create-admin
     - apnscp/assert-admin-works
     # Onto provisioning a test account
     - apnscp/initialize-filesystem-template
@@ -44,9 +45,9 @@
     - fail2ban/whitelist-self
     - fail2ban/configure-jails
     #- mail/globalize-spamassassin-bayes
-    #- apnscp/register-ssl
+    - apnscp/register-ssl
     #- network/setup-firewall    
-    #- apnscp/create-admin
+    - network/optimizations
     # Odds and ends
     - system/yum
     # Last checkpoint, validate a mock account

@@ -1,6 +1,16 @@
-- ini_file:
+- set_fact:
+    old_val: "{{ lookup('ini', option + ' file=' + apnscp_root + '/config/custom/config.ini default=NOTSET section=' + section) }}"
+  register: old
+  ignore_errors: true
+  when: check_value is not defined or 
+    not check_value
+- name: "Setting {{ section }} => {{ option }} = {{ value }}"
+  ini_file:
     path: "{{apnscp_root}}/config/custom/config.ini"
     section: "{{ section }}"
     option: "{{ option }}"
     value: "{{ value }}"
   notify: Restart apnscp
+  when: > 
+    check_value is not defined or 
+    not check_value and (old.failed or old_val == "NOTSET")

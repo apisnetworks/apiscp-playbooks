@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `api_keys`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `api_keys` (
   `api_key` char(32) NOT NULL,
-  `username` varchar(52) NOT NULL DEFAULT '',
+  `username` varchar(32) NOT NULL DEFAULT '',
   `domain` varchar(52) DEFAULT NULL,
   `site_id` int(3) NOT NULL DEFAULT '0',
   `last_used` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -87,7 +87,7 @@ CREATE TABLE `info_requests` (
   `challenge` char(40) DEFAULT NULL,
   `site_id` int(3) NOT NULL,
   `domain` varchar(52) NOT NULL,
-  `username` varchar(64) DEFAULT NULL,
+  `username` varchar(32) DEFAULT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   KEY `timestamp` (`timestamp`),
   KEY `timestamp_2` (`timestamp`),
@@ -191,7 +191,7 @@ DROP TABLE IF EXISTS `session_information`;
 CREATE TABLE `session_information` (
   `session_id` char(32) NOT NULL DEFAULT '',
   `domain` varchar(52) DEFAULT NULL,
-  `username` char(16) NOT NULL,
+  `username` char(32) DEFAULT NULL,
   `password` varchar(32) DEFAULT '',
   `level` tinyint(2) unsigned NOT NULL DEFAULT '0',
   `login_ts` datetime DEFAULT NULL,

@@ -37,7 +37,6 @@
 # Ensure apnscp ownership is correct
 - command: /bin/true
   notify: Change apnscp ownership
-- meta: flush_handlers
 
 - ini_file:
     owner: "{{ apnscp_system_user }}"
@@ -45,6 +44,19 @@
     section: core
     option: apnscp_system_user
     value: "{{ apnscp_system_user }}"
+- include_tasks: "set-config.yml" 
+  vars:
+    section: crm 
+    option: "{{ item.option }}" 
+    value: "{{ item.value }}"
+    check_value: false
+  with_items:
+    - option: from_address
+      value: "{{ apnscp_system_user }}@${HOSTNAME}"
+    - option: from_no_reply_address
+      value: "{{ apnscp_system_user }}@${HOSTNAME}"
+    - option: reply_address
+      value: "{{ apnscp_system_user }}+tickets@${HOSTNAME}"
 
 - file: path=/var/log/bw state=directory
 - file: path=/etc/virtualhosting state=directory mode=0700 owner="{{ apnscp_system_user }}"
@@ -54,3 +66,38 @@
 - name: Link opcenter resources to /etc
   include_tasks: create-link-opcenter-controls.yml path="{{ item.path }}"  src="{{item.src}}"
   with_items: "{{ opcenter_links }}"
+
+- stat: path="{{ apnscp_root }}/config/httpd-custom.conf"
+  register: httpdchk
+- copy:
+    content: >
+      User {{ apnscp_system_user }}
+      Group {{ apnscp_system_user }}
+      Use Vhost {{ apnscp_ip4_address | default(ansible_default_ipv4.address) }} 
+    dest: "{{ apnscp_root }}/config/httpd-custom.conf"
+    owner: "{{ apnscp_system_user }}"
+    group: "{{ apnscp_system_user }}"
+  when: not httpdchk.stat.exists
+- stat: path="{{ apnscp_root }}/config/custom/namebased_ip_addrs"
+  register: nbchk
+- copy:
+    content: "{{ apnscp_ip4_address | default(ansible_default_ipv4.address) }}"
+    dest: "{{ apnscp_root }}/config/custom/namebased_ip_addrs"
+  when: not nbchk.stat.exists
+
+- stat: path="{{ apnscp_root }}/config/custom/namebased_ip6_addrs"
+  register: nbchk
+- block: 
+    - copy:
+        content: "{{ apnscp_ip6_address | default(ansible_default_ipv6.address) }}"
+        dest: "{{ apnscp_root }}/config/custom/namebased_ip6_addrs"
+    - include_tasks: set-config.yml
+      vars:
+        section: dns
+        option: my_ip6
+        value: "{{ apnscp_ip6_address | default(ansible_default_ipv6.address) }}"
+  when: >
+    not nbchk.stat.exists and 
+    ansible_default_ipv6 is defined and ansible_default_ipv6.has_key('address')
+
+- meta: flush_handlers
