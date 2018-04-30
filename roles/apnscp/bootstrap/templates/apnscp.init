@@ -15,7 +15,7 @@ SYSTEMCTL_SKIP_REDIRECT=1
 ulimit -f 4096000
 CP_DIR=/usr/local/apnscp
 
-declare -x HOSTNAME=`hostname`
+declare -x HOSTNAME=`hostname -f`
 HTTPD_ARGS=""
 start() {
 	chown nobody $CP_DIR/storage
