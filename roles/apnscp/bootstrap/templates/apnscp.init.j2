@@ -13,7 +13,7 @@ SYSTEMCTL_SKIP_REDIRECT=1
 
 # Prevent runaway logging
 ulimit -f 4096000
-CP_DIR=/usr/local/apnscp
+CP_DIR={{apnscp_root|quote}}
 
 declare -x HOSTNAME=`hostname -f`
 HTTPD_ARGS=""

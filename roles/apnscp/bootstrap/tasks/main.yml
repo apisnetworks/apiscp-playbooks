@@ -6,8 +6,8 @@
     msg: "apnscp bootstrapper isn't completed properly"
   when: not s.stat.exists
 
-- copy: src=templates/apnscp.init dest=/etc/systemd/user mode=755 backup=yes
-- copy: src=templates/apnscp.service dest=/etc/systemd/system mode=644
+- template: src=templates/apnscp.init.j2 dest=/etc/systemd/user/apnscp.init mode=755 backup=yes
+- template: src=templates/apnscp.service.j2 dest=/etc/systemd/system/apnscp.service mode=644
   register: copied
 - systemd: daemon_reload=yes enabled=yes name=apnscp
   when: copied.changed
