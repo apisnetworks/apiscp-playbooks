@@ -27,7 +27,8 @@
     src: templates/my.cnf.j2
     dest: "{{ mysql_pass_file }}"
     mode: 0600
-  when: user_enabled is defined and user_enabled.changed- mysql_user: 
+  when: user_enabled is defined and user_enabled.changed
+- mysql_user: 
     name: root 
     host: localhost 
     check_implicit_admin: yes

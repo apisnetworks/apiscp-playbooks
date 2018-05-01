@@ -5,6 +5,7 @@
     dest: "{{ apnscp_root }}/storage/opcenter/passwd"
     content: "{{ apnscp_admin_user }}:x"
   when: pass.stat.size == 0  
+- meta: flush_handlers
 - name: Start apnscp
   systemd: state=started name=apnscp enabled=yes
 - block:

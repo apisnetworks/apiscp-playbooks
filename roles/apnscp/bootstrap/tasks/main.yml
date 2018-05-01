@@ -44,6 +44,28 @@
     section: core
     option: apnscp_system_user
     value: "{{ apnscp_system_user }}"
+
+- file: path=/var/log/bw state=directory
+- file: path=/etc/virtualhosting state=directory mode=0700 owner="{{ apnscp_system_user }}"
+- file: path=/etc/opcenter/webhost state=directory mode=0700 owner="{{ apnscp_system_user }}"
+
+- include_vars: "vars/opcenter-links.yml"
+- name: Link opcenter resources to /etc
+  include_tasks: create-link-opcenter-controls.yml path="{{ item.path }}"  src="{{item.src}}"
+  with_items: "{{ opcenter_links }}"
+
+- stat: path="{{ apnscp_root }}/config/httpd-custom.conf"
+  register: httpdchk
+- copy:
+    content: |
+      User {{ apnscp_system_user }}
+      Group {{ apnscp_system_user }}
+      Use VHost {{ apnscp_ip4_address | default(ansible_default_ipv4.address) }} 
+    dest: "{{ apnscp_root }}/config/httpd-custom.conf"
+    owner: "{{ apnscp_system_user }}"
+    group: "{{ apnscp_system_user }}"
+  when: not httpdchk.stat.exists
+
 - include_tasks: "set-config.yml" 
   vars:
     section: crm 
@@ -58,26 +80,6 @@
     - option: reply_address
       value: "{{ apnscp_system_user }}+tickets@${HOSTNAME}"
 
-- file: path=/var/log/bw state=directory
-- file: path=/etc/virtualhosting state=directory mode=0700 owner="{{ apnscp_system_user }}"
-- file: path=/etc/opcenter/webhost state=directory mode=0700 owner="{{ apnscp_system_user }}"
-
-- include_vars: "vars/opcenter-links.yml"
-- name: Link opcenter resources to /etc
-  include_tasks: create-link-opcenter-controls.yml path="{{ item.path }}"  src="{{item.src}}"
-  with_items: "{{ opcenter_links }}"
-
-- stat: path="{{ apnscp_root }}/config/httpd-custom.conf"
-  register: httpdchk
-- copy:
-    content: >
-      User {{ apnscp_system_user }}
-      Group {{ apnscp_system_user }}
-      Use Vhost {{ apnscp_ip4_address | default(ansible_default_ipv4.address) }} 
-    dest: "{{ apnscp_root }}/config/httpd-custom.conf"
-    owner: "{{ apnscp_system_user }}"
-    group: "{{ apnscp_system_user }}"
-  when: not httpdchk.stat.exists
 - stat: path="{{ apnscp_root }}/config/custom/namebased_ip_addrs"
   register: nbchk
 - copy:
@@ -99,5 +101,3 @@
   when: >
     not nbchk.stat.exists and 
     ansible_default_ipv6 is defined and ansible_default_ipv6.has_key('address')
-
-- meta: flush_handlers

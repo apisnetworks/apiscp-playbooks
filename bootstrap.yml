@@ -29,9 +29,9 @@
     - java/tomcat
     - apnscp/bootstrap
     - apache/configure
+    - apnscp/initialize-db
     - apnscp/build-php
     - apnscp/install-extensions  
-    - apnscp/initialize-db
     - apnscp/install-vendor-library
     # Checkpoint: admin should work fine at this point
     - apnscp/create-admin
