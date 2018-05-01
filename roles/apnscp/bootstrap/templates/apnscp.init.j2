@@ -18,7 +18,7 @@ CP_DIR={{apnscp_root|quote}}
 declare -x HOSTNAME=`hostname -f`
 HTTPD_ARGS=""
 start() {
-	chown nobody $CP_DIR/storage
+	chown {{apnscp_system_user}} $CP_DIR/storage
 	echo -n $"Starting apnscp Web server: "
 	/usr/sbin/httpd -f $CP_DIR/config/httpd.conf -k start $HTTPD_ARGS
 	RETVAL=$?
