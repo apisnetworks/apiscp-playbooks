@@ -8,6 +8,7 @@ opcenter_links:
   - {path: virtualhosting/dnsbypass, src: storage/opcenter/dnsbypass }
   - {path: virtualhosting/interface, src: storage/opcenter/interface }
   - {path: virtualhosting/ipranges, src: storage/opcenter/ipranges }
-  - {path: virtualhosting/namebased_ip_addrs, src: config/custom/namebased_ip_addrs }
+  - {path: virtualhosting/namebased_ip_addrs, src: storage/opcenter/namebased_ip_addrs }
+  - {path: virtualhosting/namebased_ip6_addrs, src: storage/opcenter/namebased_ip6_addrs }
   - {path: '', src: storage/opcenter/passwd}
   - {path: opcenter/webhost/passwd, src: storage/opcenter/passwd }

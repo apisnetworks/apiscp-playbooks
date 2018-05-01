@@ -5,4 +5,4 @@
     - 'roles/common/vars/apnscp-internals.yml'
     - ['/root/apnscp-ansible-defaults.yml', '/dev/null']
   roles:
-    - apnscp/register-ssl
+    - mail/maildir

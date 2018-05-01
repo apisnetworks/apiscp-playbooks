@@ -36,7 +36,7 @@ services:
   - name: virtualcron
     files: 
       - src: virtualcron.init
-        dest: /etc/systemd/system/virtualcron.init
+        dest: /etc/systemd/user/virtualcron.init
         perm: "0755"
       - src: virtualcron.service
         dest: /etc/systemd/system/virtualcron.service
@@ -45,9 +45,16 @@ services:
   - name: virtualhosting
     files: 
       - src: virtualhosting.init
-        dest: /etc/systemd/system/virtualhosting.init
+        dest: /etc/systemd/user/virtualhosting.init
         perm: "0755"
       - src: virtualhosting.service
         dest: /etc/systemd/system/virtualhosting.service
     systemd:
+      state: started
+  - name: rc-local
+    files: 
+      - src: rc-local.service
+        dest: /etc/systemd/system/rc-local.service
+    systemd:
+      enabled: yes
       state: started

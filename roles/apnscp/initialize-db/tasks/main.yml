@@ -58,6 +58,7 @@
 - block:
   - name: Verify {{ appliance_user }} user exists
     postgresql_user:
+      role_attr_flags: SUPERUSER
       name: "{{ appliance_user }}"
       encrypted: yes
       password: "{{__appliance_password}}"

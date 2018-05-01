@@ -20,8 +20,7 @@
     #- vsftpd/configure
     #- mail/configure-dovecot
     #- mail/configure-postfix
-    # Disable mongodb startup, same for Redis except if rspamd
-    #- mongodb/install
+    - mail/maildir
     - browscap
     - php/install  
     - php/install-pecl-module
@@ -29,6 +28,8 @@
     - java/tomcat
     - apnscp/bootstrap
     - apache/configure
+    #- clamav/configure
+    #- apache/modsecurity
     - apnscp/initialize-db
     - apnscp/build-php
     - apnscp/install-extensions  

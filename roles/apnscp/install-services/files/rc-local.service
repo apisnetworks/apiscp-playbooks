@@ -1,0 +1,11 @@
+[Unit]
+Description=/etc/rc.local compatibility
+ConditionPathExists=/etc/rc.local
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh /etc/rc.local
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

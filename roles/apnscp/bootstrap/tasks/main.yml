@@ -6,7 +6,7 @@
     msg: "apnscp bootstrapper isn't completed properly"
   when: not s.stat.exists
 
-- template: src=templates/apnscp.init.j2 dest=/etc/systemd/user/apnscp.init mode=755 backup=yes
+- template: src=templates/apnscp.init.j2 dest=/etc/systemd/user/apnscp.init mode=755 backup=no
 - template: src=templates/apnscp.service.j2 dest=/etc/systemd/system/apnscp.service mode=644
   register: copied
 - systemd: daemon_reload=yes enabled=yes name=apnscp
@@ -18,6 +18,7 @@
     mode: 0711
     state: directory
   register: dir_created
+
 - include_tasks: "set-config.yml" 
   vars: 
     section: core 
@@ -80,19 +81,19 @@
     - option: reply_address
       value: "{{ apnscp_system_user }}+tickets@${HOSTNAME}"
 
-- stat: path="{{ apnscp_root }}/config/custom/namebased_ip_addrs"
+- stat: path="{{ apnscp_root }}/storage/opcenter/namebased_ip_addrs"
   register: nbchk
 - copy:
     content: "{{ apnscp_ip4_address | default(ansible_default_ipv4.address) }}"
-    dest: "{{ apnscp_root }}/config/custom/namebased_ip_addrs"
+    dest: "{{ apnscp_root }}/storage/opcenter/namebased_ip_addrs"
   when: not nbchk.stat.exists or nbchk.stat.size == 0
 
-- stat: path="{{ apnscp_root }}/config/custom/namebased_ip6_addrs"
+- stat: path="{{ apnscp_root }}/storage/opcenter/namebased_ip6_addrs"
   register: nbchk
 - block: 
     - copy:
         content: "{{ apnscp_ip6_address | default(ansible_default_ipv6.address) }}"
-        dest: "{{ apnscp_root }}/config/custom/namebased_ip6_addrs"
+        dest: "{{ apnscp_root }}/storage/opcenter/namebased_ip6_addrs"
     - include_tasks: set-config.yml
       vars:
         section: dns
@@ -101,3 +102,9 @@
   when: >
     (not nbchk.stat.exists or nbchk.stat.size == 0) and 
     ansible_default_ipv6 is defined and ansible_default_ipv6.has_key('address')
+- stat: path="{{ apnscp_root }}/storage/opcenter/interface"
+  register: stif
+- copy:
+    content: "{{ apnscp_interface | default(ansible_default_ipv4.interface) }}"
+    dest: "{{ apnscp_root }}/storage/opcenter/interface"
+  when: not stif.stat.exists or stif.stat.size == 0

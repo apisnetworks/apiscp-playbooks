@@ -44,3 +44,14 @@
       cat /etc/HOSTNAME
     dest: "{{ apnscp_filesystem_template }}/siteinfo/bin/hostname"
     mode: 0755
+# Call after initialization otherwise trigger to create basic directories fails
+
+- name: Create mount point for {{ apnscp_shared_root }} on siteinfo
+  file:
+    path: "{{ apnscp_filesystem_template }}/siteinfo{{ apnscp_shared_root }}"
+    state: directory
+    mode: 0711
+- file:
+    path: "{{ apnscp_filesystem_template }}/siteinfo/home"
+    state: directory
+    mode: 0755

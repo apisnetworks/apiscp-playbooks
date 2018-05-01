@@ -10,10 +10,12 @@
 
 # See how we were called.
 prog="fsmount"
-PREFIX="/etc/sysconfig/fsmount"
+[[ -f /etc/sysconfig/fsmount ]] && . /etc/sysconfig/fsmount
 VHOSTDIR=${VHOSTDIR:-"/home/virtual"}
 SVCROOT=${SVCROOT:-"$VHOSTDIR/FILESYSTEMTEMPLATE"}
-SCRATCH="/.scratch"
+SOCKETDIR=${SOCKETDIR:-"/.socket"}
+SCRATCH=${SCRATCH:-${SOCKETDIR}}
+
 shopt -s nullglob
 # Thanks systemd...
 success() {
@@ -25,7 +27,8 @@ failure() {
 }
 
 function mount_all_sites {
-	[[ -L /.socket/proc/self ]] || mount -n -t proc -o hidepid=2 --make-slave proc /.socket/proc
+	[[ ! -d ${SOCKETDIR}/proc ]] && mkdir ${SOCKETDIR}/proc
+	[[ -L ${SOCKETDIR}/proc/self ]] || mount -n -t proc -o hidepid=2 --make-slave proc ${SOCKETDIR}/proc
 	for site in $VHOSTDIR/site[0-9]*/shadow ; do
 		site=${site%%/shadow}
 		site=${site##*/}
@@ -40,6 +43,7 @@ function mount_site {
 	CMD="/bin/mount -n -t overlay -o 
 		upperdir=$VHOSTDIR/$SITE/shadow,lowerdir=`synthesize $SERVICES`,workdir=${SCRATCH} 
 		none $VHOSTDIR/$SITE/fst"
+	echo $CMD
 	eval $CMD
 	mount_socket $SITE
 	
@@ -49,13 +53,14 @@ function mount_site {
 
 function mount_socket {
 	SITE=$1
-	mount -n --make-slave --rbind -o bind  /.socket $VHOSTDIR/$SITE/fst/.socket
+	[[ -d $VHOSTDIR/$SITE/fst${SOCKETDIR} ]] && \
+		mount -n --make-slave --rbind -o bind  ${SOCKETDIR} $VHOSTDIR/$SITE/fst${SOCKETDIR}
 }
 
 function initialize_site {
 	# siteinfo always present for accounts, populate this first
 	
-	CMD="/bin/mount -n -t overlay -o 
+	CMD="/bin/mount -n -t overlay -T/proc/mounts -o 
 	      upperdir=$VHOSTDIR/$SITE/shadow,lowerdir=${SVCROOT}/siteinfo,workdir=${SCRATCH} 
 	      none $VHOSTDIR/$SITE/fst"
 	eval $CMD 2>/dev/null
@@ -70,9 +75,6 @@ function mount_service {
 	SERVICE=$2
 	declare -a SERVICES=`get_services $SITE`
 	SERVICES+=($SERVICE)
-	#unmount_site $SITE
-        #exit
-	#unmount_site $SITE
 	/bin/mount -T/proc/mounts -n -t overlay \
 		-o lowerdir=`synthesize $SERVICES` \
 		$VHOSTDIR/$SITE/fst
@@ -97,9 +99,10 @@ function unmount_service {
 	SERVICE=$2
 	declare -a SERVICES=`get_services $SITE`
 	LAYERS=`synthesize ${SERVICES[@]/$SERVICE}`
+	[[ ! $LAYERS ]] && return
 	unmount_site $SITE
 	/bin/mount -T/proc/mounts -n -t overlay \
-                -o "upperdir=$VHOSTDIR/$SITE/shadow,lowerdir=$LAYERS,workdir=$SCRATCH" \
+    -o "upperdir=$VHOSTDIR/$SITE/shadow,lowerdir=${LAYERS},workdir=${SCRATCH}" \
 		$VHOSTDIR/$SITE/fst $VHOSTDIR/$SITE/fst
 	mount_socket $SITE
 }
@@ -118,7 +121,7 @@ function unmount_site {
 	SITE=$1
 	let MNTCNT=1
 	while `still_mounted $SITE` ; do
-		env LIBMOUNT_MTAB=/proc/mounts /bin/umount -l $VHOSTDIR/$SITE/fst/.socket \
+		env LIBMOUNT_MTAB=/proc/mounts /bin/umount $VHOSTDIR/$SITE/fst/${SOCKETDIR} \
 			$VHOSTDIR/$SITE/fst  2> /dev/null	
 		let MNTCNT++
 		# layer mounted over 50 times!?!!
@@ -136,17 +139,17 @@ function get_services {
 
 function reload_site {
 	SITE=$1
-	env LIBMOUNT_MTAB=/proc/mounts mount -n -t overlay -o remount $VHOSTDIR/$SITE/fst
+	env LIBMOUNT_MTAB=/proc/mounts mount -n -t overlay -o remount none $VHOSTDIR/$SITE/fst 2> /dev/null
 }
 
 
 function reload {
   for path in $VHOSTDIR/site[0-9]*/fst ; do
-		env LIBMOUNT_MTAB=/proc/mounts mount -n -t overlay -o remount $path
+		env LIBMOUNT_MTAB=/proc/mounts mount -n -t overlay -o remount none $path 2> /dev/null
   done
   # crond loses rtd otherwise
   # should move to systemd BindTo= in future
-  [[ -f /usr/bin/systemctl ]] && systemctl virtualcron reload
+  [[ -f /usr/bin/systemctl ]] && systemctl reload virtualcron
 }
 
 function usage 
@@ -193,7 +196,8 @@ case "$1" in
 		if [ -z $3 ] ; then
 			usage $1
 		fi
-		if [ $3 = "ALL" ] ; then
+
+		if [ $3 == "ALL" -o $3 == "all" ] ; then
 			mount_site $2
 		else
   		mount_service $2 $3

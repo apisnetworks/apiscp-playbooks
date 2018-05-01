@@ -1,0 +1,26 @@
+---
+- name: Edit Mail storage location
+  lineinfile: 
+    path: /etc/login.defs
+    regexp: '^[^#]*MAIL_DIR'
+    state: present
+    line: "MAIL_DIR\tMail"
+- lineinfile:
+    path: /etc/Muttrc
+    regexp: '^[^#]*source\s*/etc/Muttrc\.local'
+    state: absent
+- name: Edit Muttrc Mail storage
+  blockinfile:
+    path: /etc/Muttrc
+    marker: "### {mark} APNSCP MANAGED BLOCK ###"
+    block: |
+      # Local configuration for Mutt.
+      set mbox_type=Maildir
+      set folder="~/Mail"
+      set sort_aux=reverse-date-received
+      set sort=threads
+      set sort_re
+      source /etc/Muttrc.local
+
+
+

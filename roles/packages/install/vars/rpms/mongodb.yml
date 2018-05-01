@@ -7,3 +7,5 @@ rpms:
   - mongodb-org-server
   - mongodb-org-shell
   - mongodb-org-tools
+notify:
+  - Disable mongodb
