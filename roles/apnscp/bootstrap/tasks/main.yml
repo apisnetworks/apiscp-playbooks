@@ -85,7 +85,7 @@
 - copy:
     content: "{{ apnscp_ip4_address | default(ansible_default_ipv4.address) }}"
     dest: "{{ apnscp_root }}/config/custom/namebased_ip_addrs"
-  when: not nbchk.stat.exists
+  when: not nbchk.stat.exists or nbchk.stat.size == 0
 
 - stat: path="{{ apnscp_root }}/config/custom/namebased_ip6_addrs"
   register: nbchk
@@ -99,5 +99,5 @@
         option: my_ip6
         value: "{{ apnscp_ip6_address | default(ansible_default_ipv6.address) }}"
   when: >
-    not nbchk.stat.exists and 
+    (not nbchk.stat.exists or nbchk.stat.size == 0) and 
     ansible_default_ipv6 is defined and ansible_default_ipv6.has_key('address')

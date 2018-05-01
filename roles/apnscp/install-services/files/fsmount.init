@@ -146,7 +146,7 @@ function reload {
   done
   # crond loses rtd otherwise
   # should move to systemd BindTo= in future
-  systemctl virtualcron reload
+  [[ -f /usr/bin/systemctl ]] && systemctl virtualcron reload
 }
 
 function usage 
