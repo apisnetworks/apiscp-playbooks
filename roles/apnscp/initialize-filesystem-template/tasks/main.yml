@@ -23,7 +23,10 @@
 - name: "Build synchronizer RPM index"
   command: "{{ synchronizer }} generate"
   when: __populate_filesystem_template
-
+# Ensure rsyslog log device is propagated
+- command: /bin/true
+  notify: Restart rsyslog
+- meta: flush_handlers
 - include_tasks: "{{ role_path }}/tasks/relocate-shared-directory.yml" 
   vars: 
     service: "{{ item.service }}"
