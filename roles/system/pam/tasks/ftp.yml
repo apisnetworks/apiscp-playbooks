@@ -4,7 +4,7 @@
     path: "{{ pam_file }}"
     regexp: '^[^#]*auth.*{{vwh_module}}'
     line: "auth\trequired\t{{ vwh_module }}"
-    insertbefore: '^[^#]*auth.*password-auth'
+    insertbefore: '^[^#]*auth\s'
     state: present  
 - include_tasks: listfile.yml
   vars: 

@@ -15,7 +15,7 @@
   when: >
     populate_filesystem_template == "auto" and fst_created.changed or
     populate_filesystem_template == true
-- include_tasks: "{{ role_path }}/../../packages/install/tasks/configure-default-vars.yml"
+- include_role: role="packages/install" tasks_from="configure-default-vars.yml"
 - include_tasks: install-package.yml package="{{ item.package }}"  service="{{item.service}}"
   with_items: "{{ packages }}"
   when: __populate_filesystem_template
@@ -58,3 +58,9 @@
     path: "{{ apnscp_filesystem_template }}/siteinfo/home"
     state: directory
     mode: 0755
+
+- name: Copy files only once
+  include_tasks: oneshot-files.yml
+  with_items: "{{ copy_files }}"
+  loop_control:
+    label: "Copy {{ item.file }} to {{ item.service | default('siteinfo') }}"

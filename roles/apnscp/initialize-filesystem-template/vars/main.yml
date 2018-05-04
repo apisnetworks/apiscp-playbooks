@@ -60,6 +60,30 @@ relocated_paths:
       dest: "/usr/lib/majordomo",  
     }
   - { service: tomcat, src: "{{ apnscp_shared_root }}/tomcat", dest: /var/log/tomcat }
+# Files are copied on initial provisioning, not hardlinked nor updated after
+copy_files:
+  - {file: /etc/bashrc }
+  - {file: /etc/csh.cshrc }
+  - {file: /etc/csh.login }
+  - {file: /etc/environment }
+  - {file: /etc/filesystems }
+  - {file: /etc/host.conf }
+  - {file: /etc/resolv.conf }
+  - {file: /etc/localtime }
+  - {file: /etc/inputrc }
+  - {file: /etc/hosts.allow }
+  - {file: /etc/motd }
+  - {file: /etc/profile }
+  - {file: /etc/protocols }
+  - {file: /etc/securetty }
+  - {file: /etc/services }
+  - {file: /etc/shells }
+  - {file: /etc/skel }
+  - {file: /etc/profile.d/lang.csh}
+  - {file: /etc/profile.d/lang.sh}
+  - {file: /etc/profile.d/256term.csh}
+  - {file: /etc/profile.d/256term.sh}
+
 packages:
   - { package: sudo, service: siteinfo }
   - { package: acl, service: siteinfo }
@@ -275,6 +299,7 @@ packages:
   - { package: readline, service: siteinfo }
   - { package: rpm-libs, service: siteinfo }
   - { package: sed, service: siteinfo }
+  - { package: setup, service: siteinfo }
   - { package: shadow-utils, service: siteinfo }
   - { package: source-highlight, service: siteinfo }
   - { package: sqlite, service: siteinfo }

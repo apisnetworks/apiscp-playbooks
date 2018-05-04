@@ -9,7 +9,7 @@
     - command: creates="{{ src }}" mv "{{ dest }}" "{{ src }}"
       when: res.stat.exists
     - file: path="{{ dest }}" src="{{ src }}" state=link
-- name: "Edit {{ logrotate_vars.file }}"
+- name: "Edit {{ logrotate_vars.file | default('-- SKIPPED --') }}"
   replace:
     path: "{{ logrotate_vars.file }}"
     regexp: '(^|\b){{logrotate_vars.old}}\b'

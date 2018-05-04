@@ -1,5 +1,5 @@
 # Default PHP interpreter
-system_php_version: "7.2.4"
+system_php_version: "7.2.5"
 
 # Development build of apnscp, includes symbols in php
 apnscp_debug: false
@@ -22,7 +22,7 @@ populate_filesystem_template: auto
 # use the first address that has external routing
 #apnscp_ip4_address:
 #
-# Default hostnames to request SSL for
+# Default hostnames to request SSL for.
 # Additional SSL hostnames may be requested by running apnscp/register-ssl
 ssl_hostnames: "{{ ansible_fqdn }}"
 # Email address of the owner of the server
@@ -42,7 +42,7 @@ apnscp_filesystem_template: /home/virtual/FILESYSTEMTEMPLATE
 apnscp_system_user: apnscp
 # apnscp module API, ZTS is with event MPM
 php_module_api: 20160303-zts
-apnscp_php_version: 7.1.16
+apnscp_php_version: 7.1.17
 apnscp_shared_root: /.socket
 apnscp_ca_rpm: http://yum.apnscp.com/apnscp-latest.rpm
 apnscp_platform_version: 7.5

@@ -1,8 +1,11 @@
 ---
 - hosts: localhost  
+  vars:
+    apnscp_user_defaults: /root/apnscp-ansible-defaults.yml
   vars_files:
     - './apnscp-vars.yml'
     - 'roles/common/vars/apnscp-internals.yml'
-    - ['/root/apnscp-ansible-defaults.yml', '/dev/null']
+    - ['{{ apnscp_user_defaults }}', '/dev/null']
   roles:
-    - mail/maildir
+    - apnscp/initialize-filesystem-template
+    #- mail/configure-postfix

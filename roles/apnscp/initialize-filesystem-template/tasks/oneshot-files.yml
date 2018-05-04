@@ -1,0 +1,9 @@
+# Copy files once on provisioning and never again
+---
+- stat: path="{{ apnscp_filesystem_template }}/{{ item.service | default('siteinfo')}}/{{ item.file }}"
+  register: st
+- name: "Copy {{ item.file }} to {{apnscp_filesystem_template}}/{{item.service | default('siteinfo') }}"
+  copy: 
+    src: "{{ item.file }}"
+    dest: "{{ apnscp_filesystem_template }}/{{ item.service | default('siteinfo')}}/{{ item.file }}"
+  when: not st.stat.exists

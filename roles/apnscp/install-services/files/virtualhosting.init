@@ -25,19 +25,19 @@ ETH=`head -n1 /etc/virtualhosting/interface`
 start() {
         # Start daemons.
 	files="/etc/virtualhosting/namebased_ip_addrs /etc/sysconfig/virtualhosting"
-        for file in $files ; do 
-		[[ -f $file ]] && for addr in $(cat $file) ; do
-		        echo -n $"Bringing up $addr: "
-			/sbin/ip addr add ${addr}/32 dev $ETH
-		echo
-		done
+    for file in $files ; do 
+	[[ -f $file ]] && for addr in $(cat $file) ; do
+        echo -n $"Bringing up $addr: "
+        sbin/ip addr add ${addr}/24 dev $ETH
+    	echo
+    	done
 	done
 	[[ -f /etc/virtualhosting/mappings/ipmap ]] || return $RETVAL 
 	for addr in $(cat /etc/virtualhosting/mappings/ipmap | awk '{ if ($2 == "=" && system("[[ -f /home/virtual/"$3"/info/disabled ]]")) { print $1 } }') ; do
 		echo -n $"Bringing up VH $addr: "
-		/sbin/ip addr add ${addr}/32 dev $ETH
+		/sbin/ip addr add ${addr}/24 dev $ETH
 	done
-        return 0
+    return 0
 }
 
 stop() {

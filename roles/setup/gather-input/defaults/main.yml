@@ -1,3 +1,0 @@
----
-setup_file: "{{ apnscp_setup_file | default(None)}}"
-save_file: /root/.apnscp-initialization.yml

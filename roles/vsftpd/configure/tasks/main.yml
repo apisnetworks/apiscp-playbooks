@@ -1,0 +1,21 @@
+---
+- name: "Create login banner"
+  file: path="{{ vsftpd_login_banner }}" state=touch
+  changed_when: false
+- name: "Edit {{ vsftpd_config_path }}"
+  ini_file:
+    path: "{{ vsftpd_config_path }}"
+    section: null
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+    no_extra_spaces: yes
+    state: present
+  notify: Restart vsftpd
+  with_dict: "{{ vsftpd_directives }}"
+  loop_control:
+    label: "Edit {{ item.key }}"
+- name: Edit logrotate config
+  template:
+    dest: /etc/logrotate.d/vsftpd
+    src: templates/vsftpd.j2
+    

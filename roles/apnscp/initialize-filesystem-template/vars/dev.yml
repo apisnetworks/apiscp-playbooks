@@ -10,8 +10,8 @@ svcdirs:
     - stdin 
     - stdout 
     - urandom
+    - "null"
     - zero
-    - null
     - tty
   ssh:
     - ptmx

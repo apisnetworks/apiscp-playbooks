@@ -13,7 +13,6 @@
     command: "{{ apnscp_root }}/bin/cmd auth_change_password {{ apnscp_admin_password|quote }} {{ apnscp_admin_user|quote }}"
   - debug: msg="Admin password set to {{ apnscp_admin_password }}" verbosity=1
   when: pass.stat.size == 0
-- fail: msg="Admin email is not set! Set by defining apnscp_admin_email in /root/apnscp-ansible-defaults.yml"
-  when: not apnscp_admin_email
 - name: "Setting admin email to {{ apnscp_admin_email }}"
   command: "{{ apnscp_root }}/bin/cmd admin_set_email {{ apnscp_admin_email|quote }}"
+  when: apnscp_admin_email

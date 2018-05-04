@@ -3,13 +3,15 @@
   become: yes
   connection: local
   gather_facts: yes
+  vars:
+    apnscp_user_defaults: /root/apnscp-ansible-defaults.yml
   vars_files:
     - 'apnscp-vars.yml'
     - 'roles/common/vars/apnscp-internals.yml'
-    - ['/root/apnscp-ansible-defaults.yml', '/dev/null']
+    - ['{{ apnscp_user_defaults }}', '/dev/null']
   roles:
-    - setup/gather-input
     - filesystem/make-mounts
+    - filesystem/separate-mtab
     - system/selinux
     - epel
     - systemd/mask-services
@@ -17,9 +19,9 @@
     - pgsql/install
     - mysql/install    
     - system/rsyslog
-    #- vsftpd/configure
+    - vsftpd/configure
     #- mail/configure-dovecot
-    #- mail/configure-postfix
+    - mail/configure-postfix
     - mail/maildir
     - browscap
     - php/install  
@@ -51,6 +53,11 @@
     - network/optimizations
     # Odds and ends
     - system/yum
+    - apache/phpmyadmin
+    - apache/phppgadmin
+    #- apache/webmail
+    #- apache/roundcube
+    #- apache/horde
     # Last checkpoint, validate a mock account
     #- apnscp/assert-account-works
     

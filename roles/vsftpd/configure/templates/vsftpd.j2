@@ -1,0 +1,11 @@
+/var/log/vsftpd.log {
+	delaycompress
+	rotate 5
+	notifempty
+	missingok
+	create 600 root root
+	sharedscripts
+	postrotate
+  	pgrep vsftpd && killall -HUP vsftpd || exit 0
+	endscript
+}

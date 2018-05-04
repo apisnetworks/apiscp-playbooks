@@ -1,0 +1,10 @@
+# Break /proc/mounts -> /etc/mtab linkage
+# This is done to avoid polluting /etc/mtab with several hundred 
+# bind mounts
+---
+- stat: path=/etc/mtab
+  register: mtab
+- block:
+    - file: path=/etc/mtab state=absent
+    - copy: src=/proc/mounts dest=/etc/mtab
+  when: mtab.stat.exists and mtab.stat.islnk

@@ -1,0 +1,36 @@
+---
+vsftpd_config_path: /etc/vsftpd/vsftpd.conf
+vsftpd_login_banner: /etc/vsftpd/login.txt
+vsftpd_directives:
+  # If a user is attached to an account
+  # and later removed, seccomp will vomit 
+  # during uid -> pwd translation
+  seccomp_sandbox: "NO"
+  background: "YES"
+  banner_file: "{{ vsftpd_login_banner }}"
+  pam_service_name: ftp
+  # Display hidden files automatically
+  force_dot_files: "YES"
+  syslog_enable: "NO"
+  userlist_enable: "NO"
+  user_config_dir: "/etc/vsftpd"
+  ssl_ciphers: "HIGH"
+  ssl_enable: "YES"
+  require_ssl_reuse: "NO"
+  allow_anon_ssl: "NO"
+  ssl_tlsv1: "YES"
+  ssl_sslv3: "NO"
+  ssl_sslv2: "NO"
+  rsa_cert_file: "/etc/ssl/certs/server.pem"
+  # @TODO make optional?
+  force_local_data_ssl: "NO"
+  force_local_logins_ssl: "NO"
+  text_userdb_names: "YES"
+  # Optional FXP support
+  #port_promiscuous: "YES"
+  #pasv_promiscuous: "YES"
+  vsftpd_log_file: "/var/log/vsftpd.log"
+  xferlog_std_format: "NO"
+  allow_writeable_chroot: YES
+  background: "YES"
+  idle_session_timeout: "0"
