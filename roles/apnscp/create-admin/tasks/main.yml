@@ -15,4 +15,4 @@
   when: pass.stat.size == 0
 - name: "Setting admin email to {{ apnscp_admin_email }}"
   command: "{{ apnscp_root }}/bin/cmd admin_set_email {{ apnscp_admin_email|quote }}"
-  when: apnscp_admin_email
+  when: apnscp_admin_email != None
