@@ -1,0 +1,5 @@
+authlib_user: daemon
+authlib_group: daemon
+authlib_home: "/etc/authlib"
+daemon_config: "{{ authlib_home }}/authdaemonrc"
+pg_config: "{{ authlib_home }}/authpgsqlrc"

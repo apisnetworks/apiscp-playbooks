@@ -7,5 +7,4 @@
     - 'roles/common/vars/apnscp-internals.yml'
     - ['{{ apnscp_user_defaults }}', '/dev/null']
   roles:
-    - apnscp/initialize-filesystem-template
-    #- mail/configure-postfix
+    - mail/configure-courier-authlib

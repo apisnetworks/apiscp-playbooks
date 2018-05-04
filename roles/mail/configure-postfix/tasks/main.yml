@@ -1,1 +1,42 @@
 ---
+- include_tasks: register-password.yml
+- name: Create Postfix user
+  postgresql_user:
+    name: "{{ postfix_user }}"
+    password: "{{ postfix_password }}"
+    db: "{{ postfix_db }}"
+    encrypted: YES
+    priv: "uids:select/gids:select/domain_lookup:select/email_lookup:select"    
+  become: yes
+  become_user: postgres
+  register: user
+- name: Copy Postfix configuration templates
+  template:
+    src: "templates/{{ item }}"
+    dest: "{{ postfix_conf_dir }}/{{ item | regex_replace('\\.j2$', '') }}"
+    owner: "{{ postfix_sysuser }}"
+    group: "{{ postfix_sysuser }}"
+    mode: 640
+  with_items: "{{ template_files }}"
+  notify: Restart postfix
+  when: user.changed
+- name: Set main.cf configuration
+  ini_file:
+    path: "{{ config_file }}"
+    section: null
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  with_dict: "{{ config }}"
+  when: user.changed
+  notify: Restart postfix
+- name: Create site_blackhole alias
+  lineinfile:
+    path: "{{ aliases_file }}"
+    regexp: '^[#]*site_blackhole\s*:'
+    line: 'site_blackhole: /dev/null'
+    state: present
+  register: lif
+- name: Update aliases
+  command: /usr/sbin/postalias "{{ aliases_file }}"
+  when: lif.changed
+- meta: flush_handlers

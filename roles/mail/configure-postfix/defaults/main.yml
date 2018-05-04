@@ -1,0 +1,15 @@
+---
+aliases_file: /etc/aliases
+postfix_conf_dir: /etc/postfix
+# apnscp-specific lookup file for database configuration
+postfix_control_file: "{{ postfix_conf_dir }}/mailboxes.cf"
+postfix_sysuser: postfix
+postfix_user: postfix
+# Override to force a password otherwise randomly assigned
+postfix_password:
+# Don't touch.
+postfix_db: "{{ appliance_db }}"
+template_files: 
+  - mailboxes.cf.j2
+  - uids.cf.j2
+  - virtual_filter.cf.j2

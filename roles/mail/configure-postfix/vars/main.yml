@@ -1,0 +1,81 @@
+---
+config_file: /etc/postfix/main.cf
+config:
+  smtpd_tls_cert_file: /etc/ssl/certs/server.pem
+  virtual_mailbox_domains: proxy:pgsql:/etc/postfix/mailboxes.cf
+  alias_maps: proxy:hash:/etc/postfix/aliases
+  virtual_transport: maildrop
+  virtual_alias_maps: proxy:pgsql:/etc/postfix/aliases.cf
+  maildrop_destination_recipient_limit: 1
+  virtual_uid_maps: proxy:pgsql:/etc/postfix/uids.cf
+  virtual_gid_maps: proxy:pgsql:/etc/postfix/gids.cf
+  virtual_mailbox_base: /home/virtual
+  disable_vrfy_command: "yes"
+  virtual_minimum_uid: 500
+  virtual_mailbox_maps: proxy:pgsql:/etc/postfix/mailboxes.cf
+  smtpd_sasl_auth_enable: "yes"
+  smtpd_sasl_type: dovecot
+  smtpd_sasl_path: private/auth
+  transport_maps: hash:/etc/postfix/transport
+  proxy_read_maps: >
+    $local_recipient_maps $mydestination $virtual_alias_maps
+    $virtual_alias_domains $virtual_mailbox_maps $virtual_mailbox_domains
+    $relay_recipient_maps $relay_domains $canonical_maps $sender_canonical_maps
+    $recipient_canonical_maps $relocated_maps $transport_maps $mynetworks
+  smtpd_recipient_restrictions: >
+    permit_sasl_authenticated,
+    reject_unauth_destination,
+    reject_unknown_recipient_domain,
+    reject_non_fqdn_helo_hostname,
+    reject_non_fqdn_sender,
+    check_client_access pcre:/etc/postfix/client_access,
+    check_sender_access pcre:/etc/postfix/access,
+    reject_unknown_recipient_domain,
+    reject_unverified_recipient,
+    reject_non_fqdn_recipient,
+    reject_unauth_pipelining,
+    reject_invalid_hostname,
+    reject_unknown_sender_domain,
+    reject_unknown_reverse_client_hostname
+
+  smtpd_helo_required: "yes"
+  smtpd_error_sleep_time: 60
+  maximal_backoff_time: 8h
+  smtpd_timeout: ${stress?10}${stress:300}
+  maildrop_destination_rate_delay: 3s
+  smtpd_sasl_security_options: noanonymous
+  mailbox_size_limit: $message_size_limit
+  minimal_backoff_time: 4h
+  queue_run_delay: 8h
+  data_directory: /var/lib/postfix
+  smtpd_tls_session_cache_database: proxy:btree:$data_directory/smtpd_scache
+  smtp_sasl_auth_cache_name: proxy:btree:$data_directory/sasl_auth_cache
+  message_size_limit: "{{ postfix_message_size_limit | default(1000000000) }}"
+  smtpd_soft_error_limit: ${stress?2}${stress:5}
+  smtpd_hard_error_limit: 2
+  virtual_destination_rate_delay: 1s
+  smtpd_proxy_options: speed_adjust
+  smtpd_tls_loglevel: 0
+  postscreen_access_list: permit_mynetworks, cidr:/etc/postfix/postscreen_access.cidr
+  postscreen_dnsbl_threshold: 2
+  postscreen_dnsbl_sites: bl.spamcop.net*2 b.barracudacentral.org*2 zen.spamhaus.org*2  list.dnswl.org*-2
+  postscreen_dnsbl_action: enforce
+  postscreen_greet_action: enforce
+  postscreen_non_smtp_command_enable: "yes"
+  smtpd_tls_mandatory_protocols: "!SSLv2"
+  smtp_tls_mandatory_protocols: "!SSLv2"
+  smtpd_tls_exclude_ciphers: SSLv2
+  require_home_directory: yes
+  postscreen_dnsbl_ttl: 24h
+  postscreen_pipelining_action: drop
+  address_verify_map: proxy:btree:$data_directory/verify_cache
+  postscreen_cache_map: $data_directory/postscreen_cache
+  postscreen_cache_cleanup_interval: 43200
+  proxy_write_maps: proxy:btree:$data_directory/postscreen_cache,proxy:btree:$data_directory/verify_cache
+  inet_protocols: ipv4
+  postscreen_greet_wait: ${stress?2}${stress:6}s
+  address_verify_cache_cleanup_interval: 0
+  postscreen_dnsbl_whitelist_threshold: -1
+  compatibility_level: 2
+  smtp_tls_security_level: may
+  sender_dependent_default_transport_maps: hash:/etc/postfix/sender_transport

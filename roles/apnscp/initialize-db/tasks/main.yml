@@ -57,6 +57,8 @@
 
 - block:
   - name: Verify {{ appliance_user }} user exists
+    become_user: postgres
+    become: yes
     postgresql_user:
       role_attr_flags: SUPERUSER
       name: "{{ appliance_user }}"
@@ -105,6 +107,7 @@
       type: database
       state: present 
   become_user: postgres
+  become: yes
 
 - include_role: name=common/merge-yaml-config
   vars:

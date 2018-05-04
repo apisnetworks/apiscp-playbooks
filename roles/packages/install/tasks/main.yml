@@ -2,6 +2,7 @@
 # vim:ft=ansible:
 ---
 - include_tasks: configure-default-vars.yml
+# Skip for now as this blocks updates
 - name: "Verify apnscp priority"        
   ini_file:
     path: /etc/yum.repos.d/apnscp.repo
@@ -9,6 +10,7 @@
     option: priority
     value: 1
     state: present
+  when: false
 - name: "Install MariaDB"
   tags: ['install', 'sql', 'mysql']
   block: 

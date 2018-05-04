@@ -9,7 +9,9 @@
   systemd: state=restarted name=httpd enabled=yes
   listen: Restart services
 - name: Restart vsftpd
-  systemd: state=restarted name=vsftpd 
+  systemd: state=restarted name=vsftpd  enabled=yes
+- name: Restart authlib
+  systemd: state=restarted name=courier-authlib enabled=yes
 - name: Restart postgresql
   systemd: state=restarted name=postgresql 
   listen: Restart services

@@ -22,6 +22,7 @@
     - vsftpd/configure
     #- mail/configure-dovecot
     - mail/configure-postfix
+    - mail/configure-courier-authlib
     - mail/maildir
     - browscap
     - php/install  
@@ -45,20 +46,27 @@
     - system/nscd
     - system/nss
     - system/pam
+    #- system/limits
     - fail2ban/whitelist-self
     - fail2ban/configure-jails
     #- mail/globalize-spamassassin-bayes
-    - apnscp/register-ssl
     #- network/setup-firewall    
+    - apnscp/register-ssl
     - network/optimizations
     # Odds and ends
     - system/yum
-    #- apache/phpmyadmin
-    #- apache/phppgadmin
-    #- apache/webmail
-    #- apache/roundcube
-    #- apache/horde
+    #- mysql/phpmyadmin
+    #- pgsql/phppgadmin
+    #- mail/webmail-squirrelmail
+    #- mail/webmail-roundcube
+    #- mail/webmail-horde
+    #- software/pyenv
+    #- software/rvm
+    #- software/nvm
+    #- software/gvm
+    #- software/passenger
     # Last checkpoint, validate a mock account
     #- apnscp/assert-account-works
-    
-
+    #- apnscp/notify-installed
+    # Holy shit, DONE!
+    # 🎉🙌🎊🍺

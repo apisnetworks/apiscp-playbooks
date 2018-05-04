@@ -83,6 +83,7 @@ copy_files:
   - {file: /etc/profile.d/lang.sh}
   - {file: /etc/profile.d/256term.csh}
   - {file: /etc/profile.d/256term.sh}
+  - {file: /usr/share/empty}
 
 packages:
   - { package: sudo, service: siteinfo }
@@ -238,6 +239,7 @@ packages:
   - { package: lm_sensors-libs, service: siteinfo }
   - { package: logrotate, service: siteinfo }
   - { package: lua, service: siteinfo }
+  - { package: maildrop, service: siteinfo }
   - { package: mailx, service: siteinfo }
   - { package: man-db, service: siteinfo }
   - { package: man-pages, service: siteinfo }

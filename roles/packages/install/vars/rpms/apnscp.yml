@@ -12,9 +12,7 @@ rpms:
   - apr-util
   - apr-util-devel
   - courier-authlib
-  - courier-authlib-devel
   - courier-authlib-pgsql
-  - courier-unicode-devel
   - courier-unicode
   - curl
   - dovecot
