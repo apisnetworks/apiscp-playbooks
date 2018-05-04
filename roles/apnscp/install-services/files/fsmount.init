@@ -121,7 +121,8 @@ function unmount_site {
 	SITE=$1
 	let MNTCNT=1
 	while `still_mounted $SITE` ; do
-		env LIBMOUNT_MTAB=/proc/mounts /bin/umount $VHOSTDIR/$SITE/fst/${SOCKETDIR} \
+		# Lazily unmount to prevent drive/resource busy message
+		env LIBMOUNT_MTAB=/proc/mounts /bin/umount -l $VHOSTDIR/$SITE/fst/${SOCKETDIR} \
 			$VHOSTDIR/$SITE/fst  2> /dev/null	
 		let MNTCNT++
 		# layer mounted over 50 times!?!!
@@ -139,13 +140,13 @@ function get_services {
 
 function reload_site {
 	SITE=$1
-	env LIBMOUNT_MTAB=/proc/mounts mount -n -t overlay -o remount none $VHOSTDIR/$SITE/fst 2> /dev/null
+	env LIBMOUNT_MTAB=/proc/mounts mount -n -t overlay -o remount $VHOSTDIR/$SITE/fst 2> /dev/null
 }
 
 
 function reload {
   for path in $VHOSTDIR/site[0-9]*/fst ; do
-		env LIBMOUNT_MTAB=/proc/mounts mount -n -t overlay -o remount none $path 2> /dev/null
+		env LIBMOUNT_MTAB=/proc/mounts mount -n -t overlay -o remount $path 2> /dev/null
   done
   # crond loses rtd otherwise
   # should move to systemd BindTo= in future
@@ -207,7 +208,7 @@ case "$1" in
 		if [ -z $3 ] ; then
 			usage $1
 		fi
-		if [ $3 = "ALL" ] ; then
+		if [ $3 == "ALL" ] ; then
 			unmount_site $2
 		else
   		unmount_service $2 $3
