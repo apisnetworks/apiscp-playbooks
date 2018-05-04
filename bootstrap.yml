@@ -53,8 +53,8 @@
     - network/optimizations
     # Odds and ends
     - system/yum
-    - apache/phpmyadmin
-    - apache/phppgadmin
+    #- apache/phpmyadmin
+    #- apache/phppgadmin
     #- apache/webmail
     #- apache/roundcube
     #- apache/horde
