@@ -20,10 +20,6 @@
     - mysql/install    
     - system/rsyslog
     - vsftpd/configure
-    #- mail/configure-dovecot
-    - mail/configure-postfix
-    - mail/configure-courier-authlib
-    - mail/maildir
     - browscap
     - php/install  
     - php/install-pecl-module
@@ -41,6 +37,10 @@
     - apnscp/create-admin
     - apnscp/assert-admin-works
     # Onto provisioning a test account
+    #- mail/configure-dovecot
+    - mail/configure-postfix
+    - mail/configure-courier-authlib
+    - mail/maildir
     - apnscp/initialize-filesystem-template
     - apnscp/install-services
     - system/nscd
