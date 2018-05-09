@@ -1,0 +1,4 @@
+user="{{postfix_user|quote}}"
+password="{{postfix_password|quote}}"
+dbname="{{postfix_db|quote}}"
+query=SELECT dest FROM (SELECT alias_destination as dest, CASE WHEN (email_lookup.user = '') THEN 2 ELSE 1 END as pri, enabled FROM email_lookup WHERE email_lookup.user = '%u' AND domain = '%d' AND type = 'a' AND enabled = 1::bit OR email_lookup.user = '' AND domain = '%d' AND type = 'a' ORDER BY pri LIMIT 1) as dest WHERE enabled = 1::bit;
