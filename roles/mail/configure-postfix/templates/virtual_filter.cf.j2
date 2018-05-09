@@ -1,4 +1,4 @@
-user="{{ postfix_user }}"
-password="{{ postfix_password|quote }}"
-dbname="{{ postfix_db }}"
+user={{ postfix_user }}
+password={{ postfix_password|quote }}
+dbname={{ postfix_db }}
 query=SELECT CASE WHEN COUNT(enabled) > 0 THEN 'FILTER lmtp:unix:/var/run/dspam/dspam.sock' ELSE 'DUNNO' END FROM email_lookup WHERE domain = '%d' and "user" = '%u' AND type = 'a' and enabled = 1::bit AND alias_destination !~* '^[^@,]+@%d[, ]*$' AND (alias_destination = 'site_blackhole' OR strpos(alias_destination,'@') > 0);

@@ -14,12 +14,12 @@
   template:
     src: "templates/{{ item }}"
     dest: "{{ postfix_conf_dir }}/{{ item | regex_replace('\\.j2$', '') }}"
-    owner: "{{ postfix_sysuser }}"
+    owner: root
     group: "{{ postfix_sysuser }}"
-    mode: 640
+    mode: 0640
   with_items: "{{ template_files }}"
   notify: Restart postfix
-  when: user.changed
+  when: user.changed or true
 - name: Set main.cf configuration
   ini_file:
     path: "{{ config_file }}"
@@ -40,3 +40,5 @@
   command: /usr/sbin/postalias "{{ aliases_file }}"
   when: lif.changed
 - meta: flush_handlers
+
+# @TODO Update maps, transport, sender_transport
