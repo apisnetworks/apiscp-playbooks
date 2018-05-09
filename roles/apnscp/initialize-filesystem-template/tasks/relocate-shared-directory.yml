@@ -23,7 +23,7 @@
         state: absent
         follow: no
     - file: 
-        path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest }} | dirname"
+        path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest | dirname }}"
         state: directory
     - file: 
         path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest }}"

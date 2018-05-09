@@ -14,7 +14,7 @@
 - set_fact: __populate_filesystem_template=true
   when: >
     populate_filesystem_template == "auto" and fst_created.changed or
-    populate_filesystem_template == true
+    populate_filesystem_template and populate_filesystem_template != "auto"
 - include_role: role="packages/install" tasks_from="configure-default-vars.yml"
 - include_tasks: install-package.yml package="{{ item.package }}"  service="{{item.service}}"
   with_items: "{{ packages }}"
