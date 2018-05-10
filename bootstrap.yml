@@ -29,6 +29,7 @@
     - apache/configure
     #- clamav/configure
     #- apache/modsecurity
+    #- apache/fcgid
     - apnscp/initialize-db
     - apnscp/build-php
     - apnscp/install-extensions  

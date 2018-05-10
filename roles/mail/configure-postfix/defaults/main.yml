@@ -13,3 +13,4 @@ template_files:
   - mailboxes.cf.j2
   - uids.cf.j2
   - virtual_filter.cf.j2
+  - aliases.cf.j2
