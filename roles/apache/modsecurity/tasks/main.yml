@@ -1,0 +1,7 @@
+---
+- name: Correct AV scanner permissions  
+  file:
+    path: /etc/modsecurity.d/runAV
+    perm: 4751
+    group: apache
+    owner: "{{ clamav_user }}"

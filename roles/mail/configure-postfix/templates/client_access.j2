@@ -1,0 +1,28 @@
+# Check client access restrictions
+#
+# Similar to ACCESS(5)
+# NAME
+#        access - Postfix SMTP server access table
+# 
+# SYNOPSIS
+#        postmap /etc/postfix/access
+# 
+#        postmap -q "string" /etc/postfix/access
+# 
+#        postmap -q - /etc/postfix/access <inputfile
+# 
+# DESCRIPTION
+#        This  document  describes  access  control  on remote SMTP
+#        client information: host  names,  network  addresses,  and
+#        envelope  sender or recipient addresses; it is implemented
+#        by the  Postfix  SMTP  server.   See  header_checks(5)  or
+#        body_checks(5)  for access control on the content of email
+#        messages.
+# 
+#        Normally, the access(5) table is specified as a text  file
+#        that  serves  as  input  to  the  postmap(1) command.  The
+#        result, an indexed file in dbm or db format, is  used  for
+#        fast  searching  by  the  mail system. Execute the command
+#        "postmap /etc/postfix/access" to rebuild an  indexed  file
+#        after changing the corresponding text file.
+# 

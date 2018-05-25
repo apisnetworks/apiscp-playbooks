@@ -5,17 +5,6 @@ bootstrap:
     repo_key: "/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"
 repo_name: epel
 rpms:
-  - clamav
-  - clamav-data
-  - clamav-devel
-  - clamav-filesystem
-  - clamav-lib
-  - clamav-scanner
-  - clamav-scanner-systemd
-  - clamav-server
-  - clamav-server-systemd
-  - clamav-unofficial-sigs
-  - clamav-update
   - compat-libtidy
   - compat-libtidy-devel
   - etckeeper
@@ -52,7 +41,6 @@ rpms:
   - ncftp
   - netcdf
   - nghttp2
-  - nss-mdns
   - ogdi
   - opendbx
   - opendkim

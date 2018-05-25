@@ -1,0 +1,16 @@
+---
+- name: Install clamav packages
+  yum: 
+    name: "{{ clamav_packages }}"
+    state: present
+- include_role:
+    name: clamav/support
+  vars: 
+    clamav_scan_cron: "{{ _clamav_scan_cron }}"
+    clamav_clamd_config__custom: "{{ _clamav_clamd_config__custom }}"
+    clamav_clamd_daemon_nicelevel: "{{ _clamav_clamd_daemon_nicelevel}}"
+- name: Link /etc/clamd.d/clamd.conf to /etc/clamd.conf
+  file: 
+    path: /etc/clamd.conf
+    state: link
+    src: /etc/clamd.d/scan.conf 

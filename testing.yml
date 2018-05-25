@@ -2,9 +2,10 @@
 - hosts: localhost  
   vars:
     apnscp_user_defaults: /root/apnscp-ansible-defaults.yml
+    clamav_enable: no
   vars_files:
     - './apnscp-vars.yml'
     - 'roles/common/vars/apnscp-internals.yml'
     - ['{{ apnscp_user_defaults }}', '/dev/null']
   roles:
-    - mail/configure-courier-authlib
+    - apache/modsecurity

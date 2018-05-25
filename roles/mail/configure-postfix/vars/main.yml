@@ -3,7 +3,7 @@ config_file: /etc/postfix/main.cf
 config:
   smtpd_tls_cert_file: /etc/ssl/certs/server.pem
   virtual_mailbox_domains: proxy:pgsql:/etc/postfix/mailboxes.cf
-  alias_maps: proxy:hash:/etc/postfix/aliases
+  alias_maps: "proxy:hash:{{aliases_file}}"
   virtual_transport: maildrop
   virtual_alias_maps: proxy:pgsql:/etc/postfix/aliases.cf
   maildrop_destination_recipient_limit: 1
@@ -55,7 +55,7 @@ config:
   smtpd_hard_error_limit: 2
   virtual_destination_rate_delay: 1s
   smtpd_proxy_options: speed_adjust
-  smtpd_tls_loglevel: 0
+  smtpd_tls_loglevel: "0"
   postscreen_access_list: permit_mynetworks, cidr:/etc/postfix/postscreen_access.cidr
   postscreen_dnsbl_threshold: 2
   postscreen_dnsbl_sites: bl.spamcop.net*2 b.barracudacentral.org*2 zen.spamhaus.org*2  list.dnswl.org*-2
@@ -65,13 +65,14 @@ config:
   smtpd_tls_mandatory_protocols: "!SSLv2"
   smtp_tls_mandatory_protocols: "!SSLv2"
   smtpd_tls_exclude_ciphers: SSLv2
-  require_home_directory: yes
+  require_home_directory: "yes"
+  home_mailbox: "{{ maildir_home }}/"
   postscreen_dnsbl_ttl: 24h
   postscreen_pipelining_action: drop
   address_verify_map: proxy:btree:$data_directory/verify_cache
   postscreen_cache_map: $data_directory/postscreen_cache
   postscreen_cache_cleanup_interval: 43200
-  proxy_write_maps: proxy:btree:$data_directory/postscreen_cache,proxy:btree:$data_directory/verify_cache
+  proxy_write_maps: $postscreen_cache_map,$address_verify_map,$smtpd_tls_session_cache_database
   inet_protocols: ipv4
   postscreen_greet_wait: ${stress?2}${stress:6}s
   address_verify_cache_cleanup_interval: 0

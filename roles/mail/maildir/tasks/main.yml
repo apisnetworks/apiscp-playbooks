@@ -4,7 +4,7 @@
     path: /etc/login.defs
     regexp: '^[^#]*MAIL_DIR'
     state: present
-    line: "MAIL_DIR\tMail"
+    line: "MAIL_DIR\t{{maildir_home}}"
 - lineinfile:
     path: /etc/Muttrc
     regexp: '^[^#]*source\s*/etc/Muttrc\.local'
@@ -16,11 +16,15 @@
     block: |
       # Local configuration for Mutt.
       set mbox_type=Maildir
-      set folder="~/Mail"
+      set folder="~/{{maildir_home}}"
       set sort_aux=reverse-date-received
       set sort=threads
+      set spoolfile="~/{{maildir_home}}"
       set sort_re
       source /etc/Muttrc.local
-
+- name: Remove root mbox
+  file: 
+    path: /var/spool/mail/root
+    state: absent
 
 

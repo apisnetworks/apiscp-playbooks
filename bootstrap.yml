@@ -27,7 +27,7 @@
     - java/tomcat
     - apnscp/bootstrap
     - apache/configure
-    #- clamav/configure
+    - clamav/setup
     #- apache/modsecurity
     #- apache/fcgid
     - apnscp/initialize-db

@@ -1,0 +1,4 @@
+---
+- block:
+  - include_tasks: setup-clamav.yml
+  when: clamav_enable

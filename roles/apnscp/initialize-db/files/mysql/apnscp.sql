@@ -23,10 +23,10 @@ DROP TABLE IF EXISTS `api_keys`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `api_keys` (
-  `api_key` char(32) NOT NULL,
+  `api_key` char(64) NOT NULL,
   `username` varchar(32) NOT NULL DEFAULT '',
   `domain` varchar(52) DEFAULT NULL,
-  `site_id` int(3) NOT NULL DEFAULT '0',
+  `site_id` int(3) NULL DEFAULT NULL,
   `last_used` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`api_key`),

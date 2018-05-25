@@ -46,6 +46,11 @@ apnscp_php_version: 7.1.17
 apnscp_shared_root: /.socket
 apnscp_ca_rpm: http://yum.apnscp.com/apnscp-latest.rpm
 apnscp_platform_version: 7.5
+# Disable clamav if server memory is limited
+clamav_enable: true
+# Use a global spamassassin database for bayesian storage
+spamassassin_global: true
+
 # Enable SELinux
 # true is absolutely guaranteed to break your system
 # debug places selinux in permissive mode

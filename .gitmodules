@@ -10,3 +10,9 @@
 [submodule "roles/packages/priorities"]
 	path = roles/packages/priorities
 	url = https://github.com/davidmnoriega/ansible-role-yum-plugin-priorities.git
+[submodule "roles/clamav/support"]
+	path = roles/clamav/support
+	url = https://github.com/jtyr/ansible-clamav.git
+[submodule "roles/clamav/config_encoder_filters"]
+	path = roles/clamav/config_encoder_filters
+	url = https://github.com/jtyr/ansible-config_encoder_filters.git

@@ -239,6 +239,7 @@ packages:
   - { package: lm_sensors-libs, service: siteinfo }
   - { package: logrotate, service: siteinfo }
   - { package: lua, service: siteinfo }
+  - { package: lz4, service: siteinfo }
   - { package: maildrop, service: siteinfo }
   - { package: mailx, service: siteinfo }
   - { package: man-db, service: siteinfo }
@@ -256,7 +257,6 @@ packages:
   - { package: nettle, service: siteinfo }
   - { package: net-tools, service: siteinfo }
   - { package: nspr, service: siteinfo }
-  - { package: nss-mdns, service: siteinfo }
   - { package: nss-pem, service: siteinfo }
   - { package: nss-softokn-freebl, service: siteinfo }
   - { package: nss-softokn, service: siteinfo }

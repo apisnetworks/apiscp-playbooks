@@ -1,0 +1,22 @@
+---
+clamav_enable: false
+_clamav_scan_cron: false
+_clamav_clamd_config__custom: 
+  LogClean: yes
+  ExtendedDetectionInfo: yes
+  AllowSupplementaryGroups: yes
+  ScanPE: yes
+  DetectBrokenExecutables: yes
+_clamav_clamd_daemon_nicelevel: 5
+clamav_packages:
+  - clamav
+  - clamav-data
+  - clamav-devel
+  - clamav-filesystem
+  - clamav-lib
+  - clamav-scanner
+  - clamav-scanner-systemd
+  - clamav-server
+  - clamav-server-systemd
+  - clamav-unofficial-sigs
+  - clamav-update

@@ -14,3 +14,5 @@ template_files:
   - uids.cf.j2
   - virtual_filter.cf.j2
   - aliases.cf.j2
+  - postscreen_access.cidr.j2
+  - client_access.j2
