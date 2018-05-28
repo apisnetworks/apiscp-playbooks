@@ -28,7 +28,7 @@
     - apnscp/bootstrap
     - apache/configure
     - clamav/setup
-    #- apache/modsecurity
+    - apache/modsecurity
     #- apache/fcgid
     - apnscp/initialize-db
     - apnscp/build-php
@@ -38,7 +38,7 @@
     - apnscp/create-admin
     - apnscp/assert-admin-works
     # Onto provisioning a test account
-    #- mail/configure-dovecot
+    - mail/configure-dovecot
     - mail/configure-postfix
     - mail/configure-courier-authlib
     - mail/maildir
@@ -47,7 +47,7 @@
     - system/nscd
     - system/nss
     - system/pam
-    #- system/limits
+    - system/limits
     - fail2ban/whitelist-self
     - fail2ban/configure-jails
     #- mail/globalize-spamassassin-bayes
@@ -62,7 +62,7 @@
     #- mail/webmail-roundcube
     #- mail/webmail-horde
     #- software/pyenv
-    #- software/rvm
+    #- software/rbenv
     #- software/nvm
     #- software/gvm
     #- software/passenger

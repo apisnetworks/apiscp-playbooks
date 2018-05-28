@@ -1,0 +1,159 @@
+###############################################################################################
+# ,------.   ,-----. ,--.  ,--.,--.,--------.    ,--------. ,-----. ,--. ,--. ,-----.,--.  ,--.
+# |  .-.  \ '  .-.  '|  ,'.|  ||  |'--.  .--'    '--.  .--''  .-.  '|  | |  |'  .--./|  '--'  |
+# |  |  \  :|  | |  ||  |' '  |`-'    |  |          |  |   |  | |  ||  | |  ||  |    |  .--.  |
+# |  '--'  /'  '-'  '|  | `   |       |  |          |  |   '  '-'  ''  '-'  ''  '--'\|  |  |  |
+# `-------'  `-----' `--'  `--'       `--'          `--'    `-----'  `-----'  `-----'`--'  `--'
+###############################################################################################
+####             ALL CHANGES SHOULD BE MADE TO /etc/dovecot/conf.d/local.conf              ####
+###############################################################################################
+
+protocols = imap pop3
+verbose_proctitle = yes
+
+disable_plaintext_auth = no
+auth_cache_size = 10M
+auth_cache_negative_ttl = 0
+auth_username_format = "%Lu"
+auth_mechanisms = plain login
+
+default_login_user = dovecot
+ssl_verify_client_cert = no
+service director {
+  unix_listener login/director {
+  }
+  fifo_listener login/proxy-notify {
+  }
+  unix_listener director-userdb {
+  }
+  inet_listener {
+  }
+}
+
+passdb {
+  driver = pam
+  # Session is necessary to restore root after verification
+  args = cache_key=%u%r failure_show_msg=yes session=yes dovecot
+}
+
+userdb {
+  driver = apnscp
+  args = blocking=no
+}
+
+service imap-login {
+}
+service pop3-login {
+}
+
+
+service imap-login {
+  inet_listener imap {
+  }
+  inet_listener imaps {
+  }
+  service_count = 0
+}
+
+mail_plugins = expire quota acl cgroup fts fts_lucene
+
+protocol imap {
+  mail_max_userip_connections = 25
+  mail_plugins = $mail_plugins imap_quota snarf imap_acl
+  imap_logout_format = bytes=%i/%o
+}
+
+service pop3-login {
+  inet_listener pop3 {
+  }
+
+  inet_listener pop3s {
+  }
+  service_count = 0
+}
+
+protocol pop3 {
+  pop3_fast_size_lookups = yes
+  pop3_uidl_format = %f
+  pop3_logout_format = top=%t/%p, retr=%r/%b, del=%d/%m, size=%s, bytes=%i/%o
+}
+
+mbox_write_locks = fcntl
+
+ssl_cert = </etc/pki/tls/certs/server.pem
+ssl_key = </etc/pki/tls/certs/server.pem
+ssl_cipher_list = RSA:!EXP:!NULL:!RC4:+HIGH:+MEDIUM:-LOW
+
+namespace inbox {
+  mailbox Drafts {
+    special_use = \Drafts
+  }
+  mailbox Spam {
+    auto = subscribe
+  }
+  mailbox Junk {
+    special_use = \Junk
+    auto = subscribe
+  }
+  mailbox Trash {
+    special_use = \Trash
+  }
+  mailbox Sent {
+    special_use = \Sent
+    auto = subscribe
+  }
+}
+
+mail_location = maildir:%h/Mail
+mail_fsync =  optimized
+lock_method = fcntl
+maildir_copy_with_hardlinks = yes
+#maildir_very_dirty_syncs = yes
+namespace {
+   type = private
+   separator = .
+   prefix = INBOX.
+   inbox = yes
+   hidden = no
+   list = yes
+   subscriptions = yes
+}
+namespace { 
+  type = shared
+  separator = .
+  prefix = shared.%%u.
+  location = maildir:%%h/Mail:INDEX=~/Mail/shared.%%u
+  subscriptions = no
+  list = children
+}
+
+service auth {
+  unix_listener auth-userdb {
+  }
+  unix_listener {{ postfix_auth_socket }} {
+    mode = 0660
+    user = {{ postfix_user }}
+    group = {{ postfix_group }}
+  }
+  user = root
+}
+service auth-worker {
+  user = root
+}
+service dict {
+  unix_listener dict {
+  }
+}
+
+plugin {
+  acl=vfile
+}
+plugin {
+  fts = lucene
+  fts_lucene = whitespace_chars=@.
+}
+
+plugin {
+  quota2 = fs:Account:group
+  quota = fs:User:user
+}

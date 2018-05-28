@@ -7,6 +7,7 @@
     insertbefore: '^[^#]*auth.*password-auth'
     state: present  
 # cgroup provided by dovecot22-apnscp    
+- include_tasks: list_file.yml
 - lineinfile: 
     path: "{{ pam_file }}"
     regexp: '^[^#]*auth.*{{vwh_module}}'

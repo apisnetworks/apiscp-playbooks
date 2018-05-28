@@ -1,4 +1,12 @@
 ---
-- block:
-  - include_tasks: setup-clamav.yml
+- include_vars: dir={{ role_path }}/../support/defaults/
+- include_tasks: setup-clamav.yml
   when: clamav_enable
+  tags: clamav
+- name: Disable ClamAV
+  systemd:
+    name: "{{ clamav_service }}"
+    state: stopped
+    enabled: false
+  when: not clamav_enable
+  tags: clamav

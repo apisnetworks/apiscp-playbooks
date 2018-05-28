@@ -13,6 +13,8 @@
 - name: Update channel protocols
   command: pecl channel-update pecl.php.net
   run_once: true
+  register: output
+  changed_when: "'up to date' not in output.stdout"
 - name: Verify if PECL extension installed.
   vars: 
     modname: "{{ extension | basename | regex_replace('^([^-.]+).*$', '\\1') }}"
@@ -27,7 +29,7 @@
         PHPCONFIG: "{{ phpconfig }}"
         XTRACFG: "{{ extra_flags }}"
         MAKEFLAGS: "-j{{ ansible_processor_vcpus }}"    
-      notify: Restart apache
+      notify: "{{ notify | default('Restart apache') }}"
       when: not stres.stat.exists or force is defined and force
       register: module_install
     - name: "Verify {{ scandir }}/{{modname}}.ini exists"
@@ -39,6 +41,5 @@
         dest: "{{ scandir }}/{{modname}}.ini"
         content: "extension={{modname}}.so\n"
       when: > 
-        module_install.changed and 
-        not st.stat.exists and
-        bypass_pecl_ini is not defined
+        not bypass_pecl_ini and
+        module_install.changed and not st.stat.exists

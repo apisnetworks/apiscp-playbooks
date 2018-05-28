@@ -14,7 +14,8 @@ prog="fsmount"
 VHOSTDIR=${VHOSTDIR:-"/home/virtual"}
 SVCROOT=${SVCROOT:-"$VHOSTDIR/FILESYSTEMTEMPLATE"}
 SOCKETDIR=${SOCKETDIR:-"/.socket"}
-SCRATCH=${SCRATCH:-${SOCKETDIR}}
+# Relative to account path
+SCRATCH=${SCRATCH:"info"}
 
 shopt -s nullglob
 # Thanks systemd...
@@ -41,7 +42,7 @@ function mount_site {
 	SERVICES=`get_services $SITE`
 	[[ -z $SERVICES ]] && return
 	CMD="/bin/mount -n -t overlay -o 
-		upperdir=$VHOSTDIR/$SITE/shadow,lowerdir=`synthesize $SERVICES`,workdir=${SCRATCH} 
+		upperdir=$VHOSTDIR/$SITE/shadow,lowerdir=`synthesize $SERVICES`,workdir=$VHOSTDIR/$SITE/${SCRATCH} 
 		none $VHOSTDIR/$SITE/fst"
 	echo $CMD
 	eval $CMD
@@ -61,7 +62,7 @@ function initialize_site {
 	# siteinfo always present for accounts, populate this first
 	
 	CMD="/bin/mount -n -t overlay -T/proc/mounts -o 
-	      upperdir=$VHOSTDIR/$SITE/shadow,lowerdir=${SVCROOT}/siteinfo,workdir=${SCRATCH} 
+	      upperdir=$VHOSTDIR/$SITE/shadow,lowerdir=${SVCROOT}/siteinfo,workdir=$VHOSTDIR/$SITE/${SCRATCH} 
 	      none $VHOSTDIR/$SITE/fst"
 	eval $CMD 2>/dev/null
 	mount_socket $SITE
@@ -102,7 +103,7 @@ function unmount_service {
 	[[ ! $LAYERS ]] && return
 	unmount_site $SITE
 	/bin/mount -T/proc/mounts -n -t overlay \
-    -o "upperdir=$VHOSTDIR/$SITE/shadow,lowerdir=${LAYERS},workdir=${SCRATCH}" \
+    -o "upperdir=$VHOSTDIR/$SITE/shadow,lowerdir=${LAYERS},workdir=$VHOSTDIR/$SITE/${SCRATCH}" \
 		$VHOSTDIR/$SITE/fst $VHOSTDIR/$SITE/fst
 	mount_socket $SITE
 }

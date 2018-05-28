@@ -1,4 +1,4 @@
 ---
 default_vars:
-	mailbox_list_index: "yes"
+  mailbox_list_index: "yes"
   mail_plugins: "$mail_plugins quota acl fts fts_lucene cgroup"

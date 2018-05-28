@@ -1,0 +1,3 @@
+---
+mod_security_home: /etc/httpd/modsecurity.d
+av_name: runAV

@@ -13,6 +13,10 @@
       - https://github.com/phpredis/phpredis.git
       - https://github.com/igbinary/igbinary.git
       - https://github.com/krakjoe/apcu.git  
+    notify: Restart apnscp
+- stat:
+    path: "{{ php_module_directory }}/ioncube_loader_lin_{{ php_version }}.so"
+  register: icst
 - include_role:
     name: php/ioncube-loader
   vars:
@@ -24,3 +28,4 @@
       - "{{ apnscp_root }}/config/php.d"
     handlers:
       - Restart apnscp
+  when: not icst.stat.exists

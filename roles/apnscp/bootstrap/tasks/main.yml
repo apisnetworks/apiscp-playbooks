@@ -24,6 +24,13 @@
     section: core 
     option: filesystem_shared 
     value: "{{ apnscp_shared_root }}"
+    
+- include_tasks: set-config.yml
+  vars: 
+    section: cron
+    option: low_memory
+    value: true
+  when: has_low_memory
 
 - name: Create apnscp user {{ apnscp_system_user }}
   user: 
@@ -59,6 +66,7 @@
   register: httpdchk
 - copy:
     content: |
+      ServerName {{ apnscp_fqdn | default(ansible_fqdn) }}
       User {{ apnscp_system_user }}
       Group {{ apnscp_system_user }}
       Use VHost {{ apnscp_ip4_address | default(ansible_default_ipv4.address) }} 

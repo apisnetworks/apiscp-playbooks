@@ -323,6 +323,7 @@ rpms:
   - passivetex
   - passwd
   - patch
+  - pciutils
   - pcre
   - pcre-devel
   - pcsc-lite-libs

@@ -1,0 +1,4 @@
+---
+- copy:
+    src: /etc/pam.d/crond
+    dest: "{{ apnscp_filesystem_template }}/ssh/etc/pam.d/crond"

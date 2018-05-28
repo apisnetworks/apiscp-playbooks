@@ -1,0 +1,7 @@
+{{ apache_user }}          soft    rss 1048576
+{{ apache_user }}          soft 		nofiles unlimited
+{{ apache_user }}          soft    priority 20
+{{ apache_user }}          soft    data 1048576
+@mysql          soft  	memlock unlimited
+@mysql          hard 		memlock unlimited
+@mysql          soft 		nofiles unlimited

@@ -8,4 +8,4 @@
     - 'roles/common/vars/apnscp-internals.yml'
     - ['{{ apnscp_user_defaults }}', '/dev/null']
   roles:
-    - apache/modsecurity
+    - network/setup-firewall

@@ -1,0 +1,4 @@
+---
+security_path: "/etc/security"
+system_limits_file: "{{ security_path }}/limits.conf"
+dropin_limits_path: "{{ system_limits_file | dirname }}/limits.d"

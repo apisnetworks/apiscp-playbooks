@@ -14,3 +14,16 @@
     path: /etc/clamd.conf
     state: link
     src: /etc/clamd.d/scan.conf 
+- name: "Fix ClamAV ownership"
+  file:
+    path: /var/lib/clamav
+    group: "{{ clamav_group }}"
+    recurse: yes
+- name: "Reconfigure ClamAV update to use group {{ clamav_group }}"
+  ini_file:
+    path: /etc/clamav-unofficial-sigs/clamav-unofficial-sigs.conf
+    section: null
+    option: clam_group
+    value: "{{ clamav_group }}"
+    state: present
+    no_extra_spaces: yes

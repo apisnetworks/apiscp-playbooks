@@ -2,6 +2,7 @@
 - include_tasks: ./sshd.yml
 - include_tasks: ./su.yml
 - include_tasks: ./ftp.yml
+- include_tasks: crond.yml
   #include_tasks: ./dovecot.yml
 - name: "Edit {{ apnscp_filesystem_template }} system-auth"
   lineinfile:
@@ -9,3 +10,10 @@
     regexp: 'session\s+.*pam_cgroup\.so'
     line: "session\toptional\tpam_cgroup.so"
     state: present
+- name: "Require login shell to be listed in /etc/shells"
+  lineinfile:
+      path: "/etc/pam.d/system-auth"
+      regexp: 'auth\s+.*pam_shells\.so'
+      line: "auth\trequired\tpam_shells.so"
+      state: present
+      insertbefore: "account\\s"

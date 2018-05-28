@@ -1,2 +1,13 @@
 ---
-- name: Change auth mechanism
+- name: Verify Dovecot starts on boot
+  systemd:
+    name: dovecot
+    enabled: yes
+    state: started
+  failed_when: false
+- name: Copy Dovecot configuration
+  template:
+    src: "apnscp.conf.j2"
+    dest: "{{ dovecot_conf_dir }}/apnscp.conf"
+  notify: Restart dovecot
+

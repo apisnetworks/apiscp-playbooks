@@ -1,3 +1,7 @@
 ---
 dovecot_home: /etc/dovecot
 config_file: "{{ dovecot_home }}/apnscp.conf"
+postfix_user: postfix
+postfix_group: postfix
+postfix_auth_socket: /var/spool/postfix/private/auth
+dovecot_conf_dir: "{{ dovecot_home }}/conf.d"

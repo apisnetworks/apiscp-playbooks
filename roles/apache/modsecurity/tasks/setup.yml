@@ -1,0 +1,15 @@
+---
+- name: Install mod_security package
+  yum:
+    name: mod_security-clamav-connector
+    state: present
+  notify: Restart apache
+- name: Load mod_security module
+  lineinfile: 
+    path: /etc/httpd/conf/httpd-custom.conf
+    regexp: '^[#]LoadModule\s+security2_module\s+'
+    line: LoadModule security2_module modules/mod_security2.so
+    insertbefore: "^"
+    firstmatch: yes
+    state: present
+  notify: Restart apache

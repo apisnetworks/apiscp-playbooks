@@ -1,0 +1,19 @@
+---
+- include_vars:
+    file: "{{ playbook_dir }}/roles/apache/apache-vars/defaults/main.yml"
+- name: Set initial user limits
+  template:
+    src: templates/apnscp.conf.j2
+    dest: "{{ apnscp_filesystem_template }}/siteinfo{{ dropin_limits_path }}/10-apnscp-user.conf"
+    force: no
+  notify: Reload filesystem template
+- name: Set initial system limits
+  template:
+    src: templates/system.conf.j2
+    dest: "{{ dropin_limits_path }}/10-apnscp-system.conf"
+    force: no
+- name: Set filesystem template limits
+  file: 
+    path: "{{ apnscp_filesystem_template }}/siteinfo/{{ system_limits_file }}"
+    state: touch
+  changed_when: false
