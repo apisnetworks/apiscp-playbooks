@@ -31,4 +31,4 @@
 - name: Restart fail2ban
   systemd: state=restarted name=fail2ban enabled=yes
 - name: Reload filesystem template
-  systemd: state=reload name=fsmount
+  systemd: state=reloaded name=fsmount
