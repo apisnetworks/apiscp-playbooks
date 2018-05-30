@@ -4,7 +4,7 @@
   connection: local
   gather_facts: yes
   vars:
-    apnscp_user_defaults: /root/apnscp-ansible-defaults.yml
+    apnscp_user_defaults: /root/apnscp-vars.yml
   vars_files:
     - 'apnscp-vars.yml'
     - 'roles/common/vars/apnscp-internals.yml'
@@ -48,10 +48,12 @@
     - system/nss
     - system/pam
     - system/limits
+    - system/cgroup
+    - network/setup-firewall    
     - fail2ban/whitelist-self
     - fail2ban/configure-jails
     #- mail/globalize-spamassassin-bayes
-    #- network/setup-firewall    
+    #- mail/rspamd
     - apnscp/register-ssl
     - network/optimizations
     # Odds and ends
@@ -61,9 +63,9 @@
     #- mail/webmail-squirrelmail
     #- mail/webmail-roundcube
     #- mail/webmail-horde
+    - software/nvm
     #- software/pyenv
     #- software/rbenv
-    #- software/nvm
     #- software/gvm
     #- software/passenger
     # Last checkpoint, validate a mock account

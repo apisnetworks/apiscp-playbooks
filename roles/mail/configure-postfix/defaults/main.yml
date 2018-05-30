@@ -16,3 +16,4 @@ template_files:
   - aliases.cf.j2
   - postscreen_access.cidr.j2
   - client_access.j2
+  - domains.cf.j2

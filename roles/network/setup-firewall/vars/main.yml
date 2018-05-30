@@ -1,0 +1,47 @@
+---
+rules:
+  # FTP
+  - port: 20/tcp
+  - port: 21/tcp
+  # SSH
+  - port: 22/tcp
+  # Mail
+  - port: 25/tcp
+  - port: 465/tcp
+  - port: 587/tcp
+  - port: 110/tcp
+  - port: 143/tcp
+  - port: 993/tcp
+  - port: 995/tcp
+  # HTTP
+  - port: 80/tcp
+  - port: 443/tcp
+  # Panel, non-SSL
+  - port: 2082/tcp
+  # Panel
+  - port: 2083/tcp
+  # Panel DAV
+  - port: 2078/tcp
+  # For service support
+  # @TODO integrate port openings in the panel
+  - port: 40000-49999/tcp
+  - port: 40000-49999/udp
+  # Java
+  - port: 8080/tcp
+    state: disabled
+  - port: 8009/tcp
+    state: disabled
+  - rule: rule service name="mysql" audit limit value="{{ mysql_conn_limit }}" accept
+    zone: public
+    state: present
+    immediate: false
+direct_rules:
+  # Block sneaky bastards
+  - rule: "-d 127.0.0.1/32 -p tcp -m tcp --dport 25 -j ACCEPT"
+    priority: 0
+  - rule: "-m owner --uid-owner postfix -j ACCEPT"
+    priority: 1
+  - rule: "-p tcp -m tcp --dport 25 -m owner --gid-owner postfix -j ACCEPT"
+    priority: 1
+  - rule: "-p tcp -m tcp --dport 25 -j REJECT --reject-with icmp-port-unreachable"
+    priority: 1

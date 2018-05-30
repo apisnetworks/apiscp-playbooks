@@ -15,7 +15,7 @@ VHOSTDIR=${VHOSTDIR:-"/home/virtual"}
 SVCROOT=${SVCROOT:-"$VHOSTDIR/FILESYSTEMTEMPLATE"}
 SOCKETDIR=${SOCKETDIR:-"/.socket"}
 # Relative to account path
-SCRATCH=${SCRATCH:"info"}
+SCRATCH=${SCRATCH:-"info"}
 
 shopt -s nullglob
 # Thanks systemd...
@@ -44,7 +44,6 @@ function mount_site {
 	CMD="/bin/mount -n -t overlay -o 
 		upperdir=$VHOSTDIR/$SITE/shadow,lowerdir=`synthesize $SERVICES`,workdir=$VHOSTDIR/$SITE/${SCRATCH} 
 		none $VHOSTDIR/$SITE/fst"
-	echo $CMD
 	eval $CMD
 	mount_socket $SITE
 	

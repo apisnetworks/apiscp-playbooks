@@ -31,7 +31,7 @@ relocated_paths:
     }
   - {
       service: siteinfo,
-      src: "{{ apnscp_shared_root }}/ssl/pki/tls/certs",
+      src: "{{ apnscp_shared_root }}/ssl/pki/tls",
       dest: /etc/ssl/certs
     }
   - { 
@@ -198,13 +198,16 @@ packages:
   - { package: libICE, service: siteinfo }
   - { package: libicu, service: siteinfo }
   - { package: libidn, service: siteinfo }
+  - { package: libidn2, service: siteinfo }
   - { package: libjpeg-turbo, service: siteinfo }
   - { package: libmcrypt, service: siteinfo }
+  - { package: libmetalink, service: siteinfo }
   - { package: libmount, service: siteinfo }
   - { package: libmpc, service: siteinfo }
   - { package: libnghttp2, service: siteinfo }
   - { package: libpipeline, service: siteinfo }
   - { package: libpng, service: siteinfo }
+  - { package: libpsl, service: siteinfo }
   - { package: libpwquality, service: siteinfo }
   - { package: libselinux, service: siteinfo }
   - { package: libsemanage, service: siteinfo }

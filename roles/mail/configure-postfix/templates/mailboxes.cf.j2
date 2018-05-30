@@ -1,4 +1,4 @@
 user={{postfix_user|quote}}
 password={{postfix_password|quote}}
 dbname={{postfix_db|quote}}
-query=SELECT dest FROM (SELECT 'site'||domain_lookup.site_id||'/fst/home/'||uids.user||'/Mail/'||COALESCE('.'||fs_destination,'')||'/' as dest, CASE WHEN (email_lookup.user = '') THEN 2 ELSE 1 END as pri, enabled FROM email_lookup JOIN uids USING(uid) JOIN gids USING(site_id) JOIN domain_lookup USING(domain) WHERE ( email_lookup."user" = '%u' AND email_lookup.domain = '%d' OR email_lookup."user" = '' AND email_lookup.domain = '%d' ) AND email_lookup.type = 'v' ORDER BY PRI LIMIT 1) as dest where enabled = 1::bit;
+select_function=SELECT dest FROM (SELECT 'site'||domain_lookup.site_id||'/fst/home/'||uids.user||'/Mail/'||COALESCE('.'||fs_destination,'')||'/' as dest, CASE WHEN (email_lookup.user = '') THEN 2 ELSE 1 END as pri, enabled FROM email_lookup JOIN uids USING(uid) JOIN gids USING(site_id) JOIN domain_lookup USING(domain) WHERE ( email_lookup."user" = '%u' AND email_lookup.domain = '%d' OR email_lookup."user" = '' AND email_lookup.domain = '%d' ) AND email_lookup.type = 'v' ORDER BY PRI LIMIT 1) as dest where enabled = 1::bit;

@@ -1,3 +1,18 @@
+####################################################################################
+# ██████╗ ███████╗ █████╗ ██████╗ ███╗   ███╗███████╗██╗
+# ██╔══██╗██╔════╝██╔══██╗██╔══██╗████╗ ████║██╔════╝██║
+# ██████╔╝█████╗  ███████║██║  ██║██╔████╔██║█████╗  ██║    (or be destroyed)
+# ██╔══██╗██╔══╝  ██╔══██║██║  ██║██║╚██╔╝██║██╔══╝  ╚═╝
+# ██║  ██║███████╗██║  ██║██████╔╝██║ ╚═╝ ██║███████╗██╗
+# ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚═╝     ╚═╝╚══════╝╚═╝
+#####################################################################################
+# This is part of the core apnscp configuration - it is updated with each new release
+# To make changes, copy this file to /root prior to running this playbook:
+# 
+# cp /usr/local/apnscp/resources/playbooks/apnscp-vars.yml /root
+# cd /usr/local/apnscp/resources/playbooks && ansible-playbook bootstrap.yml
+#
+#####################################################################################
 # Default PHP interpreter
 system_php_version: 7.2.6
 
@@ -13,14 +28,6 @@ has_low_memory: false
 # - yes populates all packages from apnscp/initialize-filesystem-template/vars/main.yml
 # - no bypasses fst creation
 populate_filesystem_template: auto
-
-# Bypass initial questionnaire by providing a set of responses
-# Can be generated with:
-# ansible-playbook --tags=setup/gather-input --extra-vars='save_output=/root/host-facts.yml' bootstrap.yml
-# then running,
-# ansible-playbook --extra-vars="apnscp_setup_file=/root/host-facts.yml" bootstrap.yml
-# or uncommitting below and defining it
-#apnscp_setup_file:
 
 # Default IPv4 address for apnscp to listen to. If undefined will 
 # use the first address that has external routing
@@ -38,6 +45,8 @@ apnscp_admin_email:
 apnscp_admin_password: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=16') }}"
 # Optional admin to user otherwise "admin"
 apnscp_admin_user: admin
+# Spam filter engine, spamassassin or rspamd
+spamfilter: spamassassin
 ####################################
 #     Don't change below here      #
 ####################################
@@ -55,7 +64,7 @@ apnscp_platform_version: 7.5
 clamav_enable: "{{ has_low_memory | default(false) | bool == true | ternary(false, true) }}"
 # Use a global spamassassin database for bayesian storage
 spamassassin_global: true
-
+nvm_version: 0.33.11
 # Enable SELinux
 # true is absolutely guaranteed to break your system
 # debug places selinux in permissive mode

@@ -1,0 +1,43 @@
+---
+- name: "Disable iptables"
+  systemd:
+    name: "{{ service }}"
+    state: stopped
+    masked: yes
+    enabled: no
+  with_items:
+    - iptables
+    - ip6tables
+    - ebtables
+  loop_control: 
+    loop_var: service
+  ignore_errors: true
+- name: "Open ports with firewalld"
+  firewalld:
+    immediate: "{{ item.immediate | default(default_immediate) }}"
+    port: "{{ item.port | default(omit) }}"
+    state: '{{ item.state | default("enabled") }}'
+    zone: '{{ item.zone | default(default_zone) }}'
+    rich_rule: '{{ item.rich | default(omit) }}'
+    permanent: '{{ item.permament | default(default_permanent) }}'
+  with_items:
+    "{{ rules }}"
+  loop_control:
+    label: "Setting rule {{ item.port | default(item.rule) }} "
+  when: true
+  notify: Reload firewalld
+- name: "Apply direct firewalld rules"
+  command: >
+    /bin/firewall-cmd {{ item.permanent|default(default_permanent)| bool | default(default_permanent) | ternary("--permanent", "") }}
+    --direct --add-rule {{ item.net | default(default_net) }} 
+    {{ item.table | default(default_chain) }} 
+    {{ item.chain | default("OUTPUT") }} 
+    {{ item.priority | default("0") }} 
+    {{ item.rule }}
+  register: o
+  changed_when: "o.stdout is search('success') and not o.stderr is search('Warning')"
+  with_items: "{{ direct_rules }}"
+  loop_control:
+    label: "Setting {{ item.rule }}"
+  notify: Reload firewalld
+- meta: flush_handlers

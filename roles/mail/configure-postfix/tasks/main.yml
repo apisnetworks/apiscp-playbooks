@@ -19,7 +19,6 @@
     mode: 0640
   with_items: "{{ template_files }}"
   notify: Restart postfix
-  when: user.changed
 - name: Set main.cf configuration
   ini_file:
     path: "{{ config_file }}"
@@ -27,7 +26,6 @@
     option: "{{ item.key }}"
     value: "{{ item.value }}"
   with_dict: "{{ config }}"
-  when: user.changed or true
   notify: Restart postfix
 - name: Create site_blackhole alias
   lineinfile:
@@ -39,7 +37,17 @@
 - name: Update aliases
   command: /usr/sbin/postalias "{{ aliases_file }}"
   when: lif.changed
+- name: Check if sender transport creation necessary
+  stat: path="{{ postfix_conf_dir}}/sender_transport"
+  register: st
+- name: Create sender transport
+  block:
+  - file: 
+      path: "{{ postfix_conf_dir}}/sender_transport"
+      state: touch
+  - command: /usr/sbin/postmap "{{ postfix_conf_dir }}/sender_transport"
+  when: not st.stat.exists
 - name: Update transport
   command: /usr/sbin/postmap "{{ postfix_conf_dir }}/transport"
-  when: lif.changed
+  changed_when: false
 - meta: flush_handlers

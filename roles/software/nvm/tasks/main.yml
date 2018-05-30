@@ -1,0 +1,33 @@
+---
+- name: Prepare {{ git_target }}
+  file:
+    path: "{{ git_target|dirname}}"
+    state: directory
+- name: Download nvm
+  git: 
+    repo: "{{ git_repo }}"
+    dest: "{{ git_target }}"
+    version: "v{{ git_version }}"
+- name: Add nvm.sh 
+  template:
+    dest: "{{ nvm_script }}"
+    group: root
+    owner: root
+    mode: 0755
+    src: "templates/nvm.sh.j2"
+- name: Link nvm.sh to FST
+  file:
+    src: "{{ nvm_script }}"
+    state: hard
+    path: "{{ apnscp_filesystem_template }}/{{ nvm_service_install }}/{{nvm_script}}"
+- name: Check for LTS installation
+  shell: . {{ nvm_script }} ; nvm ls
+  register: o
+  failed_when: false
+- name: Install Node LTS
+  # Need to source nvm.sh
+  shell: . {{ nvm_script }} ; nvm install --lts
+  when: o.stdout is not match('default.*?lts.*?N/A')
+  register: o
+- name: Configure LTS as default interpreter
+  shell: . {{ nvm_script }} && nvm 

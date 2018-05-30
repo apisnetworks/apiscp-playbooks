@@ -1,0 +1,22 @@
+
+
+##NAME: LOCATION:0
+PGSQL_CONNECTION host=localhost user={{ PGSQL_USERNAME }} port={{ PGSQL_PORT | default(5432) }} password={{ PGSQL_PASSWORD }} dbname={{ PGSQL_DATABASE }}
+
+PGSQL_SELECT_CLAUSE        {{ PG_SELECT_CLAUSE }}
+
+#################
+# Garbage entries
+#################
+PGSQL_USER_TABLE	passwd
+PGSQL_CRYPT_PWFIELD	crypt
+PGSQL_UID_FIELD	uid
+PGSQL_GID_FIELD	gid
+PGSQL_LOGIN_FIELD	id
+PGSQL_HOME_FIELD	home
+PGSQL_NAME_FIELD	name
+
+##NAME: MARKER:0
+#
+# Do not remove this section from this configuration file. This section
+# must be present at the end of this file.

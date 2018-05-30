@@ -1,0 +1,6 @@
+---
+git_target: "{{ apnscp_shared_root }}/node/nvm"
+git_repo: https://github.com/creationix/nvm.git
+git_version: '{{ nvm_version | default("0.33.11") }}'
+nvm_service_install: ssh
+nvm_script: /etc/profile.d/nvm.sh

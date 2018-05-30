@@ -2,9 +2,10 @@
 config_file: /etc/postfix/main.cf
 config:
   smtpd_tls_cert_file: /etc/ssl/certs/server.pem
-  virtual_mailbox_domains: proxy:pgsql:/etc/postfix/mailboxes.cf
+  virtual_mailbox_domains: proxy:pgsql:/etc/postfix/domains.cf
   alias_maps: "proxy:hash:{{aliases_file}}"
   virtual_transport: maildrop
+  local_transport: maildrop
   virtual_alias_maps: proxy:pgsql:/etc/postfix/aliases.cf
   maildrop_destination_recipient_limit: 1
   virtual_uid_maps: proxy:pgsql:/etc/postfix/uids.cf
@@ -15,7 +16,10 @@ config:
   virtual_mailbox_maps: proxy:pgsql:/etc/postfix/mailboxes.cf
   smtpd_sasl_auth_enable: "yes"
   smtpd_sasl_type: dovecot
+  mail_spool_directory: /var/spool/mail
   smtpd_sasl_path: private/auth
+  # plussed address notation foo+bar@domain.com
+  recipient_delimiter: +
   transport_maps: hash:/etc/postfix/transport
   proxy_read_maps: >
     $local_recipient_maps $mydestination $virtual_alias_maps

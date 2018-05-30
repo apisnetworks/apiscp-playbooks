@@ -3,24 +3,24 @@ daemon_vars:
   authmodulelist: authpgsql
   daemons: "{{ courier_workers | default(2) }}"
   DEFAULTOPTION: "disablewebmail=1,disableimap=1"
-pg_vars:
-  PGSQL_HOST: localhost
-  PGSQL_USERNAME: "{{ postfix_user }}"
-  PGSQL_PASSWORD: "{{ postfix_password }}"
-  PGSQL_DATABASE: "{{ postfix_db }}"
-  PG_SELECT_CLAUSE: >
-    SELECT username, cryptpw, clearpw, uid, gid, home, maildir, quota, 
-    fullname, options FROM 
-    (SELECT uids.user||'@$(domain)' as username, 
-    NULL as cryptpw, NULL as clearpw, uid as uid, gid as gid, 
-    '/home/'||uids.user||'/' as home, 'Mail/'||COALESCE('.'||fs_destination,'') 
-    as maildir, NULL as quota, NULL as fullname, 
-    NULL as options, enabled, CASE WHEN
-    (email_lookup.user = '') THEN 2 ELSE 1 END as pri 
-    FROM email_lookup JOIN uids USING(uid) JOIN gids 
-    USING(site_id) JOIN domain_lookup USING(domain) 
-    WHERE ( email_lookup."user" = '$(local_part)' AND 
-    email_lookup.domain = '$(domain)' OR email_lookup."user" = '' 
-    AND email_lookup.domain = '$(domain)' ) AND 
-    email_lookup.type = 'v' ORDER BY PRI LIMIT 1) AS master 
-    WHERE enabled = 1::bit;   
+
+PGSQL_HOST: localhost
+PGSQL_USERNAME: "{{ postfix_user }}"
+PGSQL_PASSWORD: "{{ postfix_password }}"
+PGSQL_DATABASE: "{{ postfix_db }}"
+PG_SELECT_CLAUSE: >
+  SELECT username, cryptpw, clearpw, uid, gid, home, maildir, quota, 
+  fullname, options FROM 
+  (SELECT uids.user||'@$(domain)' as username, 
+  NULL as cryptpw, NULL as clearpw, uid as uid, gid as gid, 
+  '/home/'||uids.user||'/' as home, 'Mail/'||COALESCE('.'||fs_destination,'') 
+  as maildir, NULL as quota, NULL as fullname, 
+  NULL as options, enabled, CASE WHEN
+  (email_lookup.user = '') THEN 2 ELSE 1 END as pri 
+  FROM email_lookup JOIN uids USING(uid) JOIN gids 
+  USING(site_id) JOIN domain_lookup USING(domain) 
+  WHERE ( email_lookup."user" = '$(local_part)' AND 
+  email_lookup.domain = '$(domain)' OR email_lookup."user" = '' 
+  AND email_lookup.domain = '$(domain)' ) AND 
+  email_lookup.type = 'v' ORDER BY PRI LIMIT 1) AS master 
+  WHERE enabled = 1::bit;   

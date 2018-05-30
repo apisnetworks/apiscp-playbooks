@@ -17,11 +17,12 @@
     label: "Edit {{ item.key }}"
   notify: Restart authlib
 - name: "Verify permissions on {{ authlib_home }}"
-  file: path="{{ authlib_home }}" mode="0700" owner="{{ authlib_user }}" group="{{ authlib_group }}"
+  file: path="{{ authlib_home }}" mode="0710" owner="{{ authlib_user }}" group="{{ authlib_group }}"
 - name: "Configure {{ pg_config }}"
-  lineinfile:
-    path: "{{ pg_config }}"
-    regexp: '^[#]*{{item.key}}\s+'
-    line: "{{item.key}}\t{{item.value}}"
-  with_dict: "{{ pg_vars }}"
+  template:
+    src: "templates/authpgsqlrc.j2"
+    dest: "{{ pg_config }}"
+    owner: "{{ authlib_user }}" 
+    group: "{{ authlib_group }}"
+    mode: 0640
   notify: Restart authlib

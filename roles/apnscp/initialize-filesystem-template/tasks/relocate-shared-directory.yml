@@ -17,18 +17,22 @@
   when: logrotate_vars
 
 - name: Link {{ apnscp_filesystem_template }}/{{ service }}{{ dest }} to {{ src }}
-  block:
-    - file: 
-        path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest }}"
-        state: absent
-        follow: no
-    - file: 
-        path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest | dirname }}"
-        state: directory
-    - file: 
-        path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest }}"
-        state: link
-        src: "{{ src }}"
+  stat:
+    path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest }}"
+  register: r
+- block:
+  - file: 
+      path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest }}"
+      state: absent
+      follow: no
+  - file: 
+      path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest | dirname }}"
+      state: directory
+  - file: 
+      path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest }}"
+      state: link
+      src: "{{ src }}"
+  when: not r.stat.exists or not r.stat.islnk
 
 - name: "Link /proc to {{ apnscp_shared_root }}"
   file:

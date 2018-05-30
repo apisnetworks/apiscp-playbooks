@@ -1,0 +1,6 @@
+---
+- name: Enable cgconfig
+  systemd:
+    name: cgconfig
+    state: started
+    enabled: yes
