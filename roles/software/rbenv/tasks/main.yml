@@ -39,7 +39,7 @@
 # Install Ruby manually to avoid using incorrect FST markup in playbook
 - name: Build Ruby {{ sys_ruby_version }} outside FST
   shell: >
-    {{ rbenv_script }} && rbenv install {{ sys_ruby_version }}
+    {{ git_target }}/bin/rbenv install {{ sys_ruby_version }}
   environment: 
     TMPDIR: "{{ apnscp_root }}/storage/cache"
   when: sys_ruby_version is defined
