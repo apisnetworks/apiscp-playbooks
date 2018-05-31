@@ -1,0 +1,24 @@
+---
+- name: Set delay compress to {{ item.name }}
+  lineinfile:
+    path: "{{ logrotate_dir }}/{{ item.name }}"
+    regexp: '^\s*delaycompress'
+    state: present
+    line: "\tdelaycompress"
+    insertbefore: '^\s*}$'
+- name: Add bandwidth logging to {{ item.name }}
+  lineinfile:
+    path: "{{ logrotate_dir }}/{{ item.name }}"
+    state: present
+    line: '{{ bandwidth_script }}'
+  register: c
+  when: false
+- lineinfile:
+    path: "{{ logrotate_dir }}/{{ item.name }}"
+    state: present
+    line: |
+      lastaction
+        /usr/bin/apnscp_php {{ bandwidth_script }} {{ item.token }} || true
+      endscript
+    insertbefore: '^\s*}$'
+  when: not bandwidth_script in lookup('file', logrotate_dir + '/' + item.name)

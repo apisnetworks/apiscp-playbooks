@@ -1,0 +1,7 @@
+---
+goenv_repo: https://github.com/syndbg/goenv.git
+goenv_repo_ver: 1.14.0
+gvm_home: "{{ apnscp_shared_root}}/go/goenv"
+git_target: "/usr/local/share/go/goenv"
+goenv_service_install: ssh
+goenv_script: "/etc/profile.d/goenv.sh"

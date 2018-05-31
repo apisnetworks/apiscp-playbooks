@@ -1,0 +1,5 @@
+---
+pyenv_version: 'v{{ pyenv_version|default("1.2.4") }}'
+pyenv_service_install: ssh
+git_target: "/usr/local/share/python/pyenv"
+pyenv_script: "/etc/profile.d/pyenv.sh"

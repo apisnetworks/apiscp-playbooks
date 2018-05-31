@@ -1,0 +1,11 @@
+---
+logrotate_dir: /etc/logrotate.d
+logrotate_conf: /etc/logrotate.conf
+bandwidth_script: "{{apnscp_root}}/bin/scripts/tabulate_bandwidth.php"
+maps:
+  - name: httpd
+    token: http
+  - name: vsftpd
+    token: ftp
+  - name: syslog
+    token: mail

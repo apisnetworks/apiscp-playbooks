@@ -32,19 +32,25 @@ populate_filesystem_template: auto
 # Default IPv4 address for apnscp to listen to. If undefined will 
 # use the first address that has external routing
 #apnscp_ip4_address:
-#
+
 # Default hostnames to request SSL for.
 # Additional SSL hostnames may be requested by running apnscp/register-ssl
 ssl_hostnames: "{{ ansible_fqdn }}"
+
 # Email address of the owner of the server
 # Used for Let's Encrypt registration, login notifications,
 # and other events 
+# Note, it can be changed at a later date using
+# apnscp/bin/cmd admin_change_email new@address.com
 apnscp_admin_email:
+
 # Use the following password. Note, can be changed at a later date using
 # apnscp/bin/cmd auth_change_password NEWPASSWORD
 apnscp_admin_password: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=16') }}"
+
 # Optional admin to user otherwise "admin"
 apnscp_admin_user: admin
+
 # Spam filter engine, spamassassin or rspamd
 spamfilter: spamassassin
 ####################################
@@ -65,6 +71,12 @@ clamav_enable: "{{ has_low_memory | default(false) | bool == true | ternary(fals
 # Use a global spamassassin database for bayesian storage
 spamassassin_global: true
 nvm_version: 0.33.11
+pyenv_version: 1.2.4
+rbenv_version: 1.1.1
+goenv_version: 1.14.0
+# Others may be installed via "rbenv install", this is used primarily for 
+# bootstrapping Passenger
+sys_ruby_version: 2.4.4
 # Enable SELinux
 # true is absolutely guaranteed to break your system
 # debug places selinux in permissive mode

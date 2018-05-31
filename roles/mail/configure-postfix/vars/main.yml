@@ -4,10 +4,11 @@ config:
   smtpd_tls_cert_file: /etc/ssl/certs/server.pem
   virtual_mailbox_domains: proxy:pgsql:/etc/postfix/domains.cf
   alias_maps: "proxy:hash:{{aliases_file}}"
-  virtual_transport: maildrop
-  local_transport: maildrop
+  virtual_transport: vmaildrop
+  local_transport: localmaildrop
   virtual_alias_maps: proxy:pgsql:/etc/postfix/aliases.cf
-  maildrop_destination_recipient_limit: 1
+  vmaildrop_destination_recipient_limit: 1
+  localmaildrop_destination_recipient_limit: $vmaildrop_destination_recipient_limit
   virtual_uid_maps: proxy:pgsql:/etc/postfix/uids.cf
   virtual_gid_maps: proxy:pgsql:/etc/postfix/gids.cf
   virtual_mailbox_base: /home/virtual
@@ -46,7 +47,8 @@ config:
   smtpd_error_sleep_time: 60
   maximal_backoff_time: 8h
   smtpd_timeout: ${stress?10}${stress:300}
-  maildrop_destination_rate_delay: 3s
+  vmaildrop_destination_rate_delay: 3s
+  localmaildrop_destination_rate_delay: $vmaildrop_destination_rate_delay
   smtpd_sasl_security_options: noanonymous
   mailbox_size_limit: $message_size_limit
   minimal_backoff_time: 4h
@@ -62,7 +64,7 @@ config:
   smtpd_tls_loglevel: "0"
   postscreen_access_list: permit_mynetworks, cidr:/etc/postfix/postscreen_access.cidr
   postscreen_dnsbl_threshold: 2
-  postscreen_dnsbl_sites: bl.spamcop.net*2 b.barracudacentral.org*2 zen.spamhaus.org*2  list.dnswl.org*-2
+  postscreen_dnsbl_sites: bl.spamcop.net*2 b.barracudacentral.org*2 zen.spamhaus.org*2 list.dnswl.org*-2
   postscreen_dnsbl_action: enforce
   postscreen_greet_action: enforce
   postscreen_non_smtp_command_enable: "yes"

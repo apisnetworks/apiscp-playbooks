@@ -1,0 +1,44 @@
+---
+- name: Clone goenv repository
+  git: 
+    repo: "{{ goenv_repo }}"
+    version: "{{ goenv_repo_ver }}"
+    dest: "{{ apnscp_filesystem_template }}/{{goenv_service_install}}/{{ git_target }}"
+- name: Prepare {{ git_target }}
+  file:
+    path: "{{ git_target|dirname}}"
+    state: directory
+- name: Link {{ git_target }}
+  file:
+    path: "{{ git_target }}"
+    src: "{{ apnscp_filesystem_template }}/{{goenv_service_install }}/{{git_target}}"
+    state: link
+- name: Add {{ git_target }} to wheel
+  command: >
+    find {{ git_target | quote }} -follow  
+      -iname ".git" -prune -o -exec chmod g+w {} + 
+      -exec chgrp wheel {} \;
+  register: goenv_chmod
+  changed_when: goenv_chmod.stdout != ""
+- name: Create goenv.sh
+  copy:
+    dest: "{{ goenv_script }}"
+    content: |
+      #!/bin/sh
+      export PATH="{{git_target}}/bin:{{git_target}}/shims:$HOME/.goenv/shims:${PATH}"
+      export GOENV_SHELL=bash
+      export GOENV_ROOT="{{ git_target }}"
+      eval "$({{git_target}}/bin/goenv init -)"
+    mode: 0755
+  register: goenv_create
+- name: Check for goenv.sh in FST
+  stat: path="{{ apnscp_filesystem_template }}/{{ goenv_service_install }}/{{goenv_script}}"
+  register: s
+- name: Link goenv.sh to FST
+  file:
+    src: "{{ goenv_script }}"
+    state: hard
+    path: "{{ apnscp_filesystem_template }}/{{ goenv_service_install }}/{{goenv_script}}"
+    force: yes
+  when: goenv_create.changed or not s.stat.exists
+  notify: Reload filesystem template

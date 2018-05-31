@@ -1,0 +1,27 @@
+- name: Create apnscp log profile
+  template:
+    src: templates/apnscp.j2
+    dest: "{{ logrotate_dir }}/apnscp"
+- name: Enable logrotate compression
+  lineinfile:
+    path: "{{logrotate_conf}}"
+    regexp: '^\s*compress'
+    state: present
+    line: compress
+# Otherwise it can pulverize btmp
+- name: Rotate logs daily
+  lineinfile:
+    path: "{{logrotate_conf}}"
+    insertafter: EOF
+    state: present
+    line: daily
+- name: Use numeric log ordering
+  lineinfile:
+    path: "{{logrotate_conf}}"
+    regexp: '^\s*dateext'
+    state: absent
+- name: Edit logrotate profiles
+  include_tasks: change-logrotate.yml
+  with_items: "{{ maps }}"
+  loop_control:
+    label: "Editing {{ item }}"

@@ -18,4 +18,4 @@
   template:
     dest: /etc/logrotate.d/vsftpd
     src: templates/vsftpd.j2
-    
+    force: no

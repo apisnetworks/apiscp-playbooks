@@ -1,0 +1,11 @@
+/var/log/bw/cp {
+    missingok
+    notifempty
+    rotate 1
+    delaycompress
+        sharedscripts
+    lastaction 
+        /bin/kill -HUP `cat {{apnscp_root}}/storage/run/httpd.pid 2> /dev/null` 2> /dev/null || true
+        /usr/bin/apnscp_php {{bandwidth_script}} cp || true
+    endscript
+}

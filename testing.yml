@@ -8,7 +8,4 @@
     - 'roles/common/vars/apnscp-internals.yml'
     - ['{{ apnscp_user_defaults }}', '/dev/null']
   roles:
-    #- software/nvm
-    - software/pyenv
-    # - software/rbenv
-    # - software/gvm
+    - software/goenv

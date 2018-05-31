@@ -10,6 +10,7 @@
     - 'roles/common/vars/apnscp-internals.yml'
     - ['{{ apnscp_user_defaults }}', '/dev/null']
   roles:
+    - check-requirements
     - filesystem/make-mounts
     - filesystem/separate-mtab
     - system/selinux
@@ -44,11 +45,13 @@
     - mail/maildir
     - apnscp/initialize-filesystem-template
     - apnscp/install-services
+    - apnscp/bandwidth-log
     - system/nscd
     - system/nss
     - system/pam
     - system/limits
     - system/cgroup
+    #- system/sysctl
     - network/setup-firewall    
     - fail2ban/whitelist-self
     - fail2ban/configure-jails
@@ -64,9 +67,9 @@
     #- mail/webmail-roundcube
     #- mail/webmail-horde
     - software/nvm
-    #- software/pyenv
-    #- software/rbenv
-    #- software/gvm
+    - software/pyenv
+    - software/rbenv
+    - software/goenv
     #- software/passenger
     # Last checkpoint, validate a mock account
     #- apnscp/assert-account-works

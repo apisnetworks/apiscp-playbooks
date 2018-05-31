@@ -31,7 +31,7 @@ relocated_paths:
     }
   - {
       service: siteinfo,
-      src: "{{ apnscp_shared_root }}/ssl/pki/tls",
+      src: "{{ apnscp_shared_root }}/ssl/pki/tls/certs",
       dest: /etc/ssl/certs
     }
   - { 

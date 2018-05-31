@@ -1,0 +1,60 @@
+# /.socket doesn't copy-up, it's direct write. Put pyenv
+# on a copy-up layer in FST to allow write-access by admin
+# Downside is that anything root installs will also propagate
+# to child nodes, so don't do that!
+---
+- set_fact:
+    __pyenv_version: "v{{ pyenv_version }}"
+- name: Prepare {{ git_target }}
+  file:
+    path: "{{ git_target|dirname}}"
+    state: directory
+- name: Install pyenv
+  include_role: name="{{ role_path }}/../pyenv-support"
+  vars:
+    pyenv_root: "{{ apnscp_filesystem_template }}/{{pyenv_service_install }}/{{ git_target }}"
+    pyenv_version: "{{ __pyenv_version }}"
+- name: Link {{ git_target }}
+  file:
+    path: "{{ git_target }}"
+    src: "{{ apnscp_filesystem_template }}/{{pyenv_service_install }}/{{git_target}}"
+    state: link
+- name: Add {{ git_target }} to wheel
+  shell: >
+    find {{ git_target | quote }} -follow  
+      -iname ".git" -prune -o -not -group wheel -print 
+      -exec chgrp wheel {} + | tail -n1
+  register: pyenv_chmod
+  changed_when: pyenv_chmod.stdout != ""
+- name: Fix pip location
+  copy:
+    src: files/updatePipPath.bash
+    dest: "{{ apnscp_filesystem_template }}/{{pyenv_service_install }}/{{ git_target }}"
+- name: Create pyenv.sh
+  copy:
+    dest: "{{ pyenv_script }}"
+    content: |
+      #!/bin/sh
+      export PATH="{{git_target}}/bin:{{git_target}}/shims:$HOME/.pyenv/shims:${PATH}"
+      export PYENV_SHELL=bash
+      export PYENV_ROOT="{{ git_target }}"
+      eval "$({{git_target}}/bin/pyenv init -)"
+    mode: 0755
+  register: pyenv_create
+- name: Check for pyenv.sh in FST
+  stat: path="{{ apnscp_filesystem_template }}/{{ pyenv_service_install }}/{{pyenv_script}}"
+  register: s
+- name: Link pyenv.sh to FST
+  file:
+    src: "{{ pyenv_script }}"
+    state: hard
+    path: "{{ apnscp_filesystem_template }}/{{ pyenv_service_install }}/{{pyenv_script}}"
+    force: yes
+  when: pyenv_create.changed or not s.stat.exists
+  notify: Reload filesystem template
+- name: Remove shim writeable notice for secondary users
+  lineinfile:
+    path: "{{ git_target }}/libexec/pyenv-rehash"
+    regexp: >
+      echo "pyenv: cannot rehash: \$SHIM_PATH isn't writable"
+    state: absent

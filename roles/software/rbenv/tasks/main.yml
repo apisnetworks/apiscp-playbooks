@@ -1,0 +1,80 @@
+# /.socket doesn't copy-up, it's direct write. Put rbenv
+# on a copy-up layer in FST to allow write-access by admin
+# Downside is that anything root installs will also propagate
+# to child nodes, so don't do that!
+---
+- set_fact:
+    __rbenv_version: "v{{ rbenv_version }}"
+- name: Prepare {{ git_target }}
+  file:
+    path: "{{ git_target|dirname}}"
+    state: directory
+- name: Install rbenv
+  include_role: name="{{ role_path }}/../rbenv-support"
+  vars:
+    rbenv_root: "{{ apnscp_filesystem_template }}/{{rbenv_service_install }}/{{ git_target }}"
+    rbenv_tmpdir: "{{ apnscp_root }}/storage/cache"
+    rbenv:
+      env: system
+      default_ruby:   
+      version: "{{ __rbenv_version }}"
+      rubies: []
+  register: rc
+- name: Link {{ git_target }}
+  file:
+    path: "{{ git_target }}"
+    src: "{{ apnscp_filesystem_template }}/{{rbenv_service_install }}/{{git_target}}"
+    state: link
+- name: Create rbenv.sh
+  copy:
+    dest: "{{ rbenv_script }}"
+    content: |
+      #!/bin/sh
+      export PATH="{{git_target}}/bin:{{git_target}}/shims:$HOME/.rbenv/shims:${PATH}"
+      export RBENV_SHELL=bash
+      export RBENV_ROOT="{{ git_target }}"
+      eval "$({{git_target}}/bin/rbenv init -)"
+    mode: 0755
+  register: rbenv_create
+# Install Ruby manually to avoid using incorrect FST markup in playbook
+- name: Build Ruby {{ sys_ruby_version }} outside FST
+  shell: >
+    {{ rbenv_script }} && rbenv install {{ sys_ruby_version }}
+  environment: 
+    TMPDIR: "{{ apnscp_root }}/storage/cache"
+  when: sys_ruby_version is defined
+- name: Add {{ rbenv_root }} to wheel
+  command: >
+    find {{ rbenv_root | quote }} -follow  
+      -iname ".git" -prune -o -not -group wheel -print 
+      -exec chgrp wheel {} +
+  register: rbenv_chown
+  changed_when: rbenv_chown.stdout != ""
+
+# Stolen from rbenv-support playbook, needs late init to correct path
+- name: Check if current system ruby version is {{ sys_ruby_version }}
+  shell: $SHELL -lc "rbenv version | cut -d ' ' -f 1 | grep -Fx '{{ sys_ruby_version }}'"
+  register: ruby_selected
+  changed_when: false
+  ignore_errors: yes
+  failed_when: false
+  check_mode: no
+
+- name: Set Ruby {{ sys_ruby_version }} for system
+  become: yes
+  shell: bash -lc "rbenv global {{ sys_ruby_version }} && rbenv rehash"
+  when:
+    - ruby_selected.rc != 0
+
+# Back to apnscp
+- name: Check for rbenv.sh in FST
+  stat: path="{{ apnscp_filesystem_template }}/{{ rbenv_service_install }}/{{rbenv_script}}"
+  register: s
+- name: Link rbenv.sh to FST
+  file:
+    src: "{{ rbenv_script }}"
+    state: hard
+    path: "{{ apnscp_filesystem_template }}/{{ rbenv_service_install }}/{{rbenv_script}}"
+    force: yes
+  when: rbenv_create.changed or not s.stat.exists
+  notify: Reload filesystem template
