@@ -1,0 +1,20 @@
+LoadModule passenger_module  {{passenger_home}}/buildout/apache2/mod_passenger.so  
+
+<IfModule passenger_module>
+	PassengerEnabled on
+  PassengerRoot {{ passenger_home }}
+  PassengerDefaultRuby {{ sys_ruby_version }}
+  PassengerInstanceRegistryDir {{ passenger_home }}/sockets
+  PassengerDataBufferDir {{ passenger_home }}/sockets
+  PassengerMaxInstancesPerApp {{ passenger_app_instances}}
+  PassengerStatThrottleRate  {{ passenger_throttle_rate|default(60)}}
+  RailsSpawnMethod smart-lv2
+  PassengerDebugLogFile {{ passenger_home }}/logs/passenger.log
+  PassengerMaxInstancesPerApp {{ passenger_max_instances }}
+  PassengerPython {{ passenger_home }}/shims/python
+  PassengerErrorOverride Off
+  PassengerFriendlyErrorPages On
+  PassengerResolveSymlinksInDocumentRoot {{ passenger_resolve_symlinks_in_document_root }}
+  PassengerMaxPoolSize {{ passenger_max_pool_size }}
+  {{ xtra_passenger_config | default("") }}
+</IfModule>

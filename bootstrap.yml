@@ -70,7 +70,7 @@
     - software/pyenv
     - software/rbenv
     - software/goenv
-    #- software/passenger
+    - software/passenger
     # Last checkpoint, validate a mock account
     #- apnscp/assert-account-works
     #- apnscp/notify-installed

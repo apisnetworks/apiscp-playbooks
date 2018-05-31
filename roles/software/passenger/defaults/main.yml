@@ -1,0 +1,8 @@
+---
+passenger_repo: https://github.com/apisnetworks/passenger.git
+passenger_repo_ver: local
+passenger_home: "{{ apnscp_shared_root}}/passenger"
+passenger_max_instances: 5
+passenger_app_instances: 2
+passenger_max_pool_size: 20
+passenger_resolve_symlinks_in_document_root: "On"

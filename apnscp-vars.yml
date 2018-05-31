@@ -77,6 +77,9 @@ goenv_version: 1.14.0
 # Others may be installed via "rbenv install", this is used primarily for 
 # bootstrapping Passenger
 sys_ruby_version: 2.4.4
+# Enable Passenger - allows a dead simple system to run 
+# Node, Python, and Ruby applications with automatic restarts
+passenger_enabled: yes
 # Enable SELinux
 # true is absolutely guaranteed to break your system
 # debug places selinux in permissive mode

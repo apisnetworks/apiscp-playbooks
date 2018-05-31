@@ -1,0 +1,21 @@
+---
+- name: Clone Passenger repository
+  git: 
+    repo: "{{ passenger_repo }}"
+    version: "{{ passenger_repo_ver }}"
+    dest: "{{ passenger_home }}"
+
+- name: Set system Ruby for Passenger
+  copy:
+    dest: "{{ passenger_home }}/.ruby-version"
+    content: "{{ sys_ruby_version }}"
+- name: Build Passenger
+  command: rake apache2
+  args:
+    chdir: "{{ passenger_home }}"
+  notify: Restart apache
+- name: Copy Passenger configuration
+  template:
+    src: templates/passenger.conf.j2
+    dest: /etc/httpd/conf.d/passenger.conf
+  notify: Restart apache
