@@ -84,7 +84,15 @@ ssl_cert = </etc/pki/tls/certs/server.pem
 ssl_key = </etc/pki/tls/certs/server.pem
 ssl_cipher_list = RSA:!EXP:!NULL:!RC4:+HIGH:+MEDIUM:-LOW
 
-namespace inbox {
+namespace {
+  type = private
+  separator = .
+  prefix = INBOX.
+  inbox = yes
+  hidden = no
+  list = yes
+  subscriptions = yes
+
   mailbox Drafts {
     special_use = \Drafts
   }
@@ -109,15 +117,7 @@ mail_fsync =  optimized
 lock_method = fcntl
 maildir_copy_with_hardlinks = yes
 #maildir_very_dirty_syncs = yes
-namespace {
-   type = private
-   separator = .
-   prefix = INBOX.
-   inbox = yes
-   hidden = no
-   list = yes
-   subscriptions = yes
-}
+
 namespace { 
   type = shared
   separator = .

@@ -6,7 +6,6 @@ vsftpd_directives:
   # and later removed, seccomp will vomit 
   # during uid -> pwd translation
   seccomp_sandbox: "NO"
-  background: "YES"
   banner_file: "{{ vsftpd_login_banner }}"
   pam_service_name: ftp
   # Display hidden files automatically

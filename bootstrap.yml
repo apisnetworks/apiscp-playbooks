@@ -60,8 +60,9 @@
     - apnscp/register-ssl
     - network/optimizations
     # Odds and ends
+    - apnscp/crons
     - system/yum
-    #- mysql/phpmyadmin
+    - mysql/phpmyadmin
     #- pgsql/phppgadmin
     #- mail/webmail-squirrelmail
     #- mail/webmail-roundcube

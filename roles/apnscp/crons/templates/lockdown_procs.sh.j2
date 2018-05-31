@@ -1,0 +1,25 @@
+#!/bin/sh
+[[ -f /etc/sysconfig/apnscp ]] && . /etc/sysconfig/apnscp
+EXTRAS={{ apnscp_root }}/config/apache-proc-revocation
+FILELIST="id rm perl python python2.7 python2 php tclsh wget cat gcc \
+	g++ find ruby stat dir gcc44 crontab at \
+	locate lsattr netstat ls chown chgrp chmod chattr lua luac \
+	crontab objcopy objdump setfacl sudo su go \
+	/usr/lib/golang/bin/linux_amd64/go \
+	/usr/lib/golang/bin/linux_amd64/gofmt csh tcsh zsh dir \
+	head tail dd ln dir" 
+# directories, block access to any-version interps
+FILELIST="$FILELIST {{ apnscp_filesystem_template }}/ssh/usr/local/share/"
+WEB_USER=${WEB_USER:-apache}
+if [[ -f $EXTRAS ]]; then 
+	LIST="$LIST $(cat $EXTRAS)"
+fi
+
+for file in $LIST ; do 
+	if [[ ${file:0:1} != "/" ]]; then
+		file=$(which $i 2> /dev/null | awk '{if($1 ~ /bin/) print $1}')  
+	fi
+	if [[ ! -z $file ]] ; then 
+	  setfacl -m group:$WEB_USER:0 $file 
+	fi 
+done

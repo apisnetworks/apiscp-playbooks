@@ -14,16 +14,17 @@
   vars:
     pyenv_root: "{{ apnscp_filesystem_template }}/{{pyenv_service_install }}/{{ git_target }}"
     pyenv_version: "{{ __pyenv_version }}"
+    pyenv_update: false
 - name: Link {{ git_target }}
   file:
     path: "{{ git_target }}"
     src: "{{ apnscp_filesystem_template }}/{{pyenv_service_install }}/{{git_target}}"
     state: link
 - name: Add {{ git_target }} to wheel
-  shell: >
-    find {{ git_target | quote }} -follow  
+  shell:
+    find {{ git_target | quote }} -follow 
       -iname ".git" -prune -o -not -group wheel -print 
-      -exec chgrp wheel {} + | tail -n1
+      -exec chgrp wheel {} +
   register: pyenv_chmod
   changed_when: pyenv_chmod.stdout != ""
 - name: Fix pip location

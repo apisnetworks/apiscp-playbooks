@@ -1,0 +1,30 @@
+---
+- name: Install phpMyAdmin
+  yum: name=phpmyadmin state=present
+  register: installed
+  when: false
+- name: Check if phpMyAdmin configured
+  stat: path="{{ phpmyadmin_config_file }}"
+  register: c
+- name: Configure phpMyAdmin
+  template: 
+    src: "{{ phpmyadmin_template_file }}"
+    dest: "{{ phpmyadmin_config_file }}"
+  when: not c.stat.exists
+- name: Create phpMyAdmin user
+  debug: msg=todo
+  when: not c.stat.exists
+- name: Import phpMyAdmin database to {{ phpmyadmin_database }}
+  debug: msg=todo
+  when: not c.stat.exists
+- name: Change phpMyAdmin permissions
+  file: 
+    path: "{{ phpmyadmin_path }}"
+    owner: apache
+    group: apache
+    recurse: yes
+- name: Remove setup files
+  file: 
+    path: "{{ phpmyadmin_path }}/setup"
+    state: absent
+    recurse: yes

@@ -1,0 +1,19 @@
+---
+- include_tasks: lookup-postfix-db.yml
+
+- name: Copy files
+  copy: 
+    src: "files/{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0755
+  with_items: "{{cron_copy}}"
+  loop_control:
+    label: "Copy {{item.src}} to {{item.dest}}"
+- name: Copy templated files
+  template: 
+    src: "templates/{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 0755
+  with_items: "{{cron_template}}"
+  loop_control:
+    label: "Copy {{item.src}} to {{item.dest}}"

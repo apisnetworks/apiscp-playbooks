@@ -1,0 +1,10 @@
+---
+phpmyadmin_path: /var/www/html/phpMyAdmin
+phpmyadmin_config_file: "{{ phpmyadmin_path }}/config.inc.php"
+phpmyadmin_template_file: "{{ phpmyadmin_path }}/config.template.inc.php"
+phpmyadmin_user: phpmyadmin
+phpmyadmin_password: 
+config_vars:
+  PHPMYADMIN_DB: "{{ phpmyadmin_db }}"
+  PHPMYADMIN_USER: "{{ phpmyadmin_user }}"
+  PHPMYADMIN_PASSWORD: "{{ phpmyadmin_password }}"

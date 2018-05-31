@@ -1,0 +1,7 @@
+#!/bin/sh
+
+{{ apnscp_root }}/bin/cmd admin_update_webapps 2>&1 > /dev/null
+let DOW=$(date "+%u")
+if [[ $DOW == 3 || $DOW == 7 ]] ; then
+    {{ apnscp_root }}/bin/cmd admin_update_webapps '[core:0,assets:1]'
+fi

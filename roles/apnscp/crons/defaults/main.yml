@@ -1,0 +1,22 @@
+---
+cron_daily: /etc/cron.daily
+cron_weekly: /etc/cron.weekly
+cron_monthly: /etc/cron.weekly
+cron_copy:
+  - src: changeownership.sh
+    dest: "{{ cron_daily }}/98update_web_ownership"
+  - src: clean_mailboxes.sh
+    dest: "{{ cron_weekly }}/clean_mailboxes"
+cron_template: 
+  - src: backup_dbs.sh.j2
+    dest: "{{ cron_daily }}/10backup_dbs"
+  - src: update_apps.sh.j2
+    dest: "{{ cron_daily}}/99update_apps"
+  - src: disable_overquota_mailboxes.sh.j2
+    dest: "{{ cron_daily}}/99disable_mailboxes"
+  - src: generate_fst_cache.sh.j2
+    dest: "{{ cron_daily }}/99generate_fst_cache"
+  - src: lockdown_procs.sh.j2
+    dest: "{{ cron_daily }}/99lockdown_procs"
+  - src: locate_webapps.sh.j2
+    dest: "{{ cron_monthly }}/locate_webapps"

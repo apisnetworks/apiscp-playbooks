@@ -1,0 +1,4 @@
+#!/bin/sh
+( for i in $(repquota -uan | egrep '(2|1)days|none' | awk '{print $1}') ; do echo "update email_lookup SET enabled = 0::bit WHERE uid = ${i##\#} AND enabled = 1::bit AND type = 'v';"  ; done ) | psql {{ postfix_db }} > /dev/null
+
+( for i in $(repquota -gan | egrep '(2|1)days|none' | awk '{print $1}') ; do echo "update email_lookup SET enabled = 0::bit WHERE domain IN (SELECT domain FROM domain_lookup JOIN gids USING (site_id) WHERE gid = ${i##\#}) AND enabled = 1::bit AND type = 'v';" ; done ) | psql {{ postfix_db }} > /dev/null
