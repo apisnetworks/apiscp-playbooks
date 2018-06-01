@@ -8,10 +8,10 @@
 
 # See how we were called.
 prog="fstmp"
-
+[[ -f /etc/sysconfig/apnscp ]] && . /etc/sysconfig/apnscp
 SESSIONDIR=/tmp/sessions
 [ -d $SESSIONDIR ] && exit 0
-
+umask 0077
 RANGE="a b c d e f g h i j k l m n o \
     p q r s t u v w x y z 0 1 2 3 4 5 \
     6 7 8 9"
@@ -25,6 +25,7 @@ for dir in $RANGE ; do
     done
 done
 chown -R apache:apache $SESSIONDIR
+chmod -R 0770 $SESSIONDIR
 
 mkdir -p /tmp/fcgi/dynamic
 chown -R apache:apache /tmp/fcgi

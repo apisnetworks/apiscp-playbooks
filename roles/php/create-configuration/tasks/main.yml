@@ -7,4 +7,28 @@
   template:
     src: templates/opcache.ini.j2
     dest: "{{ scan_dir }}/01-opcache.ini"
-#- name: Create session structure
+  notify: Restart apache
+- stat: path={{ php_main_config }}
+  register: s
+- name: Set default php.ini
+  copy:
+    src: files/php.ini
+    dest: "{{ php_main_config}}"
+  when: not s.stat.exists
+- name: Set SQL PHP defaults
+  ini_file: 
+    section: None
+    option: "{{cfgitem.key}}"
+    value: "{{cfgitem.value}}"
+    dest: "{{ php_main_config }}"
+  notify: Restart apache
+  with_dict:
+    - "pdo_mysql.default_socket": /var/lib/mysql/mysql.sock
+    - "mysqli.default_socket": /var/lib/mysql/mysql.sock
+    - "mysql.allow_persistent": "Off"
+    - "pgsql.allow_persistent": "Off"
+    - "upload_max_filesize": "16M"
+    - "post_max_size": "20M"
+  loop_control:
+    loop_var: cfgitem
+    label: "Setting {{ cfgitem.key }} in {{ php_main_config }}"

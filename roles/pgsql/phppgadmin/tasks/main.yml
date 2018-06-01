@@ -1,0 +1,22 @@
+---
+- name: Install phpPgAdmin
+  yum: name=phppgadmin state=present
+  register: installed
+- name: Check if phpPgAdmin configured
+  stat: path="{{ phppgadmin_config_file }}"
+  register: c
+- name: Copy phpPgAdmin configuration template
+  template: 
+    src: "{{ phppgadmin_template_file }}"
+    dest: "{{ phppgadmin_config_file }}"
+  register: init
+  when: not c.stat.exists
+
+- name: Change phpPgAdmin permissions
+  file: 
+    path: "{{ item }}"
+    owner: apache
+    group: apache
+    recurse: yes
+  with_items:
+    - "{{ phppgadmin_path }}"

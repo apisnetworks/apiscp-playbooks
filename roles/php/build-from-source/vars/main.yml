@@ -5,4 +5,5 @@ php_configure: "{{role_path}}/files/php.config"
 php_debug: false
 php_version: "{{ system_php_version }}"
 build_dir: "{{ work_dir }}/php-{{ php_version }}"
+php_main_config: /etc/php.ini
 scan_dir: "/etc/php{{ php_version | regex_replace('^(\\d+)\\.([^.]+).*$', '\\1\\2')}}.d"

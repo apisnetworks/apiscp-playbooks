@@ -1,0 +1,5 @@
+---
+phppgadmin_path: /var/www/html/phpPgAdmin
+phppgadmin_storage_path: /var/lib/phppgadmin
+phppgadmin_config_file: "{{ phppgadmin_path }}/conf/config.inc.php"
+phppgadmin_template_file: "{{ phppgadmin_config_file | dirname }}/config.template.inc.php"

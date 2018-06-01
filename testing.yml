@@ -8,5 +8,4 @@
     - 'roles/common/vars/apnscp-internals.yml'
     - ['{{ apnscp_user_defaults }}', '/dev/null']
   roles:
-    - software/pyenv
-    - mysql/phpmyadmin
+    - pgsql/phppgadmin

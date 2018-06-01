@@ -32,11 +32,16 @@
     name: root 
     host: localhost 
     check_implicit_admin: yes
-    # ALL excludes GRANT. GRANT itself yields syntax error 
-    priv: "*.*:ALL,GRANT" 
-    append_privs: yes 
+    # ALL excludes GRANT. GRANT itself yields syntax error
+    priv: "*.*:ALL,GRANT"
+    append_privs: yes
     state: present
 - name: Remove passwordless users
   shell: >
     echo "DELETE FROM user WHERE password = ''; FLUSH PRIVILEGES;" | mysql mysql
   changed_when: false
+- name: Remove test database if present
+  mysql_db:
+    name: test
+    state: absent
+  when: user_enabled is defined and user_enabled.changed

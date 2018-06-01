@@ -1,30 +1,58 @@
 ---
+- set_fact:
+    PHPMYADMIN_PASSWORD: "{{ phpmyadmin_password }}"
 - name: Install phpMyAdmin
   yum: name=phpmyadmin state=present
   register: installed
-  when: false
 - name: Check if phpMyAdmin configured
   stat: path="{{ phpmyadmin_config_file }}"
   register: c
-- name: Configure phpMyAdmin
+- name: Copy phpMyAdmin configuration template
   template: 
     src: "{{ phpmyadmin_template_file }}"
     dest: "{{ phpmyadmin_config_file }}"
+  register: init
   when: not c.stat.exists
+- name: Create phpMyAdmin database
+  mysql_db:
+    name: "{{ phpmyadmin_db }}"
+    state: present
+  become: yes
+  register: import
+- name: Import phpMyAdmin database
+  mysql_db:
+    name: "{{ phpmyadmin_db }}"
+    state: import
+    target: "{{ phpmyadmin_sql }}"
+  become: yes
+  when: import.changed
+
 - name: Create phpMyAdmin user
-  debug: msg=todo
-  when: not c.stat.exists
+  mysql_user:
+    name: "{{ phpmyadmin_user }}"
+    password: "{{ PHPMYADMIN_PASSWORD }}"
+    host: localhost
+    state: present
+    priv: "mysql.user:select/mysql.db:select/{{ phpmyadmin_db }}.*:ALL"
+  become: yes
+  when: init is defined and init.changed
 - name: Import phpMyAdmin database to {{ phpmyadmin_database }}
   debug: msg=todo
   when: not c.stat.exists
 - name: Change phpMyAdmin permissions
   file: 
-    path: "{{ phpmyadmin_path }}"
+    path: "{{ item }}"
     owner: apache
     group: apache
     recurse: yes
+  with_items:
+    - "{{ phpmyadmin_path }}"
+    - "{{ phpmyadmin_storage_path }}"
 - name: Remove setup files
   file: 
-    path: "{{ phpmyadmin_path }}/setup"
+    path: "{{ phpmyadmin_path }}/{{ item }}"
     state: absent
     recurse: yes
+  with_items:
+    - setup
+    - sql

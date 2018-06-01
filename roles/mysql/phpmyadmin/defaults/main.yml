@@ -1,10 +1,13 @@
 ---
 phpmyadmin_path: /var/www/html/phpMyAdmin
+phpmyadmin_storage_path: /var/lib/phpmyadmin
+phpmyadmin_sql: "{{ phpmyadmin_path }}/sql/create_tables.sql"
 phpmyadmin_config_file: "{{ phpmyadmin_path }}/config.inc.php"
 phpmyadmin_template_file: "{{ phpmyadmin_path }}/config.template.inc.php"
 phpmyadmin_user: phpmyadmin
-phpmyadmin_password: 
-config_vars:
-  PHPMYADMIN_DB: "{{ phpmyadmin_db }}"
-  PHPMYADMIN_USER: "{{ phpmyadmin_user }}"
-  PHPMYADMIN_PASSWORD: "{{ phpmyadmin_password }}"
+phpmyadmin_db: phpmyadmin
+phpmyadmin_password: "{{ lookup('password', '/dev/null length=32') }}"
+
+PHPMYADMIN_DB: "{{ phpmyadmin_db }}"
+PHPMYADMIN_USER: "{{ phpmyadmin_user }}"
+BLOWFISH_SECRET:  "{{ lookup('password', '/dev/null length=32') }}"

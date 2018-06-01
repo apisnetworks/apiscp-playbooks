@@ -44,6 +44,7 @@
     - mail/configure-courier-authlib
     - mail/maildir
     - apnscp/initialize-filesystem-template
+    #- apnscp/php-filesystem-template
     - apnscp/install-services
     - apnscp/bandwidth-log
     - system/nscd
@@ -63,7 +64,7 @@
     - apnscp/crons
     - system/yum
     - mysql/phpmyadmin
-    #- pgsql/phppgadmin
+    - pgsql/phppgadmin
     #- mail/webmail-squirrelmail
     #- mail/webmail-roundcube
     #- mail/webmail-horde
