@@ -65,8 +65,8 @@
     - system/yum
     - mysql/phpmyadmin
     - pgsql/phppgadmin
-    #- mail/webmail-squirrelmail
-    #- mail/webmail-roundcube
+    - mail/webmail-squirrelmail
+    - mail/webmail-roundcube
     #- mail/webmail-horde
     - software/nvm
     - software/pyenv

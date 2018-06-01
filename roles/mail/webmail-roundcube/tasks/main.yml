@@ -1,0 +1,64 @@
+---
+- set_fact:
+    ROUNDCUBE_PASSWORD: "{{ roundcube_password }}"
+- name: Install Roundcube
+  yum: name=roundcubemail state=present
+  register: installed
+- name: Check if Roundcube configured
+  stat: path="{{ roundcube_config_file }}"
+  register: c
+- name: Copy Roundcube configuration template
+  template: 
+    src: "{{ roundcube_template_file }}"
+    dest: "{{ roundcube_config_file }}"
+  register: init
+  when: not c.stat.exists
+- name: Create Roundcube database
+  mysql_db:
+    name: "{{ roundcube_db }}"
+    state: present
+  become: yes
+  register: import
+- name: Import Roundcube database
+  mysql_db:
+    name: "{{ roundcube_db }}"
+    state: import
+    target: "{{ roundcube_sql }}/mysql.initial.sql"
+  become: yes
+  when: import.changed
+  # Todo, parse out YYYYMMDD from migration date
+- name: Run Roundcube database migrations
+  mysql_db:
+    name: "{{ roundcube_db }}"
+    state: import
+    target: "{{ item }}"
+  with_fileglob:
+    - "{{ roundcube_sql }}/mysql/*.sql"
+  when: not import.changed and roundcube_migration_marker != None
+- name: Create Roundcube user
+  mysql_user:
+    name: "{{ roundcube_user }}"
+    password: "{{ ROUNDCUBE_PASSWORD }}"
+    host: localhost
+    state: present
+    priv: "{{ roundcube_db }}.*:ALL"
+  become: yes
+  when: init is defined and init.changed
+- name: Import Roundcube database to {{ roundcube_database }}
+  debug: msg=todo
+  when: not c.stat.exists
+- name: Change Roundcube permissions
+  file: 
+    path: "{{ item }}"
+    owner: apache
+    group: apache
+    recurse: yes
+  with_items:
+    - "{{ roundcube_storage_path }}"
+- name: Remove setup files
+  file: 
+    path: "{{ roundcube_path }}/{{ item }}"
+    state: absent
+    recurse: yes
+  with_items:
+    - SQL

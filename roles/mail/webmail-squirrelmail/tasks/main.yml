@@ -1,0 +1,7 @@
+---
+- name: Install squirrelmail
+  yum: name=squirrelmail state=present
+- name: Copy SquirrelMail configuration template
+  template:
+    src: "{{ webmail_home }}/config/config.template.php"
+    dest: "{{ webmail_home }}/config/config.php"

@@ -45,3 +45,10 @@
     name: test
     state: absent
   when: user_enabled is defined and user_enabled.changed
+  register: test
+- name: Remove empty user grants
+  mysql_user:
+    name: ""
+    host: "%"
+    state: absent
+  when: test is defined and test.changed

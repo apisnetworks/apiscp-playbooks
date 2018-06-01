@@ -1,0 +1,14 @@
+---
+roundcube_path: /var/www/html/roundcube
+roundcube_storage_path: /var/lib/roundcube
+roundcube_sql: "{{ roundcube_path }}/SQL/"
+roundcube_migration_marker: None
+roundcube_config_file: "{{ roundcube_path }}/config/config.inc.php"
+roundcube_template_file: "{{ roundcube_path }}/config/config.template.inc.php"
+roundcube_user: roundcube
+roundcube_db: roundcube
+roundcube_password: "{{ lookup('password', '/dev/null length=32') }}"
+
+ROUNDCUBE_DB: "{{ roundcube_db }}"
+ROUNDCUBE_USER: "{{ roundcube_user }}"
+ROUNDCUBE_CRYPT:  "{{ lookup('password', '/dev/null length=32') }}"

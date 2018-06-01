@@ -2,7 +2,7 @@
 - set_fact:
     PHPMYADMIN_PASSWORD: "{{ phpmyadmin_password }}"
 - name: Install phpMyAdmin
-  yum: name=phpmyadmin state=present
+  yum: name=phpmyadmin state=present 
   register: installed
 - name: Check if phpMyAdmin configured
   stat: path="{{ phpmyadmin_config_file }}"
@@ -33,12 +33,10 @@
     password: "{{ PHPMYADMIN_PASSWORD }}"
     host: localhost
     state: present
-    priv: "mysql.user:select/mysql.db:select/{{ phpmyadmin_db }}.*:ALL"
+    priv: "{{ phpmyadmin_db }}.*:ALL"
   become: yes
   when: init is defined and init.changed
-- name: Import phpMyAdmin database to {{ phpmyadmin_database }}
-  debug: msg=todo
-  when: not c.stat.exists
+
 - name: Change phpMyAdmin permissions
   file: 
     path: "{{ item }}"
@@ -46,13 +44,11 @@
     group: apache
     recurse: yes
   with_items:
-    - "{{ phpmyadmin_path }}"
     - "{{ phpmyadmin_storage_path }}"
 - name: Remove setup files
   file: 
     path: "{{ phpmyadmin_path }}/{{ item }}"
     state: absent
-    recurse: yes
   with_items:
     - setup
     - sql
