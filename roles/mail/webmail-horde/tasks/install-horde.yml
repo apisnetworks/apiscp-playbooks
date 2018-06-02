@@ -11,7 +11,7 @@
   pear: name=horde/horde_role state=present
 - name: Configure Horde installation path
   command:
-    pear config-set -c pear.horde.org horde_dir {{ horde_path }}
+    pear config-set horde_dir {{ horde_path }}
   changed_when: false
 - name: Install Horde packages
   command: pear install --force horde/groupware

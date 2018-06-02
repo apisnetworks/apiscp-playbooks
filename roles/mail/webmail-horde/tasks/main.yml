@@ -58,7 +58,7 @@
   # Otherwise apache has php interp access blocked
 - name: Add Horde path for {{ apnscp_system_user }} task
   command:
-    pear config-set -c pear.horde.org horde_dir {{ horde_path }}
+    pear config-set  horde_dir {{ horde_path }}
   become_user: "{{ apnscp_system_user }}"
   when: horde_cron_enabled
   changed_when: false
