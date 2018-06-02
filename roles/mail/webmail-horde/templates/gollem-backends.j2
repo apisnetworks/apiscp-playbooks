@@ -1,0 +1,63 @@
+<?php
+
+$backends['sqlhome']['disabled'] = true;
+$backends['sqlhome']['name'] = 'Home';
+
+// This backend uses Horde credentials to automatically log in.
+$backends['hordeftp'] = array(
+    // Disabled by default
+    'disabled' => false,
+    'name' => 'FTP Server',
+    'driver' => 'ftp',
+    'hordeauth' => true,
+    'params' => array(
+        // The hostname/IP Address of the FTP server.
+        'hostspec' => 'localhost',
+        // The port number of the FTP server.
+        'port' => 21,
+        // Use passive mode?
+        'pasv' => false,
+        // The return formatting from the 'ls' command. Possible Values: 'aix',
+        // 'standard'.
+        // 'lsformat' => 'standard',
+        // If true and the POSIX extension is available the driver will map
+        // the user and group IDs returned from the FTP server with the local
+        // IDs from the local password file.  This is useful only if the FTP
+        // server is running on localhost or if the local user/group
+        // IDs are identical to the remote FTP server.
+        // 'maplocalids' => true,
+        // The default permissions to set for newly created folders and files.
+        // 'permissions' => '750',
+        // If true, and PHP had been compiled with OpenSSL support, TLS
+        // transport-level encryption will be negotiated with the server.
+        // 'ssl' => false,
+        // Set timeout (in seconds) for the FTP server. Default: 90 seconds
+        // 'timeout' => 90,
+        // The type of the remote FTP server. Possible values: 'unix', 'win',
+        // 'netware'. By default, we attempt to auto-detect type.
+        // 'type' => 'unix',
+    ),
+    'loginparams' => array(
+        // Allow the user to change the FTP server.
+        // 'hostspec' => 'Hostname',
+        // Allow the user to change the FTP port.
+        // 'port' => 'Port'
+    ),
+    // 'root' => '',
+    // 'home' => '',
+    // 'createhome' => false,
+    // 'filter' => '^regex$',
+    // 'quota' => false,
+    'attributes' => array(
+        'type',
+        'name',
+        'edit',
+        'download',
+        'modified',
+        'size',
+        'permission',
+        'owner',
+        'group'
+    )
+);
+

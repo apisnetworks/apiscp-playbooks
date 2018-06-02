@@ -1,14 +1,18 @@
 ---
-- name: "Relocate {{ dest }} to {{ src }}"
+- name: "Relocate {{ dest }} to {{ src }} {{ force}}"
   block: 
     - file: 
         path: "{{ src | dirname }}"
         state: directory
     - stat: path="{{ dest }}"
       register: res
+    - file:
+        path: "{{ dest }}"
+        state: directory
+      when: not res.stat.exists and force
     - command: creates="{{ src }}" mv "{{ dest }}" "{{ src }}"
-      when: res.stat.exists
-    - file: path="{{ dest }}" src="{{ src }}" state=link
+      when: res.stat.exists or force
+    - file: path="{{ dest }}" src="{{ src }}" state=link 
 - name: "Edit {{ logrotate_vars.file | default('-- SKIPPED --') }}"
   replace:
     path: "{{ logrotate_vars.file }}"
@@ -31,7 +35,7 @@
   - file: 
       path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest }}"
       state: link
-      src: "{{ src }}"
+      src: "{{ src }}"      
   when: not r.stat.exists or not r.stat.islnk
 
 - name: "Link /proc to {{ apnscp_shared_root }}"

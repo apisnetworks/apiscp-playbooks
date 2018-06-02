@@ -1,0 +1,22 @@
+---
+- name: Update PEAR channels
+  command: pear update-channels
+  changed_when: false
+- name: Add Horde PEAR channel
+  command: pear channel-discover pear.horde.org
+  register: o
+  changed_when: '"succeeded" in o.stdout'
+  failed_when: 'o.rc == 1 and "already initialized" not in o.stdout'
+- name: Install horde/role
+  pear: name=horde/horde_role state=present
+- name: Configure Horde installation path
+  command:
+    pear config-set -c pear.horde.org horde_dir {{ horde_path }}
+  changed_when: false
+- name: Install Horde packages
+  command: pear install --force horde/groupware
+  # 5.2.x isn't officially compatible with PHP 7.2
+  # No errors with clients
+  # https://lists.horde.org/archives/horde/Week-of-Mon-20160905/055988.html
+- name: Install Horde webmail package
+  command: pear install --force horde/webmail

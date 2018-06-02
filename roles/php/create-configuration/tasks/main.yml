@@ -29,6 +29,7 @@
     - "pgsql.allow_persistent": "Off"
     - "upload_max_filesize": "16M"
     - "post_max_size": "20M"
+    - "disable_functions": syslog
   loop_control:
     loop_var: cfgitem
     label: "Setting {{ cfgitem.key }} in {{ php_main_config }}"

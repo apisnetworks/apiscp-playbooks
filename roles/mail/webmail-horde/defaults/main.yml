@@ -1,0 +1,39 @@
+---
+horde_path: /var/www/html/horde
+horde_storage_path: /var/lib/horde
+horde_config_file: "{{ horde_path }}/config/conf.php"
+horde_template_file: "templates/horde-conf.conf.j2"
+horde_user: horde
+horde_db: horde
+horde_password: "{{ lookup('password', '/dev/null length=32') }}"
+horde_cron_enabled: true
+horde_cron_time: "*/5"
+spam_header: X-Spam-Level
+horde_configs:
+  - src: "horde-conf.j2"
+    dest: config/conf.php
+  - src: imp-conf.j2
+    dest: imp/config/conf.php
+  - src: imp-backends.j2
+    dest: imp/config/backends.local.php
+  - src: kronolith-conf.j2
+    dest: kronolith/config/conf.php
+  - src: ingo-backends.j2
+    dest: ingo/config/backends.local.php
+  - src: ingo-conf.j2
+    dest: ingo/config/conf.php
+  - src: turba-conf.j2
+    dest: turba/config/conf.php
+  - src: nag-conf.j2
+    dest: nag/config/conf.php
+  - src: mnemo-conf.j2
+    dest: mnemo/config/conf.php
+  - src: gollem-conf.j2
+    dest: gollem/config/conf.php
+  - src: gollem-backends.j2
+    dest: gollem/config/backends.d/20-apnscp.php
+  - src: trean-conf.j2
+    dest: trean/config/conf.php
+HORDE_DB: "{{ horde_db }}"
+HORDE_USER: "{{ horde_user }}"
+HORDE_KEY:  "{{ lookup('password', '/dev/null length=32') }}"

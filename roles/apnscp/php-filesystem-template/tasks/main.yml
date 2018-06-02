@@ -1,0 +1,19 @@
+---
+- include_vars: "{{ role_path }}/defaults/main.yml"
+- name: Link PHP binaries
+  file:
+    path: "{{ apnscp_filesystem_template }}/{{service}}/{{item}}"
+    src: "{{ item }}"
+    state: hard
+    force: yes
+  with_items: "{{ php_bins }}"
+  notify:
+    - Reload filesystem template
+- include_vars: "{{ playbook_dir }}/roles/php/build-from-source/vars/main.yml"
+- name: Create PHP configuration directories
+  file: 
+    path: "{{ apnscp_filesystem_template }}/{{service}}/{{scan_dir}}"
+    state: directory
+    owner: root
+    group: wheel
+    mode: 0775

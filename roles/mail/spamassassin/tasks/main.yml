@@ -1,0 +1,3 @@
+- name: Install SpamAssassin
+  include_tasks: install-spamassassin.yml
+  when: spamassassin_enabled

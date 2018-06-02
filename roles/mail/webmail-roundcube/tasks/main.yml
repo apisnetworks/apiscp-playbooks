@@ -58,7 +58,6 @@
 - name: Remove setup files
   file: 
     path: "{{ roundcube_path }}/{{ item }}"
-    state: absent
-    recurse: yes
+    state: absent  
   with_items:
     - SQL

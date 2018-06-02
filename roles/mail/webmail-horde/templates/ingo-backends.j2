@@ -1,0 +1,58 @@
+<?php
+$backends['maildrop'] = array(
+    // Disabled by default
+    'disabled' => false,
+    'transport' => array(
+        Ingo::RULE_ALL => array(
+            'driver' => 'vfs',
+            'params' => array(
+                // Hostname of the VFS server
+                'hostspec' => 'localhost',
+                // Name of the maildrop config file to write
+                'filename' => '.mailfilter',
+                // The path to the .mailfilter filter file, defaults to the
+                // filters' owner's home directory.
+                // You can use the following variables:
+                //   %u = name of the filters' owner
+                //   %d = domain name of the filters' owner
+                //   %U = the transport 'username'
+                // Example:
+                //   '/data/maildrop/filters/%d/%u'
+                //   This would be translated into:
+                //   '/data/maildrop/filters/<filter_owners_domainname>/<filter_owners_username>/.mailfilter'
+                // 'vfs_path' => '/path/to/maildrop',
+
+                // VFS: FTP example
+                // The VFS driver to use
+                'vfstype' => 'ftp',
+                // Port of the VFS server
+                'port' => 21,
+                // Specify permissions for uploaded files if necessary:
+                // 'file_perms' => '0640',
+            )
+        ),
+    ),
+    'script' => array(
+        Ingo::RULE_ALL => array(
+            'driver' => 'maildrop',
+            'params' => array(
+                // Any arguments passed to the mailbot command. The -N flag (to
+                // no include the original, quoted message content has been
+                // added with Maildrop 2.5.1/Courier 0.65.1.
+                'mailbotargs' => '-N',
+                // What path style does the IMAP server use ['mbox'|'maildir']?
+                'path_style' => 'maildir',
+                // Strip 'INBOX.' from the beginning of folder names in
+                // generated scripts?
+                'strip_inbox' => true,
+                // An array of variables to append to every generated script.
+                // Use if you need to set up specific environment variables.
+                'variables' => array(
+                    // Example for the $PATH variable
+                    // 'PATH' => '/usr/bin'
+                )
+            ),
+        ),
+    ),
+    'shares' => false
+);

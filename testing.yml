@@ -8,4 +8,7 @@
     - 'roles/common/vars/apnscp-internals.yml'
     - ['{{ apnscp_user_defaults }}', '/dev/null']
   roles:
-    - mail/webmail-horde
+    - custom
+    - system/sshd
+    - apnscp/assert-account-works
+    - apnscp/notify-installed

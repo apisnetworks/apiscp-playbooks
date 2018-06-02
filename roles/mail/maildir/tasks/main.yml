@@ -9,6 +9,15 @@
     path: /etc/Muttrc
     regexp: '^[^#]*source\s*/etc/Muttrc\.local'
     state: absent
+- template:
+    src: templates/maildrop-system.j2
+    dest: /etc/maildroprc
+- file:
+    path: "{{ apnscp_filelists }}/siteinfo/etc"
+    state: directory
+- template: 
+    src: templates/maildrop-user.j2
+    dest: "{{ apnscp_filelists }}/siteinfo/etc/maildroprc"
 - name: Edit Muttrc Mail storage
   blockinfile:
     path: /etc/Muttrc

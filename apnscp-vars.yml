@@ -58,6 +58,7 @@ spamfilter: spamassassin
 ####################################
 apnscp_root: /usr/local/apnscp
 apnscp_filesystem_template: /home/virtual/FILESYSTEMTEMPLATE
+apnscp_filelists: "{{apnscp_root}}/storage/opcenter/filelists"
 apnscp_system_user: apnscp
 # apnscp module API, ZTS is with event MPM
 php_module_api: 20160303-zts
@@ -74,12 +75,17 @@ nvm_version: 0.33.11
 pyenv_version: 1.2.4
 rbenv_version: 1.1.1
 goenv_version: 1.14.0
+# Horde is a different beast of dependencies and 
+# requires more care than other webmail options
+enable_horde: yes
 # Others may be installed via "rbenv install", this is used primarily for 
 # bootstrapping Passenger
 sys_ruby_version: 2.4.4
 # Enable Passenger - allows a dead simple system to run 
 # Node, Python, and Ruby applications with automatic restarts
 passenger_enabled: yes
+# Use SpamAssassin or rspamd for spam filtering. rspamd is experimental
+spamassassin_enabled: yes
 # Enable SELinux
 # true is absolutely guaranteed to break your system
 # debug places selinux in permissive mode

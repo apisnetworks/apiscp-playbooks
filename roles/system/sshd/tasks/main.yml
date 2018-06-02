@@ -1,0 +1,10 @@
+---
+# fail2ban should catch the majority of offenders...
+# reduce minimum from 6 to 3 to trigger fail2ban more quickly
+- name: "Reduce MaxAuthTries in {{ sshd_config }}"
+  lineinfile:
+    regexp: '^\s*MaxAuthTries\s+'
+    line: 'MaxAuthTries {{ sshd_max_auth_tries }}'
+    state: present
+    path: "{{ sshd_config }}"
+  notify: Restart sshd

@@ -33,6 +33,7 @@
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     logrotate_vars: "{{ item.logrotate_vars | default(None) }}"
+    force: "{{ item.force | default(false) }}"
   with_items: "{{ relocated_paths }}"
 
 - include_tasks: "{{ role_path }}/../bootstrap/tasks/set-platform-version.yml"
@@ -65,4 +66,16 @@
   loop_control:
     label: "Copy {{ item.file }} to {{ item.service | default('siteinfo') }}"
 
-
+# This should be an alternative plugin to yum-synchronizer, but 
+# we can't match wildcards on plugin names yet
+- name: Copy PostgreSQL ldconfig
+  file:
+    src: "{{ item }}"
+    dest: "{{ apnscp_filesystem_template }}/siteinfo/{{ item }}"
+    state: hard
+  with_items:
+    - /etc/ld.so.conf.d/postgresql-pgdg-libs.conf
+    - /etc/alternatives/pgsql-ld-conf
+  notify: 
+    - Rebuild ld cache
+    - Reload filesystem template

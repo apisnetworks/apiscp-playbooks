@@ -1,0 +1,72 @@
+---
+- stat: path="{{ horde_path }}"
+  register: hs
+- include_tasks: install-horde.yml
+  when: enable_horde and not hs.stat.exists
+- set_fact:
+    HORDE_PASSWORD: "{{ horde_password }}"
+- stat: path={{ horde_path }}/config/conf.php
+  register: init
+- name: Copy Horde configuration template
+  template: 
+    src: "templates/{{ item.src }}"
+    dest: "{{ horde_path }}/{{ item.dest }}"
+    force: no
+  with_items: "{{ horde_configs }}"
+- name: Create Horde database
+  mysql_db:
+    name: "{{ horde_db }}"
+    state: present
+  become: yes
+  register: import
+- name: Create Horde user
+  mysql_user:
+    name: "{{ horde_user }}"
+    password: "{{ HORDE_PASSWORD }}"
+    host: localhost
+    state: present
+    priv: "{{ horde_db }}.*:ALL"
+  become: yes
+  when: not init.stat.exists
+- name: Import Horde database
+  command: /usr/bin/horde-db-migrate
+  become: yes
+  when: import.changed
+  with_items:
+    - first
+    - second
+  loop_control:
+    label: "{{ item }} pass"
+- name: Change Horde permissions
+  file: 
+    path: "{{ item }}"
+    owner: apache
+    group: root
+    recurse: yes
+  with_items:
+    - "{{ horde_storage_path }}"
+- name: Lockdown Horde
+  file: path={{ horde_path }} owner=root recurse=yes
+  file: path={{ item }} mode=0700 owner=root
+  with_fileglob: "/usr/bin/horde-*"
+  loop_control: 
+    label: "Removing group/other permissions from {{ item }}"
+- name: Open /usr/bin/horde-alarms
+  file: path=/usr/bin/horde-alarms group={{ apnscp_system_user }} mode=0750
+  when: horde_cron_enabled
+  changed_when: false
+  # Otherwise apache has php interp access blocked
+- name: Add Horde path for {{ apnscp_system_user }} task
+  command:
+    pear config-set -c pear.horde.org horde_dir {{ horde_path }}
+  become_user: "{{ apnscp_system_user }}"
+  when: horde_cron_enabled
+  changed_when: false
+- name: Add Horde alarm job
+  cron:
+    minute: "{{ horde_cron_time }}"
+    cron_file: horde
+    name: horde-alarms
+    job: /usr/bin/horde-alarms
+    user: "{{ apnscp_system_user }}"
+  when: horde_cron_enabled

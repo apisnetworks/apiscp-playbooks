@@ -44,7 +44,7 @@
     - mail/configure-courier-authlib
     - mail/maildir
     - apnscp/initialize-filesystem-template
-    #- apnscp/php-filesystem-template
+    - apnscp/php-filesystem-template
     - apnscp/install-services
     - apnscp/bandwidth-log
     - system/nscd
@@ -52,11 +52,14 @@
     - system/pam
     - system/limits
     - system/cgroup
-    #- system/sysctl
+    - system/sysctl
+    - system/tuned
+    - system/sshd
     - network/setup-firewall    
     - fail2ban/whitelist-self
     - fail2ban/configure-jails
-    #- mail/globalize-spamassassin-bayes
+    - mail/spamassassin
+    #  Needs more testing...
     #- mail/rspamd
     - apnscp/register-ssl
     - network/optimizations
@@ -67,14 +70,23 @@
     - pgsql/phppgadmin
     - mail/webmail-squirrelmail
     - mail/webmail-roundcube
-    #- mail/webmail-horde
+    - mail/webmail-horde
     - software/nvm
     - software/pyenv
     - software/rbenv
     - software/goenv
     - software/passenger
     # Last checkpoint, validate a mock account
-    #- apnscp/assert-account-works
-    #- apnscp/notify-installed
+    - apnscp/assert-account-works
+    - apnscp/notify-installed
     # Holy shit, DONE!
     # 🎉🙌🎊🍺
+    ####################################
+    # Add post-provisioning roles here #
+    ####################################
+    - custom
+
+    #
+    # Thanks for playing!
+    #
+    # (c) 2018 Apis Networks

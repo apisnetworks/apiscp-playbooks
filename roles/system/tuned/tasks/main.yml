@@ -1,0 +1,17 @@
+---
+- name: Verify tuned installed
+  yum: name=tuned state=installed 
+- name: Set tuned profile to {{ tuned_profile }}
+  copy:
+    content: >
+      {{ tuned_profile }}
+    dest: /etc/tuned/active_profile
+  notify: Restart tuned
+
+- name: Enable dynamic tuning
+  ini_file:
+    section: null
+    option: dynamic_tuning
+    value: 1
+    path: "{{ tuned_config_file }}"
+  notify: Restart tuned

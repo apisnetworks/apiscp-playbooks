@@ -22,12 +22,12 @@ config:
   # plussed address notation foo+bar@domain.com
   recipient_delimiter: +
   transport_maps: hash:/etc/postfix/transport
-  proxy_read_maps: >
+  proxy_read_maps:
     $local_recipient_maps $mydestination $virtual_alias_maps
     $virtual_alias_domains $virtual_mailbox_maps $virtual_mailbox_domains
     $relay_recipient_maps $relay_domains $canonical_maps $sender_canonical_maps
     $recipient_canonical_maps $relocated_maps $transport_maps $mynetworks
-  smtpd_recipient_restrictions: >
+  smtpd_recipient_restrictions:
     permit_sasl_authenticated,
     reject_unauth_destination,
     reject_unknown_recipient_domain,
@@ -42,7 +42,6 @@ config:
     reject_invalid_hostname,
     reject_unknown_sender_domain,
     reject_unknown_reverse_client_hostname
-
   smtpd_helo_required: "yes"
   smtpd_error_sleep_time: 60
   maximal_backoff_time: 8h

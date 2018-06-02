@@ -19,3 +19,18 @@
     src: templates/passenger.conf.j2
     dest: /etc/httpd/conf.d/passenger.conf
   notify: Restart apache
+- name: Create Passenger directories
+  file: 
+    path: "{{ passenger_home }}/{{ item }}"
+    state: directory
+  with_items:
+    - logs
+    - sockets
+- file:
+    path: "{{ passenger_fst_log_location | dirname}}"
+    state: directory
+- name: Link passenger log to {{ apnscp_shared_root }}
+  file:
+    path: "{{ passenger_fst_log_location }}"
+    state: link
+    src: "{{ passenger_log_location }}"

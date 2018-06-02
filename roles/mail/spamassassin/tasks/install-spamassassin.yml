@@ -1,0 +1,9 @@
+- name: Replicate SpamAssassin to fst
+  include_role: 
+    name: apnscp/initialize-filesystem-template 
+    tasks_from: install-package.yml
+  vars: 
+    package: spamassassin
+    service: siteinfo
+- name: Start SpamAssassin
+  systemd: name=spamassassin state=started enabled=yes

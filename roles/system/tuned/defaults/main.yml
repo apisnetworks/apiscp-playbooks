@@ -1,0 +1,3 @@
+---
+tuned_config_file: /etc/tuned/tuned-main.conf
+tuned_profile: "virtual-guest"

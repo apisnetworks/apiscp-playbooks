@@ -27,12 +27,17 @@
     value: "{{ item.value }}"
   with_dict: "{{ config }}"
   notify: Restart postfix
-- name: Create site_blackhole alias
+- name: Create aliases
   lineinfile:
     path: "{{ aliases_file }}"
-    regexp: '^[#]*site_blackhole\s*:'
-    line: 'site_blackhole: /dev/null'
+    regexp: '^\s*{{ item.key }}\s*:'
+    line: '{{ item.key }}: {{ item.value }}'
     state: present
+  with_dict:
+    site_blackhole: /dev/null
+    "{{ apnscp_system_user }}": root
+  loop_control:
+    label: "Adding alias {{ item.key }} to {{ item.value }}"
   register: lif
 - name: Update aliases
   command: /usr/sbin/postalias "{{ aliases_file }}"

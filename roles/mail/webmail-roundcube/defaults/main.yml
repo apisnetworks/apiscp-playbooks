@@ -2,7 +2,7 @@
 roundcube_path: /var/www/html/roundcube
 roundcube_storage_path: /var/lib/roundcube
 roundcube_sql: "{{ roundcube_path }}/SQL/"
-roundcube_migration_marker: None
+roundcube_migration_marker:
 roundcube_config_file: "{{ roundcube_path }}/config/config.inc.php"
 roundcube_template_file: "{{ roundcube_path }}/config/config.template.inc.php"
 roundcube_user: roundcube

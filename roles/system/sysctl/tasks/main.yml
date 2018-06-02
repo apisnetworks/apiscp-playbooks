@@ -1,0 +1,10 @@
+---
+- sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: present
+    reload: yes
+    sysctl_file: "{{ sysctl_file }}"
+  with_dict: "{{ sysctl_config }}"
+  loop_control:
+    label: "Setting sysctl {{ item.key }} = {{ item.value }}"

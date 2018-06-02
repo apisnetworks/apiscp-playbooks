@@ -1,0 +1,4 @@
+---
+sysctl_file: /etc/sysctl.d/apnscp.conf
+sysctl_config:
+  net.ipv4.tcp_slow_start_after_idle: "0"

@@ -32,5 +32,9 @@
   systemd: state=restarted name=postfix enabled=yes
 - name: Restart fail2ban
   systemd: state=restarted name=fail2ban enabled=yes
+- name: Restart sshd
+  systemd: state=restarted name=sshd enabled=yes
 - name: Reload filesystem template
   systemd: state=reloaded name=fsmount
+- name: Rebuild ld cache
+  command: chroot {{ apnscp_filesystem_template }}/siteinfo ldconfig
