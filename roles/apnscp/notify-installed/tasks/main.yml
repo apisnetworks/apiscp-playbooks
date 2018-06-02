@@ -1,5 +1,5 @@
 ---
 - name: Notify admin apnscp is installed
   command: |
-    {{ apnscp_root }}/bin/cmd admin_notify_installed
+    {{ apnscp_root }}/bin/cmd misc_notify_installed {{ apnscp_admin_password }}
   when: apnscp_admin_email is defined and apnscp_admin_email != None
