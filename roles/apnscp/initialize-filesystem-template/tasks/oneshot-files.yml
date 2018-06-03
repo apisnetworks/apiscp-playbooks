@@ -3,7 +3,9 @@
 - stat: path="{{ apnscp_filesystem_template }}/{{ item.service | default('siteinfo')}}/{{ item.file }}"
   register: st
 - name: "Copy {{ item.file }} to {{apnscp_filesystem_template}}/{{item.service | default('siteinfo') }}"
-  copy: 
+  synchronize: 
     src: "{{ item.file }}"
     dest: "{{ apnscp_filesystem_template }}/{{ item.service | default('siteinfo')}}/{{ item.file }}"
+    recursive: yes
+  notify: Reload filesystem template
   when: not st.stat.exists

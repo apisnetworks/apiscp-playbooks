@@ -1,10 +1,8 @@
 ---
 rules:
-  # FTP
-  - port: 20/tcp
-  - port: 21/tcp
-  # SSH
-  - port: 22/tcp
+  # Services
+  - service: ftp
+  - service: ssh
   # Mail
   - port: 25/tcp
   - port: 465/tcp

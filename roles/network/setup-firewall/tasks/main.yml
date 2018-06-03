@@ -16,6 +16,7 @@
   firewalld:
     immediate: "{{ item.immediate | default(default_immediate) }}"
     port: "{{ item.port | default(omit) }}"
+    service: "{{ item.service | default(omit) }}"
     state: '{{ item.state | default("enabled") }}'
     zone: '{{ item.zone | default(default_zone) }}'
     rich_rule: '{{ item.rich | default(omit) }}'
@@ -23,7 +24,7 @@
   with_items:
     "{{ rules }}"
   loop_control:
-    label: "Setting rule {{ item.port | default(item.rule) }} "
+    label: "Setting rule {{ item.port | default(item.rule is defined | ternary(item.rule, item.service)) }} "
   when: true
   notify: Reload firewalld
 - name: "Apply direct firewalld rules"

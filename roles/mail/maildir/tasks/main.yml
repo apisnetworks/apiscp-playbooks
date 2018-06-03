@@ -30,6 +30,7 @@
       set sort=threads
       set spoolfile="~/{{maildir_home}}"
       set sort_re
+      set header_cache="~/.cache/mutt"
       source /etc/Muttrc.local
 - name: Remove root mbox
   file: 
