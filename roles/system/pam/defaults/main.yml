@@ -1,4 +1,8 @@
 ---
+dovecot_services:
+  - imap
+  - pop3
+  - smtp
 pam_path: /etc/pam.d
 vwh_module: pam_apnscpvwh.so
 vwh_module_path: "/lib64/security/{{ vwh_module }}"

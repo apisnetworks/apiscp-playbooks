@@ -21,6 +21,10 @@ rpms:
   - httpd-tools
   - httpd-devel
   - libc-client
+  - libcgroup
+  - libcgroup-devel
+  - libcgroup-pam
+  - libcgroup-tools
   - libcurl
   - libcurl-devel
   - maildrop

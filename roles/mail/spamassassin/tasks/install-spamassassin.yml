@@ -7,3 +7,5 @@
     service: siteinfo
 - name: Start SpamAssassin
   systemd: name=spamassassin state=started enabled=yes
+- name: Enable sa-update timer
+  systemd: name=sa-update.timer enabled=yes

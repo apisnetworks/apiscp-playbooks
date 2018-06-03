@@ -8,7 +8,4 @@
     - 'roles/common/vars/apnscp-internals.yml'
     - ['{{ apnscp_user_defaults }}', '/dev/null']
   roles:
-    - custom
-    - system/sshd
-    - apnscp/assert-account-works
-    - apnscp/notify-installed
+    - filesystem/make-mounts

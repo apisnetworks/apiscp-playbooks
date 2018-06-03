@@ -139,6 +139,43 @@ CREATE TABLE bandwidth_services (
 
 ALTER TABLE public.bandwidth_services OWNER TO {{ appliance_user }};
 
+COPY public.bandwidth_services (svc_id, name) FROM stdin;
+0	Unknown
+1	SMTP
+2	POP
+3	IMAP
+4	FTP
+5	SSH
+8	TELNET
+17	HTTP Headers
+18	HTTPS Headers
+23	Port 0
+24	Port 1
+25	Port 2
+26	Port 3
+27	Port 4
+28	Port 5
+29	Port 6
+30	Port 7
+31	Port 8
+32	Port 9
+6	WebDisk
+9	API
+7	Control Panel
+15	HTTP
+16	HTTPS
+\.
+
+
+--
+-- Name: bandwidth_services bandwidth_services_pkey; Type: CONSTRAINT; Schema: public; Owner: root
+--
+
+ALTER TABLE ONLY public.bandwidth_services
+    ADD CONSTRAINT bandwidth_services_pkey PRIMARY KEY (svc_id);
+
+
+
 --
 -- Name: bandwidth_spans; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
 --

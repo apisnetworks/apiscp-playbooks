@@ -33,12 +33,13 @@ service director {
 passdb {
   driver = pam
   # Session is necessary to restore root after verification
-  args = cache_key=%u%r failure_show_msg=yes session=yes dovecot
+  # Use imap/pop3/smtp granular authentication handling
+  args = cache_key=%u%r failure_show_msg=yes session=yes %s
 }
 
 userdb {
   driver = apnscp
-  args = blocking=no
+  args = blocking=yes
 }
 
 service imap-login {

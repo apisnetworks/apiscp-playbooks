@@ -2,9 +2,9 @@
 - include_vars: vars/ftp.yml
 - lineinfile: 
     path: "{{ pam_file }}"
-    regexp: '^[^#]*auth.*{{vwh_module}}'
+    regexp: '^\s*auth.*{{vwh_module}}'
     line: "auth\trequired\t{{ vwh_module }}"
-    insertbefore: '^[^#]*auth\s'
+    insertbefore: '^\s*auth\s'
     state: present  
 - include_tasks: listfile.yml
   vars: 

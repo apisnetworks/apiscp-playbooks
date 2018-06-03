@@ -11,12 +11,3 @@
     dest: "{{ phppgadmin_config_file }}"
   register: init
   when: not c.stat.exists
-
-- name: Change phpPgAdmin permissions
-  file: 
-    path: "{{ item }}"
-    owner: apache
-    group: apache
-    recurse: yes
-  with_items:
-    - "{{ phppgadmin_path }}"

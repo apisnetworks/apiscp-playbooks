@@ -1,4 +1,6 @@
 ---
+- name: Enable vsftpd
+  systemd: name=vsftpd state=started enabled=yes
 - name: "Create login banner"
   file: path="{{ vsftpd_login_banner }}" state=touch
   changed_when: false

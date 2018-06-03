@@ -1,6 +1,7 @@
 ---
 roundcube_path: /var/www/html/roundcube
 roundcube_storage_path: /var/lib/roundcube
+roundcube_log_file: "{{ roundcube_storage_path }}/logs/errors"
 roundcube_sql: "{{ roundcube_path }}/SQL/"
 roundcube_migration_marker:
 roundcube_config_file: "{{ roundcube_path }}/config/config.inc.php"

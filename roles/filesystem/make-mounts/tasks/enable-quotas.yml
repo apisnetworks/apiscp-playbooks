@@ -1,0 +1,33 @@
+- name: Alter mount options for / (ext4)
+  mount:
+    path: /
+    src: "{{ ansible_mounts | json_query('[?mount==`/`] | [0].device') }}"
+    fstype: ext4
+    opts: "noatime,user_xattr,acl,jqfmt=vfsv1,usrjquota=aquota.user,grpjquota=aquota.group"
+    state: present
+  register: ext4
+  when: xfs.rc != 0 and ext4.rc == 0
+- block:
+    - yum: name=quota state=present
+    # Make sure new options are picked up
+    - command: mount -o remount /
+    - name: Building quotas 
+      command: quotaoff -augv
+    - command: quotacheck -augvm
+    - command: quotaon -augv
+  when: xfs.rc != 0 and ext4.changed
+- name: Alter mount options for / (xfs)
+  block: 
+    - mount:
+        path: /
+        src: "{{ ansible_mounts | json_query('[?mount==`/`] | [0].device') }}"
+        fstype: xfs
+        opts: "attr2,inode64,usrquota,grpquota"
+        state: present
+      register: update
+    - lineinfile: >
+        dest=/etc/sysconfig/grub regexp='^GRUB_CMDLINE_LINUX\s*='
+        line='GRUB_CMDLINE_LINUX="quiet rhgb crashkernel=auto rootflags=usrquota,grpquota"'
+      notify: Update grub
+      when: update.changed
+  when: xfs.rc == 0

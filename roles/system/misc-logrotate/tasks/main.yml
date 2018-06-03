@@ -1,0 +1,18 @@
+---
+- include_vars: "{{playbook_dir}}/roles/mail/webmail-{{ item }}/defaults/main.yml"
+  with_items:
+    - horde
+    - roundcube
+- name: Add webmail logfile rotation
+  template:
+    src: templates/webmail.j2
+    dest: "{{ logrotate_path }}/webmail"
+    force: "{{ force | default('no') }}"
+- include_vars: "{{ playbook_dir }}/roles/software/passenger/defaults/main.yml"
+  when: passenger_enabled
+- name: Add Passenger logfile rotation
+  template:
+    src: templates/passenger.j2
+    dest: "{{ logrotate_path }}/passenger"
+    force: "{{ force | default('no') }}"
+  when: passenger_enabled

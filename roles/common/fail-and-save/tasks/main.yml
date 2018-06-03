@@ -3,6 +3,7 @@
 - copy:
     content: |
       #!/bin/sh
+      export ANSIBLE_LOG_PATH="{{ lookup('env', 'ANSIBLE_LOG_PATH')| default('') }}"
       cd {{ ansible_env['PWD'] }} && {{ argv | join(" ") }} && \
         rm -f /root/resume_apnscp_setup.sh
     dest: /root/resume_apnscp_setup.sh

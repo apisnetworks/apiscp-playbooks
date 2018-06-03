@@ -1,16 +1,34 @@
 ---
-- include_vars: vars/dovecot.yml
+- name: Verify {{ pam_file }} is not symlink
+  stat: path={{ pam_file }}
+  register: st
+- name: Convert {{ pam_file }} symlink to file
+  file: path={{pam_file}} state=absent
+  when: st.stat.exists and st.stat.islnk
+- name: Copy mail template to {{ pam_file }}
+  template: 
+    src: templates/dovecot
+    force: no
+    dest: "{{ pam_file }}"
 - lineinfile: 
     path: "{{ pam_file }}"
-    regexp: '^[^#]*auth.*{{vwh_module}}'
+    regexp: '^\s*auth.*{{vwh_module}}'
     line: "auth\trequired\t{{ vwh_module }}\tsaveroot"
-    insertbefore: '^[^#]*auth.*password-auth'
+    insertbefore: '^\s*auth.*password-auth'
     state: present  
-# cgroup provided by dovecot22-apnscp    
-- include_tasks: list_file.yml
 - lineinfile: 
     path: "{{ pam_file }}"
-    regexp: '^[^#]*auth.*{{vwh_module}}'
-    line: "session\trequired\t{{ vwh_module }}\trestoreroot restorelogin"
+    regexp: '^\s*session.*{{vwh_module}}'
+    line: "session required {{ vwh_module }} restorelogin restoreroot"
     insertafter: EOF
     state: present  
+# cgroup provided by dovecot22-apnscp    
+- include_tasks: listfile.yml
+  vars:
+    file: "/etc/{{ pam_service }}.pamlist"
+- lineinfile: 
+    path: "{{ pam_file }}"
+    regexp: '^\s*auth.*{{vwh_module}}'
+    line: "auth required {{ vwh_module }} saveroot"
+    insertbefore: BOF
+    state: present 

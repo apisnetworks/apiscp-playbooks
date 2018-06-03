@@ -32,11 +32,9 @@
   command: /usr/bin/horde-db-migrate
   become: yes
   when: import.changed
-  with_items:
-    - first
-    - second
-  loop_control:
-    label: "{{ item }} pass"
+  register: result
+  until: result.stdout.find("Migrating to ") == -1
+  delay: 1
 - name: Change Horde permissions
   file: 
     path: "{{ item }}"

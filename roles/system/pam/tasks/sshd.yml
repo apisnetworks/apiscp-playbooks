@@ -2,9 +2,9 @@
 - include_vars: vars/sshd.yml
 - lineinfile: 
     path: "{{ pam_file }}"
-    regexp: '^[^#]*auth.*{{vwh_module}}'
+    regexp: '^\s*auth.*{{vwh_module}}'
     line: "auth\trequired\t{{ vwh_module }}"
-    insertbefore: '^[^#]*auth.*password-auth'
+    insertbefore: '^\s*auth.*password-auth'
     state: present  
 - copy:
     src: ./templates/sshd
@@ -18,7 +18,6 @@
     file: "/etc/ssh.pamlist"
 - include_tasks: ./cgroup.yml
   vars:
-    file: "{{ pam_file }}"
-    aftermodule: '^[^#]*session\s+\S+\s+pam_loginuid.so'
+    aftermodule: '^\s*session\s+\S+\s+pam_loginuid.so'
 
   

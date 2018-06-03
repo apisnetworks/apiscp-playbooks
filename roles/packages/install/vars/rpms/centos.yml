@@ -172,9 +172,6 @@ rpms:
   - libblkid-devel
   - libcap
   - libcap-ng
-  - libcgroup
-  - libcgroup-pam
-  - libcgroup-tools
   - libcom_err
   - libcom_err-devel
   - libcroco

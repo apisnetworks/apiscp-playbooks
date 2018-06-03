@@ -13,7 +13,7 @@ __failure_template: |
 
   TO RESUME PROVISIONING, RUN:
 
-  cd {{ ansible_env['PWD'] }} && {{ argv | join(" ") }}
+  cd {{ ansible_env['PWD'] }} && env ANSIBLE_LOG_PATH="{{ lookup('env', 'ANSIBLE_LOG_PATH') }}" {{ argv | join(" ") }}
 
   OR RUN THE FOLLOWING FROM THE SHELL:
 

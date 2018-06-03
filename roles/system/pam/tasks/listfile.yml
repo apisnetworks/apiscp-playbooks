@@ -1,13 +1,12 @@
 ---
-
 - name: "Add listfile to {{ pam_file }}"
   lineinfile:
     path: "{{ pam_file }}"
-    regexp: '^[^#]*auth.*pam_listfile.so'
+    regexp: '^\s*auth.*pam_listfile.so'
     state: absent
 - lineinfile: 
     path: "{{ pam_file }}"
-    regexp: '^[^#]*auth.*pam_listfile.so'
+    regexp: '^\s*auth.*pam_listfile.so'
     line: "auth\trequired\tpam_listfile.so onerr={{ onerr | default('fail') }} item=user sense={{ sense | default('allow') }} file={{ file }}"
-    insertafter: '^[^#]*auth\s+\S+\s+{{vwh_module}}'
+    insertafter: '^\s*auth\s+\S+\s+{{vwh_module}}'
     state: present  

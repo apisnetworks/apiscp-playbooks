@@ -8,11 +8,13 @@
 - meta: flush_handlers
 - name: Start apnscp
   systemd: state=started name=apnscp enabled=yes
+- set_fact: __apnscp_password={{ apnscp_admin_password }}
+  when: pass.stat.size == 0
 - block:
   - name: "Setting admin password"
-    command: "{{ apnscp_root }}/bin/cmd auth_change_password {{ apnscp_admin_password|quote }} {{ apnscp_admin_user|quote }}"
-  - debug: msg="Admin password set to {{ apnscp_admin_password }}" verbosity=1
-  when: pass.stat.size == 0
-- name: "Setting admin email to {{ apnscp_admin_email }}"
+    command: "{{ apnscp_root }}/bin/cmd auth_change_password {{ __apnscp_password|quote }} {{ apnscp_admin_user|quote }}"
+  - debug: msg="Admin password set to {{ __apnscp_password }}" verbosity=1
+  when: __apnscp_password is defined
+- name: "Setting admin email to {{ apnscp_admin_email | default('----NOT DEFINED----') }}"
   command: "{{ apnscp_root }}/bin/cmd admin_set_email {{ apnscp_admin_email|quote }}"
   when: apnscp_admin_email != None

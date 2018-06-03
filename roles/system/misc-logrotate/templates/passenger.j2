@@ -1,0 +1,9 @@
+{{ passenger_log_location }}/passenger.log {
+  missingok
+  notifempty
+  rotate 4
+  sharedscripts
+  postrotate
+  	/bin/systemctl reload httpd.service > /dev/null 2> /dev/null || true
+  endscript
+}

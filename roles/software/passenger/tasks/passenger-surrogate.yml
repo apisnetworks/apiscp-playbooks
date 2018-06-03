@@ -10,7 +10,7 @@
     dest: "{{ passenger_home }}/.ruby-version"
     content: "{{ sys_ruby_version }}"
 - name: Build Passenger
-  command: rake apache2
+  shell: exec $SHELL -i rake apache2
   args:
     chdir: "{{ passenger_home }}"
   notify: Restart apache

@@ -1,0 +1,2 @@
+---
+logrotate_path: /etc/logrotate.d

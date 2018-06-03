@@ -1,6 +1,7 @@
 ---
 horde_path: /var/www/html/horde
 horde_storage_path: /var/lib/horde
+horde_log_file: "{{ horde_storage_path }}/log/horde.log"
 horde_config_file: "{{ horde_path }}/config/conf.php"
 horde_template_file: "templates/horde-conf.conf.j2"
 horde_user: horde

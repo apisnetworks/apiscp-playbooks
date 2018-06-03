@@ -23,7 +23,12 @@
   ini_file:
     path: /etc/clamav-unofficial-sigs/clamav-unofficial-sigs.conf
     section: null
-    option: clam_group
-    value: "{{ clamav_group }}"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
     state: present
     no_extra_spaces: yes
+  with_dict:
+    clam_group: "{{ clamav_group }}"
+
+
+
