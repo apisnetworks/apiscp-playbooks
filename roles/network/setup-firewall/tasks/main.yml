@@ -12,6 +12,8 @@
   loop_control: 
     loop_var: service
   ignore_errors: true
+- name: Verify firewalld running
+  systemd: name=firewalld state=started enabled=yes
 - name: "Open ports with firewalld"
   firewalld:
     immediate: "{{ item.immediate | default(default_immediate) }}"

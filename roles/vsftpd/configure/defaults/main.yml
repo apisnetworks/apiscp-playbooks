@@ -33,3 +33,5 @@ vsftpd_directives:
   allow_writeable_chroot: YES
   background: "YES"
   idle_session_timeout: "0"
+  # Necessary for cgroup accounting
+  session_support: "YES"

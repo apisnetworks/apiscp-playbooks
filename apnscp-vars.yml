@@ -86,6 +86,9 @@ sys_ruby_version: 2.4.4
 passenger_enabled: yes
 # Use SpamAssassin or rspamd for spam filtering. rspamd is experimental
 spamassassin_enabled: yes
+# Place each account's InnoDB data files in a separate directory
+# Loses performance benefits, increases overhead, but allows for storage tracking
+mysqld_per_account_innodb: yes
 # Enable SELinux
 # true is absolutely guaranteed to break your system
 # debug places selinux in permissive mode

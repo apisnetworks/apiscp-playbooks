@@ -1,4 +1,3 @@
----
 - name: Initialize FILESYSTEMTEMPLATE
   file:
     path: "{{apnscp_filesystem_template}}"
@@ -79,3 +78,42 @@
   notify: 
     - Rebuild ld cache
     - Reload filesystem template
+    
+# And for MySQL...
+- name: Create mysql socket parent directory
+  file:
+    path: "{{ mysql_shared_path | dirname }}"
+    state: directory
+    owner: mysql
+    group: mysql
+    mode: 0711
+- name: Reconfigure mysql to use "{{ apnscp_shared_root }}/mysql.sock"
+  ini_file:
+    path: /etc/my.cnf.d/apnscp.cnf
+    section: "mysqld"
+    option: socket
+    value: "{{ mysql_shared_path }}"
+    state: present
+    no_extra_spaces: yes
+  notify: Restart mariadb
+- file:
+    path: "{{ apnscp_filesystem_template }}/siteinfo/var/lib/mysql"
+    state: directory
+    owner: mysql
+    group: mysql
+    mode: 2751
+- meta: flush_handlers
+- wait_for:
+    path: "{{ mysql_shared_path }}"
+    state: present
+    timeout: 60    
+- file:
+    path: "{{ apnscp_filesystem_template }}/siteinfo/var/lib/mysql/mysql.sock"
+    src: "{{ mysql_shared_path }}"
+    state: link
+  notify: Reload filesystem template
+- name: Install mysql socket in system path
+  file:
+    path: /var/lib/mysql/mysql.sock
+    src: "{{ mysql_shared_path }}"
+    state: link 

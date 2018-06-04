@@ -1,3 +1,4 @@
 ---
+mysql_shared_path: "{{ apnscp_shared_root }}/mysql/mysql.sock"
 force: false
 __populate_filesystem_template: false

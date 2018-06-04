@@ -26,14 +26,14 @@
 - name: Restore /etc/mtab
   shell: >
     [[ -L /etc/mtab ]] && ( rm -f /etc/mtab && mv /etc/mtab{.ansible-save,} || ln -s /proc/mounts /etc/mtab) || true
-  when: moved is defined
+  when: moved is defined and moved.changed
 - file: 
     path: "{{ tmpfs_config | dirname }}"
     state: directory
 - copy:
     content: "[Mount]\nOptions={{ tmpfs_attrs }}"
     dest: "{{ tmpfs_config }}"
-- systemd: service=tmp.mount state=started enabled=yes
+- systemd: service=tmp.mount masked=no state=started enabled=yes
   notify:
     - Restart services
 # cf. https://chrisdown.name/2018/01/02/in-defence-of-swap.html

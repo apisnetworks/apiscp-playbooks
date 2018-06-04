@@ -25,6 +25,7 @@
         opts: "attr2,inode64,usrquota,grpquota"
         state: present
       register: update
+      notify: Update grub
     - lineinfile: >
         dest=/etc/sysconfig/grub regexp='^GRUB_CMDLINE_LINUX\s*='
         line='GRUB_CMDLINE_LINUX="quiet rhgb crashkernel=auto rootflags=usrquota,grpquota"'

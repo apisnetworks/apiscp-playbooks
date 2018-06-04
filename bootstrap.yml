@@ -51,6 +51,7 @@
     - apnscp/php-filesystem-template
     - apnscp/install-services
     - apnscp/bandwidth-log
+    - apnscp/admin-helper
     - system/nscd
     - system/nss
     - system/pam

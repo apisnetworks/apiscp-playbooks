@@ -52,3 +52,13 @@
     host: "%"
     state: absent
   when: test is defined and test.changed
+- name: Reconfigure mysql
+  ini_file:
+    path: /etc/my.cnf.d/apnscp.cnf
+    section: mysqld
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  with_dict: "{{ configuration }}"
+  loop_control:
+    label: "Setting {{ item.key }} => {{ item.value }}"
+  notify: Restart mariadb

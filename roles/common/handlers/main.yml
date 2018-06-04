@@ -14,6 +14,9 @@
   systemd: state=restarted name=vsftpd  enabled=yes
 - name: Restart authlib
   systemd: state=restarted name=courier-authlib enabled=yes
+- name: Restart mariadb
+  systemd: state=restarted name=mariadb enabled=yes
+  listen: Restart mysql
 - name: Restart postgresql
   systemd: state=restarted name=postgresql 
   listen: Restart services

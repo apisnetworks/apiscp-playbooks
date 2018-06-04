@@ -1,0 +1,8 @@
+---
+- name: Load admin helper in .bashrc
+  blockinfile:
+    path: /root/.bashrc
+    marker: "### {mark} APNSCP HELPER"
+    insertafter: EOF
+    state: present
+    block: "{{ lookup('file', 'files/apnscp-helpers.sh') }}"
