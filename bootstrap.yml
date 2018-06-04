@@ -47,9 +47,9 @@
     - mail/configure-postfix
     - mail/configure-courier-authlib
     - mail/maildir
+    - apnscp/install-services
     - apnscp/initialize-filesystem-template
     - apnscp/php-filesystem-template
-    - apnscp/install-services
     - apnscp/bandwidth-log
     - apnscp/admin-helper
     - system/nscd

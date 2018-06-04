@@ -78,7 +78,7 @@
   notify: 
     - Rebuild ld cache
     - Reload filesystem template
-    
+
 # And for MySQL...
 - name: Create mysql socket parent directory
   file:
@@ -111,7 +111,6 @@
     path: "{{ apnscp_filesystem_template }}/siteinfo/var/lib/mysql/mysql.sock"
     src: "{{ mysql_shared_path }}"
     state: link
-  notify: Reload filesystem template
 - name: Install mysql socket in system path
   file:
     path: /var/lib/mysql/mysql.sock
