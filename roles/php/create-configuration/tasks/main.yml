@@ -17,7 +17,7 @@
   when: not s.stat.exists
 - name: Set SQL PHP defaults
   ini_file: 
-    section: None
+    section: null
     option: "{{cfgitem.key}}"
     value: "{{cfgitem.value}}"
     dest: "{{ php_main_config }}"
@@ -31,6 +31,7 @@
     - "post_max_size": "20M"
     - "disable_functions": syslog
     - "expose_php": "off"
+    - "session.save_path": '"2;/tmp/sessions"'
   loop_control:
     loop_var: cfgitem
     label: "Setting {{ cfgitem.key }} in {{ php_main_config }}"
