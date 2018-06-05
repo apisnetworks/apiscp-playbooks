@@ -90,12 +90,15 @@
 - name: Reconfigure mysql to use "{{ apnscp_shared_root }}/mysql.sock"
   ini_file:
     path: /etc/my.cnf.d/apnscp.cnf
-    section: "mysqld"
+    section: "{{ item }}"
     option: socket
     value: "{{ mysql_shared_path }}"
     state: present
     no_extra_spaces: yes
   notify: Restart mariadb
+  with_items:
+    - mysqld
+    - client
 - file:
     path: "{{ apnscp_filesystem_template }}/siteinfo/var/lib/mysql"
     state: directory
@@ -116,3 +119,4 @@
     path: /var/lib/mysql/mysql.sock
     src: "{{ mysql_shared_path }}"
     state: link 
+    force: yes
