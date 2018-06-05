@@ -3,7 +3,8 @@ APNSCP_HOME=${APNSCP_HOME:-/usr/local/apnscp}
 APNSCPCMD=${APNSCPCMD:-${APNSCP_HOME}/bin/cmd}
 alias upcp="[[ -d $APNSCP_HOME ]] && $APNSCP_HOME/build/upcp.sh"
 alias cpcmd="apnscp_php ${APNSCP_HOME}/bin/cmd"
-
+# avoid blowing up /.socket or bind mounts
+alias rm='rm -i --one-file-system'
 function site_stats { 
 	if [ -z $1 ] ; then 
   	CONSTRAINT="%"

@@ -23,6 +23,7 @@
   rescue:
     - shell: > 
         rm -f /etc/mtab && mv /etc/mtab{.ansible-save,} || ln -s /proc/mounts /etc/mtab
+- meta: flush_handlers
 - name: Restore /etc/mtab
   shell: >
     [[ -L /etc/mtab ]] && ( rm -f /etc/mtab && mv /etc/mtab{.ansible-save,} || ln -s /proc/mounts /etc/mtab) || true
