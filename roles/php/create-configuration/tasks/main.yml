@@ -32,6 +32,7 @@
     - "disable_functions": syslog
     - "expose_php": "off"
     - "session.save_path": '"2;/tmp/sessions"'
+    - "output_buffering": "4096"
   loop_control:
     loop_var: cfgitem
     label: "Setting {{ cfgitem.key }} in {{ php_main_config }}"

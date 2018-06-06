@@ -10,12 +10,12 @@
     - command: "mv /usr/share/pear {{ apnscp_shared_root }}/php"
   when: not stdst.stat.exists
 - name: Check if {{ php_pear_data_path }} exists
-  stat: path={{ php_pear_data_path }}
+  stat: path="{{ php_pear_data_path }}"
   register: spd
 - name: Relink {{ php_pear_data_path }}
   block:
-    - file: path={{ php_pear_data_path }} state=absent
-    - file: path={{ php_pear_data_path }} state=directory
+    - file: path="{{ php_pear_data_path }}" state=absent
+    - file: path="{{ php_pear_data_path }}" state=directory
   when: spd.stat.islnk and not spd.stat.exists
   
 - block:

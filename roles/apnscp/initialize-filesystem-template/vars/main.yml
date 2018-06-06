@@ -77,10 +77,11 @@ relocated_paths:
     }
   - { service: tomcat, src: "{{ apnscp_shared_root }}/tomcat", dest: /var/log/tomcat }
 # Files are copied on initial provisioning, not hardlinked nor updated after
-copy_files:
+oneshot_files:
   - {file: /etc/bashrc }
   - {file: /etc/csh.cshrc }
   - {file: /etc/csh.login }
+  - {file: /etc/default/useradd }
   - {file: /etc/environment }
   - {file: /etc/filesystems }
   - {file: /etc/host.conf }

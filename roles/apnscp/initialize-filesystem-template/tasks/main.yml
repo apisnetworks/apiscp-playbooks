@@ -61,7 +61,7 @@
 
 - name: Copy files only once
   include_tasks: oneshot-files.yml
-  with_items: "{{ copy_files }}"
+  with_items: "{{ oneshot_files }}"
   loop_control:
     label: "Copy {{ item.file }} to {{ item.service | default('siteinfo') }}"
 
