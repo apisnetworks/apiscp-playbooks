@@ -1,2 +1,3 @@
 ---
+addr_list: []
 fcgi_path: /var/tmp/fcgi

@@ -1,2 +1,15 @@
 ---
 - include_tasks: configure-fcgid.yml
+- name: "Configure virtualhosts from namebased_ip_addrs"
+  set_fact: 
+    addr_list: "{{ addr_list + lookup('file', item).split('\n') | reject('sameas', empty) | list}}"
+  with_items:
+    - "{{ apnscp_root }}/storage/opcenter/namebased_ip_addrs"
+    - "{{ apnscp_root }}/storage/opcenter/namebased_ip6_addrs"
+- name: "Update VirtualHost container settings"
+  replace:
+    path: /etc/httpd/conf/httpd-custom.conf
+    regexp: '<VirtualHost[^:]*(:[^> ]+).*$'
+    replace: '<VirtualHost {{ addr_list | join("\1 ") }}>'
+  validate: 'httpd -t'
+

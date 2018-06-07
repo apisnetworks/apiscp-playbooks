@@ -45,11 +45,11 @@
     - "{{ horde_storage_path }}"
 - name: Lockdown Horde
   file: path={{ horde_path }} owner=root recurse=yes
-  file: path={{ item }} mode=0700 owner=root
+- file: path={{ item }} mode=0700 owner=root
   with_fileglob: "/usr/bin/horde-*"
   loop_control: 
     label: "Removing group/other permissions from {{ item }}"
-- name: Open /usr/bin/horde-alarms
+- name: "Open /usr/bin/horde-alarms to {{ apnscp_system_user }}"
   file: path=/usr/bin/horde-alarms group={{ apnscp_system_user }} mode=0750
   when: horde_cron_enabled
   changed_when: false

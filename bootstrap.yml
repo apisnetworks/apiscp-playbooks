@@ -28,6 +28,7 @@
     - php/install-pecl-module
     - php/create-configuration
     - java/tomcat
+    - apnscp/install-services
     - apnscp/bootstrap
     - apache/configure
     - clamav/setup
@@ -47,7 +48,6 @@
     - mail/configure-postfix
     - mail/configure-courier-authlib
     - mail/maildir
-    - apnscp/install-services
     - apnscp/initialize-filesystem-template
     - apnscp/php-filesystem-template
     - apnscp/bandwidth-log

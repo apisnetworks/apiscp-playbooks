@@ -42,11 +42,13 @@
     system: yes
     state: present
   register: system_user_created
+
 # Ensure apnscp ownership is correct
 - command: /bin/true
   notify: Change apnscp ownership
 
-- ini_file:
+- name: Set apnscp user in config.ini
+  ini_file:
     owner: "{{ apnscp_system_user }}"
     path: "{{apnscp_root}}/config/custom/config.ini"
     section: core
@@ -92,16 +94,17 @@
 - stat: path="{{ apnscp_root }}/storage/opcenter/namebased_ip_addrs"
   register: nbchk
 - copy:
-    content: "{{ apnscp_ip4_address | default(ansible_default_ipv4.address) }}"
+    content: "{{ apnscp_ip4_address | default(ansible_default_ipv4.address) | join('\n') }}"
     dest: "{{ apnscp_root }}/storage/opcenter/namebased_ip_addrs"
   when: not nbchk.stat.exists or nbchk.stat.size == 0
-
+  notify: Restart virtualhosting
 - stat: path="{{ apnscp_root }}/storage/opcenter/namebased_ip6_addrs"
   register: nbchk
 - block: 
     - copy:
-        content: "{{ apnscp_ip6_address | default(ansible_default_ipv6.address) }}"
+        content: "{{ apnscp_ip6_address | default(ansible_default_ipv6.address) | join('\n') }}"
         dest: "{{ apnscp_root }}/storage/opcenter/namebased_ip6_addrs"
+      notify: Restart virtualhosting
     - include_tasks: set-config.yml
       vars:
         section: dns

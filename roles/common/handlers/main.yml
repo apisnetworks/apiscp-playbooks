@@ -39,5 +39,7 @@
   systemd: state=restarted name=sshd enabled=yes
 - name: Reload filesystem template
   systemd: state=reloaded name=fsmount
+- name: Restart virtualhosting
+  systemd: state=restarted name=virtualhosting
 - name: Rebuild ld cache
   command: chroot {{ apnscp_filesystem_template }}/siteinfo ldconfig
