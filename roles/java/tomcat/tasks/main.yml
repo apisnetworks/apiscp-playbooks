@@ -7,5 +7,13 @@
     path: /var/log/tomcat
     state: directory
   when: not st.stat.exists
+- name: Add tomcat system user
+  user:
+    name: tomcat
+    system: yes
+    update_password: on_create
+    shell: /sbin/nologin
+    home: /opt/tomcat
+    system: yes
 - include_tasks: configure-tomcat.yml
   when: tomcat_enable
