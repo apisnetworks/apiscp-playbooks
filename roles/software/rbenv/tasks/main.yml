@@ -55,7 +55,10 @@
       -exec chgrp wheel {} +
   register: rbenv_chown
   changed_when: rbenv_chown.stdout != ""
-
+- name: Ensure wheel has permissions to install binaries
+  file:
+    path: "{{ apnscp_filesystem_template }}/{{rbenv_service_install }}/{{git_target}}/versions"
+    mode: g+rwx
 # Stolen from rbenv-support playbook, needs late init to correct path
 - name: Check if current system ruby version is {{ sys_ruby_version }}
   shell: $SHELL -lc "rbenv version | cut -d ' ' -f 1 | grep -Fx '{{ sys_ruby_version }}'"

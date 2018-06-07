@@ -20,6 +20,10 @@
       -exec chgrp wheel {} \;
   register: goenv_chmod
   changed_when: goenv_chmod.stdout != ""
+- name: Ensure wheel has permissions to install binaries
+  file:
+    path: "{{ apnscp_filesystem_template }}/{{goenv_service_install }}/{{git_target}}/versions"
+    mode: g+rwx
 - name: Create goenv.sh
   copy:
     dest: "{{ goenv_script }}"

@@ -27,6 +27,10 @@
       -exec chgrp wheel {} +
   register: pyenv_chmod
   changed_when: pyenv_chmod.stdout != ""
+- name: Ensure wheel has permissions to install binaries
+  file:
+    path: "{{ apnscp_filesystem_template }}/{{pyenv_service_install }}/{{git_target}}/versions"
+    mode: g+rwx
 - name: Fix pip location
   copy:
     src: files/updatePipPath.bash
