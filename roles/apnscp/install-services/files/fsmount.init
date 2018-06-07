@@ -27,6 +27,9 @@ failure() {
 	echo -n "FAILED"
 }
 
+KERNEL_BUGGED=no
+[[ $(uname -r) == 3.10.0-* ]] && KERNEL_BUGGED=yes
+
 function mount_all_sites {
 	[[ ! -d ${SOCKETDIR}/proc ]] && mkdir ${SOCKETDIR}/proc
 	[[ -L ${SOCKETDIR}/proc/self ]] || mount -n -t proc -o hidepid=2 --make-slave proc ${SOCKETDIR}/proc
@@ -39,6 +42,11 @@ function mount_all_sites {
 
 function mount_site {
 	SITE=$1
+	still_mounted $SITE
+	if [[ $? -eq 0 ]]; then
+		echo "Site $SITE already mounted - ignoring"
+		return
+	fi
 	SERVICES=`get_services $SITE`
 	[[ -z $SERVICES ]] && return
 	CMD="/bin/mount -n -t overlay -o 
@@ -118,6 +126,12 @@ function synthesize {
 }
 
 function unmount_site {
+	if [[ $KERNEL_BUGGED == "yes" ]] ; then
+		failure
+		echo -e "\nYou are running a bugged version of the Linux kernel (`uname -r`). " \
+			"Unmounting sites is not supported, only reload and start on boot"
+		exit 1
+	fi
 	SITE=$1
 	let MNTCNT=1
 	while `still_mounted $SITE` ; do
@@ -190,6 +204,8 @@ case "$1" in
 		echo
 	;;
   restart)
+echo $0
+exit
     $0 stop
     $0 start
   ;;
