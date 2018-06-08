@@ -71,13 +71,20 @@
   file:
     src: "{{ item }}"
     dest: "{{ apnscp_filesystem_template }}/siteinfo/{{ item }}"
-    state: hard
+    state: link
   with_items:
     - /etc/ld.so.conf.d/postgresql-pgdg-libs.conf
     - /etc/alternatives/pgsql-ld-conf
   notify: 
     - Rebuild ld cache
     - Reload filesystem template
+
+- name: Remove GROUP= configuration from useradd
+  ini_file:
+    path: "{{ apnscp_filesystem_template }}/siteinfo/etc/default/useradd"
+    section: null
+    option: GROUP
+    state: absent
 
 # And for MySQL...
 - name: Create mysql socket parent directory

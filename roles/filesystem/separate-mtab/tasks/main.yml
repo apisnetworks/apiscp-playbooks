@@ -8,3 +8,10 @@
     - file: path=/etc/mtab state=absent
     - copy: src=/proc/mounts dest=/etc/mtab
   when: mtab.stat.exists and mtab.stat.islnk
+- name: "Fake usrquota,grpquota in synthetic /etc/mtab"
+  replace:
+    path: /etc/mtab
+    regexp: '^(\S+\s+/\s+xfs\s+.*?)(\b|,)noquota(?=,|\b)(.*)$'
+    replace: '\1\2usrquota,grpquota\3'
+
+
