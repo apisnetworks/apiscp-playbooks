@@ -15,24 +15,19 @@
     src: files/php.ini
     dest: "{{ php_main_config}}"
   when: not s.stat.exists
-- name: Set PHP defaults
-  ini_file: 
-    section: null
-    option: "{{cfgitem.key}}"
-    value: "{{cfgitem.value}}"
-    dest: "{{ php_main_config }}"
+- name: Set PHP defaults 
+  blockinfile:
+    marker: '#{mark} APNSCP MANAGED BLOCK' 
+    path: "{{ php_main_config }}"
+    content: |
+      pdo_mysql.default_socket = /var/lib/mysql/mysql.sock
+      mysqli.default_socket = /var/lib/mysql/mysql.sock
+      mysql.allow_persistent = Off
+      pgsql.allow_persistent = Off
+      upload_max_filesize = 16M
+      post_max_size = 20M
+      disable_functions = syslog
+      expose_php = off
+      session.save_path = "2;/tmp/sessions"
+      output_buffering = 4096
   notify: Restart apache
-  with_dict:
-    - "pdo_mysql.default_socket": /var/lib/mysql/mysql.sock
-    - "mysqli.default_socket": /var/lib/mysql/mysql.sock
-    - "mysql.allow_persistent": "Off"
-    - "pgsql.allow_persistent": "Off"
-    - "upload_max_filesize": "16M"
-    - "post_max_size": "20M"
-    - "disable_functions": syslog
-    - "expose_php": "off"
-    - "session.save_path": '"2;/tmp/sessions"'
-    - "output_buffering": "4096"
-  loop_control:
-    loop_var: cfgitem
-    label: "Setting {{ cfgitem.key }} in {{ php_main_config }}"
