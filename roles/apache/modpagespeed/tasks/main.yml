@@ -10,6 +10,11 @@
         ModPagespeedXHeaderValue "Powered By pagespeed"
         ModPagespeedCriticalImagesBeaconEnabled false
         ModPagespeedDisableFilters add_instrumentation
+        ModPagespeedEnableCachePurge on
+        ModPagespeedPurgeMethod PURGE
+        # Interrupts cache control headers set by WP for example
+        # @XXX May remove if problematic
+        ModPagespeedModifyCachingHeaders off
     marker: '#{mark} APNSCP MANAGED BLOCK'
     insertbefore: "</[Ii]f[mM]odule>"
   when: st.stat.exists

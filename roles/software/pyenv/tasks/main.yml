@@ -31,6 +31,9 @@
   file:
     path: "{{ apnscp_filesystem_template }}/{{pyenv_service_install }}/{{git_target}}/versions"
     mode: g+rwx
+    group: wheel
+    owner: root
+    state: directory
 - name: Fix pip location
   copy:
     src: files/updatePipPath.bash
