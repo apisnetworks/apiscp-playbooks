@@ -5,3 +5,10 @@
 - name: Enable etckeeper
   command: etckeeper init
   when: not st.stat.exists
+- name: Check if git email set
+  command: git config --global user.email
+  register: o
+  changed_when: false
+- name: Set git email address for etckeeper
+  command: git config --global user.email "{{ apnscp_admin_email | default('root@' + ansible_fqdn, true) }}"
+  when: o.stdout == ""

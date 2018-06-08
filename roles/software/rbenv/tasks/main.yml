@@ -42,7 +42,7 @@
 # Install Ruby manually to avoid using incorrect FST markup in playbook
 - name: Build Ruby {{ sys_ruby_version }} outside FST
   shell: >
-    {{ git_target }}/bin/rbenv install {{ sys_ruby_version }}
+    $SHELL -lc "{{ git_target }}/bin/rbenv install {{ sys_ruby_version }}"
   environment: 
     TMPDIR: "{{ apnscp_root }}/storage/cache"
     RBENV_SHELL: bash
@@ -57,8 +57,14 @@
   changed_when: rbenv_chown.stdout != ""
 - name: Ensure wheel has permissions to install binaries
   file:
-    path: "{{ apnscp_filesystem_template }}/{{rbenv_service_install }}/{{git_target}}/versions"
+    path: "{{ apnscp_filesystem_template }}/{{rbenv_service_install }}/{{git_target}}/{{ item }}"
     mode: g+rwx
+    state: directory
+    group: wheel
+    owner: root
+  with_items:
+    - versions
+    - shims
 # Stolen from rbenv-support playbook, needs late init to correct path
 - name: Check if current system ruby version is {{ sys_ruby_version }}
   shell: $SHELL -lc "rbenv version | cut -d ' ' -f 1 | grep -Fx '{{ sys_ruby_version }}'"
