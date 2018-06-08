@@ -8,3 +8,4 @@ passenger_max_instances: 5
 passenger_app_instances: 2
 passenger_max_pool_size: 20
 passenger_resolve_symlinks_in_document_root: "On"
+passenger_default_python: 3.4.8

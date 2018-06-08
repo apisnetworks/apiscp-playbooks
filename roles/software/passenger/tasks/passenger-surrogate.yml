@@ -4,7 +4,8 @@
     repo: "{{ passenger_repo }}"
     version: "{{ passenger_repo_ver }}"
     dest: "{{ passenger_home }}"
-
+    update: false
+  register: repochkout
 - name: Set system Ruby for Passenger
   copy:
     dest: "{{ passenger_home }}/.ruby-version"
@@ -14,6 +15,24 @@
   args:
     chdir: "{{ passenger_home }}"
   notify: Restart apache
+  when: repochkout.changed
+# Necessary for Python support
+- name: Include Python configuration
+  include_vars: 
+    file: "{{ playbook_dir }}/roles/software/pyenv/defaults/main.yml"
+    name: pyenv
+- set_fact:
+    passenger_python: "{{ pyenv.git_target }}/shims/python"
+- name: Check if Python shims installed
+  find: paths={{ passenger_python | dirname }} patterns="*"
+  register: ch
+- name: Install Python {{ passenger_default_python }}
+  command: $SHELL -lc "{{ pyenv.git_target }}/bin/pyenv install {{ passenger_default_python }}"
+  environment:
+    TMPDIR: "{{ apnscp_root }}/storage/cache"
+  when: ch.matched|int == 0
+# End Python support
+
 - name: Copy Passenger configuration
   template:
     src: templates/passenger.conf.j2

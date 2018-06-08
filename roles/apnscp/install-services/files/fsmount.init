@@ -126,12 +126,6 @@ function synthesize {
 }
 
 function unmount_site {
-	if [[ $KERNEL_BUGGED == "yes" ]] ; then
-		failure
-		echo -e "\nYou are running a bugged version of the Linux kernel (`uname -r`). " \
-			"Unmounting sites is not supported, only reload and start on boot"
-		exit 1
-	fi
 	SITE=$1
 	let MNTCNT=1
 	while `still_mounted $SITE` ; do
@@ -204,8 +198,12 @@ case "$1" in
 		echo
 	;;
   restart)
-echo $0
-exit
+		if [[ $KERNEL_BUGGED == "yes" ]] ; then
+			failure
+			echo -e "\nYou are running a bugged version of the Linux kernel (`uname -r`). " \
+				"Unmounting sites is not supported, only reload and start on boot"
+			exit 1
+		fi
     $0 stop
     $0 start
   ;;

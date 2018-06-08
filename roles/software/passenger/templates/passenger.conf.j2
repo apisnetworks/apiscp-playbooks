@@ -11,7 +11,7 @@ LoadModule passenger_module  {{passenger_home}}/buildout/apache2/mod_passenger.s
   RailsSpawnMethod smart-lv2
   PassengerDebugLogFile {{ passenger_home }}/logs/passenger.log
   PassengerMaxInstancesPerApp {{ passenger_max_instances }}
-  PassengerPython {{ passenger_home }}/shims/python
+  PassengerPython {{passenger_python}}
   PassengerErrorOverride Off
   PassengerFriendlyErrorPages On
   PassengerResolveSymlinksInDocumentRoot {{ passenger_resolve_symlinks_in_document_root }}

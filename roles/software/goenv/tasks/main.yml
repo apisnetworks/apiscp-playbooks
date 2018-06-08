@@ -24,6 +24,9 @@
   file:
     path: "{{ apnscp_filesystem_template }}/{{goenv_service_install }}/{{git_target}}/versions"
     mode: g+rwx
+    owner: root
+    group: wheel
+    state: directory
 - name: Create goenv.sh
   copy:
     dest: "{{ goenv_script }}"
