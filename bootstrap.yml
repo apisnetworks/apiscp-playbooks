@@ -33,6 +33,7 @@
     - apache/configure
     - clamav/setup
     - apache/modsecurity
+    - apache/modpagespeed
     #- apache/fcgid
     - apnscp/initialize-db
     - apnscp/build-php

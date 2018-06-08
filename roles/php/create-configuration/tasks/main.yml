@@ -15,7 +15,7 @@
     src: files/php.ini
     dest: "{{ php_main_config}}"
   when: not s.stat.exists
-- name: Set SQL PHP defaults
+- name: Set PHP defaults
   ini_file: 
     section: null
     option: "{{cfgitem.key}}"

@@ -1,0 +1,17 @@
+---
+- name: Check if Pagespeed installed
+  stat: path={{ pagespeed_config }}
+  register: st
+- name: Set Pagespeed defaults
+  blockinfile:
+    path: "{{ pagespeed_config }}"
+    block: |
+        ModPagespeedRewriteLevel PassThrough
+        ModPagespeedXHeaderValue "Powered By pagespeed"
+        ModPagespeedCriticalImagesBeaconEnabled false
+        ModPagespeedDisableFilters add_instrumentation
+    marker: '#{mark} APNSCP MANAGED BLOCK'
+    insertbefore: "</[Ii]f[mM]odule>"
+  when: st.stat.exists
+  notify: Reload apache
+  
