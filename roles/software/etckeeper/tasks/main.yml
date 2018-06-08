@@ -8,6 +8,7 @@
 - name: Check if git email set
   command: git config --global user.email
   register: o
+  failed_when: o.rc != 0 and o.rc != 1
   changed_when: false
 - name: Set git email address for etckeeper
   command: git config --global user.email "{{ apnscp_admin_email | default('root@' + ansible_fqdn, true) }}"
