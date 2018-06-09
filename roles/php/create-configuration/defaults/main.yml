@@ -1,0 +1,13 @@
+php_default_config: |
+  pdo_mysql.default_socket = /var/lib/mysql/mysql.sock
+  mysqli.default_socket = /var/lib/mysql/mysql.sock
+  mysql.allow_persistent = Off
+  pgsql.allow_persistent = Off
+  upload_max_filesize = 16M
+  post_max_size = 20M
+  disable_functions = syslog
+  expose_php = off
+  session.save_path = "2;/tmp/sessions"
+  output_buffering = 4096
+  display_errors = Off
+  log_errors = On

@@ -19,15 +19,5 @@
   blockinfile:
     marker: '#{mark} APNSCP MANAGED BLOCK' 
     path: "{{ php_main_config }}"
-    content: |
-      pdo_mysql.default_socket = /var/lib/mysql/mysql.sock
-      mysqli.default_socket = /var/lib/mysql/mysql.sock
-      mysql.allow_persistent = Off
-      pgsql.allow_persistent = Off
-      upload_max_filesize = 16M
-      post_max_size = 20M
-      disable_functions = syslog
-      expose_php = off
-      session.save_path = "2;/tmp/sessions"
-      output_buffering = 4096
+    content: "{{ php_default_config }}"
   notify: Restart apache
