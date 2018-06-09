@@ -1,14 +1,5 @@
 ---
 services:
-  - name: cgroupmake
-    files: 
-      - src: cgroupmake.init
-        dest: /etc/systemd/user/cgroupmake.init
-        perm: "0755"
-      - src: cgroupmake.service
-        dest: /etc/systemd/system/cgroupmake.service
-    systemd:
-      state: started
   - name: fsmount
     files: 
       - src: fsmount.init

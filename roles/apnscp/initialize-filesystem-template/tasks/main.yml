@@ -65,6 +65,23 @@
   loop_control:
     label: "Copy {{ item.file }} to {{ item.service | default('siteinfo') }}"
 
+- name: Remove GROUP= configuration from useradd
+  ini_file:
+    path: "{{ apnscp_filesystem_template }}/siteinfo/etc/default/useradd"
+    section: null
+    option: GROUP
+    state: absent
+
+- name: Populate /etc/mtab
+  copy:
+    content: >
+      {{ ansible_mounts | json_query('[?mount==`/`] | [0].device') }} 
+      {{ ansible_mounts | json_query('[?mount==`/`] | [0].mount') }} 
+      {{ ansible_mounts | json_query('[?mount==`/`] | [0].fstype') }} 
+      {{ ansible_mounts | json_query('[?mount==`/`] | [0].options') }} 
+      0 0
+    dest: "{{ apnscp_filesystem_template }}/siteinfo/etc/mtab"
+    force: no
 # This should be an alternative plugin to yum-synchronizer, but 
 # we can't match wildcards on plugin names yet
 - name: Copy PostgreSQL ldconfig
@@ -79,12 +96,6 @@
     - Rebuild ld cache
     - Reload filesystem template
 
-- name: Remove GROUP= configuration from useradd
-  ini_file:
-    path: "{{ apnscp_filesystem_template }}/siteinfo/etc/default/useradd"
-    section: null
-    option: GROUP
-    state: absent
 
 # And for MySQL...
 - name: Create mysql socket parent directory

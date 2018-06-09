@@ -11,6 +11,7 @@ rpms:
   - apr-devel
   - apr-util
   - apr-util-devel
+  - argos
   - courier-authlib
   - courier-authlib-pgsql
   - courier-unicode

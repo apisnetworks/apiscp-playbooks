@@ -83,6 +83,7 @@
     - software/goenv
     - software/passenger
     - software/etckeeper
+    - software/tmpfiles
     - system/misc-logrotate
     # Hook: before creating account (AddDomain)
     # Perform additional unit tests

@@ -1,0 +1,7 @@
+---
+cgroup_service: siteinfo
+cgroup_path: /sys/fs/cgroup
+cgroup_controllers: 
+  - memory
+  - cpu
+  - cpuacct

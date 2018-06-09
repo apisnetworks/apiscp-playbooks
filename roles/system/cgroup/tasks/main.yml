@@ -1,4 +1,43 @@
 ---
+- name: Create cgroup in FST
+  file:
+    path: "{{ apnscp_filesystem_template }}/{{cgroup_service}}/{{cgroup_path | dirname }}"
+    state: directory
+- name: Link cgroup to {{ apnscp_shared_root }}
+  file:
+    path: "{{ apnscp_filesystem_template }}/{{cgroup_service}}/{{cgroup_path }}"
+    src: "{{ apnscp_shared_root }}/cgroup"
+    state: link
+    force: yes
+- name: Copy cgroup structure 
+  synchronize: 
+    src: "{{ cgroup_path }}/"
+    archive: yes
+    recursive: no
+    links: yes
+    rsync_opts: 
+      - '--keep-dirlinks'
+      - '--dirs'        
+    dest: "{{ apnscp_shared_root }}/cgroup/"
+- name: Set cgroup configuration
+  ini_file:
+    path: "{{ apnscp_root }}/config/custom/config.ini"
+    section: cgroup
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+    - option: home
+      value: "{{ cgroup_path }}"
+    - option: controllers
+      value: "{{ cgroup_controllers|join(',') }}"
+- name: Set cgroup configuration in /etc/mtab
+  lineinfile:
+    path: "{{ apnscp_filesystem_template }}/siteinfo/etc/mtab"
+    regexp: '^cgroup {{ cgroup_path }}/{{item}}'
+    line: 'cgroup {{ cgroup_path }}/{{item}} cgroup rw,nosuid,nodev,noexec,relatime,{{item}} 0 0'
+    state: present
+  with_items: "{{ cgroup_controllers }}"
+  notify: Reload filesystem template
 - name: Enable cgconfig
   systemd:
     name: cgconfig
