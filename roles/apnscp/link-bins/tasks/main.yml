@@ -1,0 +1,13 @@
+---
+- name: Link bins under {{ apnscp_root }}/bin to /usr/local/sbin
+  file:
+    src: "{{ apnscp_root }}/bin/{{item}}"
+    path: /usr/local/sbin/{{ item }}
+    state: link
+    force: yes
+  with_items:
+    - AddDomain
+    - DeleteDomain
+    - EditDomain
+    - SuspendDomain
+    - ActivateDomain

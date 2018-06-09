@@ -14,21 +14,22 @@ SYSTEMCTL_SKIP_REDIRECT=1
 # Prevent runaway logging
 ulimit -f 4096000
 CP_DIR={{apnscp_root|quote}}
+#CP_DIR=/usr/local/apnscp
 
 declare -x HOSTNAME=`hostname -f`
 HTTPD_ARGS=""
+PID=$CP_DIR/storage/run/apnscpd.pid
+
 start() {
 	chown {{apnscp_system_user}} $CP_DIR/storage
-	echo -n $"Starting apnscp Web server: "
-	/usr/sbin/httpd -f $CP_DIR/config/httpd.conf -k start $HTTPD_ARGS
-	RETVAL=$?
-	if [ $RETVAL -eq 0 ] ; then
-    success "$prog startup"
-  else
-    failure "$prog startup"
-  fi
-  echo
 	echo -n $"Starting apnscp backend: "
+  
+  if [[ -f $PID ]] && kill -0 `cat $PID` 2> /dev/null; then
+    if [[ $(basename `readlink /proc/$(cat $PID)/exe`) == "apnscp_php" ]]; then
+      echo "apnscpd is already running"
+      exit 0
+    fi
+  fi
 	daemon $CP_DIR/bin/apnscpd 
 	ps faux | grep apnscpd > /dev/null
 	RETVAL=$?

@@ -11,4 +11,4 @@
     path: /etc/httpd/conf/httpd-custom.conf
     regexp: '<VirtualHost[^:]*(:[^> ]+).*$'
     replace: '<VirtualHost {{ addr_list | join("\1 ") }}>'
-    validate: 'httpd -t'
+    validate: 'echo %s && httpd -t'

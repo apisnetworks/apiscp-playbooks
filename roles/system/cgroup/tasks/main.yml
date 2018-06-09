@@ -17,7 +17,7 @@
     links: yes
     rsync_opts: 
       - '--keep-dirlinks'
-      - '--dirs'        
+      - '--dirs'
     dest: "{{ apnscp_shared_root }}/cgroup/"
 - name: Set cgroup configuration
   ini_file:

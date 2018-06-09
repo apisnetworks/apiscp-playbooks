@@ -36,5 +36,17 @@
   file: 
     path: /var/spool/mail/root
     state: absent
-
-
+- name: Create root spool
+  file:
+    path: "{{ root_maildir }}"
+    state: directory
+    mode: 0700
+- name: Create maildir sub-folders
+  file:
+    path: "{{ root_maildir }}/{{item}}"
+    state: directory
+    mode: 0700
+  with_items:
+    - new
+    - cur
+    - old
