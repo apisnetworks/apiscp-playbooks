@@ -19,6 +19,7 @@
     - epel
     - systemd/mask-services
     - packages/install
+    - apnscp/testing
     - pgsql/install
     - mysql/install    
     - system/rsyslog
@@ -31,8 +32,6 @@
     - apnscp/install-services
     - apnscp/bootstrap
     - apache/configure
-    - clamav/setup
-    - apache/modsecurity
     - apache/modpagespeed
     #- apache/fcgid
     - apnscp/initialize-db
@@ -85,7 +84,10 @@
     - software/passenger
     - software/etckeeper
     - software/tmpfiles
+    - clamav/setup
+    - apache/modsecurity
     - system/misc-logrotate
+    - software/argos
     # Hook: before creating account (AddDomain)
     # Perform additional unit tests
     - custom/apnscp-validate-account

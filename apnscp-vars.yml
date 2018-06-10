@@ -56,6 +56,8 @@ spamfilter: spamassassin
 ####################################
 #     Don't change below here      #
 ####################################
+# Enable apnscp testing repo
+apnscp_testing_repo: yes
 apnscp_root: /usr/local/apnscp
 apnscp_filesystem_template: /home/virtual/FILESYSTEMTEMPLATE
 apnscp_filelists: "{{apnscp_root}}/storage/opcenter/filelists"

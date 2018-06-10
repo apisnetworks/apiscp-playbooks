@@ -1,11 +1,12 @@
 ---
+- meta: flush_handlers
 - name: "Assign random credentials"
   set_fact: 
     test_apnscp_user: "{{ lookup('password', '/dev/null chars=ascii_letters length=12') | lower }}"
     test_apnscp_domain: "{{ lookup('password', '/dev/null chars=ascii_letters length=24') | lower }}.test"
 - name: "Domain: {{ test_apnscp_domain }} assigned with username {{ test_apnscp_user }}"
-  debug: msg="We're getting close!"
-
+  debug: msg="We're getting close! Pausing to allow handlers to catch up"
+- wait_for: path="{{ apnscp_domain_db }}" state=present
 - name: Create new domain
   command: |
     {{ apnscp_root }}/bin/AddDomain 

@@ -1,0 +1,6 @@
+# Install Argos Monit helper
+# Must come last since RPM installation triggers a Monit
+# restart and unless everything is installed...
+---
+- name: Install argos
+  yum: name=argos state=installed

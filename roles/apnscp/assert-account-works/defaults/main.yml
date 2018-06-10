@@ -1,0 +1,1 @@
+apnscp_domain_db: "{{ apnscp_root}}/storage/opcenter/mappings/domainmap.tch"

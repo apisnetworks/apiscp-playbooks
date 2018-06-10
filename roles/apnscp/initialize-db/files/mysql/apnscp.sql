@@ -27,6 +27,8 @@ CREATE TABLE `api_keys` (
   `username` varchar(32) NOT NULL DEFAULT '',
   `domain` varchar(52) DEFAULT NULL,
   `site_id` int(3) NULL DEFAULT NULL,
+  `server_name` varchar(16) DEFAULT NULL,
+  `invoice` varchar(34) DEFAULT NULL COMMENT '+4 chars to support resellers',
   `last_used` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`api_key`),

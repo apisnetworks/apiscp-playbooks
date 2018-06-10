@@ -2,7 +2,8 @@
 - name: Enable vsftpd
   systemd: name=vsftpd state=started enabled=yes
 - name: "Create login banner"
-  file: path="{{ vsftpd_login_banner }}" state=file
+  file: path="{{ vsftpd_login_banner }}" state=touch
+  changed_when: false
 - name: "Edit {{ vsftpd_config_path }}"
   ini_file:
     path: "{{ vsftpd_config_path }}"
