@@ -4,3 +4,5 @@
 ---
 - name: Install argos
   yum: name=argos state=installed
+- name: Verify monit enabled
+  systemd: name=monit state=reloaded enabled=yes
