@@ -14,7 +14,8 @@
     path: "{{ pam_file }}"
     regexp: '^\s*auth.*{{vwh_module}}'
     line: "auth\trequired\t{{ vwh_module }}\tsaveroot"
-    insertbefore: '^\s*auth.*password-auth'
+    insertbefore: '^\s*auth\s'
+    firstmatch: yes
     state: present  
 - lineinfile: 
     path: "{{ pam_file }}"
@@ -26,9 +27,3 @@
 - include_tasks: listfile.yml
   vars:
     file: "/etc/{{ pam_service }}.pamlist"
-- lineinfile: 
-    path: "{{ pam_file }}"
-    regexp: '^\s*auth.*{{vwh_module}}'
-    line: "auth required {{ vwh_module }} saveroot"
-    insertbefore: BOF
-    state: present 

@@ -4,7 +4,8 @@
     path: "{{ pam_file }}"
     regexp: '^\s*auth.*{{vwh_module}}'
     line: "auth\trequired\t{{ vwh_module }}"
-    insertbefore: '^\s*auth.*password-auth'
+    insertbefore: '^\s*auth\s'
+    firstmatch: yes
     state: present  
 - copy:
     src: ./templates/sshd
