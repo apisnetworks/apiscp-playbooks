@@ -15,6 +15,17 @@
     insertafter: EOF
     state: present
     line: daily
+- name: Disable other forms of rotation
+  lineinfile:
+    path: "{{ logrotate_conf }}"
+    regexp: '^(?:monthly|weekly|yearly)\b'
+    state: absent
+# In a stock logrotate configuration, nested btmp/wtmp entries
+# are prefixed with a tab. Match beginning of line to avoid
+# changing these to rotate daily...
+#
+# @TODO may need to rotate weekly depending upon server volume
+#       active servers can pollute wtmp/btmp and cause login delays
 - name: Use numeric log ordering
   lineinfile:
     path: "{{logrotate_conf}}"
