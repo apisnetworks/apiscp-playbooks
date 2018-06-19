@@ -85,10 +85,9 @@
   stat: path="{{ apnscp_filesystem_template }}/{{ rbenv_service_install }}/{{rbenv_script}}"
   register: s
 - name: Link rbenv.sh to FST
-  file:
+  include_tasks: roles/common/tasks/copy-link.yml
+  vars: 
     src: "{{ rbenv_script }}"
-    state: hard
-    path: "{{ apnscp_filesystem_template }}/{{ rbenv_service_install }}/{{rbenv_script}}"
-    force: yes
+    path: "{{ apnscp_filesystem_template }}/{{ pyenv_service_install }}/{{rbenv_script}}"
+    notify: Reload filesystem template
   when: rbenv_create.changed or not s.stat.exists
-  notify: Reload filesystem template

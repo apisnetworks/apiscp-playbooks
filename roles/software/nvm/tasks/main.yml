@@ -16,9 +16,9 @@
     mode: 0755
     src: "templates/nvm.sh.j2"
 - name: Link nvm.sh to FST
-  file:
+  include_tasks: roles/common/tasks/copy-link.yml
+  vars: 
     src: "{{ nvm_script }}"
-    state: hard
     path: "{{ apnscp_filesystem_template }}/{{ nvm_service_install }}/{{nvm_script}}"
 - name: Check for LTS installation
   shell: . {{ nvm_script }} ; nvm ls

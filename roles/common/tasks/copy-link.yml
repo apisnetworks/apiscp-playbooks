@@ -1,0 +1,26 @@
+# Copy if mount points are cross-linked otherwise hardlink
+---
+- name: Check if / and {{ apnscp_filesystem_template }} are cross-linked
+  block:
+    - stat: path=/ 
+      register: s1
+    - stat: path={{ apnscp_filesystem_template }} 
+      register: s2
+    - set_fact: 
+        apnscp_is_crosslinked: "{{ s1.stat.dev != s2.stat.dev }}"
+        cacheable: yes
+  when: apnscp_is_crosslinked is not defined
+- name: Hardlink {{ src }} to {{ path | default(dest) }}
+  file:
+    src: "{{ src }}"
+    state: hard
+    path: "{{ path | default(dest) }}"
+    force: yes
+  notify: "{{ notify | default(omit) }}"
+  when: not apnscp_is_crosslinked
+- name: Copy {{ src }} to {{ path | default(dest) }} (cross-link protection)
+  synchronize:
+    src: "{{ src }}"
+    dest: "{{ path | default(dest) }}"
+  notify: "{{ notify | default(omit) }}"
+  when: apnscp_is_crosslinked

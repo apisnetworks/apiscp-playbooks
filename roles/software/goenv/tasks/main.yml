@@ -42,10 +42,9 @@
   stat: path="{{ apnscp_filesystem_template }}/{{ goenv_service_install }}/{{goenv_script}}"
   register: s
 - name: Link goenv.sh to FST
-  file:
+  include_tasks: roles/common/tasks/copy-link.yml
+  vars: 
     src: "{{ goenv_script }}"
-    state: hard
     path: "{{ apnscp_filesystem_template }}/{{ goenv_service_install }}/{{goenv_script}}"
-    force: yes
+    notify: Reload filesystem template
   when: goenv_create.changed or not s.stat.exists
-  notify: Reload filesystem template
