@@ -35,6 +35,8 @@
   register: result
   until: result.stdout.find("Migrating to ") == -1
   delay: 1
+  # Should complete within 2 retries
+  retries: 10
 - name: Change Horde permissions
   file: 
     path: "{{ item }}"

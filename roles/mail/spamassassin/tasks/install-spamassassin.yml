@@ -5,6 +5,12 @@
   vars: 
     package: spamassassin
     service: siteinfo
+- name: Check if rules need to be compiled
+  stat: path={{ sa_compiled_rules_dir }}
+  register: s
+- name: Compile SpamAssassin rules
+  command: /usr/bin/sa-compile
+  when: not s.stat.exists
 - name: Start SpamAssassin
   systemd: name=spamassassin state=started enabled=yes
 - name: Enable sa-update timer
