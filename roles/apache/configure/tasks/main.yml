@@ -12,3 +12,17 @@
     regexp: '<VirtualHost[^:]*(:[^> ]+).*$'
     replace: '<VirtualHost {{ addr_list | join("\1 ") }}>'
     validate: 'echo %s && httpd -t'
+- name: Correct CACHE_ROOT in htcacheclean
+  ini_file:
+    path: /etc/sysconfig/htcacheclean
+    no_extra_spaces: yes
+    section: null
+    option: CACHE_ROOT
+    value: /var/cache/httpd/cache-root
+  register: c
+- name: Start htcacheclean
+  systemd:
+    name: htcacheclean
+    enabled: yes
+    state: "{{ c.changed | ternary('restarted', 'started') }}"
+

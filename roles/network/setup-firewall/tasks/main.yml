@@ -1,7 +1,7 @@
 ---
 - name: "Disable iptables"
   systemd:
-    name: "{{ service }}"
+    name: "{{ iptsvc }}"
     state: stopped
     masked: yes
     enabled: no
@@ -10,7 +10,7 @@
     - ip6tables
     - ebtables
   loop_control: 
-    loop_var: service
+    loop_var: iptsvc
   ignore_errors: true
 - name: Verify firewalld running
   systemd: name=firewalld state=started enabled=yes

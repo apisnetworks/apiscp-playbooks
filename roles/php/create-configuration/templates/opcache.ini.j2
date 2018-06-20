@@ -6,9 +6,14 @@ opcache.interned_strings_buffer=16
 ; Tuned by telemetry module
 opcache.max_accelerated_files=1024
 opcache.revalidate_freq=0
-opcache.fast_shutdown=1
 opcache.enable_cli=0
 opcache.load_comments=1
 opcache.enable_file_override=1
 opcache.validate_timestamps=1
 opcache.huge_code_pages=1
+; Cannot redeclare class errors
+; more prevalent on large servers
+opcache.dups_fix=0
+; Overrun memory limits. Large memory allowances
+; predispose to deadlocks
+opcache.file_cache=/var/cache/httpd/cache-root
