@@ -8,6 +8,9 @@ _clamav_clamd_config__custom:
   ScanPE: yes
   DetectBrokenExecutables: yes
 _clamav_clamd_daemon_nicelevel: 5
+_clamav_update_user: clamupdate
+_clamav_freshclam_config__custom: 
+  AllowSupplementaryGroups: yes
 clamav_packages:
   - clamav
   - clamav-data
