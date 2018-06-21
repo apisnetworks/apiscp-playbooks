@@ -1,6 +1,8 @@
 ---
 git_target: "{{ apnscp_shared_root }}/node/nvm"
-git_repo: https://github.com/creationix/nvm.git
-git_version: '{{ nvm_version | default("0.33.11") }}'
+#git_repo: https://github.com/creationix/nvm.git
+# @TODO flip back when PR1845 goes through
+git_repo: https://github.com/apisnetworks/nvm.git
+git_version: '{{ nvm_version | default("master") }}'
 nvm_service_install: ssh
 nvm_script: /etc/profile.d/nvm.sh

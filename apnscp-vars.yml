@@ -73,7 +73,8 @@ apnscp_platform_version: 7.5
 clamav_enable: "{{ has_low_memory | default(false) | bool == true | ternary(false, true) }}"
 # Use a global spamassassin database for bayesian storage
 spamassassin_global: true
-nvm_version: 0.33.11
+# apnscp fixes
+nvm_version: master
 pyenv_version: 1.2.4
 rbenv_version: 1.1.1
 goenv_version: 1.14.0

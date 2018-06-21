@@ -7,7 +7,7 @@
   git: 
     repo: "{{ git_repo }}"
     dest: "{{ git_target }}"
-    version: "v{{ git_version }}"
+    version: "{{ (git_version != 'master') | ternary('v', '') }}{{ git_version }}"
 - name: Add nvm.sh 
   template:
     dest: "{{ nvm_script }}"
