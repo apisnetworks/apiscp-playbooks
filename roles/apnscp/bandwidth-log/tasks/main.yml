@@ -36,3 +36,20 @@
   with_items: "{{ maps }}"
   loop_control:
     label: "Editing {{ item }}"
+- name: Add {{ apache_bw_log }} to {{ logrotate_dir }}/httpd
+  lineinfile:
+    path: "{{ logrotate_dir }}/httpd"
+    regexp: '^([^{]+){'
+    firstmatch: yes
+    line: '\1 {{ apache_bw_log }} {{ "{" }}'
+    backrefs: yes
+    state: present
+  when: apache_bw_log not in lookup('file', logrotate_dir + '/httpd')
+
+- name: Rotate btmp weekly
+  replace:
+    path: "{{ logrotate_conf }}"
+    # Python lacks atomic grouping :(
+    regexp: '^([\w\W]*?/btmp (?:(?=(?P<atomic>[\w\W](?!weekly|daily|monthly)))(?P=atomic))+)}'
+    replace: "\\1\n\tweekly\n}"
+    backup: yes

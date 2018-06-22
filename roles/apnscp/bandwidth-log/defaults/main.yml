@@ -1,5 +1,6 @@
 ---
 logrotate_dir: /etc/logrotate.d
+apache_bw_log: /var/log/bw/apache
 logrotate_conf: /etc/logrotate.conf
 bandwidth_script: "{{apnscp_root}}/bin/scripts/tabulate_bandwidth.php"
 maps:

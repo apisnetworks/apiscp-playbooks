@@ -91,6 +91,8 @@ passenger_enabled: yes
 spamassassin_enabled: yes
 # Place each account's InnoDB data files in a separate directory
 # Loses performance benefits, increases overhead, but allows for storage tracking
+# May potential cause cyclic segfault in MariaDB if 
+# a user goes over quota with InnoDB data
 mysqld_per_account_innodb: yes
 # Enable SELinux
 # true is absolutely guaranteed to break your system
