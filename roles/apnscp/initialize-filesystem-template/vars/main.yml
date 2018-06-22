@@ -189,6 +189,7 @@ packages:
   - { package: jasper-libs, service: siteinfo }
   - { package: jbigkit-libs, service: siteinfo }
   - { package: js, service: siteinfo }
+  - { package: jwhois, service: siteinfo }
   - { package: keyutils-libs, service: siteinfo }
   - { package: krb5-libs, service: siteinfo }
   - { package: lcms2, service: siteinfo }

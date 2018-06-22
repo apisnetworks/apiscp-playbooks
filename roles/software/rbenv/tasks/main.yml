@@ -27,12 +27,15 @@
     state: link
 - name: Get rbenv code
   command: "{{ git_target }}/bin/rbenv init -"
+  environment: 
+    RBENV_ROOT: "{{ git_target }}"
   register: rbenv_code
 - name: Create rbenv.sh
   copy:
     dest: "{{ rbenv_script }}"
     content: |
-      #!/bin/sh
+      #!/bin/sh  
+      export RBENV_ROOT="{{ git_target }}"
       {{ rbenv_code.stdout }}
     mode: 0644
   register: rbenv_create

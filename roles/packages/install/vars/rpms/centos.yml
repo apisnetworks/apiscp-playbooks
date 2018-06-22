@@ -156,6 +156,7 @@ rpms:
   - javapackages-tools
   - jbigkit-libs
   - js
+  - jwhois
   - kernel-headers
   - keyutils-libs
   - krb5-devel

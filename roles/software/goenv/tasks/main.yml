@@ -29,12 +29,15 @@
     state: directory
 - name: Get goenv code
   command: "{{ git_target }}/bin/goenv init -"
+  environment: 
+    GOENV_ROOT: "{{ git_target }}"
   register: goenv_code
 - name: Create goenv.sh
   copy:
     dest: "{{ goenv_script }}"
     content: |
       #!/bin/sh
+      export GOENV_ROOT="{{ git_target }}"
       {{ goenv_code.stdout }}
     mode: 0644
   register: goenv_create

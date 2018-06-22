@@ -40,12 +40,15 @@
     dest: "{{ apnscp_filesystem_template }}/{{pyenv_service_install }}/{{ git_target }}"
 - name: Get pyenv code
   command: "{{ git_target }}/bin/pyenv init -"
+  environment: 
+    PYENV_ROOT: "{{ git_target }}"
   register: pyenv_code
 - name: Create pyenv.sh
   copy:
     dest: "{{ pyenv_script }}"
     content: |
       #!/bin/sh
+      export PYENV_ROOT="{{ git_target }}"
       {{ pyenv_code.stdout }}
     mode: 0644
   register: pyenv_create
