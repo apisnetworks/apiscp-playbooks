@@ -539,6 +539,8 @@ packages:
   - { package: openjpeg-devel, service: ssh }
   - { package: openssh-clients, service: ssh }
   - { package: openssh, service: ssh }
+  # sftp
+  - { package: openssh-server, service: ssh }
   - { package: openssl-devel, service: ssh }
   - { package: p11-kit-devel, service: ssh }
   - { package: p11-kit, service: ssh }

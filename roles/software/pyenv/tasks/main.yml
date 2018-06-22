@@ -38,20 +38,25 @@
   copy:
     src: files/updatePipPath.bash
     dest: "{{ apnscp_filesystem_template }}/{{pyenv_service_install }}/{{ git_target }}"
+- name: Get pyenv code
+  command: "{{ git_target }}/bin/pyenv init -"
+  register: pyenv_code
 - name: Create pyenv.sh
   copy:
     dest: "{{ pyenv_script }}"
     content: |
       #!/bin/sh
-      export PATH="{{git_target}}/bin:{{git_target}}/shims:$HOME/.pyenv/shims:${PATH}"
-      export PYENV_SHELL=bash
-      export PYENV_ROOT="{{ git_target }}"
-      eval "$({{git_target}}/bin/pyenv init -)"
-    mode: 0755
+      {{ pyenv_code.stdout }}
+    mode: 0644
   register: pyenv_create
 - name: Check for pyenv.sh in FST
   stat: path="{{ apnscp_filesystem_template }}/{{ pyenv_service_install }}/{{pyenv_script}}"
   register: s
+- name: Link pyenv to /usr/bin
+  file:
+    path: "/usr/bin/pyenv"
+    src: "{{ git_target }}/bin/pyenv"
+    state: link
 - name: Link pyenv.sh to FST
   include_tasks: roles/common/tasks/copy-link.yml
   vars: 

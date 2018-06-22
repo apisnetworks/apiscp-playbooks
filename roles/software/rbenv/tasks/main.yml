@@ -25,17 +25,22 @@
     path: "{{ git_target }}"
     src: "{{ apnscp_filesystem_template }}/{{rbenv_service_install }}/{{git_target}}"
     state: link
+- name: Get rbenv code
+  command: "{{ git_target }}/bin/rbenv init -"
+  register: rbenv_code
 - name: Create rbenv.sh
   copy:
     dest: "{{ rbenv_script }}"
     content: |
       #!/bin/sh
-      export PATH="{{git_target}}/bin:{{git_target}}/shims:$HOME/.rbenv/shims:${PATH}"
-      export RBENV_SHELL=bash
-      export RBENV_ROOT="{{ git_target }}"
-      eval "$({{git_target}}/bin/rbenv init -)"
-    mode: 0755
+      {{ rbenv_code.stdout }}
+    mode: 0644
   register: rbenv_create
+- name: Link rbenv to /usr/bin
+  file:
+    path: "/usr/bin/rbenv"
+    src: "{{ git_target }}/bin/rbenv"
+    state: link
 - name: Check if {{ sys_ruby_version }} installed
   stat: path={{ git_target }}/versions/{{sys_ruby_version | default("")}}
   register: rv
@@ -67,7 +72,7 @@
     - shims
 # Stolen from rbenv-support playbook, needs late init to correct path
 - name: Check if current system ruby version is {{ sys_ruby_version }}
-  shell: $SHELL -lc "rbenv version | cut -d ' ' -f 1 | grep -Fx '{{ sys_ruby_version }}'"
+  shell: $SHELL -lc "{{ git_target }}/bin/rbenv version | cut -d ' ' -f 1 | grep -Fx '{{ sys_ruby_version }}'"
   register: ruby_selected
   changed_when: false
   ignore_errors: yes
@@ -76,7 +81,7 @@
 
 - name: Set Ruby {{ sys_ruby_version }} for system
   become: yes
-  shell: bash -lc "rbenv global {{ sys_ruby_version }} && rbenv rehash"
+  shell: $SHELL -lc "{{ git_target }}/bin/rbenv global {{ sys_ruby_version }} && {{ git_target }}/bin/rbenv rehash"
   when:
     - ruby_selected.rc != 0
 

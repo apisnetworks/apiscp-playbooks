@@ -27,17 +27,22 @@
     owner: root
     group: wheel
     state: directory
+- name: Get goenv code
+  command: "{{ git_target }}/bin/goenv init -"
+  register: goenv_code
 - name: Create goenv.sh
   copy:
     dest: "{{ goenv_script }}"
     content: |
       #!/bin/sh
-      export PATH="{{git_target}}/bin:{{git_target}}/shims:$HOME/.goenv/shims:${PATH}"
-      export GOENV_SHELL=bash
-      export GOENV_ROOT="{{ git_target }}"
-      eval "$({{git_target}}/bin/goenv init -)"
-    mode: 0755
+      {{ goenv_code.stdout }}
+    mode: 0644
   register: goenv_create
+- name: Link goenv to /usr/bin
+  file:
+    path: "/usr/bin/goenv"
+    src: "{{ git_target }}/bin/goenv"
+    state: link
 - name: Check for goenv.sh in FST
   stat: path="{{ apnscp_filesystem_template }}/{{ goenv_service_install }}/{{goenv_script}}"
   register: s

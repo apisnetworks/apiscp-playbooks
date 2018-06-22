@@ -95,10 +95,9 @@
 # This should be an alternative plugin to yum-synchronizer, but 
 # we can't match wildcards on plugin names yet
 - name: Copy PostgreSQL ldconfig
-  file:
+  synchronize:
     src: "{{ item }}"
     dest: "{{ apnscp_filesystem_template }}/siteinfo/{{ item }}"
-    state: link
   with_items:
     - /etc/ld.so.conf.d/postgresql-pgdg-libs.conf
     - /etc/alternatives/pgsql-ld-conf
@@ -148,3 +147,8 @@
     src: "{{ mysql_shared_path }}"
     state: link 
     force: yes
+- name: Copy apnscp profile aliases
+  template:
+    src: templates/apnscp.sh.j2
+    dest: "{{ apnscp_filesystem_template }}/ssh/etc/profile.d/apnscp.sh"
+    
