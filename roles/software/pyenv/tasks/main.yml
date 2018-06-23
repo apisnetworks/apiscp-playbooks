@@ -73,3 +73,8 @@
     regexp: >
       echo "pyenv: cannot rehash: \$SHIM_PATH isn't writable"
     state: absent
+- name: Symlink pyenv to {{git_target}}
+  file: 
+    src: "{{ git_target }}/bin/pyenv"
+    path: "{{ apnscp_filesystem_template }}/{{ pyenv_service_install }}/usr/bin/pyenv"
+    state: link

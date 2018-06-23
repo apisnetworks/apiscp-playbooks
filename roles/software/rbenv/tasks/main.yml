@@ -96,6 +96,11 @@
   include_tasks: roles/common/tasks/copy-link.yml
   vars: 
     src: "{{ rbenv_script }}"
-    path: "{{ apnscp_filesystem_template }}/{{ pyenv_service_install }}/{{rbenv_script}}"
+    path: "{{ apnscp_filesystem_template }}/{{ rbenv_service_install }}/{{rbenv_script}}"
     notify: Reload filesystem template
   when: rbenv_create.changed or not s.stat.exists
+- name: Symlink rbenv to {{git_target}}
+  file: 
+    src: "{{ git_target }}/bin/rbenv"
+    path: "{{ apnscp_filesystem_template }}/{{ rbenv_service_install }}/usr/bin/rbenv"
+    state: link

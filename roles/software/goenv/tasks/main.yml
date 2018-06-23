@@ -56,3 +56,8 @@
     path: "{{ apnscp_filesystem_template }}/{{ goenv_service_install }}/{{goenv_script}}"
     notify: Reload filesystem template
   when: goenv_create.changed or not s.stat.exists
+- name: Symlink goenv to {{git_target}}
+  file: 
+    src: "{{ git_target }}/bin/goenv"
+    path: "{{ apnscp_filesystem_template }}/{{ goenv_service_install }}/usr/bin/goenv"
+    state: link
