@@ -45,3 +45,5 @@
   systemd: state=restarted name=virtualhosting
 - name: Rebuild ld cache
   command: chroot {{ apnscp_filesystem_template }}/siteinfo ldconfig
+- name: Reload systemd
+  systemd: daemon_reload=yes

@@ -16,4 +16,12 @@
 - copy:
     src: files/apnscp.conf
     dest: /etc/fail2ban/jail.d/01-apnscp.conf
+- name: Increase max open files for fail2ban-server
+  include_role: name=systemd/override-config
+  vars:
+    service: fail2ban
+    config:
+      - group: Service
+        vars:
+          LimitNOFILE: 4096
 - meta: flush_handlers

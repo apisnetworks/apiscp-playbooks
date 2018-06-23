@@ -27,4 +27,4 @@
   with_items: "{{ config }}"
   loop_control:
     loop_var: config_grp
-- systemd: daemon_reload=yes
+  notify: Reload systemd
