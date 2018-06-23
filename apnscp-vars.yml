@@ -14,7 +14,7 @@
 #
 #####################################################################################
 # Default PHP interpreter
-system_php_version: 7.2.6
+system_php_version: 7.2.7
 
 # Development build of apnscp, includes symbols in php
 apnscp_debug: false

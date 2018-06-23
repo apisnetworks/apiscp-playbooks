@@ -1,8 +1,7 @@
 ---
 - stat: path="{{ build_dir }}"
   register: st
-- stat:
-    path: "{{ php_configure }}"
+- stat: path="{{ php_configure }}"
   register: s1
 - stat:
     path: "{{ php_bin }}"
@@ -18,8 +17,19 @@
       installed_php_version.skipped is defined or 
       installed_php_version.stdout != php_version or 
       s1.stat.exists and s2.stat.exists and s1.stat.mtime > s2.stat.mtime
-
-- block:   
+- name: Cleanup older PHPs
+  find: 
+    file_type: directory
+    paths: "{{ work_dir }}"
+    excludes: "php-{{php_version}}"
+    patterns: "php-*"
+  register: phps
+- name: Remove older PHPs
+  file:
+    path: "{{item.path}}"
+    state: absent
+  with_items: "{{ phps.files }}"
+- block:  
     - name: Download PHP {{ php_version }}
       unarchive:
         dest: "{{ work_dir }}"
@@ -41,6 +51,6 @@
       when: not php_debug
     - make: chdir="{{ build_dir }}" target=install    
       notify: "{{ notify_handler }}"        
-    - file: path="{{ scan_dir }}" state=directory    
+    - file: path="{{ scan_dir }}" state=directory 
   when: do_install_php
 
