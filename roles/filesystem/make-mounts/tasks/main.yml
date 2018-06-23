@@ -55,3 +55,12 @@
   with_items:
     - proc-sys-fs-binfmt_misc.automount
     - systemd-binfmt.service 
+
+- name: Mount procfs with hidepid=2
+  mount:
+    fstype: proc
+    opts: defaults,hidepid=2
+    state: mounted
+    path: /proc
+    src: proc
+
