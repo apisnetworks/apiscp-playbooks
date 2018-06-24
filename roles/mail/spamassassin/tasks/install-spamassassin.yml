@@ -15,3 +15,13 @@
   systemd: name=spamassassin state=started enabled=yes
 - name: Enable sa-update timer
   systemd: name=sa-update.timer enabled=yes
+- name: Test
+  set_fact: 
+- name: Enable allow-tell support in spamd
+  lineinfile: 
+    path: /etc/sysconfig/spamassassin
+    regexp: '^\s*SPAMDOPTIONS\s*=\s*(?P<quote>[''"])(?P<options>(?:.(?!(?:-l|--allow-tell)))*)(?P=quote)$'
+    backrefs: true
+    line: 'SPAMDOPTIONS=\g<quote>\g<options> -l\g<quote>'
+    state: present
+  when: enable_spamd_tell and spamassassin_global
