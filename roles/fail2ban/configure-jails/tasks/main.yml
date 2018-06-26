@@ -1,18 +1,26 @@
 ---
+- include_role: name=fail2ban/fail2ban-common 
 - name: "Set fail2ban/jail.conf"
   include_tasks: roles/common/tasks/write-config.yml
   vars:
-    file: '/etc/fail2ban/jail.conf'
+    file: '{{ fail2ban_directory }}/jail.conf'
     cfgvars: "{{ config_grp.vars }}"
-    group: "{{ config_grp.name }}"  
+    group: "{{ config_grp.name }}"        
     notify: Restart fail2ban
+
   with_items: "{{ jails }}"
   loop_control:
     loop_var: config_grp
   label: "Configuring jail {{ config_grp.name }}"
 - copy: 
     src: files/spambots.conf
-    dest: /etc/fail2ban/filter.d/spambots.conf
+    dest: "{{ fail2ban_directory }}/filter.d/spambots.conf"
+- name: Add preauth disconnect in sshd.conf
+  lineinfile:
+    line: '         ^%(__prefix_line)sDisconnected from <HOST> port \d+\s+\[preauth\]'
+    insertafter: "^.*\\(__prefix_line.*<HOST>.*$\n"
+    path: "{{ fail2ban_directory }}/filter.d/sshd.conf"
+  notify: Restart fail2ban
 - copy:
     src: files/apnscp.conf
     dest: /etc/fail2ban/jail.d/01-apnscp.conf
