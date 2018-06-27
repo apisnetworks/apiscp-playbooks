@@ -6,6 +6,13 @@
   with_items:
     - "{{ apnscp_root }}/storage/opcenter/namebased_ip_addrs"
     - "{{ apnscp_root }}/storage/opcenter/namebased_ip6_addrs"
+- name: "Set ServerName in httpd-custom.conf"
+  lineinfile:
+    path: /etc/httpd/conf/httpd-custom.conf
+    regexp: '\bServerName\b'
+    line: "ServerName {{ ansible_fqdn }}"
+    insertbefore: BOF
+    state: present
 - name: "Update VirtualHost container settings"
   replace:
     path: /etc/httpd/conf/httpd-custom.conf

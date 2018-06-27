@@ -16,5 +16,6 @@ LoadModule passenger_module  {{passenger_home}}/buildout/apache2/mod_passenger.s
   PassengerFriendlyErrorPages On
   PassengerResolveSymlinksInDocumentRoot {{ passenger_resolve_symlinks_in_document_root }}
   PassengerMaxPoolSize {{ passenger_max_pool_size }}
+  PassengerShowVersionInHeader Off
   {{ xtra_passenger_config | default("") }}
 </IfModule>

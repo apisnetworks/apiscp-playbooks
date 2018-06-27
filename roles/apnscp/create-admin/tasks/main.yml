@@ -18,3 +18,11 @@
 - name: "Setting admin email to {{ apnscp_admin_email | default('----NOT DEFINED----') }}"
   command: "{{ apnscp_root }}/bin/cmd admin_set_email {{ apnscp_admin_email|quote }}"
   when: apnscp_admin_email != None
+# @TODO bust out to end? Doesn't make sense in here...
+- name: Run initial database migration
+  command: ./artisan migrate --force
+  args:
+    chdir: "{{ apnscp_root}}"
+  register: s
+  changed_when: '"Nothing to migrate" not in s.stdout'
+  when: pass.stat.size == 0
