@@ -3,6 +3,10 @@
   yum: 
     name: "{{ clamav_packages }}"
     state: present
+- name: Add {{ _clamav_update_user }} to clamscan group
+  user:
+    name: "{{ _clamav_update_user }}"
+    groups: clamscan
 - include_role:
     name: clamav/support
   vars: 
@@ -32,7 +36,3 @@
     no_extra_spaces: yes
   with_dict:
     clam_group: "{{ clamav_group }}"
-- name: Add {{ _clamav_update_user }} to clamscan group
-  user:
-    name: "{{ _clamav_update_user }}"
-    groups: clamscan
