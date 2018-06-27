@@ -71,7 +71,13 @@
     section: null
     option: GROUP
     state: absent
-
+# Squelch warnings on user creation
+- name: Disable CREATE_MAIL_SPOOL in useradd
+  ini_file:
+    path: "{{ apnscp_filesystem_template }}/siteinfo/etc/default/useradd"
+    section: null
+    option: CREATE_MAIL_SPOOL
+    value: "no"
 # Needed for quota reporting. Alternative is to not jail Dovecot
 - name: "Link /dev/{{ ansible_mounts | json_query('[?mount==`/`] | [0].device') }}"
   synchronize:
