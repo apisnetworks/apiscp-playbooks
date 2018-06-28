@@ -1,4 +1,7 @@
 ---
+# From apnscp-vars.yml
+user_daemons: true
+panel_headless: false
 default_chain: filter
 default_zone: public
 default_immediate: false

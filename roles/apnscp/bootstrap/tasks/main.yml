@@ -32,6 +32,19 @@
     value: true
   when: has_low_memory
 
+- include_tasks: set-config.yml
+  vars: 
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+    - section: ssh
+      option: user_daemons
+      value: "{{ user_daemons }}"
+    - section: apnscpd
+      option: headless
+      value: "{{ panel_headless }}"
+
 - name: Create apnscp user {{ apnscp_system_user }}
   user: 
     home: "{{ apnscp_root }}/storage"

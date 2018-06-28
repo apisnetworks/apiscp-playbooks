@@ -53,6 +53,13 @@ apnscp_admin_user: admin
 
 # Spam filter engine, spamassassin or rspamd
 spamfilter: spamassassin
+# Disable direct control panel access
+# Use the CLI (AddDomain, EditDomain, cpcmd) to access services
+panel_headless: false
+# Allow users to run daemons on their account
+# Opens up 40000-49999/tcp + udp
+user_daemons: true
+
 ####################################
 #     Don't change below here      #
 ####################################
