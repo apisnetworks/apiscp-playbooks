@@ -6,6 +6,7 @@ bootstrap:
   - repo_rpm: "http://yum.apnscp.com/apnscp-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
     repo_key: "/etc/pki/rpm-gpg/RPM-GPG-KEY-apnscp-{{ ansible_distribution_major_version }}"
 repo_name: apnscp
+state: latest
 rpms:
   - apr
   - apr-devel
