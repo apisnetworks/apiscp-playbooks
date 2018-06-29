@@ -12,7 +12,7 @@ protocols = imap pop3
 verbose_proctitle = yes
 
 disable_plaintext_auth = no
-auth_cache_size = 10M
+auth_cache_size = 2M
 auth_cache_negative_ttl = 0
 auth_username_format = "%Lu"
 auth_mechanisms = plain login
@@ -34,7 +34,7 @@ passdb {
   driver = pam
   # Session is necessary to restore root after verification
   # Use imap/pop3/smtp granular authentication handling
-  args = cache_key=%u%r failure_show_msg=yes session=yes %s
+  args = cache_key=%u%r|%s session=yes %s
 }
 
 userdb {

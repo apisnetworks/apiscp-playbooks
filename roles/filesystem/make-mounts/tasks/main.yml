@@ -34,7 +34,8 @@
 - copy:
     content: "[Mount]\nOptions={{ tmpfs_attrs }}"
     dest: "{{ tmpfs_config }}"
-- systemd: service=tmp.mount masked=no state=started enabled=yes
+  # Can't unmount /tmp without a reboot
+- systemd: service=tmp.mount masked=yes enabled=no
   notify:
     - Restart services
 # cf. https://chrisdown.name/2018/01/02/in-defence-of-swap.html
