@@ -8,5 +8,6 @@
     name: "{{ clamav_service }}"
     state: stopped
     enabled: false
-  when: not clamav_enable
   tags: clamav
+  register: r
+  failed_when: 'r.failed and "Could not find the requested service" not in r.msg'

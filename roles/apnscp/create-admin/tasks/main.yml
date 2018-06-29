@@ -20,7 +20,7 @@
   when: apnscp_admin_email != None
 # @TODO bust out to end? Doesn't make sense in here...
 - name: Run initial database migration
-  command: ./artisan migrate --force
+  shell: ./artisan migrate --force ; ./artisan config:cache
   args:
     chdir: "{{ apnscp_root}}"
   register: s
