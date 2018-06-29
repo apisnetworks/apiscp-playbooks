@@ -28,16 +28,18 @@
   shell: >
     [[ -L /etc/mtab ]] && ( rm -f /etc/mtab && mv /etc/mtab{.ansible-save,} || ln -s /proc/mounts /etc/mtab) || true
   when: moved is defined and moved.changed
-- file: 
-    path: "{{ tmpfs_config | dirname }}"
-    state: directory
-- copy:
-    content: "[Mount]\nOptions={{ tmpfs_attrs }}"
-    dest: "{{ tmpfs_config }}"
-  # Can't unmount /tmp without a reboot
-- systemd: service=tmp.mount masked=yes enabled=no
-  notify:
-    - Restart services
+- include_role: name=systemd/override-config
+  vars: 
+    service: tmp.mount
+    config:
+      - group: Mount
+        vars:
+          Options: "{{ tmpfs_attrs }}"
+    # Can't unmount /tmp without a reboot
+    notify:
+      - Remount tmp
+      - Restart services
+      - Reload systemd
 # cf. https://chrisdown.name/2018/01/02/in-defence-of-swap.html
 - name: Check for presence of swap
   command: "swapon -s"

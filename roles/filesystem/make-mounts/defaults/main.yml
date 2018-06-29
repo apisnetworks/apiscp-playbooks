@@ -1,3 +1,2 @@
 ---
-tmpfs_config: /etc/systemd/system/tmp.mount.d/override.conf
 tmpfs_attrs: "mode=1777,strictatime,nosuid,nodev,noexec,noatime,nr_inodes=500000,size={{ [ansible_memtotal_mb *0.25, 1024] | min | int}}M"
