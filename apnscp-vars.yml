@@ -101,6 +101,10 @@ spamassassin_enabled: yes
 # May potential cause cyclic segfault in MariaDB if 
 # a user goes over quota with InnoDB data
 mysqld_per_account_innodb: yes
+# apnscp is part of a multi-server environment
+# requires extra configuration 
+# see https://github.com/apisnetworks/cp-proxy
+data_center_mode: false
 # Enable SELinux
 # true is absolutely guaranteed to break your system
 # debug places selinux in permissive mode

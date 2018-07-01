@@ -101,6 +101,7 @@ oneshot_files:
   - {file: /etc/profile.d/256term.csh}
   - {file: /etc/profile.d/256term.sh}
   - {file: /usr/share/empty}
+  - {file: /usr/bin/composer}
 
 packages:
   - { package: sudo, service: siteinfo }

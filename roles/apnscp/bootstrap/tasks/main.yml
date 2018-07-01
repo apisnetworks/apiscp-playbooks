@@ -128,7 +128,14 @@
     content: "{{ apnscp_interface | default(ansible_default_ipv4.interface) }}"
     dest: "{{ apnscp_root }}/storage/opcenter/interface"
   when: not stif.stat.exists or stif.stat.size == 0
-
+- name: Assign UUID
+  include_tasks: "set-config.yml" 
+  vars:
+    section: dns
+    option: uuid 
+    value: "{{ 999999999999999999999 | random | string + (lookup('pipe', 'date +%s%N')) | to_uuid() }}"
+    check_value: false
+  when: not data_center_mode
 # Ensure apnscp ownership is correct
 - name: Change apnscp ownership
   command: chown -c -R {{ apnscp_system_user }}:{{ apnscp_system_user }} {{ apnscp_root }}
