@@ -56,10 +56,6 @@
     state: present
   register: system_user_created
 
-# Ensure apnscp ownership is correct
-- command: /bin/true
-  notify: Change apnscp ownership
-
 - name: Set apnscp user in config.ini
   ini_file:
     owner: "{{ apnscp_system_user }}"
@@ -132,3 +128,9 @@
     content: "{{ apnscp_interface | default(ansible_default_ipv4.interface) }}"
     dest: "{{ apnscp_root }}/storage/opcenter/interface"
   when: not stif.stat.exists or stif.stat.size == 0
+
+# Ensure apnscp ownership is correct
+- name: Change apnscp ownership
+  command: chown -c -R {{ apnscp_system_user }}:{{ apnscp_system_user }} {{ apnscp_root }}
+  register: o
+  changed_when: o.stdout != ""

@@ -16,19 +16,19 @@ rules:
   - port: 443/tcp
   # Panel, non-SSL
   - port: 2082/tcp
-    state: "{{ panel_headless | ternary('disabled', 'enabled') }}"
+    state: "{{ panel_headless | bool | ternary('disabled', 'enabled') }}"
   # Panel
   - port: 2083/tcp
-    state: "{{ panel_headless | ternary('disabled', 'enabled') }}"
+    state: "{{ panel_headless | bool | ternary('disabled', 'enabled') }}"
   # Panel DAV
   - port: 2078/tcp
-    state: "{{ panel_headless | ternary('disabled', 'enabled') }}"
+    state: "{{ panel_headless | bool | ternary('disabled', 'enabled') }}"
   # For service support
   # @TODO integrate port openings in the panel
   - port: 40000-49999/tcp
-    state: "{{ user_daemons | ternary('enabled', 'disabled') }}"
+    state: "{{ user_daemons | bool | ternary('enabled', 'disabled') }}"
   - port: 40000-49999/udp
-    state: "{{ user_daemons | ternary('enabled', 'disabled') }}"
+    state: "{{ user_daemons | bool | ternary('enabled', 'disabled') }}"
   # Java
   - port: 8080/tcp
     state: disabled

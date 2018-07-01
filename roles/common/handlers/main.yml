@@ -24,8 +24,6 @@
   listen: Restart services
 - name: Reload firewalld
   command: /bin/firewall-cmd --reload
-- name: Change apnscp ownership
-  command: chown -R {{ apnscp_system_user }}:{{ apnscp_system_user }} {{ apnscp_root }}
 - name: Restart spamassassin
   block:
     - command: rpm -q spamassassin

@@ -26,7 +26,7 @@
   with_items:
     "{{ rules }}"
   loop_control:
-    label: "Setting rule {{ item.port | default(item.rule is defined | ternary(item.rule, item.service)) }} "
+    label: "Setting rule {{ item.port | default(item.rule is defined | ternary(item.rule, item.service)) }} => {{ item.state }}"
   when: true
   notify: Reload firewalld
 - name: "Apply direct firewalld rules"

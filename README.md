@@ -48,6 +48,15 @@ apnscp will whitelist the connected IP address when initially provisioned. If yo
 ansible-playbook --tags=fail2ban/whitelist-self bootstrap.yml
 ```
 
+## Toggling headless mode
+
+apnscp can run in headless mode, that is to say without a front-end UI. This can further save on memory requirements and keep your site secure.
+
+```bash
+ansible-playbook bootstrap.yml  --tags=network/setup-firewall,apnscp/bootstrap --extra-vars="panel_headless=true"
+```
+
+You'll be limited to using the [CLI helpers](http://docs.apnscp.com/admin/managing-accounts/#command-line-interface) - `cpcmd`, `AddDomain`, `EditDomain`, `DeleteDomain` in headless mode. Fear not though! Anything that can be done through the panel can be done from CLI as the [API](http://api.apnscp.com/namespace-none.html) is 100% reflected.
 
 # Contributing
 

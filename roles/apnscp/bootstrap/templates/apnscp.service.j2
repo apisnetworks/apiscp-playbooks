@@ -1,7 +1,7 @@
 [Unit]
 Description=apnscp
 Requires=mariadb.service postgresql.service
-After=local-fs.target mariadb.service postgresql.service
+After=local-fs.target mariadb.service postgresql.service virtualhosting.service
 
 [Service]
 User=root
@@ -12,6 +12,8 @@ ExecStart=/etc/systemd/user/apnscp.init start
 ExecReload=/etc/systemd/user/apnscp.init reload
 ExecStop=/etc/systemd/user/apnscp.init stop
 KillMode=none
+Restart=no
+TimeoutStartSec=10
 PrivateTmp=false
 OOMScoreAdjust=150
 Nice=0
