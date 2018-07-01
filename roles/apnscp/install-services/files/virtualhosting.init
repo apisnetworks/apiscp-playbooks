@@ -26,29 +26,30 @@ start() {
         # Start daemons.
 	files="/etc/virtualhosting/namebased_ip_addrs /etc/sysconfig/virtualhosting"
     for file in $files ; do 
-	[[ -f $file ]] && for addr in $(cat $file) ; do
-        echo -n $"Bringing up $addr: "
-        sbin/ip addr add ${addr}/24 dev $ETH
-    	echo
+	   [[ -f $file ]] && for addr in $(cat $file) ; do
+            echo -n $"Bringing up $addr: "
+            /sbin/ip addr add ${addr}/24 dev $ETH
+            echo
     	done
 	done
 	[[ -f /etc/virtualhosting/mappings/ipmap ]] || return $RETVAL 
-	for addr in $(cat /etc/virtualhosting/mappings/ipmap | awk '{ if ($2 == "=" && system("[[ -f /home/virtual/"$3"/info/disabled ]]")) { print $1 } }') ; do
+	for addr in $(cat /etc/virtualhosting/mappings/ipmap | awk -F= '{ if ($2 ~ "^site" && system("[[ -f /home/virtual/"$3"/info/disabled ]]")) { print $1 } }') ; do
 		echo -n $"Bringing up VH $addr: "
 		/sbin/ip addr add ${addr}/24 dev $ETH
+        echo
 	done
     return 0
 }
 
 stop() {
-        # Stop daemons.
-        echo -n $"Shutting down $prog: "
-        [[ -f /etc/virtualhosting/mappings/ipmap ]] && for addr in $(cat /etc/virtualhosting/mappings/ipmap | awk '{ if ($2 == "=") { print $1 } }') ; do
+    # Stop daemons.
+    echo -n $"Shutting down $prog: "
+    [[ -f /etc/virtualhosting/mappings/ipmap ]] && for addr in $(cat /etc/virtualhosting/mappings/ipmap | awk -F= '{ if ($2 ~ "^site") { print $1 } }') ; do
         echo -n $"Shutting down VH $addr: "
         /sbin/ip addr del ${addr}/32 dev $ETH
 	done
-        echo
-        return 0
+    echo
+    return 0
 }
 
 # See how we were called.
