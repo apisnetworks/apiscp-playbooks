@@ -1,0 +1,28 @@
+---
+- name: Revoke world read on wtmp
+  file:
+    path: /var/log/wtmp
+    follow: yes
+    mode: o-rw
+  when: wtmp_limit_snooping
+- name: Grant world read on wtmp
+  file:
+    path: /var/log/wtmp
+    follow: yes
+    mode: o+r
+  when: not wtmp_limit_snooping
+  # Copies up on init
+- name: Validate utmp existence
+  stat:
+    path: "{{ apnscp_filesystem_template }}/siteinfo/var/run/utmp"
+  register: s
+- name: Create /var/run/utmp
+  file:
+    path: "{{ apnscp_filesystem_template }}/siteinfo/var/run/utmp"
+    mode: 0664
+    owner: root
+    group: utmp
+    state: touch
+  when: not s.stat.exists
+  notify: Reload filesystem template
+

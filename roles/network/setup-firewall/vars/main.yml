@@ -29,6 +29,11 @@ rules:
     state: "{{ user_daemons | bool | ternary('enabled', 'disabled') }}"
   - port: 40000-49999/udp
     state: "{{ user_daemons | bool | ternary('enabled', 'disabled') }}"
+  # Database services
+  - service: mysql
+    state: "{{ allow_remote_db | bool | ternary('enabled', 'disabled') }}"
+  - service: postgresql
+    state: "{{ allow_remote_db | bool | ternary('enabled', 'disabled') }}"
   # Java
   - port: 8080/tcp
     state: disabled

@@ -105,6 +105,14 @@ mysqld_per_account_innodb: yes
 # requires extra configuration 
 # see https://github.com/apisnetworks/cp-proxy
 data_center_mode: false
+# Allow remote database connections
+allow_remote_db: true
+# Enable sending mail by this server from authenticated third-party
+# sources. Does not affect relaying mail that originates FROM this server
+# but rather who can connect.
+enable_mail: true
+# Location for per-user mail
+maildir_location: ~/Mail
 # Enable SELinux
 # true is absolutely guaranteed to break your system
 # debug places selinux in permissive mode

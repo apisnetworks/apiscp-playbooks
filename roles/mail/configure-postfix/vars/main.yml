@@ -85,3 +85,4 @@ config:
   compatibility_level: 2
   smtp_tls_security_level: may
   sender_dependent_default_transport_maps: hash:/etc/postfix/sender_transport
+  inet_interfaces: "{{ postfix_inet_interfaces | default('all') }}"

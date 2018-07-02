@@ -84,6 +84,7 @@
     - software/passenger
     - software/etckeeper
     - software/tmpfiles
+    - system/logs
     - clamav/setup
     - apache/modsecurity
     - system/misc-logrotate

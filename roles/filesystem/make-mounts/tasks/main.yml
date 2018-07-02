@@ -28,6 +28,11 @@
   shell: >
     [[ -L /etc/mtab ]] && ( rm -f /etc/mtab && mv /etc/mtab{.ansible-save,} || ln -s /proc/mounts /etc/mtab) || true
   when: moved is defined and moved.changed
+- name: Remove /tmp from mtab 
+  lineinfile:
+    path: /etc/mtab
+    regexp: '^\S+\s+/tmp\s+'
+    state: absent
 - include_role: name=systemd/override-config
   vars: 
     service: tmp.mount
@@ -37,9 +42,9 @@
           Options: "{{ tmpfs_attrs }}"
     # Can't unmount /tmp without a reboot
     notify:
-      - Remount tmp
       - Restart services
-      - Reload systemd
+- name: Verify tmp.mount enabled
+  systemd: name=tmp.mount state=started masked=no enabled=yes daemon_reload=yes
 # cf. https://chrisdown.name/2018/01/02/in-defence-of-swap.html
 - name: Check for presence of swap
   command: "swapon -s"

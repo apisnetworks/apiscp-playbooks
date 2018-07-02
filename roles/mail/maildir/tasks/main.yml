@@ -51,3 +51,10 @@
     - cur
     - old
     - tmp
+- name: Enable periodic mail checking for system users
+  ini_file:
+    path: /etc/profile
+    no_extra_spaces: yes
+    section: null
+    option: MAIL
+    value: "{{ maildir_location }}"
