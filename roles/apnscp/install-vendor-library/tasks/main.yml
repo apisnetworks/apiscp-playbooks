@@ -5,13 +5,22 @@
   register: r
   changed_when: r.stdout != ''
 - block:
-  #- composer:
-  #    command: config 
-  #    arguments: --global github-protocols https
-  #    working_dir: "{{composer_working_dir}}"
-  #    executable: "{{ composer_php_executable }}"
-  #- command: git config --global url."https://".insteadOf "git://"
-  #  creates: "{{ apnscp_root }}/storage/.gitconfig"
+  - composer:
+      command: config 
+      arguments: --global github-protocols
+      working_dir: "{{composer_working_dir}}"
+      executable: "{{ composer_php_executable }}"
+    changed_when: false
+    register: p
+  - composer:
+      command: config 
+      arguments: --global github-protocols https
+      working_dir: "{{composer_working_dir}}"
+      executable: "{{ composer_php_executable }}"
+    when: '"https" not in p.stdout'
+  - command: git config --global url."https://".insteadOf "git://"
+    args:
+      creates: "{{ apnscp_root }}/storage/.gitconfig"
   # @TODO verify - this shouldn't be a problem.
   - name: Install vendor libraries
     composer:
