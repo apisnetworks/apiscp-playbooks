@@ -8,8 +8,6 @@ The playbook must always be run as root. It can be located under `/usr/local/apn
 ansible-playbook bootstrap.yml
 ```
 
-
-
 ## Viewing changes
 
 To view only tasks that have changed, specify `actionable` as your callback plugin either in [ansible.cfg](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-configuration-settings-locations) or `ANSIBLE_STDOUT_CALLBACK`. It's easy from the command-line:
@@ -34,10 +32,10 @@ ansible-playbook --tags=apnscp/build-php --extra-vars 'php_version=7.1.18' boots
 
 ## Build new PHP for server
 
-Similar to building a PHP distribution for apnscp, the primary PHP interpreter may be rebuilt. Additional configure-time flags are passed via `extra_flags`.
+Similar to building a PHP distribution for apnscp, the primary PHP interpreter may be rebuilt. Additional configure-time flags are passed via `extra_flags`. The patch level may be omitted to build the best available version for that given release, e.g. "7.2" will build "7.2.9" assuming 7.2.9 is the maximal release of 7.2.
 
 ```shell
-ansible-playbook --tags=php/install --extra-vars 'php_version=7.2.1 extra_flags="--with-recode --with-pcre-jit"' bootstrap.yml
+ansible-playbook --tags=php/install --extra-vars 'php_version=7.2 extra_flags="--with-recode --with-pcre-jit"' bootstrap.yml
 ```
 
 ## Installing PECL modules

@@ -19,6 +19,6 @@
       optimize_autoloader: yes
       working_dir: "{{composer_working_dir}}"
       executable: "{{ composer_php_executable }}"
-    register: r
+    register: r 
     changed_when: '"Nothing to install" not in r.stdout'
   become_user: "{{ apnscp_system_user }}" 

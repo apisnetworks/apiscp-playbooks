@@ -25,6 +25,8 @@
     php_ioncube_loader_module_path: "{{ php_module_directory }}" 
     php_ioncube_loader_module_filename: "ioncube_loader_lin_{{ php_version }}.so"
     php_ioncube_loader_config_filename: "00-ioncube.ini"
+    php_ioncube_user: "{{ apnscp_system_user }}"
+    php_ioncube_group: "{{ apnscp_system_user }}"
     php_extension_conf_paths:
       - "{{ apnscp_root }}/config/php.d"
     handlers:
