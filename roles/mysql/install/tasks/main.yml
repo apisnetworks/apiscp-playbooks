@@ -4,7 +4,7 @@
 
 - systemd: name=mariadb state=started enabled=yes
 - set_fact:
-    password: "{{ lookup('password', '/dev/null chars=ascii_letters length=15') }}"
+    password: "{{ lookup('password', '/dev/null chars=ascii_letters length=25') }}"
 
 - name: Check for password presence
   stat: path={{ mysql_pass_file }}
@@ -52,7 +52,8 @@
     echo "DELETE FROM user WHERE {{ mysql_password_column }} = ''; 
       SELECT ROW_COUNT(); FLUSH PRIVILEGES;" | mysql mysql --column-names=false
   register: o
-  changed_when: (o | int) > 0
+  changed_when: (o.stdout | int) > 0
+  when: user_enabled is defined and user_enabled.changed
 - name: Remove test database if present
   mysql_db:
     name: test
@@ -64,6 +65,14 @@
     name: ""
     host: "%"
     state: absent
+  when: test is defined and test.changed or 
+    user_enabled is defined and user_enabled.changed
+- name: Remove test db grants
+  shell: >
+    echo "DELETE FROM db WHERE db IN('test', 'test\_%') AND host = '%'; 
+      SELECT ROW_COUNT(); FLUSH PRIVILEGES;" | mysql mysql --column-names=false
+  register: o
+  changed_when: (o.stdout | int) > 0
   when: test is defined and test.changed or 
     user_enabled is defined and user_enabled.changed
 - name: Reconfigure mysql

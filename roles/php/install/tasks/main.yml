@@ -22,7 +22,7 @@
     - stat: path=/usr/share/pear
       register: r
     - file: path=/usr/share/pear state=absent
-      when: r.stat and not r.stat.islnk
+      when: r.stat and r.stat.islnk is defined and not r.stat.islnk
     - file: src="{{ apnscp_shared_root }}/php/pear" dest="/usr/share/pear" state=link
 - import_role: name=php/composer
   vars:

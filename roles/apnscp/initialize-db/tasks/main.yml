@@ -39,6 +39,8 @@
     priv: "{{apnscp_db}}.*:ALL"
     host: localhost
     state: present
+    login_user: root
+    check_implicit_admin: yes
   register: user_exists
 
 - include_role: name=common/merge-yaml-config

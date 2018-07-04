@@ -16,6 +16,9 @@
       register: vinfo  
   when: ((php_version | string ).split('.') | length) == 2
 - set_fact: __php_version="{{ lookup('dict', vinfo.matches[0]).value | default(php_version) }}" cacheable=yes
+  when: vinfo is defined and vinfo.matches is defined
+- set_fact: __php_version="{{ php_version }}"
+  when: not vinfo is defined or not vinfo.matches is defined
 - include_role: 
     name: php/build-from-source
     tasks_from: real-build.yml
