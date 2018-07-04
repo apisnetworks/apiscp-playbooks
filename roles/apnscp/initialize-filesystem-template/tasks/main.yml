@@ -22,9 +22,11 @@
   command: "{{ synchronizer }} generate"
   when: __populate_filesystem_template
 # Ensure rsyslog log device is propagated
-#- command: /bin/true
-#  notify: Restart rsyslog
-#  when: __populate_filesystem_template
+- stat: path={{ apnscp_shared_root }}/log
+  register: st
+- command: /bin/true
+  notify: Restart rsyslog
+  when: not st.stat.exists
 # @TODO debugging crap?
 - meta: flush_handlers
 - include_tasks: "{{ role_path }}/tasks/relocate-shared-directory.yml" 
