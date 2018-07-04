@@ -43,8 +43,13 @@
     # Can't unmount /tmp without a reboot
     notify:
       - Restart services
+- replace:
+    path: /proc/mounts
+    regexp: '\b/tmp\b'
+  register: c
 - name: Verify tmp.mount enabled
-  systemd: name=tmp.mount state=started masked=no enabled=yes daemon_reload=yes
+  systemd: name=tmp.mount state="{{ not c.changed | ternary(None, 'started') | default(omit) }}" masked=no enabled=yes daemon_reload=yes
+  when: c.changed
 # cf. https://chrisdown.name/2018/01/02/in-defence-of-swap.html
 - name: Check for presence of swap
   command: "swapon -s"
