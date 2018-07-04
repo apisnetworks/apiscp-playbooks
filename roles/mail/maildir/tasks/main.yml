@@ -5,10 +5,17 @@
     regexp: '^[^#]*MAIL_DIR'
     state: present
     line: "MAIL_DIR\t{{maildir_home}}"
+- replace:
+    path: /etc/Muttrc
+    regexp: '^### BEGIN APNSCP(?:[\s\S](?!=^###))+source /etc/Muttrc.local'
+  check_mode: yes
+  changed_when: not r.changed
+  register: r
 - lineinfile:
     path: /etc/Muttrc
     regexp: '^[^#]*source\s*/etc/Muttrc\.local'
     state: absent
+  when: r.changed
 - template:
     src: templates/maildrop-system.j2
     dest: /etc/maildroprc

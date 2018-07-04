@@ -2,8 +2,8 @@
 - name: Verify Dovecot starts on boot
   systemd:
     name: dovecot
-    enabled: yes
-    state: started
+    enabled: "{{ mail_enabled | bool | ternary('yes', 'no') }}"
+    state: "{{ mail_enabled | ternary('started', 'stopped') }}"
   failed_when: false
 - name: Copy Dovecot configuration
   template:

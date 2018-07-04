@@ -33,7 +33,7 @@
 - name: Set cgroup configuration in /etc/mtab
   lineinfile:
     path: "{{ apnscp_filesystem_template }}/siteinfo/etc/mtab"
-    regexp: '^cgroup {{ cgroup_path }}/{{item}}'
+    regexp: '^cgroup\s+{{ cgroup_path }}/{{item}}\s+'
     line: 'cgroup {{ cgroup_path }}/{{item}} cgroup rw,nosuid,nodev,noexec,relatime,{{item}} 0 0'
     state: present
   with_items: "{{ cgroup_controllers }}"

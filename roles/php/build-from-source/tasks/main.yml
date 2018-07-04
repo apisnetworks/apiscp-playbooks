@@ -1,4 +1,22 @@
 ---
+- block:
+    - name: Download PHP release feed
+      uri: 
+        url: "{{ php_xml_feed }}" 
+        return_content: yes
+      register: feed  
+    - name: Find latest PHP version for "{{ php_version }}"
+      xml:
+        xmlstring: "{{ feed.content }}"
+        xpath: "//ns:feed/ns:entry/php:version[starts-with(., '{{php_version}}.')]"      
+        content: text
+        namespaces:
+          php: http://php.net/ns/releases
+          ns: http://www.w3.org/2005/Atom
+      register: vinfo
+    - set_fact: php_version="{{ lookup('dict', vinfo.matches[0]).value }}"
+  when: ((php_version | string ).split('.') | length) == 2
+
 - stat: path="{{ build_dir }}"
   register: st
 - stat: path="{{ php_configure }}"

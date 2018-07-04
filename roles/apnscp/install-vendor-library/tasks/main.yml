@@ -1,18 +1,24 @@
 ---
 # Handled by a handler, but apnscp won't boot unless vendor/ is set
 # Ignore piled up handlers and setup vendor before first boot
-- command: chown -R {{ apnscp_system_user }} {{ apnscp_root }}
+- command: chown -c -R {{ apnscp_system_user }} {{ apnscp_root }} 
+  register: r
+  changed_when: r.stdout != ''
 - block:
-  - composer:
-      command: config 
-      arguments: --global github-protocols https
-      working_dir: "{{composer_working_dir}}"
-      executable: "{{ composer_php_executable }}"
-  - command: git config --global url."https://".insteadOf "git://"
+  #- composer:
+  #    command: config 
+  #    arguments: --global github-protocols https
+  #    working_dir: "{{composer_working_dir}}"
+  #    executable: "{{ composer_php_executable }}"
+  #- command: git config --global url."https://".insteadOf "git://"
+  #  creates: "{{ apnscp_root }}/storage/.gitconfig"
+  # @TODO verify - this shouldn't be a problem.
   - name: Install vendor libraries
     composer:
       command: install
       optimize_autoloader: yes
       working_dir: "{{composer_working_dir}}"
       executable: "{{ composer_php_executable }}"
+    register: r
+    changed_when: '"Nothing to install" not in r.stdout'
   become_user: "{{ apnscp_system_user }}" 

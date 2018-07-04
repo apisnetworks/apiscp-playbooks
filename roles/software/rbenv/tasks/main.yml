@@ -2,6 +2,10 @@
 # on a copy-up layer in FST to allow write-access by admin
 # Downside is that anything root installs will also propagate
 # to child nodes, so don't do that!
+# 
+# rbenv forcefully overwrites a few things, including rbenv.sh
+# and version (default_ruby) settings, so it always triggers
+# idempotency violations; sorry!
 ---
 - set_fact:
     __rbenv_version: "v{{ rbenv_version }}"
@@ -16,7 +20,7 @@
     rbenv_tmpdir: "{{ apnscp_root }}/storage/cache"
     rbenv:
       env: system
-      default_ruby:   
+      default_ruby: 
       version: "{{ __rbenv_version }}"
       rubies: []
   register: rc
@@ -30,6 +34,7 @@
   environment: 
     RBENV_ROOT: "{{ git_target }}"
   register: rbenv_code
+  changed_when: false
 - name: Create rbenv.sh
   copy:
     dest: "{{ rbenv_script }}"

@@ -4,5 +4,6 @@
 ---
 - name: Install argos
   yum: name=argos state=installed
+  register: c
 - name: Verify monit enabled
-  systemd: name=monit state=reloaded enabled=yes
+  systemd: name=monit state={{ c.changed | ternary('reloaded','started') }} enabled=yes

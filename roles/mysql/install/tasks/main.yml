@@ -51,7 +51,8 @@
     name: ""
     host: "%"
     state: absent
-  when: test is defined and test.changed
+  when: test is defined and test.changed or 
+    user_enabled is defined and user_enabled.changed
 - name: Reconfigure mysql
   ini_file:
     path: /etc/my.cnf.d/apnscp.cnf

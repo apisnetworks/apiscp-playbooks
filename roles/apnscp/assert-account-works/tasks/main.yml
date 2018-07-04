@@ -15,13 +15,16 @@
       -c dns,enabled=0
       -c mail,enabled=0
   register: o
+  when: (apnscp_verify_account | bool)
 - name: Verify account works
   command: |
     {{ apnscp_root }}/bin/cmd -d {{ test_apnscp_domain }} common_get_load
   register: output
+  when: (apnscp_verify_account | bool)
 - name: Remove test account
   command: |
     {{ apnscp_root }}/bin/DeleteDomain {{ test_apnscp_domain }}  
+  when: (apnscp_verify_account | bool)
 - fail: msg="apnscp not initialized correctly"
-  when: '"Array" not in output.stdout'
+  when: '(apnscp_verify_account | bool) and "Array" not in output.stdout' 
   

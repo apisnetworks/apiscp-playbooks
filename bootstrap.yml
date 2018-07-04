@@ -36,7 +36,7 @@
     #- apache/fcgid
     - apnscp/initialize-db
     - apnscp/build-php
-    - apnscp/install-extensions  
+    - apnscp/install-extensions
     - apnscp/install-vendor-library
     # Checkpoint: admin should work fine at this point
     - apnscp/create-admin

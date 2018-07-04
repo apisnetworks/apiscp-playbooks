@@ -43,6 +43,7 @@
   environment: 
     PYENV_ROOT: "{{ git_target }}"
   register: pyenv_code
+  changed_when: false
 - name: Create pyenv.sh
   copy:
     dest: "{{ pyenv_script }}"

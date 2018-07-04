@@ -10,6 +10,7 @@
 - copy:
     src: ./templates/sshd
     dest: "{{ apnscp_filesystem_template }}/ssh/etc/pam.d/sshd"
+    force: no
 - include_tasks: cgroup.yml
   vars:
     file: "{{ apnscp_filesystem_template }}/ssh/etc/pam.d/sshd"

@@ -7,9 +7,12 @@
   block:
     - command: "{{ phpconfig }} --php-binary"
       register: bin
+      changed_when: false
     - command: "{{ bin.stdout }} -r 'print PHP_CONFIG_FILE_SCAN_DIR; exit(defined(\"PHP_CONFIG_FILE_SCAN_DIR\") ? 0 : 1);'"
       register: scandir
+      changed_when: false
     - set_fact: scandir="{{scandir.stdout}}"
+      changed_when: false
 - name: Update channel protocols
   command: pecl channel-update pecl.php.net
   run_once: true
@@ -17,13 +20,13 @@
   changed_when: "'up to date' not in output.stdout"
 - name: Verify if PECL extension installed.
   vars: 
-    modname: "{{ extension | basename | regex_replace('^([^-.]+).*$', '\\1') }}"
+    modname: "{{ extension.extension | default(extension) | basename | regex_replace('^([^-.]+).*$', '\\1') }}"
   block: 
     - name: "Verify {{ modname }} module installed"
       stat: path="{{ php_module_directory }}/{{ modname }}.so"
       register: stres
     - name: "Build and install {{ modname }} library."
-      command: "{{ role_path }}/files/installPecl.sh {{ extension }}"
+      command: "{{ role_path }}/files/installPecl.sh {{ extension.name | default(extension) }}"
       environment:
         PHPIZE: "{{ phpize }}"
         PHPCONFIG: "{{ phpconfig }}"

@@ -17,4 +17,4 @@ template_files:
   - postscreen_access.cidr.j2
   - client_access.j2
   - domains.cf.j2
-postfix_inet_interfaces: "{{ enable_mail | bool | ternary('all','loopback-only') }}"
+postfix_inet_interfaces: "{{ mail_enabled | bool | ternary('all','loopback-only') }}"

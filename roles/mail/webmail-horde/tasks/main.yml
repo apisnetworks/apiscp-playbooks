@@ -48,7 +48,7 @@
 - name: Lockdown Horde
   file: path={{ horde_path }} owner=root recurse=yes
 - file: path={{ item }} mode=0700 owner=root
-  with_fileglob: "/usr/bin/horde-*"
+  with_items: "{{ lookup('fileglob', '/usr/bin/horde-*', wantlist=true) | reject('search', '/horde-alarms') | list }}"
   loop_control: 
     label: "Removing group/other permissions from {{ item }}"
 - name: "Open /usr/bin/horde-alarms to {{ apnscp_system_user }}"

@@ -3,7 +3,7 @@
 # override_file, service, 
 ---
 - set_fact: 
-    __systemd_svc_path: /etc/systemd/system/{{service | regex_replace('\.?(service|timer|target|path|mount)$', '.\1') | regex_replace('\.$', '.service')}}
+    __systemd_svc_path: /etc/systemd/system/{{service | regex_replace('\.?(service|timer|target|path|mount|$)$', '.\1') | regex_replace('\.$', '.service')}}
 - set_fact:
     __systemd_svc_name: "{{ __systemd_svc_path | basename }}"
 - set_fact:

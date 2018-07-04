@@ -1,15 +1,21 @@
 ---
 - name: "Add listfile to {{ pam_file }}"
+  replace:
+    path: "{{ pam_file }}"
+    regexp: '^\s*auth.*pam_listfile.so\s*{{ onerr | default("fail") }} item=user sense={{ sense | default("allow") }} file={{ file }}'
+  register: r
+- name: "Remove non-apnscp listfile from {{ pam_file }}"
   lineinfile:
     path: "{{ pam_file }}"
-    regexp: '^\s*auth.*pam_listfile.so'
+    regexp: '^\s*auth\s+pam_listfile.so\s+'
     state: absent
+  when: r.changed
 - lineinfile: 
     path: "{{ pam_file }}"
     regexp: '^\s*auth.*pam_listfile.so'
     line: "auth\trequired\tpam_listfile.so onerr={{ onerr | default('fail') }} item=user sense={{ sense | default('allow') }} file={{ file }}"
     insertafter: '^\s*auth\s+\S+\s+{{vwh_module}}'
-    state: present  
+    state: present
 # Add global listfile to silence warnings in the global context
 - file: 
     path: "{{ pam_file }}"

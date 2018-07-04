@@ -19,6 +19,8 @@
 - name: Restart mariadb
   systemd: state=restarted name=mariadb enabled=yes
   listen: Restart mysql
+- name: Restart nscd
+  systemd: state=restarted name=nscd enabled=yes
 - name: Restart postgresql
   systemd: state=restarted name=postgresql 
   listen: Restart services

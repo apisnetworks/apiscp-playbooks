@@ -8,8 +8,8 @@
 - name: Copy mail template to {{ pam_file }}
   template: 
     src: templates/dovecot
-    force: no
     dest: "{{ pam_file }}"
+    force: no
 - lineinfile: 
     path: "{{ pam_file }}"
     regexp: '^\s*auth.*{{vwh_module}}'

@@ -14,7 +14,9 @@
 #
 #####################################################################################
 # Default PHP interpreter
-system_php_version: 7.2.7
+# Automatically upgrade when new versions are available
+# Provide a patch level, e.g. 7.2.4, to prevent automatic updates
+system_php_version: 7.2
 
 # Development build of apnscp, includes symbols in php
 apnscp_debug: false
@@ -71,7 +73,7 @@ apnscp_filelists: "{{apnscp_root}}/storage/opcenter/filelists"
 apnscp_system_user: apnscp
 # apnscp module API, ZTS is with event MPM
 php_module_api: 20160303-zts
-apnscp_php_version: 7.1.17
+apnscp_php_version: 7.1
 apnscp_shared_root: /.socket
 apnscp_ca_rpm: http://yum.apnscp.com/apnscp-latest.rpm
 apnscp_platform_version: 7.5
@@ -85,9 +87,13 @@ nvm_version: master
 pyenv_version: 1.2.4
 rbenv_version: 1.1.1
 goenv_version: 1.14.0
+# Enable sending mail by this server from authenticated third-party
+# sources. Does not affect relaying mail that originates FROM this server
+# but rather who can connect.
+mail_enabled: true
 # Horde is a different beast of dependencies and 
 # requires more care than other webmail options
-enable_horde: yes
+enable_horde: "{{ mail_enabled | bool }}"
 # Others may be installed via "rbenv install", this is used primarily for 
 # bootstrapping Passenger
 sys_ruby_version: 2.4.4
@@ -107,12 +113,11 @@ mysqld_per_account_innodb: yes
 data_center_mode: false
 # Allow remote database connections
 allow_remote_db: true
-# Enable sending mail by this server from authenticated third-party
-# sources. Does not affect relaying mail that originates FROM this server
-# but rather who can connect.
-enable_mail: true
 # Location for per-user mail
 maildir_location: ~/Mail
+# Perform an account creation validation at the end of this playbook
+# Allows for consistency checks 
+apnscp_verify_account: true
 # Enable SELinux
 # true is absolutely guaranteed to break your system
 # debug places selinux in permissive mode

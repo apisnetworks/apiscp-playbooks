@@ -5,12 +5,19 @@ rules:
   - service: ssh
   # Mail
   - port: 25/tcp
+    state: "{{ mail_enabled | bool | ternary('enabled', 'disabled') }}"
   - port: 465/tcp
+    state: "{{ mail_enabled | bool | ternary('enabled', 'disabled') }}"
   - port: 587/tcp
+    state: "{{ mail_enabled | bool | ternary('enabled', 'disabled') }}"
   - port: 110/tcp
+    state: "{{ mail_enabled | bool | ternary('enabled', 'disabled') }}"
   - port: 143/tcp
+    state: "{{ mail_enabled | bool | ternary('enabled', 'disabled') }}"
   - port: 993/tcp
+    state: "{{ mail_enabled | bool | ternary('enabled', 'disabled') }}"
   - port: 995/tcp
+    state: "{{ mail_enabled | bool | ternary('enabled', 'disabled') }}"
   # HTTP
   - port: 80/tcp
   - port: 443/tcp

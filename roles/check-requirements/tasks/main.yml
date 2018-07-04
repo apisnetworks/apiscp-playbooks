@@ -1,9 +1,9 @@
 ---
-- name: Verify OS is RHEL/CentOS
+- name: Fail if OS is not RHEL/CentOS
   fail: 
     msg: OS must be RHEL 7.x/CentOS 7.x - try again!
   when: ansible_os_family != "RedHat"
-- name: Verify RHEL/CentOS sufficient version
+- name: Fail if RHEL/CentOS is not sufficient version
   fail:
     msg: apnscp requires RHEL 7.4 or greater
   when: ansible_distribution_version is version_compare('7.4.0', '<')
