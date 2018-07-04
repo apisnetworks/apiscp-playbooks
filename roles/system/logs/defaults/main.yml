@@ -1,2 +1,4 @@
 ---
 wtmp_limit_snooping: true
+mailer_backup: /var/log/mailer_table
+grants_backup: /var/lib/mysql/mysql-grants

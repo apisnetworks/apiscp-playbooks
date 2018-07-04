@@ -1,0 +1,12 @@
+{{ grants_backup }} {
+	missingok
+	ifempty
+	create 0640 root root
+	dateext
+	compress
+	daily
+	rotate 5
+	postrotate
+		mysqldump --extended-insert=false --complete-insert=true mysql > {{ grants_backup }}
+	endscript
+}

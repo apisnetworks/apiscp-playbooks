@@ -1,4 +1,5 @@
 ---
+- include_vars: "{{playbook_dir}}/roles/apnscp/initialize-db/defaults/main.yml"
 - include_vars: "{{playbook_dir}}/roles/mail/webmail-{{ item }}/defaults/main.yml"
   with_items:
     - horde
@@ -16,3 +17,36 @@
     dest: "{{ logrotate_path }}/passenger"
     force: "{{ force | default('no') }}"
   when: passenger_enabled
+
+- stat: path={{ grants_backup }}
+  register: s
+- name: Initialize grants backup
+  file: 
+    path: "{{ grants_backup }}"
+    state: touch
+    owner: root
+    group: root
+    mode: 0640
+  when: not s.stat.exists  
+- name: Backup mysql grants
+  template:
+    src: templates/mysql-backup.j2
+    dest: "{{ logrotate_path }}/mysql-grants"
+    force: "{{ force | default('no') }}"
+
+- stat: path={{ mailer_backup }}
+  register: s
+- name: Initialize email backup
+  file: 
+    path: "{{ mailer_backup }}"
+    state: touch
+    owner: "root"
+    group: root
+    mode: 0640
+  when: not s.stat.exists
+
+- name: Backup mailer table
+  template:
+    src: templates/mailer-table.j2
+    dest: "{{ logrotate_path }}/mailer-table"
+    force: "{{ force | default('no') }}"

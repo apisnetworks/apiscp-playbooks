@@ -1,0 +1,12 @@
+{{ mailer_backup }} {
+	missingok
+	ifempty
+	create 0640 root root
+	dateext
+	compress
+	daily
+	rotate 5
+	postrotate
+		pg_dump -t siteinfo -t uids -t gids -t domain_lookup -t email_lookup {{ appliance_db }} > {{ mailer_backup }}
+	endscript
+}

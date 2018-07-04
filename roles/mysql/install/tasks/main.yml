@@ -38,18 +38,17 @@
 - name: Find password column in mysql.user
   shell: > 
     echo "SELECT column_name FROM INFORMATION_SCHEMA.columns WHERE 
-      table_schema = 'mysql' AND table_name = 'user' AND column_name 
-      IN('authentication_string','password') ORDER by column_name ASC LIMIT 1;" |
-      mysql --column-names=false
+      table_schema = 'mysql' AND table_name = 'user' AND column_name = 
+      'authentication_string'" | mysql --column-names=false
   register: o
   changed_when: false
-- fail: msg="Unable to determine password column name in mysql.user"
+- set_fact: mysql_delete_clause="password = ''"
   when: o.stdout == ''
-- set_fact:
-    mysql_password_column: "{{ o.stdout }}"
+- set_fact: mysql_delete_clause="password = '' AND authentication_string = ''"
+  when: o.stdout != ''
 - name: Remove passwordless users
   shell: >
-    echo "DELETE FROM user WHERE {{ mysql_password_column }} = ''; 
+    echo "DELETE FROM user WHERE {{ mysql_delete_clause }}; 
       SELECT ROW_COUNT(); FLUSH PRIVILEGES;" | mysql mysql --column-names=false
   register: o
   changed_when: (o.stdout | int) > 0
