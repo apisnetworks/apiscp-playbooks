@@ -13,6 +13,9 @@
   file:
     path: "{{ git_target|dirname}}"
     state: directory
+- name: Short-circuit rbenv idempotency
+  stat: path={{ git_target }}/bin/rbenv
+  register: r
 - name: Install rbenv
   include_role: name="{{ role_path }}/../rbenv-support"
   vars:
@@ -23,7 +26,7 @@
       default_ruby: 
       version: "{{ __rbenv_version }}"
       rubies: []
-  register: rc
+  when: not (rbenv_idempotency_hotfix | default(true))  or not r.stat.exists
 - name: Link {{ git_target }}
   file:
     path: "{{ git_target }}"
@@ -64,8 +67,8 @@
 - name: Add {{ git_target }} to wheel
   command: >
     find {{ git_target | quote }} -follow  
-      -iname ".git" -prune -o -not -group wheel -print 
-      -exec chgrp wheel {} +
+      -iname ".git" -prune -o -not -group wheel
+      -exec chgrp -c wheel {} +
   register: rbenv_chown
   changed_when: rbenv_chown.stdout != ""
 - name: Ensure wheel has permissions to install binaries

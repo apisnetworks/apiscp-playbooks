@@ -10,6 +10,7 @@
     name: php/build-from-source  
   vars:
     install_handler: Restart apnscp 
+    php_version: "{{ apnscp_php_version }}"
 # @XXX php_bin overwritten by including php/build-from-source
 - file:
     src: "{{ php_bin }}"

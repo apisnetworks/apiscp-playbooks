@@ -1,3 +1,23 @@
+# Running the playbook
+
+This playbook is designed to be idempotent. It can be run multiple times without changing the state of an already modified system. You can use this to quickly pinpoint irregularities within the system or 🤞unbreak your server🤞 if things degrade to that.
+
+The playbook must always be run as root. It can be located under `/usr/local/apnscp/resources/playbooks`. 
+
+```bash
+ansible-playbook bootstrap.yml
+```
+
+
+
+## Viewing changes
+
+To view only tasks that have changed, specify `actionable` as your callback plugin either in [ansible.cfg](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-configuration-settings-locations) or `ANSIBLE_STDOUT_CALLBACK`. It's easy from the command-line:
+
+```bash
+env ANSIBLE_STDOUT_CALLBACK=actionable ansible-playbook bootstrap.yml
+```
+
 # Playbook examples
 
 The following examples cover tweaking installation from apnscp's [Bootstrapper](https://github.com/apisnetworks/apnscp-bootstrapper), `bootstrap.yml`.

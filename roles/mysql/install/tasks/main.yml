@@ -9,7 +9,6 @@
 - name: Check for password presence
   stat: path={{ mysql_pass_file }}
   register: s
-
 - name: Enable root MySQL user
   mysql_user: 
     name: root 
@@ -19,7 +18,7 @@
     update_password: always 
     state: present 
     check_implicit_admin: yes 
-    encrypted: no 
+    encrypted: no
   register: user_enabled
   when: not s.stat.exists
 - name: Save MySQL password
@@ -36,10 +35,24 @@
     priv: "*.*:ALL,GRANT"
     append_privs: yes
     state: present
+- name: Find password column in mysql.user
+  shell: > 
+    echo "SELECT column_name FROM INFORMATION_SCHEMA.columns WHERE 
+      table_schema = 'mysql' AND table_name = 'user' AND column_name 
+      IN('authentication_string','password') ORDER by column_name ASC LIMIT 1;" |
+      mysql --column-names=false
+  register: o
+  changed_when: false
+- fail: msg="Unable to determine password column name in mysql.user"
+  when: o.stdout == ''
+- set_fact:
+    mysql_password_column: "{{ o.stdout }}"
 - name: Remove passwordless users
   shell: >
-    echo "DELETE FROM user WHERE password = ''; FLUSH PRIVILEGES;" | mysql mysql
-  changed_when: false
+    echo "DELETE FROM user WHERE {{ mysql_password_column }} = ''; 
+      SELECT ROW_COUNT(); FLUSH PRIVILEGES;" | mysql mysql --column-names=false
+  register: o
+  changed_when: (o | int) > 0
 - name: Remove test database if present
   mysql_db:
     name: test
