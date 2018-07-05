@@ -15,9 +15,12 @@
     command: "{{ apnscp_root }}/bin/cmd auth_change_password {{ __apnscp_admin_password|quote }} {{ apnscp_admin_user|quote }}"
   - debug: msg="Admin password set to {{ __apnscp_admin_password }}" verbosity=1
   when: __apnscp_admin_password is defined
+- command: "{{ apnscp_root }}/bin/cmd admin_get_email"
+  register: c
+  changed_when: false
 - name: "Setting admin email to {{ apnscp_admin_email | default('----NOT DEFINED----') }}"
   command: "{{ apnscp_root }}/bin/cmd admin_set_email {{ apnscp_admin_email|quote }}"
-  when: apnscp_admin_email != None
+  when: "apnscp_admin_email != None and c.stdout != (apnscp_admin_email|quote)"
 # @TODO bust out to end? Doesn't make sense in here...
 - name: Run initial database migration
   shell: ./artisan migrate --force ; ./artisan config:cache
