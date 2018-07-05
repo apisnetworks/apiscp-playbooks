@@ -140,4 +140,4 @@
 - name: Change apnscp ownership
   command: chown -c -R {{ apnscp_system_user }}:{{ apnscp_system_user }} {{ apnscp_root }}
   register: o
-  changed_when: o.stdout != ""
+  changed_when: o.stdout != "" and apnscp_notify_ownership_change
