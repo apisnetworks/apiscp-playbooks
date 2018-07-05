@@ -102,17 +102,17 @@ sys_ruby_version: 2.4.4
 passenger_enabled: yes
 # Use SpamAssassin or rspamd for spam filtering. rspamd is experimental
 spamassassin_enabled: yes
-# Place each account's InnoDB data files in a separate directory
-# Loses performance benefits, increases overhead, but allows for storage tracking
-# May potential cause cyclic segfault in MariaDB if 
-# a user goes over quota with InnoDB data
-mysqld_per_account_innodb: yes
 # apnscp is part of a multi-server environment
 # requires extra configuration 
 # see https://github.com/apisnetworks/cp-proxy
 data_center_mode: false
+# Place each account's InnoDB data files in a separate directory
+# Loses performance benefits, increases overhead, but allows for storage tracking
+# May potential cause cyclic segfault in MariaDB if 
+# a user goes over quota with InnoDB data
+mysqld_per_account_innodb: "{{ data_center_mode }}"
 # Allow remote database connections
-allow_remote_db: true
+allow_remote_db: "{{ data_center_mode }}"
 # Location for per-user mail
 maildir_location: ~/Mail
 # Perform an account creation validation at the end of this playbook

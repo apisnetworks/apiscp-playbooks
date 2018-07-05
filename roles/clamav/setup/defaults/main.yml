@@ -12,6 +12,7 @@ _clamav_clamd_daemon_nicelevel: 5
 _clamav_update_user: clamupdate
 _clamav_freshclam_config__custom: 
   AllowSupplementaryGroups: yes
+  DatabaseOwner: "{{ _clamav_update_user }}"
 clamav_packages:
   - clamav
   - clamav-data

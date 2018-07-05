@@ -10,7 +10,7 @@
     clamav_freshclam_config__custom: "{{ _clamav_freshclam_config__custom }}"
     clamav_clamd_daemon_nicelevel: "{{ _clamav_clamd_daemon_nicelevel}}"
     clamav_clamd_allow_supplementary_groups: "{{ _clamav_allow_supplementary_groups }}"
-    clamav_freshclam_database_owner: "clamupdate"
+    clamav_freshclam_database_owner: clamscan
     clamav_user: clamscan
 - name: Link /etc/clamd.d/clamd.conf to /etc/clamd.conf
   file: 
