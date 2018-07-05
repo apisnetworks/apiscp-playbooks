@@ -9,4 +9,4 @@
   changed_when: false
 - include_tasks: configure-clamav.yml
   vars:
-    clamav_clamd_allow_supplementary_groups: "{{ v.stdout is version('0.100.0', '>=') | ternary('yes', omit) }}"
+    clamav_clamd_allow_supplementary_groups: "{{ v.stdout is version('0.100.0', '<') | ternary('yes', omit) }}"

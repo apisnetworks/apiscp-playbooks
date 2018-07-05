@@ -75,6 +75,28 @@ relocated_paths:
       src: "{{ apnscp_shared_root }}/majordomo",
       dest: "/usr/lib/majordomo",  
     }
+  - { 
+      service: ssh,
+      src: "{{ apnscp_shared_root }}/php/build",
+      dest: "/usr/lib64/build",  
+    }
+  - { 
+      service: ssh,
+      src: "{{ apnscp_shared_root }}/php/include",
+      dest: "/usr/include/php",  
+    }
+  - { 
+      service: ssh,
+      src: "{{ apnscp_shared_root }}/php/bin/phpize",
+      dest: "/usr/bin/phpize",
+      force: yes
+    }
+  - { 
+      service: ssh,
+      src: "{{ apnscp_shared_root }}/php/bin/php-config",
+      dest: "/usr/bin/php-config",
+      force: yes
+    }
   - { service: tomcat, src: "{{ apnscp_shared_root }}/tomcat", dest: /var/log/tomcat }
 # Files are copied on initial provisioning, not hardlinked nor updated after
 oneshot_files:

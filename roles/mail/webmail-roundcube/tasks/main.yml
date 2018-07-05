@@ -27,13 +27,18 @@
   become: yes
   when: import.changed
   # Todo, parse out YYYYMMDD from migration date
-- name: Run Roundcube database migrations
-  mysql_db:
-    name: "{{ roundcube_db }}"
-    state: import
-    target: "{{ item }}"
-  with_fileglob:
-    - "{{ roundcube_sql }}/mysql/*.sql"
+- block:
+  - find: 
+      path: "{{ roundcube_sql }}/mysql/"
+    register: o
+  - name: Run Roundcube database migrations
+    mysql_db:
+      name: "{{ roundcube_db }}"
+      state: import
+      target: "{{ item.path }}"
+    with_items: "{{ o.files }}"
+    loop_control:
+      label: "Importing {{ item.path }}"
   when: not import.changed and roundcube_migration_marker != None
 - name: Create Roundcube user
   mysql_user:

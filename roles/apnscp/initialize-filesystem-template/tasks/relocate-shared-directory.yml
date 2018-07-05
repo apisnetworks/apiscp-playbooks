@@ -10,9 +10,9 @@
         path: "{{ dest }}"
         state: directory
       when: not res.stat.exists and force
-    - command: creates="{{ src }}" mv "{{ dest }}" "{{ src }}"
-      when: res.stat.exists or force
-    - file: path="{{ dest }}" src="{{ src }}" state=link 
+    - command: mv "{{ dest }}" "{{ src }}"
+      when: (res.stat.exists or force) and not res.stat.islnk
+    - file: path="{{ dest }}" src="{{ src }}" state=link force="{{ force | default('no') }}"
 - name: "Edit {{ logrotate_vars.file | default('-- SKIPPED --') }}"
   replace:
     path: "{{ logrotate_vars.file }}"
