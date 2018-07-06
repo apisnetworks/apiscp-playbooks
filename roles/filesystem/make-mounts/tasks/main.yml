@@ -1,7 +1,7 @@
 ---
 - shell: "grep -E '\\s+/\\s+xfs' /proc/mounts"
   register: xfs
-  ignore_errors: true
+  failed_when: false
   changed_when: false
 - block:
   - shell: "grep -E '\\s+/\\s+ext4' /proc/mounts"
