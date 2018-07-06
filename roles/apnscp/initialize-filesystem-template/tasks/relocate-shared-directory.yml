@@ -11,7 +11,7 @@
         state: directory
       when: not res.stat.exists and force
     - command: mv "{{ dest }}" "{{ src }}"
-      when: (res.stat.exists or force) and not res.stat.islnk
+      when: (res.stat.exists or force) and (res.stat.islnk is not defined or not res.stat.islnk)
     - file: path="{{ dest }}" src="{{ src }}" state=link force="{{ force | default('no') }}"
 - name: "Edit {{ logrotate_vars.file | default('-- SKIPPED --') }}"
   replace:

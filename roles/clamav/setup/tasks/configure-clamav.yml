@@ -10,8 +10,12 @@
     clamav_freshclam_config__custom: "{{ _clamav_freshclam_config__custom }}"
     clamav_clamd_daemon_nicelevel: "{{ _clamav_clamd_daemon_nicelevel}}"
     clamav_clamd_allow_supplementary_groups: "{{ _clamav_allow_supplementary_groups }}"
-    clamav_freshclam_database_owner: clamscan
-    clamav_user: clamscan
+    clamav_freshclam_database_owner: "{{ _clamav_update_user }}"
+    # Ensure /var/lib/clamav is owned by clamupdate:clamav
+    # Alternatively apply ACLs... otherwise updates will convert ownership
+    # and trigger a changed state on each iteration
+    clamav_user: "{{ _clamav_update_user }}"
+    clamav_group: clamscan
 - name: Link /etc/clamd.d/clamd.conf to /etc/clamd.conf
   file: 
     path: /etc/clamd.conf
