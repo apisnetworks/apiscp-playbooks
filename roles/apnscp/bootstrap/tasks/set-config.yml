@@ -10,6 +10,7 @@
     section: "{{ section }}"
     option: "{{ option }}"
     value: "{{ value }}"
+    no_extra_spaces: yes
   notify: Restart apnscp
   when: > 
     check_value is not defined or 

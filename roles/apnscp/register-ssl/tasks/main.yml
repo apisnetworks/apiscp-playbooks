@@ -6,6 +6,6 @@
     option: "{{ item.option }}"
     value: "{{ item.value }}"
   with_items:
-    - {option: additional_certs, value: "{{ ssl_hostnames }}"}
+    - {option: additional_certs, value: "{{ ssl_hostnames | join(',')}}"}
     - {option: debug, value: false}
-  when: ssl_hostnames
+  when: (ssl_hostnames | list | length) > 0

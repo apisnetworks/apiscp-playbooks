@@ -37,7 +37,7 @@ populate_filesystem_template: auto
 
 # Default hostnames to request SSL for.
 # Additional SSL hostnames may be requested by running apnscp/register-ssl
-ssl_hostnames: "{{ ansible_fqdn }}"
+ssl_hostnames: ["{{ ansible_fqdn | regex_search('\\.') | ternary(ansible_fqdn,None)}}"]
 
 # Email address of the owner of the server
 # Used for Let's Encrypt registration, login notifications,
