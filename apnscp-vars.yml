@@ -79,7 +79,7 @@ apnscp_ca_rpm: http://yum.apnscp.com/apnscp-latest.rpm
 apnscp_platform_version: 7.5
 # Disable clamav if server memory is limited
 # Frees 85 - 100 MB
-clamav_enable: "{{ has_low_memory | default(false) | bool == true | ternary(false, true) }}"
+clamav_enable: "{{ not (has_low_memory | bool) | default(true) | ternary(true, false) }}"
 # Use a global spamassassin database for bayesian storage
 spamassassin_global: true
 # apnscp fixes
