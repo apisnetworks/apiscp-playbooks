@@ -1,4 +1,9 @@
 ---
+dovecot_conflicting_conf:
+  # Overrides userdb/passdb
+  - 10-auth.conf
+  # Mailbox namespace inbox=yes
+  - 10-mail.conf
 dovecot_home: /etc/dovecot
 config_file: "{{ dovecot_home }}/apnscp.conf"
 postfix_user: postfix

@@ -5,6 +5,13 @@
     enabled: "{{ mail_enabled | bool | ternary('yes', 'no') }}"
     state: "{{ mail_enabled | ternary('started', 'stopped') }}"
   failed_when: false
+- name: Remove conflicting Dovecot configuration
+  file:
+    path: "{{ dovecot_conf_dir }}/{{ item }}"
+    state: absent
+  with_items: "{{ dovecot_conflicting_conf }}"
+  loop_control:
+    label: "Removing conflicting configuration {{ dovecot_conf_dir}}/{{item}}"
 - name: Copy Dovecot configuration
   template:
     src: "apnscp.conf.j2"
