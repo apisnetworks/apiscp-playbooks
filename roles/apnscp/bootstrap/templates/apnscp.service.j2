@@ -5,7 +5,7 @@ After=local-fs.target mariadb.service postgresql.service virtualhosting.service
 
 [Service]
 User=root
-Type=forking
+Type=simple
 EnvironmentFile=-/etc/sysconfig/apnscp
 PIDFile={{ apnscp_root }}/storage/run/apnscpd.pid
 ExecStart=/etc/systemd/user/apnscp.init start
