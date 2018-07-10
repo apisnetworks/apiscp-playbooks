@@ -49,3 +49,12 @@ services:
     systemd:
       enabled: yes
       state: started
+  - name: bwcron.timer
+    files: 
+      - src: bwcron.timer
+        dest: /etc/systemd/system/bwcron.timer
+        perm: "0644"
+      - src: "{{ bwcron_service_file }}"
+        dest: /etc/systemd/system/bwcron.service
+    systemd:
+      state: started

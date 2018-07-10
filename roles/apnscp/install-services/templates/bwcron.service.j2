@@ -1,0 +1,10 @@
+[Unit]
+Description=Bandwidth accounting and reconcilement
+After=local-fs.target
+
+[Service]
+EnvironmentFile=-/etc/sysconfig/apnscp
+ExecStart=/usr/bin/apnscp_php {{ apnscp_root }}/bin/scripts/bwcron.php
+
+[Install]
+WantedBy=multi-user.target

@@ -1,9 +1,18 @@
----
 # @XXX apnscp/init-fst/tasks/setup-dev include vars/dev.yml 
 # clobbers "packages" variable
 # no way to limit scope of include_vars to a task yet, i.e. "private: True"
+- name: "Template bwcron"
+  block:
+    - tempfile:
+      register: p
+      changed_when: false
+    - set_fact: 
+        bwcron_service_file: "{{ p.path }}"
+    - template:
+        src: templates/bwcron.service.j2
+        dest: "{{ bwcron_service_file }}"
+      changed_when: false
 - include_vars: vars/main.yml
-- debug: msg="{{ DEV_TAG }}"
 - name: "Install systemd services"
   include_tasks: install-service.yml
   vars: 
