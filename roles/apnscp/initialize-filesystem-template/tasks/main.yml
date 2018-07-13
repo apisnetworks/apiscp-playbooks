@@ -3,7 +3,11 @@
     path: "{{apnscp_filesystem_template}}"
     state: directory
   register: fst_created
-
+- name: "Restrict snooping on {{ apnscp_account_root }}"
+  file:
+    path: "{{ apnscp_account_root }}"
+    state: directory
+    mode: 0711
 - ini_file:
     path: "{{apnscp_root}}/config/custom/config.ini"
     section: core

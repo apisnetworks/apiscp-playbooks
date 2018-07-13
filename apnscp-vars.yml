@@ -69,6 +69,7 @@ user_daemons: true
 apnscp_testing_repo: yes
 apnscp_root: /usr/local/apnscp
 apnscp_filesystem_template: /home/virtual/FILESYSTEMTEMPLATE
+apnscp_account_root: /home/virtual
 apnscp_filelists: "{{apnscp_root}}/storage/opcenter/filelists"
 apnscp_system_user: apnscp
 # apnscp module API, ZTS is with event MPM
