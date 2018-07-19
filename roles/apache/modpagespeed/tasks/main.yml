@@ -12,7 +12,7 @@
         ModPagespeedDisableFilters add_instrumentation
         ModPagespeedStatistics off
         ModPagespeedStatisticsLogging off
-        ModPagespeedBufferSize 0
+        ModPagespeedMessageBufferSize 0
         #  Permit purging cache
         # curl -X PURGE 'https://mydomain.com/*'
         ModPagespeedPurgeMethod PURGE
