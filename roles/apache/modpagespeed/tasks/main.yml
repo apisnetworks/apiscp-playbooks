@@ -10,8 +10,13 @@
         ModPagespeedXHeaderValue "Powered By pagespeed"
         ModPagespeedCriticalImagesBeaconEnabled false
         ModPagespeedDisableFilters add_instrumentation
-        ModPagespeedEnableCachePurge on
+        ModPagespeedStatistics off
+        ModPagespeedStatisticsLogging off
+        ModPagespeedBufferSize 0
+        #  Permit purging cache
+        # curl -X PURGE 'https://mydomain.com/*'
         ModPagespeedPurgeMethod PURGE
+        ModPagespeedEnableCachePurge on
         # Interrupts cache control headers set by WP for example
         # @XXX May remove if problematic
         ModPagespeedModifyCachingHeaders off
