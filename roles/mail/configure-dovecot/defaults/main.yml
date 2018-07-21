@@ -10,3 +10,6 @@ postfix_user: postfix
 postfix_group: postfix
 postfix_auth_socket: /var/spool/postfix/private/auth
 dovecot_conf_dir: "{{ dovecot_home }}/conf.d"
+# in secure_mode each IMAP connection creates a separate
+# process. SSL/TLS also creates a separate process
+dovecot_secure_mode: "{{ not has_low_memory | bool }}"

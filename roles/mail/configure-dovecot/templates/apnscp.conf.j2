@@ -54,7 +54,7 @@ service imap-login {
   }
   inet_listener imaps {
   }
-  service_count = 0
+  service_count = {{ dovecot_secure_mode | bool | ternary("1", "0") }}
 }
 
 mail_plugins = expire quota acl cgroup fts fts_lucene
@@ -71,7 +71,7 @@ service pop3-login {
 
   inet_listener pop3s {
   }
-  service_count = 0
+  service_count = {{ dovecot_secure_mode | bool | ternary("1", "0") }}
 }
 
 protocol pop3 {
