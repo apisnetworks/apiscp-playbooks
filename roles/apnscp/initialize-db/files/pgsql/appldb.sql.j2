@@ -39464,7 +39464,8 @@ ALTER TABLE ONLY users
 --
 
 ALTER TABLE ONLY bandwidth
-    ADD CONSTRAINT "$1" FOREIGN KEY (site_id) REFERENCES siteinfo(site_id) DEFERRABLE INITIALLY DEFERRED;
+    ADD CONSTRAINT "$1" FOREIGN KEY (site_id) REFERENCES siteinfo(site_id) MATCH FULL ON UPDATE RESTRICT ON DELETE CASCADE
+    DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -39472,7 +39473,8 @@ ALTER TABLE ONLY bandwidth
 --
 
 ALTER TABLE ONLY bandwidth_log
-    ADD CONSTRAINT "$1" FOREIGN KEY (site_id) REFERENCES siteinfo(site_id) DEFERRABLE INITIALLY DEFERRED;
+    ADD CONSTRAINT "$1" FOREIGN KEY (site_id) REFERENCES bandwidth(site_id) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE
+    DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -39480,26 +39482,27 @@ ALTER TABLE ONLY bandwidth_log
 --
 
 ALTER TABLE ONLY bandwidth_spans
-    ADD CONSTRAINT "$1" FOREIGN KEY (site_id) REFERENCES siteinfo(site_id) DEFERRABLE INITIALLY DEFERRED;
+    ADD CONSTRAINT "$1" FOREIGN KEY (site_id) REFERENCES bandwidth(site_id) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE
+    DEFERRABLE INITIALLY DEFERRED;
 
 
 --
 -- Name: $1; Type: FK CONSTRAINT; Schema: public; Owner: {{ appliance_user }}
 
 --
--- Name: Ref_22; Type: FK CONSTRAINT; Schema: public; Owner: {{ appliance_user }}
+-- Name: $1; Type: FK CONSTRAINT; Schema: public; Owner: {{ appliance_user }}
 --
 
 ALTER TABLE ONLY gids
-    ADD CONSTRAINT "Ref_22" FOREIGN KEY (site_id) REFERENCES siteinfo(site_id) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+    ADD CONSTRAINT "$1" FOREIGN KEY (site_id) REFERENCES siteinfo(site_id) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
 
 
 --
--- Name: Ref_23; Type: FK CONSTRAINT; Schema: public; Owner: {{ appliance_user }}
+-- Name: $1; Type: FK CONSTRAINT; Schema: public; Owner: {{ appliance_user }}
 --
 
 ALTER TABLE ONLY uids
-    ADD CONSTRAINT "Ref_23" FOREIGN KEY (site_id) REFERENCES gids(site_id) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
+    ADD CONSTRAINT "$1" FOREIGN KEY (site_id) REFERENCES gids(site_id) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -39507,7 +39510,8 @@ ALTER TABLE ONLY uids
 --
 
 ALTER TABLE ONLY bandwidth_extendedinfo
-    ADD CONSTRAINT bandwidth_extendedinfo_site_id_fkey FOREIGN KEY (site_id) REFERENCES bandwidth(site_id);
+    ADD CONSTRAINT bandwidth_extendedinfo_site_id_fkey FOREIGN KEY (site_id) REFERENCES bandwidth(site_id) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE
+    DEFERRABLE INITIALLY DEFERRED;
 
 
 --
@@ -39515,7 +39519,8 @@ ALTER TABLE ONLY bandwidth_extendedinfo
 --
 
 ALTER TABLE ONLY bandwidth_extendedinfo
-    ADD CONSTRAINT bandwidth_extendedinfo_svc_id_fkey FOREIGN KEY (svc_id) REFERENCES bandwidth_services(svc_id);
+    ADD CONSTRAINT bandwidth_extendedinfo_svc_id_fkey FOREIGN KEY (svc_id) REFERENCES bandwidth_services(svc_id)  MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE
+    DEFERRABLE INITIALLY DEFERRED;
 
 
 --

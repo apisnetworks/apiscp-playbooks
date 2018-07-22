@@ -21,6 +21,6 @@
     - bootstrap.repo_key is defined
     
 - name: "Install packages"  
-  yum: state="{{ bootstrap.rpm_state | default('installed') }}" name="{{ rpms | join(',') }}" skip_broken=yes
+  yum: state="{{ state | default('installed') }}" name="{{ rpms | join(',') }}" skip_broken=yes
   # @XXX Broken in Ansible 2.5.1...
   notify: "{{ notify | default('noop') }}"

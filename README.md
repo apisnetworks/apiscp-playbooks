@@ -16,6 +16,16 @@ To view only tasks that have changed, specify `actionable` as your callback plug
 env ANSIBLE_STDOUT_CALLBACK=actionable ansible-playbook bootstrap.yml
 ```
 
+## Saving config changes
+
+Bootstrapper will override defaults from /root/apnscp-vars.yml. Copy apnscp-vars.yml from resources/playbooks/ and make changes to that file to permanently override settings.
+```bash
+cd /usr/local/apnscp/resources/playbooks
+cp apnscp-vars.yml /root
+# Make change to /root/apnscp-vars.yml
+env ANSIBLE_STDOUT_CALLBACK=actionable ansible-playbook bootstrap.yml
+```
+
 # Playbook examples
 
 The following examples cover tweaking installation from apnscp's [Bootstrapper](https://github.com/apisnetworks/apnscp-bootstrapper), `bootstrap.yml`.
@@ -75,6 +85,13 @@ ansible-playbook bootstrap.yml  --tags=network/setup-firewall,apnscp/bootstrap -
 ```
 
 You'll be limited to using the [CLI helpers](http://docs.apnscp.com/admin/managing-accounts/#command-line-interface) - `cpcmd`, `AddDomain`, `EditDomain`, `DeleteDomain` in headless mode. Fear not though! Anything that can be done through the panel can be done from CLI as the [API](http://api.apnscp.com/namespace-none.html) is 100% reflected.
+
+# Low-memory mode
+Low-memory mode scrubs non-essential services. It combines headless mode with a single job worker (disables Laravel Horizon) and removes vscanner, 
+which is a combination of mod_security + ClamAV to scrub uploads. This frees up ~700 MB of memory, perfect for smaller 2 GB instances.
+```bash
+env ANSIBLE_STDOUT_CALLBACK=actionable ansible-playbook bootstrap.yml  --extra-vars='has_low_memory=true' --extra-vars='panel_headless=true'
+```
 
 # Contributing
 
