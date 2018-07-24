@@ -18,7 +18,7 @@
 # Provide a patch level, e.g. 7.2.4, to prevent automatic updates
 system_php_version: 7.2
 
-# Development build of apnscp, includes symbols in php
+# Development build of apnscp, includes symbols in php and other risky behavior
 apnscp_debug: false
 
 # Server/admin is miserly. Reduce service memory usage 

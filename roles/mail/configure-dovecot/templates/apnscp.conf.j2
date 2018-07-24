@@ -13,7 +13,7 @@ verbose_proctitle = yes
 
 disable_plaintext_auth = no
 # Pull for now, random userdb problems still noted
-auth_cache_size = 0
+auth_cache_size = 512k
 auth_cache_negative_ttl = 0
 auth_username_format = "%Lu"
 auth_mechanisms = plain login
@@ -35,7 +35,7 @@ passdb {
   driver = pam
   # Session is necessary to restore root after verification
   # Use imap/pop3/smtp granular authentication handling
-  args = cache_key=%u%r|%s session=yes %s
+  args = cache_key=%u%r|%s session=yes max_requests={{ apnscp_debug | bool | ternary(512, 2) }} %s
 }
 
 userdb {
