@@ -5,3 +5,4 @@ cgroup_controllers:
   - memory
   - cpu
   - cpuacct
+  - pids
