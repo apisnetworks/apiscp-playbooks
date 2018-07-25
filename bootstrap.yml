@@ -34,10 +34,10 @@
     - apache/configure
     - apache/modpagespeed
     #- apache/fcgid
-    - apnscp/initialize-db
     - apnscp/build-php
     - apnscp/install-extensions
     - apnscp/install-vendor-library
+    - apnscp/initialize-db
     # Checkpoint: admin should work fine at this point
     - apnscp/create-admin
     - apnscp/assert-admin-works

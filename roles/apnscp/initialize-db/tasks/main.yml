@@ -24,6 +24,8 @@
     name: "{{ apnscp_db }}"
     state: present
   register: exists
+  notify: Restart apnscp
+
 - name: Create {{ apnscp_db }} database
   mysql_db: 
     name: "{{ apnscp_db }}" 
@@ -42,6 +44,7 @@
     login_user: root
     check_implicit_admin: yes
   register: user_exists
+  notify: Restart apnscp
 
 - include_role: name=common/merge-yaml-config
   vars:
@@ -68,6 +71,7 @@
       password: "{{__appliance_password}}"
       state: present
     register: user_exists
+    notify: Restart apnscp
 
   - name: Verify {{ appliance_db }} database exists
     postgresql_db: 
@@ -76,6 +80,7 @@
       template: template1
       state: present
     register: db_exists
+    notify: Restart apnscp
 
   - name: Create {{ appliance_db }} database
     block:
@@ -107,7 +112,7 @@
       obj: "{{ appliance_db }}"
       role: "{{ appliance_user }}"
       type: database
-      state: present 
+      state: present
   become_user: postgres
   become: yes
 
@@ -121,3 +126,4 @@
         - {'host': "localhost"}
         - {'database': "{{ appliance_db }}"}
   when: user_exists.changed
+- meta: flush_handlers
