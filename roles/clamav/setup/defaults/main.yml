@@ -26,3 +26,11 @@ clamav_packages:
   - clamav-server-systemd
   - clamav-unofficial-sigs
   - clamav-update
+_clamav_clamd_daemon_systemd_config__custom:
+  # daily.clv can corrupt forcing an infinite loop, throttle back if this happens
+  Service:
+    Restart: always
+    RestartSec: 90
+    StartLimitInterval: 600
+    StartLimitBurst: 3
+    Nice: 10
