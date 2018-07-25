@@ -24,7 +24,6 @@
     name: "{{ apnscp_db }}"
     state: present
   register: exists
-  notify: Restart apnscp
 
 - name: Create {{ apnscp_db }} database
   mysql_db: 
@@ -55,6 +54,7 @@
       - {'password': "{{__apnscp_password}}"}
       - {'host': "localhost"}
       - {'database': "{{ apnscp_db }}"}
+    notify: Restart apnscp
   with_items: "{{ db_population_names }}"
   loop_control:
     loop_var: db_config_name
@@ -80,7 +80,6 @@
       template: template1
       state: present
     register: db_exists
-    notify: Restart apnscp
 
   - name: Create {{ appliance_db }} database
     block:
@@ -125,5 +124,6 @@
         - {'password': "{{__appliance_password}}"}
         - {'host': "localhost"}
         - {'database': "{{ appliance_db }}"}
+      notify: Restart apnscp
   when: user_exists.changed
 - meta: flush_handlers

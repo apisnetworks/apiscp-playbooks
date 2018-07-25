@@ -10,3 +10,4 @@
       newconfig: "{{ newconfig | default(baseconfig) | combine({position: item}, recursive=True)}}"
     with_items: "{{ items }}"
 - copy: content="{{ newconfig | to_nice_yaml }}" dest="{{ file }}"
+  notify: "{{ notify | default(omit) }}"
