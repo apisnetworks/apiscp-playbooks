@@ -1,0 +1,10 @@
+[Unit]
+Description=apnscp update service
+After=local-fs.target
+
+[Service]
+EnvironmentFile=-/etc/sysconfig/apnscp
+ExecStart=/bin/kill -USR1 "$(cat {{ apnscp_root }}/storage/run/apnscpd.pid)"
+
+[Install]
+WantedBy=multi-user.target

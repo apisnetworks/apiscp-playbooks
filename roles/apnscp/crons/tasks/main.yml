@@ -17,3 +17,12 @@
   with_items: "{{cron_template}}"
   loop_control:
     label: "Copy {{item.src}} to {{item.dest}}"
+- name: Enable apnscp nightly updates
+  template:
+    src: templates/apnscp_update.sh.j2
+    dest: "{{ apnscp_update_cron }}"
+    mode: 0755
+  when: apnscp_nightly_update | bool
+- name: Disable apnscp nightly updates
+  file: path={{ apnscp_update_cron }} state=absent
+  when: not apnscp_nightly_update | bool

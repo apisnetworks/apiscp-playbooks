@@ -58,3 +58,19 @@ services:
         dest: /etc/systemd/system/bwcron.service
     systemd:
       state: started
+  # Handled otherwise by apnscp-update.cron
+  - name: apnscp-housekeeping.timer
+    files: 
+      - src: apnscp-housekeeping.timer
+        dest: /etc/systemd/system/apnscp-housekeeping.timer
+        perm: "0644"
+      - src: "{{ apnscp_housekeeping_service_file }}"
+        dest: /etc/systemd/system/apnscp-housekeeping.service
+    systemd:
+      state: "{{ apnscp_nightly_update | bool | ternary('stopped', 'started') }}"
+      enabled: "{{ apnscp_nightly_update | bool | ternary('no', 'yes') }}"
+templated_services:
+  - service: bwcron
+    template: bwcron.service.j2
+  - service: apnscp-housekeeping
+    template: apnscp-housekeeping.service.j2

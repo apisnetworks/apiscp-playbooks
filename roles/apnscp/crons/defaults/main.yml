@@ -20,3 +20,4 @@ cron_template:
     dest: "{{ cron_daily }}/99lockdown_procs"
   - src: locate_webapps.sh.j2
     dest: "{{ cron_monthly }}/locate_webapps"
+apnscp_update_cron: "{{ cron_daily }}/apnscp_update.sh"

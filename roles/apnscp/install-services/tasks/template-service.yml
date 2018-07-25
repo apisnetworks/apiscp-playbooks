@@ -1,0 +1,9 @@
+---
+- tempfile:
+  register: p
+  changed_when: false
+- set_fact: { "{{ item.service | replace('-','_') }}_service_file": "{{ p.path }}" }
+- template:
+    src: "templates/{{item.template}}"
+    dest: "{{ p.path }}"
+  changed_when: false

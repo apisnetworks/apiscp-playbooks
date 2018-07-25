@@ -9,11 +9,11 @@
     loop_var:  file
     label: "Copy {{ file.src }} -> {{ file.dest }}"
   register: svc
-- name: "Enable {{ name }} service"
+- name: "{{ systemd.enabled | bool | default(true) | ternary('Enable','Disable') }} {{ name }} service"
   systemd: 
     daemon_reload: true
     state: "{{ systemd.state }}"
     enabled: "{{ systemd.enabled | default('yes') }}"
     name: "{{ name }}"
     no_block: "{{ systemd.no_block | default('yes') }}"
-  when: systemd and svc.changed
+  when: systemd and svc.changed or systemd.enabled is defined

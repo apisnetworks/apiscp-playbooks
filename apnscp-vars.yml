@@ -31,6 +31,10 @@ has_low_memory: false
 # - no bypasses fst creation
 populate_filesystem_template: auto
 
+# Perform nightly panel updates? Panel may be updated manually with
+# "upcp" or running build/upcp.sh
+apnscp_nightly_update: false
+
 # Default IPv4 address for apnscp to listen to. If undefined will 
 # use the first address that has external routing
 #apnscp_ip4_address:
