@@ -25,10 +25,11 @@
   yum: state="installed" name="{{ rv.rpms | join(',') }}" skip_broken=yes
   # @XXX Broken in Ansible 2.5.1...
   notify: "{{ rv.notify | default('noop') }}"
+  register: c
 
   # Workaround for https://github.com/ansible/ansible/issues/26995
 - name: "Update packages"
   command: yum update --skip-broken {{ rv.rpms|join(' ') }}
   register: o
   changed_when: -1 == o.stdout.find('No packages marked')
-  when: rv.state is defined and rv.state == 'latest'
+  when: c.changed and rv.state is defined and rv.state == 'latest'

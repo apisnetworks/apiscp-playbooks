@@ -17,7 +17,12 @@
     - stat: path=/etc/yum.repos.d/mariadb.repo        
       register: mariadb_stat
     - template: src=mariadb.repo.j2 dest=/etc/yum.repos.d/mariadb.repo owner=root group=root mode=0644    
-      when: mariadb_stat is defined and mariadb_stat.stat.exists == False
+      when: mariadb_stat is defined and mariadb_stat.stat.exists == False   
+      register: mariadb_repo
+
+- name: "Remove MySQL/MariaDB system packages"
+  yum: name="mariadb* mysql*" state=absent
+  when: mariadb_repo is defined and mariadb_repo.changed
 
 - name: "Install PostgreSQL"      
   tags: ['install', 'sql', 'pgsql']
@@ -62,12 +67,12 @@
 - include_tasks: tasks/setup-channel.yml channel={{ repo }}
   tags: ["install"]
   with_items: 
-    - apnscp.yml  
-    - centos.yml      
+    - mariadb.yml
+    - pgdg.yml
+    - apnscp.yml
+    - centos.yml
     - epel.yml
     - cloudflare.yml
-    - mariadb.yml  
-    - pgdg.yml 
     - mongodb.yml
     - remove.yml
   loop_control:
