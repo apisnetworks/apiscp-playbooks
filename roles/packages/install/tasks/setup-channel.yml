@@ -1,26 +1,34 @@
 ---
 - name: Load packages from {{ channel }}
-  include_vars: "vars/rpms/{{ channel }}"
-
-- name: Add RPM channel {{ title | default("")}} 
+  include_vars: 
+    file: "vars/rpms/{{ channel }}" 
+    name: rv
+- name: Add RPM channel {{ rv.title | default("")}} 
   yum: 
-    name: "{{ bootstrap.repo_rpm }}"
+    name: "{{ rv.bootstrap.repo_rpm }}"
     state: present    
   when:
-    - bootstrap is defined
-    - bootstrap.repo_rpm is defined
+    - rv.bootstrap is defined
+    - rv.bootstrap.repo_rpm is defined
   register: rpm_repo_status
 
-- name: Import RPM key {{ title | default('') }}
+- name: Import RPM key {{ rv.title | default('') }}
   rpm_key:
-    key: "{{ bootstrap.repo_key }}"
+    key: "{{ rv.bootstrap.repo_key }}"
     state: present
   when:
     - rpm_repo_status.skipped == false
-    - bootstrap is defined
-    - bootstrap.repo_key is defined
+    - rv.bootstrap is defined
+    - rv.bootstrap.repo_key is defined
     
 - name: "Install packages"  
-  yum: state="{{ state | default('installed') }}" name="{{ rpms | join(',') }}" skip_broken=yes
+  yum: state="installed" name="{{ rv.rpms | join(',') }}" skip_broken=yes
   # @XXX Broken in Ansible 2.5.1...
-  notify: "{{ notify | default('noop') }}"
+  notify: "{{ rv.notify | default('noop') }}"
+
+  # Workaround for https://github.com/ansible/ansible/issues/26995
+- name: "Update packages"
+  command: yum update --skip-broken {{ rv.rpms|join(' ') }}
+  register: o
+  changed_when: -1 == o.stdout.find('No packages marked')
+  when: rv.state is defined and rv.state == 'latest'
