@@ -1,11 +1,11 @@
 zend_extension={{ php_module_directory }}/opcache.so
 ; Tuned by telemetry module
-opcache.memory_consumption={{ [ansible_memtotal_mb * 0.10, 128] | max | int }}M
+opcache.memory_consumption={{ [ansible_memtotal_mb * 0.05, 128] | max | int }}M
 ; Tuned by telemetry module
 opcache.interned_strings_buffer=16
 ; Tuned by telemetry module
 opcache.max_accelerated_files=1024
-opcache.revalidate_freq=0
+opcache.revalidate_freq={{ opcache_revalidate_frequency | default(3) }}
 opcache.enable_cli=0
 opcache.load_comments=1
 opcache.enable_file_override=1
