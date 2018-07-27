@@ -98,7 +98,8 @@ goenv_version: 1.14.0
 mail_enabled: true
 # Horde is a different beast of dependencies and 
 # requires more care than other webmail options
-enable_horde: "{{ mail_enabled | bool }}"
+enable_horde: false
+#"{{ mail_enabled | bool }}"
 # Others may be installed via "rbenv install", this is used primarily for 
 # bootstrapping Passenger
 sys_ruby_version: 2.4.4
