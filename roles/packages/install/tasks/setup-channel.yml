@@ -33,3 +33,4 @@
   register: o
   changed_when: -1 == o.stdout.find('No packages marked')
   when: c.changed and rv.state is defined and rv.state == 'latest'
+  warn: False
