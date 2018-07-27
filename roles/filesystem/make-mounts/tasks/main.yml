@@ -48,7 +48,7 @@
     regexp: '\b/tmp\b'
   register: c
 - name: Verify tmp.mount enabled
-  systemd: name=tmp.mount state="{{ not c.changed | ternary(None, 'started') | default(omit) }}" masked=no enabled=yes daemon_reload=yes
+  systemd: name=tmp.mount state="{{ not c.changed | ternary(omit, 'started') }}" masked=no enabled=yes daemon_reload=yes
 
 # cf. https://chrisdown.name/2018/01/02/in-defence-of-swap.html
 - name: Check for presence of swap
