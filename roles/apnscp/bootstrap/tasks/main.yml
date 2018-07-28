@@ -12,6 +12,7 @@
 - template: src=templates/apnscp.sysconf.j2 dest=/etc/sysconfig/apnscp force=no backup=yes
 - systemd: daemon_reload=yes enabled=yes name=apnscp
   when: copied.changed
+- include_tasks: set-platform-version.yml version="{{ apnscp_platform_version }}"
 
 - name: Create shared filesystem slice {{ apnscp_shared_root }}
   file: 
