@@ -33,7 +33,14 @@
     target: "{{ role_path }}/files/mysql/apnscp.sql"
   when: exists.changed
 
+# MySQL-python is dumb and can't detect authentication_string usage
 - name: Verify {{ apnscp_user }} user exists
+  command: mysql -u "{{ apnscp_user }}" -p"{{ __apnscp_password | quote}}"
+  register: need_update
+  failed_when: false
+  changed_when: need_update.rc != 0
+
+- name: Create {{ apnscp_user }} user
   mysql_user:
     name: "{{ apnscp_user }}"
     password: "{{__apnscp_password}}"
@@ -41,6 +48,7 @@
     host: localhost
     state: present
     login_user: root
+    update_password: "{{ (need_update.rc != 0) | ternary('always', 'on_create') }}"
     check_implicit_admin: yes
   register: user_exists
   notify: Restart apnscp

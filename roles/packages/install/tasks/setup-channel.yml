@@ -29,8 +29,9 @@
 
   # Workaround for https://github.com/ansible/ansible/issues/26995
 - name: "Update packages"
-  command: yum update --skip-broken {{ rv.rpms|join(' ') }}
+  command: yum update -y --skip-broken {{ rv.rpms|join(' ') }}
+  args:
+    warn: no
   register: o
   changed_when: -1 == o.stdout.find('No packages marked')
   when: c.changed and rv.state is defined and rv.state == 'latest'
-  warn: False
