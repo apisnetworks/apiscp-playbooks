@@ -112,3 +112,8 @@
     src: "{{ git_target }}/bin/rbenv"
     path: "{{ apnscp_filesystem_template }}/{{ rbenv_service_install }}/usr/bin/rbenv"
     state: link
+- name: Set GEM_HOME
+  lineinfile:
+    path: "{{ apnscp_filesystem_template}}/siteinfo/etc/profile"
+    line: 'export GEM_PATH="$GEM_PATH:$HOME/.gems"'
+
