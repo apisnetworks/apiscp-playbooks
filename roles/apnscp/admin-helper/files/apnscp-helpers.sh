@@ -63,7 +63,7 @@ function get_config {
     return 1
 	fi
 	set -f +B  VAL
-	VAL=`perl -n  -e 'if (/^'$PARAM' =/) { s/['\'']//g ;  s/^\s*'$PARAM'\s*=\s*//g ;  print; exit ; }' <  /home/virtual/$SITE_ID/info/current/$CLASS`
+	VAL=`perl -n  -e 'if (/^'$PARAM'\s*=/) { s/['\'']//g ;  s/^\s*'$PARAM'\s*=\s*//g ;  print; exit ; }' <  /home/virtual/$SITE_ID/info/current/$CLASS`
 	if [ $? -ne 0 ]; then
     echo "Param $PARAM does not exist";
     return 1;
