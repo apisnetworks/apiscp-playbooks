@@ -4,7 +4,7 @@
     repo: "{{ passenger_repo }}"
     version: "{{ passenger_repo_ver }}"
     dest: "{{ passenger_home }}"
-    update: false
+    update: "{{ passenger_update }}"
   register: repochkout
 - name: Set system Ruby for Passenger
   copy:

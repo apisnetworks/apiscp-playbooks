@@ -28,11 +28,6 @@
   shell: >
     [[ -L /etc/mtab ]] && ( rm -f /etc/mtab && mv /etc/mtab{.ansible-save,} || ln -s /proc/mounts /etc/mtab) || true
   when: moved is defined and moved.changed
-- name: Remove /tmp from mtab 
-  lineinfile:
-    path: /etc/mtab
-    regexp: '^\S+\s+/tmp\s+'
-    state: absent
 - include_role: name=systemd/override-config
   vars: 
     service: tmp.mount
@@ -43,13 +38,28 @@
     # Can't unmount /tmp without a reboot
     notify:
       - Restart services
-- replace:
-    path: /proc/mounts
-    regexp: '\b/tmp\b'
+- command: grep -Eq '^tmpfs /tmp\s' /proc/mounts
   register: c
+  changed_when: c.rc != 0
+  failed_when: false
+- name: Remove /tmp from mtab 
+  lineinfile:
+    path: /etc/mtab
+    regexp: '^\S+\s+/tmp\s+'
+    state: absent
+  when: c.changed
 - name: Verify tmp.mount enabled
   systemd: name=tmp.mount state="{{ c.changed | ternary('started', omit) }}" masked=no enabled=yes daemon_reload=yes
-
+# As opposed to mucking with /etc/mtab directly
+# Allows df, which hardcodes /etc/mtab, to report free storage correctly  
+- name: Pull /tmp from /proc/mounts into /etc/mtab
+  mount: 
+    fstab: /etc/mtab
+    fstype: tmpfs
+    path: /tmp
+    src: tmpfs
+    opts: "{{ tmpfs_attrs }}"
+    state: present
 # cf. https://chrisdown.name/2018/01/02/in-defence-of-swap.html
 - name: Check for presence of swap
   command: "swapon -s"

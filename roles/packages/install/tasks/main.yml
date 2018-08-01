@@ -2,7 +2,14 @@
 # vim:ft=ansible:
 ---
 - include_tasks: configure-default-vars.yml
-# Skip for now as this blocks updates
+# packages/install takes a very long time to run, can leave behind orphaned
+# installs. Breaks Ansible
+- name: "Install yum-utils"
+  yum: name=yum-utils state=installed
+- name: "Cleanup incomplete transactions"
+  command: /usr/sbin/yum-complete-transaction --cleanup-only
+  register: o
+  changed_when: o.stdout.find("No unfinished transactions left.") == -1
 - name: "Verify apnscp priority"        
   ini_file:
     path: /etc/yum.repos.d/apnscp.repo
