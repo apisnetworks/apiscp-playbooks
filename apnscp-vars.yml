@@ -21,6 +21,13 @@ system_php_version: 7.2
 # Development build of apnscp, includes symbols in php and other risky behavior
 apnscp_debug: false
 
+# Email address of the owner of the server
+# Used for Let's Encrypt registration, login notifications,
+# and other events 
+# Note, it can be changed at a later date using
+# apnscp/bin/cmd admin_change_email new@address.com
+apnscp_admin_email:
+
 # Server/admin is miserly. Reduce service memory usage 
 # when possible. Not recommended. Not fully tested.
 has_low_memory: false
@@ -43,13 +50,6 @@ apnscp_nightly_update: false
 # Additional SSL hostnames may be requested by running apnscp/register-ssl
 ssl_hostnames: ["{{ ansible_fqdn | regex_search('\\.') | ternary(ansible_fqdn,None)}}"]
 
-# Email address of the owner of the server
-# Used for Let's Encrypt registration, login notifications,
-# and other events 
-# Note, it can be changed at a later date using
-# apnscp/bin/cmd admin_change_email new@address.com
-apnscp_admin_email:
-
 # Use the following password. Note, can be changed at a later date using
 # apnscp/bin/cmd auth_change_password NEWPASSWORD
 apnscp_admin_password: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=16') }}"
@@ -59,63 +59,91 @@ apnscp_admin_user: admin
 
 # Spam filter engine, spamassassin or rspamd
 spamfilter: spamassassin
+
 # Disable direct control panel access
 # Use the CLI (AddDomain, EditDomain, cpcmd) to access services
 panel_headless: false
+
 # Allow users to run daemons on their account
 # Opens up 40000-49999/tcp + udp
 user_daemons: true
 
-####################################
-#     Don't change below here      #
-####################################
-# Enable apnscp testing repo
-apnscp_testing_repo: yes
-apnscp_root: /usr/local/apnscp
-apnscp_filesystem_template: /home/virtual/FILESYSTEMTEMPLATE
-apnscp_account_root: /home/virtual
-apnscp_filelists: "{{apnscp_root}}/storage/opcenter/filelists"
-apnscp_system_user: apnscp
-# apnscp module API, ZTS is with event MPM
-php_module_api: 20160303-zts
-apnscp_php_version: 7.1
-apnscp_shared_root: /.socket
-apnscp_ca_rpm: http://yum.apnscp.com/apnscp-latest.rpm
-apnscp_platform_version: 7.5
+# Reboot and resume playbook as needed
+apnscp_bootstrapper_reboot: true
+
 # Disable clamav if server memory is limited
 # Frees 85 - 100 MB
 clamav_enable: "{{ not (has_low_memory | bool) | default(true) | ternary(true, false) }}"
-# Use a global spamassassin database for bayesian storage
+
+# Enable sending mail by this server from authenticated third-party
+# sources. Does not affect relaying mail that originates FROM this server
+# but rather who can connect.
+mail_enabled: true
+
+# Use a global spamassassin database for bayesian storage. 
 spamassassin_global: true
+
+# Enable Passenger - allows a dead simple system to run 
+# Node, Python, and Ruby applications with automatic restarts
+passenger_enabled: yes
+
+# Place each account's InnoDB data files in a separate directory
+# Loses performance benefits, increases overhead, but allows for storage tracking
+# May potential cause cyclic segfault in MariaDB if 
+# a user goes over quota with InnoDB data
+mysqld_per_account_innodb: "{{ data_center_mode }}"
+
+# Horde is a different beast of dependencies and 
+# requires more care than other webmail options
+enable_horde: "{{ mail_enabled | bool }}"
+
+# apnscp provides a watchdog service to reboot your server when all hope is lost
+# Set this to a value CPU x process depth. On a 2 CPU system the system is deemed
+# out to lunch if more than 50 processes are waiting for CPU acknowledgement.
+# Reboots are often faster than recovering on virtualized platforms
+# Set to None/False to disable this feature
+watchdog_load_threshold: "{{ ansible_processor_count * 25 }}"
+
+####################################
+#     Don't change below here      #
+####################################
+
+# Enable apnscp testing repo
+apnscp_testing_repo: yes
+# Location of apnscp
+apnscp_root: /usr/local/apnscp
+# Location of FST
+apnscp_filesystem_template: /home/virtual/FILESYSTEMTEMPLATE
+# Account root
+apnscp_account_root: /home/virtual
+# Filelists provide additional resources for service installation
+apnscp_filelists: "{{apnscp_root}}/storage/opcenter/filelists"
+# Default apnscp user - not tested
+apnscp_system_user: apnscp
+# apnscp module API, ZTS is with event MPM
+php_module_api: 20160303-zts
+# apnscp PHP version
+apnscp_php_version: 7.1
+# Location of apnscp r/w shared path
+apnscp_shared_root: /.socket
+# apnscp repo + CA data
+apnscp_ca_rpm: http://yum.apnscp.com/apnscp-latest.rpm
+# Platform version. Changes internally with each new release
+apnscp_platform_version: 7.5
 # apnscp fixes
 nvm_version: master
 pyenv_version: 1.2.4
 rbenv_version: 1.1.1
 goenv_version: 1.14.0
-# Enable sending mail by this server from authenticated third-party
-# sources. Does not affect relaying mail that originates FROM this server
-# but rather who can connect.
-mail_enabled: true
-# Horde is a different beast of dependencies and 
-# requires more care than other webmail options
-enable_horde: "{{ mail_enabled | bool }}"
 # Others may be installed via "rbenv install", this is used primarily for 
 # bootstrapping Passenger
 sys_ruby_version: 2.4.4
-# Enable Passenger - allows a dead simple system to run 
-# Node, Python, and Ruby applications with automatic restarts
-passenger_enabled: yes
 # Use SpamAssassin or rspamd for spam filtering. rspamd is experimental
 spamassassin_enabled: yes
 # apnscp is part of a multi-server environment
 # requires extra configuration 
 # see https://github.com/apisnetworks/cp-proxy
 data_center_mode: false
-# Place each account's InnoDB data files in a separate directory
-# Loses performance benefits, increases overhead, but allows for storage tracking
-# May potential cause cyclic segfault in MariaDB if 
-# a user goes over quota with InnoDB data
-mysqld_per_account_innodb: "{{ data_center_mode }}"
 # Allow remote database connections
 allow_remote_db: "{{ data_center_mode }}"
 # Location for per-user mail

@@ -12,7 +12,7 @@
 - name: "{{ systemd.enabled | bool | default(true) | ternary('Enable','Disable') }} {{ name }} service"
   systemd: 
     daemon_reload: true
-    state: "{{ systemd.state }}"
+    state: "{{ systemd.state | default(omit) }}"
     enabled: "{{ systemd.enabled | default('yes') }}"
     name: "{{ name }}"
     no_block: "{{ systemd.no_block | default('yes') }}"

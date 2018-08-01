@@ -1,0 +1,6 @@
+---
+# Enable if terminating watchdog will force a reboot
+watchdog_has_nowayout: false
+watchdog_module: softdog
+watchdog_modprobe_config: /etc/modules-load.d/apnscp-watchdog.conf
+__watchdog_load_threshold: "{{ watchdog_load_threshold | default(ansible_cpu_count * 25) }}"

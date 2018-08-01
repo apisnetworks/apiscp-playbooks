@@ -1,0 +1,37 @@
+- name: Install watchdog package
+  yum: name=watchdog state=installed
+- name: Set 1-minute load threshold
+  ini_file:
+    path: /etc/watchdog.conf
+    section: null
+    option: "max-load-1"
+    value: "{{ watchdog_load_threshold | int }}"
+  notify: Restart watchdog
+- name: Enable watchdog kernel module
+  modprobe:
+    name: "{{ watchdog_module }}"
+    state: present
+  when: (watchdog_module | bool)
+- name: Check for /dev/watchdog device
+  stat: path=/dev/watchdog
+  register: s
+- name: Check for /dev/watchdog presence
+  command: echo 1 > /dev/watchdog
+  when: s.stat.exists
+  register: st2
+  failed_when: false
+  changed_when: false
+- block:
+  - name: Set watchdog device
+    ini_file:
+      path: /etc/watchdog.conf
+      section: null
+      option: watchdog-device
+      value: /dev/watchdog
+  - name: Load watchdog kernel module
+    copy: 
+      dest: "{{ watchdog_modprobe_config }}"
+      content: "{{ watchdog_module }}"
+  when: st2.rc is defined and st2.rc == 0
+- name: Enable Watchdog
+  systemd: name=watchdog state=started enabled=yes daemon_reload=yes

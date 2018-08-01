@@ -2,12 +2,27 @@
 - get_argv:
 - copy:
     content: |
-      #!/bin/sh
-      export ANSIBLE_LOG_PATH="{{ lookup('env', 'ANSIBLE_LOG_PATH')| default('') }}"
-      cd {{ ansible_env['PWD'] }} && {{ argv | join(" ") }} && \
-        rm -f /root/resume_apnscp_setup.sh
-    dest: /root/resume_apnscp_setup.sh
+      #!/bin/sh    
+      {{ apnscp_bootstrapper_resume_cmd }}
+    dest: "{{ apnscp_bootstrapper_resume_script }}"
     mode: 0777
+- name: Install Bootstrapper service
+  include_role: 
+    name: apnscp/install-services
+  vars:
+    templated_services: 
+      - service: bootstrapper-resume
+        template: bootstrapper-resume.j2
+    services:
+      - name: bootstrapper-resume
+        files:
+          - src: "{{ bootstrapper_resume_service_file }}"
+            dest: /etc/systemd/system/bootstrapper-resume.service
+        systemd:
+          enabled: yes
+- name: Reboot server
+  command: systemctl reboot
+  when: (reboot | bool)
 - name: Fail and save operation
   fail:
     msg: "{{ __failure_template }}"

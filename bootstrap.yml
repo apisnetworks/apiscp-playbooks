@@ -85,6 +85,7 @@
     - software/passenger
     - software/etckeeper
     - software/tmpfiles
+    - software/watchdog
     - system/logs
     - clamav/setup
     - apache/modsecurity

@@ -1,6 +1,8 @@
 ---
-reboot: false
-msg: Someone forgot to set "msg"!
+reboot: "{{ apnscp_bootstrapper_reboot | default(true) }}"
+apnscp_bootstrapper_resume_script: /root/resume_apnscp_setup.sh
+msg: |
+  Someone forgot to set "msg"!
 __failure_template: |
   >>> IMPORTANT <<<
 
@@ -13,10 +15,14 @@ __failure_template: |
 
   TO RESUME PROVISIONING, RUN:
 
-  cd {{ ansible_env['PWD'] }} && env ANSIBLE_LOG_PATH="{{ lookup('env', 'ANSIBLE_LOG_PATH') }}" {{ argv | join(" ") }}
+  {{ apnscp_bootstrapper_resume_cmd }}
 
   OR RUN THE FOLLOWING FROM THE SHELL:
 
-  /root/resume_apnscp_setup.sh
+  {{ apnscp_bootstrapper_resume_script }}
   
   >>> IMPORTANT <<<
+apnscp_bootstrapper_resume_cmd: |
+  export ANSIBLE_LOG_PATH="{{ lookup('env', 'ANSIBLE_LOG_PATH')| default('/dev/null', true) }}"
+  cd {{ ansible_env['PWD'] }} && {{ argv | join(" ") }} && \
+  rm -f {{ apnscp_bootstrapper_resume_script }}

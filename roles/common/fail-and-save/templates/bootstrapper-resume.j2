@@ -1,0 +1,12 @@
+[Unit]
+Description=Resume apnscp update
+After=multi-user.target
+ConditionPathExists={{ apnscp_bootstrapper_resume_script }}
+
+[Service]
+Type=oneshot
+ExecStart="{{ apnscp_bootstrapper_resume_script }}"
+ExecStartPost=/bin/systemctl disable bootstrapper-resume
+
+[Install]
+WantedBy=multi-user.target

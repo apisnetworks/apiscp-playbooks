@@ -9,3 +9,4 @@
     - ['{{ apnscp_user_defaults }}', '/dev/null']
   roles:
     - apnscp/register-ssl
+    - common/fail-and-save

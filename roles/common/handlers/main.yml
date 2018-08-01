@@ -47,3 +47,5 @@
   command: chroot {{ apnscp_filesystem_template }}/siteinfo ldconfig
 - name: Reload systemd
   systemd: daemon_reload=yes
+- name: Restart watchdog
+  systemd: name=watchdog state=restarted
