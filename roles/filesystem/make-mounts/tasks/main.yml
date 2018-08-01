@@ -47,7 +47,7 @@
     path: /etc/mtab
     regexp: '^\S+\s+/tmp\s+'
     state: absent
-  when: c.changed
+  when: c.changed and mst.stat.exists and not mst.stat.islnk
 - name: Verify tmp.mount enabled
   systemd: name=tmp.mount state="{{ c.changed | ternary('started', omit) }}" masked=no enabled=yes daemon_reload=yes
 # As opposed to mucking with /etc/mtab directly
@@ -60,6 +60,7 @@
     src: tmpfs
     opts: "{{ tmpfs_attrs }}"
     state: present
+  when: mst.stat.exists and not mst.stat.islnk
 # cf. https://chrisdown.name/2018/01/02/in-defence-of-swap.html
 - name: Check for presence of swap
   command: "swapon -s"
