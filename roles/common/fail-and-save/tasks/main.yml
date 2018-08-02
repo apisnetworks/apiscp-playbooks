@@ -20,8 +20,12 @@
             dest: /etc/systemd/system/bootstrapper-resume.service
         systemd:
           enabled: yes
+- debug: msg="{{ __reboot_template }}"
 - name: Reboot server
   command: systemctl reboot
+  when: (reboot | bool)
+  # Just in case we make it this far...
+- fail:
   when: (reboot | bool)
 - name: Fail and save operation
   fail:

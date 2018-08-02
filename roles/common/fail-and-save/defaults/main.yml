@@ -3,6 +3,22 @@ reboot: "{{ apnscp_bootstrapper_reboot | default(true) }}"
 apnscp_bootstrapper_resume_script: /root/resume_apnscp_setup.sh
 msg: |
   Someone forgot to set "msg"!
+__reboot_template: |
+  >>> IMPORTANT <<<
+
+  We're rebooting your server automatically to 
+  process some changes. Once it comes back up
+  in a few minutes, bootstrapping will continue.
+
+  Sit back, relax, and have a cup of tea. ☕
+  {%if lookup('env', 'ANSIBLE_LOG_PATH') %}
+
+  You can view progress from the terminal at any time:
+  
+  tail -f {{ lookup('env', 'ANSIBLE_LOG_PATH') }}
+  {%endif%}
+
+  >>> IMPORTANT <<<
 __failure_template: |
   >>> IMPORTANT <<<
 
