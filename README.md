@@ -1,6 +1,6 @@
 # Running the playbook
 
-This playbook is designed to be idempotent. It can be run multiple times without changing the state of an already modified system. You can use this to quickly pinpoint irregularities within the system or 🤞unbreak your server🤞 if things degrade to that.
+This playbook is designed to be [idempotent](https://hq.apnscp.com/using-ansible-to-validate-your-server/). It can be run multiple times without changing the state of an already modified system. You can use this to quickly pinpoint irregularities within the system or 🤞unbreak your server🤞 if things degrade to that.
 
 The playbook must always be run as root. It can be located under `/usr/local/apnscp/resources/playbooks`. 
 
@@ -25,6 +25,44 @@ cp apnscp-vars.yml /root
 # Make change to /root/apnscp-vars.yml
 env ANSIBLE_STDOUT_CALLBACK=actionable ansible-playbook bootstrap.yml
 ```
+
+Alternatively, if installed using [Bootstrapper](https://github.com/apisnetworks/apnscp-bootstrapper), you'll have an option to copy this configuration over.
+
+## Recommended configuration changes
+
+Bootstrapper can run without any changes to `apnscp-vars.yml`. The following changes are recommended to make setup seamless:
+
+- **apnscp_admin_email**: (email address) used to set besthe admin contact. Also notified when apnscp is installed (FQDN required). This email address is used as your Let's Encrypt admin contact.
+- **ssl_hostnames**: (list or string) hostnames that resolve to this server that should be considered for Let's Encrypt SSL issuance. 
+  - Examples: 
+    - ['apnscp.com','hq.apnscp.com','nexus.apnscp.com'] 
+    - apnscp.com
+
+### Optional settings
+
+- **has_low_memory**: (true/false) disables auxiliary services for 2 GB instances. See [low-memory mode](#user-content-low-memory-mode) below.
+- **user_daemons**: (true/false) opens up ports 40000-49999/tcp + udp on the server for accounts that want to run a service. If you're running strictly PHP/Node/Python/Ruby services, turn this off for added security.
+- **mail_enabled**: (true/false) if using GMail or a third-party email provider disables IMAP/POP3 + ESMTPA. Mail can still originate from the server (PHP [mail()](http://php.net/manual/en/function.mail.php)), but blocks ingress.
+- **passenger_enabled**: (true/false) disable building Passenger + accompanying Ruby/Python interpreters if running a purely PHP mix. Node/npm/yarn is still available, but can't serve websites.
+- **mysqld_per_account_innodb**: (true/false) places tables + data in an aggregate InnoDB pool for higher performance or per account for resource enforcement. An account over quota can cause a cyclic crash in MySQL/MariaDB 5.0+ on recovery. **You have been warned**. Ensure [Argos](https://hq.apnscp.com/monitoring-with-monit-argos/) is setup if enabled.
+- **data_center_mode**: (true/false) ensure all resources that apnscp can account for are accounted. Also enables the pernicious bastard `mysqld_per_account_innodb`!
+
+### Setting FQDN for SSL/Email
+
+All servers should have a fully-qualified domain name ([FQDN](https://en.wikipedia.org/wiki/Fully_qualified_domain_name)). Failure to have one will cause email to fail, including the installation notice. Moreover, Let's Encrypt will fail issuance. A FQDN must at least contain 1 dot:
+
+- ✅ apnscp.com
+- ✅ cdn.bootstrap.org
+- ✅ x.y.z.abc.co.uk
+- ❌ centos-s-1vcpu-2gb-nyc1-01 (no period/dot)
+
+Set your hostname with,
+
+```bash
+hostnamectl set-hostname MYHOSTNAME
+```
+
+Where *MYHOSTNAME* is your hostname for the machine. For consistency reasons, it is required that this hostname resolves to the IP address of the machine and vice-versa with [FCrDNS](https://en.wikipedia.org/wiki/Forward-confirmed_reverse_DNS). Check with your DNS provider to establish this relationship.
 
 # Playbook examples
 
@@ -86,7 +124,7 @@ ansible-playbook bootstrap.yml  --tags=network/setup-firewall,apnscp/bootstrap -
 
 You'll be limited to using the [CLI helpers](http://docs.apnscp.com/admin/managing-accounts/#command-line-interface) - `cpcmd`, `AddDomain`, `EditDomain`, `DeleteDomain` in headless mode. Fear not though! Anything that can be done through the panel can be done from CLI as the [API](http://api.apnscp.com/namespace-none.html) is 100% reflected.
 
-# Low-memory mode
+## Low-memory mode
 Low-memory mode scrubs non-essential services. It combines headless mode with a single job worker (disables Laravel Horizon) and removes vscanner, 
 which is a combination of mod_security + ClamAV to scrub uploads. This frees up ~700 MB of memory, perfect for smaller 2 GB instances.
 ```bash
@@ -96,3 +134,9 @@ env ANSIBLE_STDOUT_CALLBACK=actionable ansible-playbook bootstrap.yml  --extra-v
 # Contributing
 
 apnscp Playbooks are released under the [MIT License](LICENSE). Feel free to use and contribute.
+
+
+
+# Further resources
+
+- [Validating your hosting platform with Ansible](https://hq.apnscp.com/using-ansible-to-validate-your-server/) (hq.apnscp.com)
