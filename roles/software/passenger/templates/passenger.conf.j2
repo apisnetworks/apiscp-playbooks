@@ -17,5 +17,19 @@ LoadModule passenger_module  {{passenger_home}}/buildout/apache2/mod_passenger.s
   PassengerResolveSymlinksInDocumentRoot {{ passenger_resolve_symlinks_in_document_root }}
   PassengerMaxPoolSize {{ passenger_max_pool_size }}
   PassengerShowVersionInHeader Off
+  #
+  # 5.2 changes app deployment requiring a major retooling of these patches + migration to
+  # VirtualHost containers ceding control of .htaccess effectively making this PaaS.
+  #
+  # Moreover CVE 2018-12029 is nginx, 2018-12026/12027 require lax permissions on 
+  # PassengerInstanceRegistryDir. Neither of which apply.
+  # 
+  # @TODO
+  # Passenger maliciously killing the wrong PID is a problem and needs to be addressed later 
+  # for resellers (CVE-2018-12028). It's not in danger of killing a critical system PID, 
+  # but a potential nuisance. Verifying the reported PID cwd matches chroot rtd 
+  # is sufficient.
+  # 
+  PassengerDisableSecurityUpdateCheck on
   {{ xtra_passenger_config | default("") }}
 </IfModule>
