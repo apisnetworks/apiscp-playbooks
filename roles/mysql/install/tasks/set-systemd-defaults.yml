@@ -16,6 +16,6 @@
           Type: simple
           OOMScoreAdjust: -500
           LimitNOFILE: 65535
-          Nice: -10
+          Nice: -15
           ExecStartPre: "{{ mysql_check_path }}"
     notify: Restart mariadb
