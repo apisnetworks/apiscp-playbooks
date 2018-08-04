@@ -10,12 +10,3 @@
     chdir: "{{ apnscp_root }}/config/custom"
     creates: "{{ apnscp_root}}/config/custom/composer.json"
   when: not s.stat.exists
-- name: Install dev libraries
-  become: yes
-  become_user: "{{ apnscp_system_user }}"
-  command: ./composer install --dev
-  args:
-    chdir: "{{ apnscp_root }}"
-  register: o
-  when: (apnscp_debug or true | bool)
-  changed_when: o.stderr.find("Nothing to install or update") == -1
