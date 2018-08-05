@@ -1,6 +1,6 @@
 #!/bin/sh
 [[ -f /etc/sysconfig/apnscp ]] && . /etc/sysconfig/apnscp
-EXTRAS={{ apnscp_root }}/config/apache-proc-revocation
+EXTRAS="{{ apnscp_root }}/config/apache-proc-revocation"
 FILELIST="id rm perl python python2.7 python2 php tclsh wget cat gcc \
 	g++ find ruby stat dir gcc44 crontab at \
 	locate lsattr netstat ls chown chgrp chmod chattr lua luac \
@@ -12,7 +12,7 @@ FILELIST="id rm perl python python2.7 python2 php tclsh wget cat gcc \
 FILELIST="$FILELIST {{ apnscp_filesystem_template }}/ssh/usr/local/share/"
 WEB_USER=${WEB_USER:-apache}
 if [[ -f $EXTRAS ]]; then 
-	FILELIST="$FILELISTLIST $(cat $EXTRAS)"
+	FILELIST="$FILELIST $(cat $EXTRAS)"
 fi
 
 for file in $FILELIST ; do 
