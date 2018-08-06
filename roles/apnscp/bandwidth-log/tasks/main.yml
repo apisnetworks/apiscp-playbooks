@@ -1,7 +1,7 @@
 - name: Create apnscp log profile
   template:
-    src: templates/apnscp.j2
-    dest: "{{ logrotate_dir }}/apnscp"
+    src: templates/apnscp-bw.j2
+    dest: "{{ logrotate_dir }}/apnscp-bw"
 - name: Enable logrotate compression
   lineinfile:
     path: "{{logrotate_conf}}"

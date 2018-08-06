@@ -50,3 +50,9 @@
     src: templates/mailer-table.j2
     dest: "{{ logrotate_path }}/mailer-table"
     force: "{{ force | default('no') }}"
+    
+- name: Add apnscp logrotate
+  template: 
+    src: templates/apnscp.j2
+    dest: "{{ logrotate_path }}/apnscp"
+    force: yes

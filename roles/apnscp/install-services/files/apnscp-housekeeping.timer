@@ -4,6 +4,7 @@ Description=Run apnscp housekeeping
 [Timer]
 OnCalendar=daily
 Persistent=true
+RandomizedDelaySec=60min
 
 [Install]
 WantedBy=timers.target

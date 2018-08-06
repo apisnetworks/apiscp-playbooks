@@ -1,0 +1,17 @@
+{{ apnscp_root }}/storage/logs/bootstrapper-*.log {
+	missingok
+	compress
+	daily
+	rotate 7
+}
+
+{{ apnscp_root }}/storage/logs/*_log 
+	{{ apnscp_root }}/storage/logs/start.log {
+	weekly
+	missingok
+	rotate 4
+	compress
+	lastaction
+		systemctl restart apnscp
+	endscript
+}
