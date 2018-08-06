@@ -20,4 +20,6 @@ cron_template:
     dest: "{{ cron_daily }}/99lockdown_procs"
   - src: locate_webapps.sh.j2
     dest: "{{ cron_monthly }}/locate_webapps"
+# Automatically run Bootstrapper on update when auto-update
+apnscp_update_bootstrapper: true
 apnscp_update_cron: "{{ cron_daily }}/apnscp_update.sh"
