@@ -1,6 +1,2 @@
 # @TODO rename to apnscp_paranoia ???
 apnscp_notify_ownership_change: false
-apnscp_reset_password_bin: "{{ apnscp_root }}/bin/scripts/reset_password"
-apnscp_reset_password_flags: "-DFORTIFY_SOURCE -O2"
-# Disable for added security
-apnscp_password_auto_rebuild: "{{ not panel_headless }}"
