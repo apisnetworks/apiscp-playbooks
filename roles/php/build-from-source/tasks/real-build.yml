@@ -41,6 +41,12 @@
         chdir: "{{ build_dir }}"       
       environment:
         SCANDIR: "{{ scan_dir }}"
+      register: configuration
+    - name: Clean PHP code
+      make:
+        chdir: "{{ build_dir }}"
+        target: clean
+      when: (php_clean | default(false)) or force
     - make: 
         chdir: "{{ build_dir }}" 
         target: all 
