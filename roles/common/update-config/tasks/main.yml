@@ -1,0 +1,22 @@
+# Import apnscp-vars definition, save state to allow rewrite
+---
+- name: Source apnscp-vars
+  include_vars: file={{ item }} name=custom
+  static: yes
+  with_first_found:
+    - "{{ apnscp_user_defaults }}"
+    - "{{ playbook_dir }}/apnscp-vars.yml"
+  register: found
+- name: Source Playbook var definitions
+  include_vars: file="{{ playbook_dir }}/apnscp-vars.yml" name=original
+- name: Update apnscp-vars with --extra-vars overrides
+  set_fact: 
+    customdiff: "{{ customdiff|default({}) | combine({item: hostvars[inventory_hostname][item]}) }}"
+  with_items: "{{ hostvars[inventory_hostname] | intersect(original)}}"
+  when: item not in custom or hostvars[inventory_hostname][item] != custom[item]
+  loop_control: 
+    label: "Setting {{ item }} => {{ hostvars[inventory_hostname][item] }}"
+- name: Save apnscp-vars state
+  copy:
+    dest: "{{ apnscp_last_run_vars }}"
+    content: "{{ customdiff | default({}) | to_nice_yaml(indent=4) }}"

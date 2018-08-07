@@ -9,10 +9,12 @@
     - 'apnscp-vars.yml'
     - 'roles/common/vars/apnscp-internals.yml'
     - ['{{ apnscp_user_defaults }}', '/dev/null']
+    - ['{{ apnscp_last_run_vars }}', '/dev/null']
   roles:
     # Hook: before running playbooks
     - custom/preflight
     - check-requirements
+    - common/update-config
     - filesystem/make-mounts
     - filesystem/separate-mtab
     - system/selinux

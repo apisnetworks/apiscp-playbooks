@@ -1,12 +1,12 @@
 ---
 - hosts: localhost  
   vars:
-    apnscp_user_defaults: /root/apnscp-ansible-defaults.yml
-    clamav_enable: no
+    apnscp_user_defaults: /root/apnscp-vars.yml
   vars_files:
-    - './apnscp-vars.yml'
+    - 'apnscp-vars.yml'
     - 'roles/common/vars/apnscp-internals.yml'
     - ['{{ apnscp_user_defaults }}', '/dev/null']
+    - ['{{ apnscp_last_run_vars }}', '/dev/null']
   roles:
-    - apnscp/register-ssl
+    - common/update-config
     #- common/fail-and-save

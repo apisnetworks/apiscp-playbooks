@@ -151,6 +151,8 @@ maildir_location: ~/Mail
 # Perform an account creation validation at the end of this playbook
 # Allows for consistency checks 
 apnscp_verify_account: true
+# Run Bootstrapper after update (upcp --auto)
+apnscp_update_bootstrapper: "{{ apnscp_nightly_update }}"
 # Enable SELinux
 # true is absolutely guaranteed to break your system
 # debug places selinux in permissive mode

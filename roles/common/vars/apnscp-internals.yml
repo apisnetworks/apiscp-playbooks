@@ -1,2 +1,3 @@
 ---
 DEV_TAG: ">>> DEVELOPMENT PLAY ONLY - REMOVE BEFORE FLIGHT <<<"
+apnscp_last_run_vars: /root/apnscp-vars-runtime.yml
