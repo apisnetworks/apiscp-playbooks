@@ -2,13 +2,17 @@
 ---
 - name: Source apnscp-vars
   include_vars: file={{ item }} name=custom
-  static: yes
   with_first_found:
     - "{{ apnscp_user_defaults }}"
     - "{{ playbook_dir }}/apnscp-vars.yml"
   register: found
 - name: Source Playbook var definitions
   include_vars: file="{{ playbook_dir }}/apnscp-vars.yml" name=original
+- name: Source runtime vars
+  include_vars: file="{{ item }}" name=customdiff
+  with_first_found:
+    - "{{ apnscp_last_run_vars }}"
+    - /dev/null
 - name: Update apnscp-vars with --extra-vars overrides
   set_fact: 
     customdiff: "{{ customdiff|default({}) | combine({item: hostvars[inventory_hostname][item]}) }}"
@@ -20,3 +24,4 @@
   copy:
     dest: "{{ apnscp_last_run_vars }}"
     content: "{{ customdiff | default({}) | to_nice_yaml(indent=4) }}"
+  when: customdiff
