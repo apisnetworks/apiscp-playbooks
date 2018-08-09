@@ -21,6 +21,7 @@
         systemd:
           enabled: yes
 - debug: msg="{{ __reboot_template }}"
+- pause: seconds=2
 - name: Reboot server
   command: systemctl reboot
   when: (reboot | bool)
