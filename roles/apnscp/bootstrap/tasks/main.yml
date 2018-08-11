@@ -96,11 +96,11 @@
     check_value: false
   with_items:
     - option: from_address
-      value: "{{ apnscp_system_user }}@${HOSTNAME}"
+      value: "{{ apnscp_system_user }}@{{ apnscp_hostname }}"
     - option: from_no_reply_address
-      value: "{{ apnscp_system_user }}@${HOSTNAME}"
+      value: "{{ apnscp_system_user }}@{{ apnscp_hostname }}"
     - option: reply_address
-      value: "{{ apnscp_system_user }}+tickets@${HOSTNAME}"
+      value: "{{ apnscp_system_user }}+tickets@{{ apnscp_hostname }}"
 
 - stat: path="{{ apnscp_root }}/storage/opcenter/namebased_ip_addrs"
   register: nbchk
@@ -138,6 +138,18 @@
     value: "{{ 999999999999999999999 | random | string + (lookup('pipe', 'date +%s%N')) | to_uuid() }}"
     check_value: false
   when: not data_center_mode
+- name: Copy /etc/resolv.conf config to config.ini
+  set_fact: 
+    nameservers: "{{ (nameservers | default([])) + [item]}}"
+  with_lines: "egrep '^\\s*nameserver\\b' /etc/resolv.conf | cut -d' ' -f2"
+  when: apnscp_nameservers is not defined
+- include_tasks: set-config.yml
+  vars:
+    section: "dns"
+    option: recursive_ns
+    value: "{{ nameservers | join(',')}}"
+    check_value: yes
+  when: apnscp_nameservers is not defined
 # Ensure apnscp ownership is correct
 - name: Change apnscp ownership
   command: chown -c -R {{ apnscp_system_user }}:{{ apnscp_system_user }} {{ apnscp_root }}
