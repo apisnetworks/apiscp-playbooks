@@ -11,6 +11,7 @@
     - yum: name=quota state=present
     # Make sure new options are picked up
     - command: mount -o remount /
+      warn: false
     - name: Building quotas 
       command: quotaoff -augv
     - command: quotacheck -augvm
