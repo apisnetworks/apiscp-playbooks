@@ -1,0 +1,4 @@
+---
+- name: Enable additional RHEL repos
+  include_tasks: configure-rhel.yml
+  when: ansible_distribution == "RedHat"

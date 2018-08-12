@@ -1,0 +1,7 @@
+# rhsm_repository isn't available until 2.5
+---
+- rhsm_repository: name="{{ item }}" state=enabled
+  with_items:
+    - rhel-7-server-rpms
+    - rhel-7-server-extras-rpms
+    - rhel-7-server-optional-rpms

@@ -15,6 +15,7 @@
     - custom/preflight
     - check-requirements
     - common/update-config
+    - packages/configure-rhel
     - filesystem/make-mounts
     - filesystem/separate-mtab
     - system/selinux

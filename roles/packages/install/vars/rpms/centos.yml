@@ -6,7 +6,6 @@ repo_name: "base,updates"
 rpms:
   - acl
   - alsa-lib
-  - asciidoc
   - aspell
   - aspell-devel
   - atlas

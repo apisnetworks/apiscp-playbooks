@@ -378,7 +378,6 @@ packages:
   - { package: yaml-cpp, service: siteinfo }
   - { package: zip, service: siteinfo }
   - { package: zlib, service: siteinfo }
-  - { package: asciidoc, service: ssh }
   - { package: aspell-devel, service: ssh }
   - { package: atlas, service: ssh }
   - { package: autoconf213, service: ssh }
