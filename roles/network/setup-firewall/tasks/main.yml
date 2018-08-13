@@ -42,5 +42,8 @@
   with_items: "{{ direct_rules }}"
   loop_control:
     label: "Setting {{ item.rule }}"
-  notify: Reload firewalld
+  notify: 
+    - Reload firewalld
+    - Reload fail2ban
+
 - meta: flush_handlers

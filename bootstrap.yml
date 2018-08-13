@@ -1,3 +1,13 @@
+#######################
+# apnscp Bootstrapper #
+#######################
+#
+# A utility for apnscp to provision a CentOS/RHEL 7.4+ platform
+# for use with apnscp
+#
+# Part of apnscp core playbooks
+# https://github.com/apisnetworks/apnscp-playbooks
+#
 ---
 - hosts: localhost
   become: yes

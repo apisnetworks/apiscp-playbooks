@@ -26,6 +26,8 @@
   listen: Restart services
 - name: Reload firewalld
   command: /bin/firewall-cmd --reload
+- name: Reload fail2ban
+  systemd: state=reloaded name=fail2ban enabled=yes
 - name: Restart spamassassin
   block:
     - command: rpm -q spamassassin
