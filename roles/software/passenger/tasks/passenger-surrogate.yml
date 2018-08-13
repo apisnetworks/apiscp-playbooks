@@ -11,7 +11,7 @@
     dest: "{{ passenger_home }}/.ruby-version"
     content: "{{ sys_ruby_version }}"
 - name: Build Passenger
-  shell: exec $SHELL -i rake apache2
+  shell: exec $SHELL -i -- rake -m -j "{{ ansible_processor_vcpus | int }}" apache2
   args:
     chdir: "{{ passenger_home }}"
   notify: Restart apache

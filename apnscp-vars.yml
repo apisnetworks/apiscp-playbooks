@@ -25,7 +25,7 @@ apnscp_debug: false
 # Used for Let's Encrypt registration, login notifications,
 # and other events 
 # Note, it can be changed at a later date using
-# apnscp/bin/cmd admin_change_email new@address.com
+# apnscp/bin/cmd admin_set_email new@address.com
 apnscp_admin_email:
 
 # Server/admin is miserly. Reduce service memory usage 
