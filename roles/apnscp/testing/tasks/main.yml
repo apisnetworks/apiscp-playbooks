@@ -3,5 +3,6 @@
   ini_file:
     path: /etc/yum.repos.d/apnscp-testing.repo
     section: apnscp-testing
-    option: enabled
-    value: "{{ apnscp_testing_repo | int }}"
+  with_items:
+    - { option: enabled, value: "{{ apnscp_testing_repo | int }}" }
+    - { option: priority, value: 2 }

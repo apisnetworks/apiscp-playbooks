@@ -15,8 +15,13 @@
     command: "{{ apnscp_root }}/bin/cmd auth_change_password {{ __apnscp_admin_password|quote }} {{ apnscp_admin_user|quote }}"
   - debug: msg="Admin password set to {{ __apnscp_admin_password }}" verbosity=1
   when: __apnscp_admin_password is defined
+- stat: path="{{ opcenter_path }}" 
+  register: s
+- name: Restart apnscp housekeeper
+  systemd: state=restarted name=apnscp
+  when: not s.stat.exists
   # @TODO systemd can be finnicky if apnscpd restarts without formally restarting entire
-  # service thus killing it on startup... Add an extra check
+  # service thus killing it on startup... Add an extra check that should succeed
 - shell: 
     kill -0 "$(cat {{ apnscpd_pid }})" || ( systemctl restart apnscp && false )
   failed_when: false
@@ -25,7 +30,7 @@
   retries: 3
   delay: 7
   changed_when: false
-- wait_for: path="{{ opcenter_path }}/{{ apnscp_admin_user }}" state=present
+- wait_for: path="{{ opcenter_path }}" state=present
   retries: 5
   delay: 10
 - command: "{{ apnscp_root }}/bin/cmd admin_get_email"

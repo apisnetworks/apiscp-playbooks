@@ -109,7 +109,7 @@ watchdog_load_threshold: "{{ ansible_processor_count * 25 }}"
 ####################################
 
 # Enable apnscp testing repo
-apnscp_testing_repo: yes
+apnscp_testing_repo: "{{ apnscp_debug }}"
 # Location of apnscp
 apnscp_root: /usr/local/apnscp
 # Location of FST
