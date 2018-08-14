@@ -2,7 +2,7 @@
 jails: 
   - name: postfix
     vars:
-      port: 25,587
+      port: 25,587,465
       logpath: "%(dovecot_log)s"
       banaction: "iptables-multiport"    
       enabled: true
@@ -39,6 +39,7 @@ jails:
       maxretry: "{{ f2b_maxretry }}"
       logpath: "%(dovecot_log)s"
       enabled: true
+      banaction: iptables-multiport
   - name: sshd
     vars:
       port: 22
