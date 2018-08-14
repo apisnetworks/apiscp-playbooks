@@ -20,7 +20,7 @@
   changed_when: false
 - name: "Setting admin email to {{ apnscp_admin_email | default('----NOT DEFINED----') }}"
   command: "{{ apnscp_root }}/bin/cmd admin_set_email {{ apnscp_admin_email|quote }}"
-  when: "apnscp_admin_email != None and c.stdout != (apnscp_admin_email|quote)"
+  when: not (apnscp_admin_email is none or apnscp_admin_email|regex_search('^\s*$')) and c.stdout != apnscp_admin_email
 # @TODO bust out to end? Doesn't make sense in here...
 - name: Run initial database migration
   shell: ./artisan migrate --force ; ./artisan config:cache
