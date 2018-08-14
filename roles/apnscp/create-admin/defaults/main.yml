@@ -1,0 +1,3 @@
+---
+opcenter_path: /etc/opcenter/webhost/.config/
+apnscpd_pid: "{{ apnscp_root }}/storage/run/apnscpd.pid"
