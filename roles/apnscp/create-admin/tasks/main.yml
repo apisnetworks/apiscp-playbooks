@@ -10,6 +10,16 @@
   systemd: state=started name=apnscp enabled=yes
 - set_fact: __apnscp_admin_password={{ apnscp_admin_password }}
   when: pass.stat.size == 0
+  # @TODO systemd can be finnicky if apnscpd restarts without formally restarting entire
+  # service thus killing it on startup... Add an extra check
+- shell: 
+    kill -0 "$(cat {{ apnscp_root }}/storage/run/apnscpd.pid)" || ( systemctl restart apnscp && false )
+  failed_when: false
+  register: o
+  until: o.rc == 0 
+  retries: 3
+  delay: 7
+  changed_when: false
 - block:
   - name: "Setting admin password"
     command: "{{ apnscp_root }}/bin/cmd auth_change_password {{ __apnscp_admin_password|quote }} {{ apnscp_admin_user|quote }}"
