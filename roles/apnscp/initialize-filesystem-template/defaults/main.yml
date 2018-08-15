@@ -1,4 +1,5 @@
 ---
+apnscp_filesystem_template_purity_marker: "{{ apnscp_filesystem_template }}/.pure"
 mysql_shared_path: "{{ apnscp_shared_root }}/mysql/mysql.sock"
 force: false
 __populate_filesystem_template: false

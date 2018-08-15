@@ -2,7 +2,9 @@
   file:
     path: "{{apnscp_filesystem_template}}"
     state: directory
-  register: fst_created
+- name: Verify purity of FILESYSTEMTEMPLATE
+  stat: path="{{ apnscp_filesystem_template_purity_marker }}"
+  register: fst_pure
 - name: "Restrict snooping on {{ apnscp_account_root }}"
   file:
     path: "{{ apnscp_account_root }}"
@@ -16,7 +18,7 @@
 - set_fact: __populate_filesystem_template=false
 - set_fact: __populate_filesystem_template=true
   when: >
-    populate_filesystem_template == "auto" and fst_created.changed or
+    populate_filesystem_template == "auto" and not fst_pure.stat.exists or
     (populate_filesystem_template | bool) and populate_filesystem_template != "auto"
 - include_role: role="packages/install" tasks_from="configure-default-vars.yml"
 - include_tasks: install-package.yml package="{{ item.package }}"  service="{{item.service}}"
@@ -164,4 +166,7 @@
   template:
     src: templates/apnscp.sh.j2
     dest: "{{ apnscp_filesystem_template }}/ssh/etc/profile.d/apnscp.sh"
+- name: Touch filesystem purity marker
+  file: state=touch path="{{ apnscp_filesystem_template_purity_marker }}"
+  when: not fst_pure.stat.exists
     
