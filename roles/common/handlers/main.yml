@@ -45,6 +45,8 @@
   systemd: state=reloaded name=fsmount
 - name: Restart virtualhosting
   systemd: state=restarted name=virtualhosting
+- name: Restart monit
+  systemd: state=restarted name=monit
 - name: Rebuild ld cache
   command: chroot {{ apnscp_filesystem_template }}/siteinfo ldconfig
 - name: Reload systemd
