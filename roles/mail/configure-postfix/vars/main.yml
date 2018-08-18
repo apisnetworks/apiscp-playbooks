@@ -26,7 +26,7 @@ config:
     $local_recipient_maps $mydestination $virtual_alias_maps
     $virtual_alias_domains $virtual_mailbox_maps $virtual_mailbox_domains
     $relay_recipient_maps $relay_domains $canonical_maps $sender_canonical_maps
-    $recipient_canonical_maps $relocated_maps $transport_maps $mynetworks
+    $recipient_canonical_maps $relocated_maps $transport_maps $mynetworks $smtp_sasl_auth_cache_name
   smtpd_recipient_restrictions:
     permit_sasl_authenticated,
     reject_unauth_destination,
@@ -77,7 +77,7 @@ config:
   address_verify_map: proxy:btree:$data_directory/verify_cache
   postscreen_cache_map: $data_directory/postscreen_cache
   postscreen_cache_cleanup_interval: 43200
-  proxy_write_maps: $postscreen_cache_map,$address_verify_map,$smtpd_tls_session_cache_database
+  proxy_write_maps: $postscreen_cache_map,$address_verify_map,$smtpd_tls_session_cache_database,$smtp_sasl_auth_cache_name
   inet_protocols: ipv4
   postscreen_greet_wait: ${stress?2}${stress:6}s
   address_verify_cache_cleanup_interval: 0
