@@ -3,7 +3,7 @@
   systemd:
     name: dovecot
     enabled: "{{ mail_enabled | bool | ternary('yes', 'no') }}"
-    state: "{{ mail_enabled | ternary('started', 'stopped') }}"
+    state: "{{ mail_enabled | bool | ternary('started', 'stopped') }}"
   failed_when: false
 - name: Remove conflicting Dovecot configuration
   file:

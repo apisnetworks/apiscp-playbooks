@@ -68,6 +68,7 @@ rpms:
   - cyrus-sasl
   - cyrus-sasl-devel
   - cyrus-sasl-lib
+  - cyrus-sasl-plain
   - dbus-libs
   - deltarpm
   - diffutils
