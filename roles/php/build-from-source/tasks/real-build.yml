@@ -47,6 +47,12 @@
         chdir: "{{ build_dir }}"
         target: clean
       when: (php_clean | default(false)) or force
+      # make can potentially fail in low memory environments, force stop clamd
+    - name: Verify clamd stopped (OOM)
+      systemd: name=clamd@scan state=stopped
+      when: ansible_memtotal_mb <= 2048
+      failed_when: false
+      ignore_errors: true
     - make: 
         chdir: "{{ build_dir }}" 
         target: all 

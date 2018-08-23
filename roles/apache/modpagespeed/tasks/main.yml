@@ -10,7 +10,8 @@
         ModPagespeedXHeaderValue "Powered By pagespeed"
         ModPagespeedCriticalImagesBeaconEnabled false
         ModPagespeedDisableFilters add_instrumentation
-        ModPagespeedStatistics off
+        # Necessary for background fetch rate-limiting
+        ModPagespeedStatistics on
         ModPagespeedStatisticsLogging off
         ModPagespeedMessageBufferSize 0
         #  Permit purging cache

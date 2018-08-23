@@ -2,6 +2,8 @@
 # Handled by a handler, but apnscp won't boot unless vendor/ is set
 # Ignore piled up handlers and setup vendor before first boot
 - command: chown -c -R {{ apnscp_system_user }} {{ apnscp_root }} 
+  args:
+    warn: False
   register: r
   changed_when: r.stdout != ''
 - block:
@@ -26,8 +28,9 @@
     composer:
       command: install
       optimize_autoloader: yes
+      no_dev: false
       working_dir: "{{composer_working_dir}}"
       executable: "{{ composer_php_executable }}"
     register: r 
     changed_when: '"Nothing to install" not in r.stdout'
-  become_user: "{{ apnscp_system_user }}" 
+  become_user: "{{ apnscp_system_user }}"
