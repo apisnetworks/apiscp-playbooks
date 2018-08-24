@@ -4,7 +4,7 @@ jails:
     vars:
       port: 25,587,465
       logpath: "%(dovecot_log)s"
-      banaction: "iptables-multiport"    
+      banaction: "{{ f2b_default_banaction }}"    
       enabled: true
       bantime: "{{ f2b_bantime }}"
       findtime: "{{ f2b_findtime }}"
@@ -13,7 +13,7 @@ jails:
     vars:
       port: 80,443
       logpath: "%(syslog_daemon)s"
-      banaction: "iptables-multiport"
+      banaction: "{{ f2b_default_banaction }}"
       ignoreip: 127.0.0.1
       filter: "apache-modevasive"
       bantime: "{{ f2b_evasive_bantime | default(120) }}"
@@ -39,13 +39,13 @@ jails:
       maxretry: "{{ f2b_maxretry }}"
       logpath: "%(dovecot_log)s"
       enabled: true
-      banaction: iptables-multiport
+      banaction: "{{ f2b_default_banaction }}"
   - name: sshd
     vars:
       port: 22
       bantime: "{{ f2b_bantime }}"
       findtime: "{{ f2b_findtime }}"
-      maxretry: "{{ f2b_maxretry }}"
+      maxretry: "{{ sshd_f2b_maxretry | default(f2b_maxretry) | int}}"
       logpath: "%(sshd_log)s"
       enabled: true
   - name: spambots
@@ -56,4 +56,13 @@ jails:
       maxretry: "{{ f2b_maxretry }}"
       logpath: "%(postfix_log)s"
       enabled: true
-      banaction: iptables-multiport
+      banaction: "{{ f2b_default_banaction }}"
+  - name: vsftpd
+    vars:
+      port: ftp,ftp-data,ftps,ftps-data
+      bantime: "{{ f2b_bantime }}"
+      findtime: "{{ f2b_findtime }}"
+      maxretry: "{{ f2b_maxretry }}"
+      logpath: "%(vsftpd_log)s"
+      enabled: true
+      banaction: "{{ f2b_default_banaction }}"

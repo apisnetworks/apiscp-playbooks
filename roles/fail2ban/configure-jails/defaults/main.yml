@@ -1,10 +1,15 @@
 ---
 fail2ban_directory: /etc/fail2ban
+f2b_default_backend: gamin
+f2b_default_banaction: firewallcmd-ipset
 # 3 retries in a 5 minute period results in a 10 minute ban
 f2b_bantime: 600
 f2b_findtime: 300
 f2b_maxretry: 3
 # Chronic offenders that need a good hoof up the ass
-f2b_recidive_bantime:  604800
-f2b_recidive_findtime: 86400
+# Ban for 5 days when 5 or more jails have been triggered in 12 hours
+f2b_recidive_bantime:  432000
+f2b_recidive_findtime: 43200
 f2b_recidive_maxretry: 5
+# Enough time to ensure recidive can be purged
+f2b_dbpurgeage: "{{ (f2b_recidive_bantime | int) + 43200 }}"

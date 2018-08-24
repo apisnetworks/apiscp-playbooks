@@ -97,6 +97,7 @@ rpms:
   - ftp
   - gamin
   - gamin-devel
+  - gamin-python
   - gawk
   - gcc-c++
   - gcc

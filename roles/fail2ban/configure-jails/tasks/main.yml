@@ -1,5 +1,5 @@
 ---
-- include_role: name=fail2ban/fail2ban-common 
+- include_role: name=fail2ban/fail2ban-common
 - name: "Set fail2ban/jail.conf"
   include_tasks: roles/common/tasks/write-config.yml
   vars:
@@ -7,7 +7,6 @@
     cfgvars: "{{ config_grp.vars }}"
     group: "{{ config_grp.name }}"        
     notify: Restart fail2ban
-
   with_items: "{{ jails }}"
   loop_control:
     loop_var: config_grp
@@ -21,9 +20,11 @@
     insertafter: "^.*\\(__prefix_line.*<HOST>.*$\n"
     path: "{{ fail2ban_directory }}/filter.d/sshd.conf"
   notify: Restart fail2ban
-- copy:
-    src: files/apnscp.conf
+- template:
+    src: templates/apnscp.conf.j2
     dest: /etc/fail2ban/jail.d/01-apnscp.conf
+    force: yes
+  notify: Restart fail2ban
 - name: Increase max open files for fail2ban-server
   include_role: name=systemd/override-config
   vars:
