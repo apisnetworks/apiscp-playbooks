@@ -1,4 +1,5 @@
 ---
+vsftpd_log_path: /var/log/vsftpd.log
 vsftpd_config_path: /etc/vsftpd/vsftpd.conf
 vsftpd_login_banner: /etc/vsftpd/login.txt
 vsftpd_directives:

@@ -1,0 +1,7 @@
+---
+- name: "Check if {{ file }} exists"
+  stat: path={{ file }}
+  register: r
+- name: "Create {{ file }}"
+  file: path={{ file }}
+  when: not r.stat.exists
