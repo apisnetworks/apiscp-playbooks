@@ -7,6 +7,22 @@
   command: clamav-config --version
   register: v
   changed_when: false
+- set_fact: ignoredVars="{{ ignoredVars + ['AllowSupplementaryGroups'] }}"
+  when: v.stdout is version('0.100.0', '>=')
+- include_vars: file="{{ role_path }}/../support/defaults/main.yaml" name=local   
+- include_tasks: omit-clamav-var.yml
+  vars:
+    varname: "{{ item.varname }}"
+    ignored: "{{ item.ignored }} "
+    dict: "{{ item.dict }}"
+  with_items:
+    - varname: cleanedVars
+      ignored: "{{ ignoredVars }}"
+      dict: "{{ local.clamav_clamd_config }}"
+    - varname: cleanedFreshclam
+      ignored: "{{ ignoredVars }}"
+      dict: "{{ local.clamav_freshclam_config }}"
 - include_tasks: configure-clamav.yml
   vars:
-    clamav_clamd_allow_supplementary_groups: "{{ v.stdout is version('0.100.0', '<') | ternary('yes', omit) }}"
+    clamav_clamd_config: "{{ cleanedVars }}"
+    clamav_freshclam_config: "{{ cleanedFreshclam }}"

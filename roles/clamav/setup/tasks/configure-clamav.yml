@@ -9,7 +9,7 @@
     clamav_clamd_config__custom: "{{ _clamav_clamd_config__custom  }}"
     clamav_freshclam_config__custom: "{{ _clamav_freshclam_config__custom }}"
     clamav_clamd_daemon_nicelevel: "{{ _clamav_clamd_daemon_nicelevel}}"
-    clamav_clamd_allow_supplementary_groups: "{{ _clamav_allow_supplementary_groups }}"
+    clamav_clamd_allow_supplementary_groups: "{{ v.stdout is version('0.100.0', '<') | ternary('yes', omit) }}"
     clamav_freshclam_database_owner: "{{ _clamav_update_user }}"
     clamav_clamd_daemon_systemd_config__custom: "{{ _clamav_clamd_daemon_systemd_config__custom }}"
     # Ensure /var/lib/clamav is owned by clamupdate:clamav

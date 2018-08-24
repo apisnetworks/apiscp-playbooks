@@ -2,6 +2,7 @@
 #
 # (c) 2018 Apis Networks, INC
 #
+shopt -s nullglob
 [[ -f /etc/sysconfig/apnscp ]] && . /etc/sysconfig/apnscp
 TOMCAT_USER=${TOMCAT_USER:-tomcat}
 WEB_USER=${WEB_USER:-apache}

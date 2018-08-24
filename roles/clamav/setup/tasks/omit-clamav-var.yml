@@ -1,0 +1,8 @@
+# Omit a deprecated ClamAV var
+---
+- set_fact: "{{ varname }}={{  lookup('vars', varname, default={}) | combine({clamitem.key: clamitem.value})}}"
+  when: clamitem.key not in ignored
+  with_dict: "{{ dict }}"
+  loop_control:
+    label: "Setting {{ clamitem.key }}"
+    loop_var: clamitem

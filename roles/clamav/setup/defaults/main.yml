@@ -1,8 +1,10 @@
 ---
+# Deprecated vars
+ignoredVars: []
 clamav_enable: false
-_clamav_allow_supplementary_groups: yes
+_clamav_allow_supplementary_groups: "yes"
 _clamav_scan_cron: false
-_clamav_clamd_config__custom: 
+_clamav_clamd_config__custom:
   LogClean: yes
   ExtendedDetectionInfo: yes
   AllowSupplementaryGroups: "{{ _clamav_allow_supplementary_groups | default(omit) }}"
