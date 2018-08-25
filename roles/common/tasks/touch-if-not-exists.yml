@@ -3,5 +3,5 @@
   stat: path={{ file }}
   register: r
 - name: "Create {{ file }}"
-  file: path={{ file }}
+  file: path={{ file }} state=touch
   when: not r.stat.exists
