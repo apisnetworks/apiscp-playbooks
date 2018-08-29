@@ -10,6 +10,13 @@
   register: o
   failed_when: o.rc != 0 and o.rc != 1
   changed_when: false
+- name: Ignore hardlink warnings
+  ini_file: 
+    path: /etc/etckeeper/etckeeper.conf
+    section: null
+    option: AVOID_SPECIAL_FILE_WARNING
+    value: 1
+    no_extra_spaces: yes
 - name: Set git email address for etckeeper
   command: git config --global user.email "{{ apnscp_admin_email | default('root@' + ansible_fqdn, true) }}"
   when: o.stdout == ""
