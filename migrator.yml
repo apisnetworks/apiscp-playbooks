@@ -1,0 +1,26 @@
+#######################
+#   apnscp Migrator   #
+#######################
+#
+# Runs migration routines for apnscp
+#
+# Part of apnscp core playbooks
+# https://github.com/apisnetworks/apnscp-playbooks
+#
+---
+- hosts: localhost
+  become: yes
+  connection: local
+  gather_facts: yes
+  vars:
+    apnscp_user_defaults: /root/apnscp-vars.yml
+  vars_files:
+    - 'apnscp-vars.yml'
+    - 'roles/common/vars/apnscp-internals.yml'
+    - ['{{ apnscp_user_defaults }}', '/dev/null']
+    - ['{{ apnscp_last_run_vars }}', '/dev/null']
+roles:
+    - common/update-config
+    - custom/premigrate
+    - common/migrate
+    - custom/postmigrate

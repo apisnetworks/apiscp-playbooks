@@ -150,6 +150,7 @@ rpms:
   - ImageMagick-devel
   - ImageMagick-perl
   - info
+  - ipset
   - iputils
   - jasper-libs
   - java-1.7.0-openjdk

@@ -24,7 +24,7 @@ jails:
     vars:
       protocol: all
       port: all
-      action: iptables-allports
+      action: "firewallcmd-allports"
       enabled: true
       # 1 week
       bantime: "{{ f2b_recidive_bantime }}"

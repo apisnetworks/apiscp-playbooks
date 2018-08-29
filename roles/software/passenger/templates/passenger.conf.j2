@@ -6,9 +6,8 @@ LoadModule passenger_module  {{passenger_home}}/buildout/apache2/mod_passenger.s
   PassengerDefaultRuby {{ sys_ruby_version }}
   PassengerInstanceRegistryDir {{ passenger_home }}/sockets
   PassengerDataBufferDir {{ passenger_home }}/sockets
-  PassengerMaxInstancesPerApp {{ passenger_app_instances}}
   PassengerStatThrottleRate  {{ passenger_throttle_rate|default(60)}}
-  RailsSpawnMethod smart-lv2
+  RailsSpawnMethod smart
   PassengerDebugLogFile {{ passenger_home }}/logs/passenger.log
   PassengerMaxInstancesPerApp {{ passenger_max_instances }}
   PassengerPython {{passenger_python}}
@@ -17,6 +16,7 @@ LoadModule passenger_module  {{passenger_home}}/buildout/apache2/mod_passenger.s
   PassengerResolveSymlinksInDocumentRoot {{ passenger_resolve_symlinks_in_document_root }}
   PassengerMaxPoolSize {{ passenger_max_pool_size }}
   PassengerShowVersionInHeader Off
+  PassengerStickySessions {{ passenger_sticky_sessions }}
   #
   # 5.2 changes app deployment requiring a major retooling of these patches + migration to
   # VirtualHost containers ceding control of .htaccess effectively making this PaaS.

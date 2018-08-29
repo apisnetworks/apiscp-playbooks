@@ -1,0 +1,3 @@
+---
+- depedencies:
+	role: common
