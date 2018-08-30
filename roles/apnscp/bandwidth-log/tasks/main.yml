@@ -7,13 +7,13 @@
     path: "{{logrotate_conf}}"
     regexp: '^\s*compress'
     state: present
-    insertbefore: BOF
+    insertbefore: '^\s*include '
     line: compress
 # Otherwise it can pulverize btmp
 - name: Rotate logs daily
   lineinfile:
     path: "{{logrotate_conf}}"
-    insertbefore: BOF
+    insertbefore: '^\s*include '
     state: present
     line: daily
 - name: Disable other forms of rotation
