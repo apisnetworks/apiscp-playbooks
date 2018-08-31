@@ -1,8 +1,10 @@
 # apnscp migration helper
 ---
 - name: Locate migration files
-  include_tasks: "{{ item }}"
-  with_files: "{{ playbook_dir }}/migrations/{{ migrations | default([]) }}"
+  include_tasks: "{{ playbook_dir }}/migrations/{{ migration_file }}.yml"
+  with_items: "{{ (migrations | default([])).split(',') }}"
   register: i
-- name: Save marker
-  file: "{{ migration_marker }}" state=touch
+  loop_control:
+    label: "Running {{ migration_file }}"
+    loop_var: migration_file
+  tags: always

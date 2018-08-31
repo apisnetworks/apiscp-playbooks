@@ -19,7 +19,7 @@
     - 'roles/common/vars/apnscp-internals.yml'
     - ['{{ apnscp_user_defaults }}', '/dev/null']
     - ['{{ apnscp_last_run_vars }}', '/dev/null']
-roles:
+  roles:
     - common/update-config
     - custom/premigrate
     - common/migrate

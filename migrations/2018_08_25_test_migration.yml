@@ -1,0 +1,9 @@
+---
+- name: Hello
+  debug: msg="Hello World!"
+  changed_when: true
+  tags: up
+- name: Goodbye
+  debug: msg="See you World!"
+  changed_when: true
+  tags: down
