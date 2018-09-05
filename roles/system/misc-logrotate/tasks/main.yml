@@ -1,4 +1,5 @@
 ---
+- include_vars: "{{playbook_dir}}/roles/system/logs/defaults/main.yml"
 - include_vars: "{{playbook_dir}}/roles/apnscp/initialize-db/defaults/main.yml"
 - include_vars: "{{playbook_dir}}/roles/mail/webmail-{{ item }}/defaults/main.yml"
   with_items:

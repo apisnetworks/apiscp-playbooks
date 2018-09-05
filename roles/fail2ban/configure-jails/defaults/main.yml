@@ -7,8 +7,8 @@ f2b_bantime: 600
 f2b_findtime: 300
 f2b_maxretry: 3
 # Chronic offenders that need a good hoof up the ass
-# Ban for 5 days when 5 or more jails have been triggered in 12 hours
-f2b_recidive_bantime:  432000
+# Ban for 10 days when 5 or more jails have been triggered in 12 hours
+f2b_recidive_bantime:  864000
 f2b_recidive_findtime: 43200
 f2b_recidive_maxretry: 5
 # Enough time to ensure recidive can be purged

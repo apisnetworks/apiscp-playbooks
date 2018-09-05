@@ -1,0 +1,10 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# Update fail2ban + apnscp update cron
+# Correct bootstrapper.log logrotation script
+---
+- block:
+  - include_role: name=fail2ban/configure-jails
+  - include_role: name=apnscp/crons
+  - include_role: name=system/misc-logrotate
+  tags: ['up']

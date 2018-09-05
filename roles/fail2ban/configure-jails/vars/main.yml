@@ -24,11 +24,10 @@ jails:
     vars:
       protocol: all
       port: all
-      action: "firewallcmd-allports"
+      # In fail2ban >= 0.10, firewallcmd-ipset[actiontype="<allports>"] is used
+      action: "firewallcmd-ipset-allports"
       enabled: true
-      # 1 week
       bantime: "{{ f2b_recidive_bantime }}"
-      # 1 day
       findtime: "{{ f2b_recidive_findtime }}"
       maxretry: "{{ f2b_recidive_maxretry }}"
   - name: dovecot

@@ -1,5 +1,8 @@
-{{ apnscp_root }}/storage/logs/bootstrapper-*.log {
+{{ apnscp_root }}/storage/logs/bootstrapper.log {
 	missingok
+	dateext
+	dateformat "-%Y%m%d.log"
+	notifempty
 	compress
 	daily
 	rotate 7

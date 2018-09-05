@@ -1,5 +1,7 @@
 ---
 - include_role: name=fail2ban/fail2ban-common
+- name: "Add firewallcmd-ipset-allports action"
+  copy: src=files/firewallcmd-ipset-allports.conf dest="{{ fail2ban_directory }}/action.d/"
 - name: "Set fail2ban/jail.conf"
   include_tasks: roles/common/tasks/write-config.yml
   vars:
