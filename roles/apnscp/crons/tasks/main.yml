@@ -1,6 +1,13 @@
 ---
 - include_tasks: lookup-postfix-db.yml
-
+- name: Forward anacron messages to {{ anacron_address | default("root") }}
+  ini_file:
+    path: /etc/anacrontab
+    section: null
+    option: MAILTO
+    value: "{{ anacron_address | default('root') }}"
+    no_extra_spaces: true
+  when: anacron_address is defined or true
 - name: Copy files
   copy: 
     src: "files/{{ item.src }}"

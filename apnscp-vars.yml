@@ -104,6 +104,10 @@ enable_horde: "{{ mail_enabled | bool }}"
 # Set to None/False to disable this feature
 watchdog_load_threshold: "{{ ansible_processor_count * 25 }}"
 
+# Uncomment + set to forward all nightly cron messages from anacron to this address
+# Leave as "{{ apnscp_admin_email }}" to use the appliance admin email
+# anacron_address: "{{ apnscp_admin_email }}"
+
 ####################################
 #     Don't change below here      #
 ####################################
