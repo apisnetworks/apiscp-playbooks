@@ -1,1 +1,7 @@
 ---
+- name: "Verify {{fail2ban_log}} exists"
+  stat: path={{ fail2ban_log }}
+  register: s
+- name: "Create {{fail2ban_log}}"
+  file: state=touch path={{ fail2ban_log }}
+  when: not s.stat.exists

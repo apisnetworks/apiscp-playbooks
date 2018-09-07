@@ -41,6 +41,6 @@
     option: "{{ item.option }}"
     value: "{{ item.value }}"
   with_items:
-    - {option: driver, value: ipset }
-    - {option: prefix, value: "fail2ban-" }
+    - {option: driver, value: "{{ f2b_rampart_driver }}" }
+    - {option: prefix, value: "{{ f2b_rampart_prefix }}" }
 - meta: flush_handlers

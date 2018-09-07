@@ -1,3 +1,4 @@
 ---
 fail2ban_client: /usr/bin/fail2ban-client
+fail2ban_log: /var/log/fail2ban.log
 fail2ban_jail_config: "/etc/fail2ban/jail.conf"

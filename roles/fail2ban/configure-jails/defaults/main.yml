@@ -2,6 +2,8 @@
 fail2ban_directory: /etc/fail2ban
 f2b_default_backend: gamin
 f2b_default_banaction: firewallcmd-ipset
+f2b_rampart_driver: ipset
+f2b_rampart_prefix: "fail2ban-"
 # 3 retries in a 5 minute period results in a 10 minute ban
 f2b_bantime: 600
 f2b_findtime: 300

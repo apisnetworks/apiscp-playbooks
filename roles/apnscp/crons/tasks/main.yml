@@ -7,7 +7,7 @@
     option: MAILTO
     value: "{{ anacron_address | default('root') }}"
     no_extra_spaces: true
-  when: anacron_address is defined or true
+  when: anacron_address is defined
 - name: Copy files
   copy: 
     src: "files/{{ item.src }}"

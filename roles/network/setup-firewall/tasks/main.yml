@@ -45,5 +45,5 @@
   notify: 
     - Reload firewalld
     - Reload fail2ban
-
-- meta: flush_handlers
+# Defer reloading fail2ban until after fail2ban/configure-jails
+# Missing fail2ban.log will cause reload to fail on first run
