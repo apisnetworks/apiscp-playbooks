@@ -3,6 +3,8 @@ opcenter_links:
   - {path: virtualhosting/mappings, src: storage/opcenter/mappings}
   - {path: '', src: storage/opcenter/mappings/domainmap}
   - {path: '', src: storage/opcenter/mappings/sql.prefixmap}
+  - {path: '', src: storage/opcenter/mappings/pgsql.prefixmap}
+  - {path: '', src: storage/opcenter/mappings/mysql.prefixmap}
   - {path: virtualhosting/plans, src: resources/templates/plans}
   - {path: virtualhosting/filelists, src: storage/opcenter/filelists}
   - {path: virtualhosting/dnsbypass, src: storage/opcenter/dnsbypass }
