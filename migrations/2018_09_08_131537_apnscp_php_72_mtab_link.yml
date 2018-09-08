@@ -4,8 +4,11 @@
 # * Bump apnscp PHP to 7.2.
 # * Restore /etc/mtab -> /proc/mounts link
 # * apnscp opcache.ini now templated
+# * Webapp updates potentially interrupted by panel update
 ---
 - block:
+  - include_role: name=apnscp/crons
+  - file: path="/etc/cron.daily/99update_apps" state=absent
   - stat: path=/root/apnscp-vars.yml
     register: s
   - name: Strip non-configurable variables from /root/apnscp-vars.yml

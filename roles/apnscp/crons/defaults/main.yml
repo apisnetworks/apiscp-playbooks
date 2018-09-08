@@ -11,7 +11,7 @@ cron_template:
   - src: backup_dbs.sh.j2
     dest: "{{ cron_daily }}/10backup_dbs"
   - src: update_apps.sh.j2
-    dest: "{{ cron_daily}}/99update_apps"
+    dest: "{{ cron_daily}}/update_apps"
   - src: disable_overquota_mailboxes.sh.j2
     dest: "{{ cron_daily}}/99disable_mailboxes"
   - src: generate_fst_cache.sh.j2
