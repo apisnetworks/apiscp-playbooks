@@ -6,6 +6,14 @@
 # * apnscp opcache.ini now templated
 ---
 - block:
+  - stat: path=/root/apnscp-vars.yml
+    register: s
+  - name: Strip non-configurable variables from /root/apnscp-vars.yml
+    replace:
+      dest: /root/apnscp-vars.yml
+      regexp: '^####################################([\r\n]+.*$)+'
+      replace: ''
+    when: s.stat.exists
   - include_role: name=filesystem/make-mounts
   - include_role: name=apnscp/build-php
   - include_role: name=apnscp/install-extensions

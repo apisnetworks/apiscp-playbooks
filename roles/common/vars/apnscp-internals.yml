@@ -1,3 +1,64 @@
 ---
+####################################
+#     Don't change below here      #
+####################################
 DEV_TAG: ">>> DEVELOPMENT PLAY ONLY - REMOVE BEFORE FLIGHT <<<"
 apnscp_last_run_vars: /root/apnscp-vars-runtime.yml
+
+# Enable apnscp testing repo
+apnscp_testing_repo: "{{ apnscp_debug }}"
+# Location of apnscp
+apnscp_root: /usr/local/apnscp
+# Location of FST
+apnscp_filesystem_template: /home/virtual/FILESYSTEMTEMPLATE
+# Account root
+apnscp_account_root: /home/virtual
+# Filelists provide additional resources for service installation
+apnscp_filelists: "{{apnscp_root}}/storage/opcenter/filelists"
+# Default apnscp user - not tested
+apnscp_system_user: apnscp
+# apnscp PHP version
+apnscp_php_version: 7.2
+# apnscp module API, ZTS is with event MPM. Must match apnscp_php_version build
+apnscp_php_module_api: 20170718-zts
+# Location of apnscp r/w shared path
+apnscp_shared_root: /.socket
+# apnscp repo + CA data
+apnscp_ca_rpm: http://yum.apnscp.com/apnscp-latest.rpm
+# Platform version. Changes internally with each new release
+apnscp_platform_version: 7.5
+# apnscp fixes
+nvm_version: master
+pyenv_version: 1.2.4
+rbenv_version: 1.1.1
+goenv_version: 1.14.0
+# Others may be installed via "rbenv install", this is used primarily for
+# bootstrapping Passenger
+sys_ruby_version: 2.4.4
+# Use SpamAssassin or rspamd for spam filtering. rspamd is experimental
+spamassassin_enabled: yes
+# apnscp is part of a multi-server environment
+# requires extra configuration
+# see https://github.com/apisnetworks/cp-proxy
+data_center_mode: false
+# Allow remote database connections
+allow_remote_db: "{{ data_center_mode }}"
+# Location for per-user mail
+maildir_location: ~/Mail
+# Perform an account creation validation at the end of this playbook
+# Allows for consistency checks
+apnscp_verify_account: true
+# Run Bootstrapper after update (upcp --auto)
+apnscp_update_bootstrapper: "{{ apnscp_nightly_update }}"
+# apnscp hostname used for email/LE setup
+# ${HOSTNAME} will use ansible_fqdn or your system hostname
+apnscp_hostname: "${HOSTNAME}"
+# Enable SELinux
+# true is absolutely guaranteed to break your system
+# debug places selinux in permissive mode
+# off disables selinux alltogether
+#
+# off is recommended - a reboot is required
+# Only enable if you plan on helping out!
+use_selinux: false
+
