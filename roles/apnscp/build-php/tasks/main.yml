@@ -6,6 +6,12 @@
   with_items:
     - tokyocabinet-devel
     - httpd-devel 
+- name: Verify extension_dir setting
+  ini_file:
+    path: "{{ apnscp_root }}/config/php.ini"
+    section: apnscp
+    option: extension_dir
+    value: "{{ apnscp_root }}/sys/php/{{ apnscp_php_module_api }}"
 - include_role:
     name: php/build-from-source  
   vars:

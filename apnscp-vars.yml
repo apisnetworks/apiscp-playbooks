@@ -124,10 +124,10 @@ apnscp_account_root: /home/virtual
 apnscp_filelists: "{{apnscp_root}}/storage/opcenter/filelists"
 # Default apnscp user - not tested
 apnscp_system_user: apnscp
-# apnscp module API, ZTS is with event MPM
-php_module_api: 20160303-zts
 # apnscp PHP version
-apnscp_php_version: 7.1
+apnscp_php_version: 7.2
+# apnscp module API, ZTS is with event MPM. Must match apnscp_php_version build
+apnscp_php_module_api: 20170718-zts
 # Location of apnscp r/w shared path
 apnscp_shared_root: /.socket
 # apnscp repo + CA data

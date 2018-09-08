@@ -2,7 +2,7 @@
 ---
 - include_role:
     name: php/common
-    tasks_from: query-extension-dir  
+    tasks_from: query-extension-dir
 - name: Register ini directory
   block:
     - command: "{{ phpconfig }} --php-binary"
@@ -46,3 +46,4 @@
       when: > 
         not bypass_pecl_ini and
         module_install.changed and not st.stat.exists
+        or force_module_rebuild

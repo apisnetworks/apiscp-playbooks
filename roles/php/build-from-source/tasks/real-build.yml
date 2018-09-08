@@ -28,6 +28,7 @@
     path: "{{item.path}}"
     state: absent
   with_items: "{{ phps.files }}"
+- set_fact: force_module_rebuild=false
 - block:  
     - name: Download PHP {{ __php_version }}
       unarchive:
@@ -62,6 +63,7 @@
       when: not php_debug
     - make: chdir="{{ build_dir }}" target=install    
       notify: "{{ notify_handler }}"        
-    - file: path="{{ scan_dir }}" state=directory 
+    - file: path="{{ scan_dir }}" state=directory
+    - set_fact: force_module_rebuild=true
   when: do_install_php
 

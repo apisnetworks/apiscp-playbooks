@@ -10,57 +10,36 @@
   rescue:
     - fail: msg="No supported filesystem detected"
   when: xfs.rc != 0
-- name: Save /etc/mtab if necessary
+- include_tasks: enable-quotas.yml
+- name: Mask tmp.mount
+  systemd: 
+    name: tmp.mount
+    masked: yes
+    enabled: no
+- name: Check /etc/mtab state
   stat: path=/etc/mtab
-  register: mst
-- name: Link /etc/mtab to /proc/mounts
-  shell: >
-    mv /etc/mtab{,.ansible-save} && ln -s /proc/mounts /etc/mtab  
-  register: moved
-  when: mst.stat.exists and mst.stat.islnk
-- block:
-    - include_tasks: enable-quotas.yml
-  rescue:
-    - shell: > 
-        rm -f /etc/mtab && mv /etc/mtab{.ansible-save,} || ln -s /proc/mounts /etc/mtab
-- meta: flush_handlers
-- name: Restore /etc/mtab
-  shell: >
-    [[ -L /etc/mtab ]] && ( rm -f /etc/mtab && mv /etc/mtab{.ansible-save,} || ln -s /proc/mounts /etc/mtab) || true
-  when: moved is defined and moved.changed
-- include_role: name=systemd/override-config
-  vars: 
-    service: tmp.mount
-    config:
-      - group: Mount
-        vars:
-          Options: "{{ tmpfs_attrs }}"
-    # Can't unmount /tmp without a reboot
-    notify:
-      - Restart services
+  register: s
+- name: Unlink /etc/mtab
+  file: path=/etc/mtab state=absent
+  when: s.stat.islnk is defined and not s.stat.islnk
+- name: Link /proc/mounts to /etc/mtab
+  file: path=/etc/mtab src=/proc/mounts state=link
+  when: not s.stat.islnk is defined or not s.stat.islnk
 - command: grep -Eq '^tmpfs /tmp\s' /proc/mounts
   register: c
   changed_when: c.rc != 0
   failed_when: false
-- name: Remove /tmp from mtab 
-  lineinfile:
-    path: /etc/mtab
-    regexp: '^\S+\s+/tmp\s+'
-    state: absent
-  when: c.changed and mst.stat.exists and not mst.stat.islnk
-- name: Verify tmp.mount enabled
-  systemd: name=tmp.mount state="{{ c.changed | ternary('started', omit) }}" masked=no enabled=yes daemon_reload=yes
-# As opposed to mucking with /etc/mtab directly
-# Allows df, which hardcodes /etc/mtab, to report free storage correctly  
-- name: Pull /tmp from /proc/mounts into /etc/mtab
+# Attempting to make convert /etc/mtab to a regular file is optimal
+# but some services obey /etc/mtab, others /proc/mounts, some both (systemd)
+# rely on /etc/mtab usage to reliably manage /tmp
+- name: Add /tmp to /etc/mtab
   mount: 
-    fstab: /etc/mtab
+    fstab: /etc/fstab
     fstype: tmpfs
     path: /tmp
     src: tmpfs
     opts: "{{ tmpfs_attrs }}"
-    state: present
-  when: mst.stat.exists and not mst.stat.islnk
+    state: mounted
 # cf. https://chrisdown.name/2018/01/02/in-defence-of-swap.html
 - name: Check for presence of swap
   command: "swapon -s"

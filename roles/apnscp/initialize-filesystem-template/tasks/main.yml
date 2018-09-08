@@ -88,7 +88,7 @@
     option: CREATE_MAIL_SPOOL
     value: "no"
 # Needed for quota reporting. Alternative is to not jail Dovecot
-- name: "Link /dev/{{ ansible_mounts | json_query('[?mount==`/`] | [0].device') }}"
+- name: "Link {{ ansible_mounts | json_query('[?mount==`/`] | [0].device') }}"
   synchronize:
     src: "{{ ansible_mounts | json_query('[?mount==`/`] | [0].device') }}"
     dest: "{{ apnscp_filesystem_template }}/siteinfo/dev"
@@ -96,7 +96,9 @@
 - name: Verify /etc/mtab in FST
   stat: path="{{ apnscp_filesystem_template }}/siteinfo/etc/mtab"
   register: st
-  failed_when: st.stat.islnk is defined and st.stat.islnk
+- name: Remove /etc/mtab in FST
+  file: path="{{ apnscp_filesystem_template }}/siteinfo/etc/mtab" state=absent
+  when: st.stat.islnk is defined and st.stat.islnk
 - name: Populate /etc/mtab
   copy:
     content: >

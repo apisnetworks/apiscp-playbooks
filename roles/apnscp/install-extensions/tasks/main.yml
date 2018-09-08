@@ -32,3 +32,9 @@
     handlers:
       - Restart apnscp
   when: not icst.stat.exists
+- name: Load opcache into php.ini
+  template: 
+    src: templates/opcache.ini.j2
+    dest: "{{ apnscp_root }}/config/php.d/01-opcache.ini"
+    force: yes
+

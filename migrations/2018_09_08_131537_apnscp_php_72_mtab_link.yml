@@ -1,0 +1,14 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# Changes:
+# * Bump apnscp PHP to 7.2.
+# * Restore /etc/mtab -> /proc/mounts link
+# * apnscp opcache.ini now templated
+---
+- block:
+  - include_role: name=filesystem/make-mounts
+  - include_role: name=apnscp/build-php
+  - include_role: name=apnscp/install-extensions
+  - include_role: name=apnscp/admin-helper
+  - include_role: name=apnscp/initialize-filesystem-template
+  tags: ['up']

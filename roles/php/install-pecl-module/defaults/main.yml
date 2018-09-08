@@ -6,3 +6,4 @@ phpconfig: /usr/bin/php-config
 phpize: /usr/bin/phpize
 extra_flags: ""
 bypass_pecl_ini: 0
+force_module_rebuild: false

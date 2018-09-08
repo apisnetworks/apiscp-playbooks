@@ -6,10 +6,18 @@ export MAKEFLAGS
 
 alias upcp="[[ -d $APNSCP_HOME ]] && env APNSCP_HOME=${APNSCP_HOME} $APNSCP_HOME/build/upcp.sh"
 alias cpcmd="apnscp_php ${APNSCP_HOME}/bin/cmd"
-alias htrebuild="/etc/systemd/user/httpd.init buildconfig"
+
+# Cleanup /home/virtual binds
+df() {
+	command df $@ | grep -v " {{ apnscp_account_root }}"
+}
+mount() {
+	command mount $@ | grep -v " {{ apnscp_account_root }}"
+}
 
 # avoid blowing up /.socket or bind mounts
 alias rm='rm -i --one-file-system'
+alias htrebuild="/etc/systemd/user/httpd.init buildconfig"
 
 function site_stats { 
 	if [ -z $1 ] ; then 
