@@ -2,11 +2,6 @@ zend_extension = {{ apnscp_root }}/sys/php/{{ apnscp_php_module_api }}/opcache.s
 opcache.max_accelerated_files = 1024
 opcache.memory_consumption = 32
 ; Seen on Luna/Atlas, 7.1.16, 20180731
-; Cannot declare class Template_Objectz
-opcache.dups_fix=1
 opcache.save_comments=0
 opcache.enable_cli=0
 opcache.load_comments=0
-; 7.1 opcache errors, appears fixed in 7.2
-; contains 1 abstract method and must therefore be declared abstract
-opcache.optimization_level=0

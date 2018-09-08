@@ -1,8 +1,13 @@
 # apnscp migration helper
 ---
+- name: Gather all migration files
+  find: paths="{{ playbook_dir }}/migrations/" patterns="*.yml"
+  register: g
+  when: not migrations is defined
+  tags: up
 - name: Locate migration files
   include_tasks: "{{ playbook_dir }}/migrations/{{ migration_file }}.yml"
-  with_items: "{{ (migrations | default([])).split(',') }}"
+  with_items: '{{ (migrations | default(g.files  | map(attribute="path") | map("basename") | map("regex_replace", "\.yml$", "") | list | join(","))).split(",") }}'
   register: i
   loop_control:
     label: "Running {{ migration_file }}"
