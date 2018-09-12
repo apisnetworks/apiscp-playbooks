@@ -7,9 +7,11 @@
   tags: up
 - name: Locate migration files
   include_tasks: "{{ playbook_dir }}/migrations/{{ migration_file }}.yml"
-  with_items: '{{ (migrations | default(g.files  | map(attribute="path") | map("basename") | map("regex_replace", "\.yml$", "") | list | join(","))).split(",") }}'
+  # g.files will fail if skipped
+  with_items: '{{ (g | json_query("files[*].path") | default([migrations], true) | list | map("basename") | map("regex_replace", "\.yml$", "") | join(",")).split(",") }}'
   register: i
   loop_control:
     label: "Running {{ migration_file }}"
     loop_var: migration_file
+  when: migrations is defined and migrations or not migrations is defined
   tags: always

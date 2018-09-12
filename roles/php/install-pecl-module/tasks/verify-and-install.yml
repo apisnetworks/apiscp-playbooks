@@ -35,15 +35,25 @@
       notify: "{{ notify | default('Restart apache') }}"
       when: not stres.stat.exists or force is defined and force
       register: module_install
+    - name: "Check if {{ modname }} loaded"
+      command: >
+        {{ bin.stdout }} -r 'exit(extension_loaded("{{ modname }}")^1);'
+      register: extchk
+      failed_when: false
+      changed_when: extchk.rc != 0    
+    - name: "Bypass individual ini file creation for {{ modname }}"
+      set_fact: 
+        __bypass_pecl_ini: "{{ extchk.rc == 0 | ternary(true, false) }}"
     - name: "Verify {{ scandir }}/{{modname}}.ini exists"
       stat:
         path: "{{ scandir }}/{{ modname }}.ini"
       register: st
+      when: extchk.rc != 0
     - name: Add PECL module configuration
       copy: 
         dest: "{{ scandir }}/{{modname}}.ini"
         content: "extension={{modname}}.so\n"
       when: > 
-        not bypass_pecl_ini and
+        not (bypass_pecl_ini | default(__bypass_pecl_ini)) and
         module_install.changed and not st.stat.exists
         or force_module_rebuild
