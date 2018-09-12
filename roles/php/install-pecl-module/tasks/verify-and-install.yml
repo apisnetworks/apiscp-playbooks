@@ -43,7 +43,7 @@
       changed_when: extchk.rc != 0    
     - name: "Bypass individual ini file creation for {{ modname }}"
       set_fact: 
-        __bypass_pecl_ini: "{{ extchk.rc == 0 | ternary(true, false) }}"
+        _override_ini_creation: "{{ extchk.rc == 0 | ternary(true, false) }}"
     - name: "Verify {{ scandir }}/{{modname}}.ini exists"
       stat:
         path: "{{ scandir }}/{{ modname }}.ini"
@@ -54,6 +54,6 @@
         dest: "{{ scandir }}/{{modname}}.ini"
         content: "extension={{modname}}.so\n"
       when: > 
-        not (bypass_pecl_ini | default(__bypass_pecl_ini)) and
+        (not bypass_pecl_ini and
         module_install.changed and not st.stat.exists
-        or force_module_rebuild
+        or force_module_rebuild) and not _override_ini_creation
