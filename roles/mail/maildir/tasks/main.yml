@@ -40,6 +40,14 @@
       set header_cache="~/.cache/mutt"
       set tmpdir="{{ mutt_tmp_dir | default('/tmp') }}"
       source /etc/Muttrc.local
+- name: Relink Muttrc
+  file: 
+    force: yes
+    src: /etc/Muttrc
+    dest: "{{ apnscp_filesystem_template }}/{{ mutt_svc }}/etc/Muttrc"
+    state: hard
+  notify:
+    - Reload filesystem template
 - name: Remove root mbox
   file: 
     path: /var/spool/mail/root

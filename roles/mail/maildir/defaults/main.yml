@@ -1,3 +1,4 @@
 ---
 maildir_home: Mail
 root_maildir: /root/Mail
+mutt_svc: ssh

@@ -21,7 +21,7 @@
   register: s
 - name: Unlink /etc/mtab
   file: path=/etc/mtab state=absent
-  when: s.stat.islnk is defined and not s.stat.islnk
+  when: not s.stat.islnk is defined or not s.stat.islnk
 - name: Link /proc/mounts to /etc/mtab
   file: path=/etc/mtab src=/proc/mounts state=link
   when: not s.stat.islnk is defined or not s.stat.islnk

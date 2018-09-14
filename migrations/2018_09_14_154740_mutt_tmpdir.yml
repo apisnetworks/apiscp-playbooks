@@ -3,6 +3,7 @@
 # Use /tmp instead of /var/tmp for Mutt temporary file storage
 ---
 - block:
+  - include_role: name=filesystem/make-mounts
   - include_role: name=mail/maildir
   tags: ['up']
 

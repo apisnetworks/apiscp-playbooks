@@ -60,7 +60,6 @@
     - mail/configure-dovecot
     - mail/configure-postfix
     - mail/configure-courier-authlib
-    - mail/maildir
     - apnscp/link-bins
     - apnscp/initialize-filesystem-template
     - apnscp/php-filesystem-template
@@ -78,6 +77,7 @@
     - network/setup-firewall
     - fail2ban/whitelist-self
     - fail2ban/configure-jails
+    - mail/maildir
     - mail/spamassassin
     #  Needs more testing...
     #- mail/rspamd
