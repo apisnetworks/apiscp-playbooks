@@ -1,0 +1,14 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# Populate missing pgsql alternatives
+---
+- block:
+  - include_role: name=packages/install tasks_from=configure-default-vars.yml
+  - command: >
+      {{ apnscp_root }}/bin/scripts/yum-post.php update {{ item }}
+    register: r
+    changed_when: -1 !=  r.stdout.find("missing alternative")
+    with_items: 
+    - "postgresql{{ pg_pkgversion }}"
+    - "postgresql{{ pg_pkgversion }}-libs"
+  tags: ['up']

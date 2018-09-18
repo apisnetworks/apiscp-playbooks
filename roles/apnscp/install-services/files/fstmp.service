@@ -1,6 +1,6 @@
 [Unit]
 Description=Create synthetic /tmp filesystems
-After=local-fs.target tmp.mount
+After=local-fs.target
 Before=httpd.target
 
 [Service]
