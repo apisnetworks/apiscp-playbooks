@@ -1,5 +1,5 @@
 ---
-- hosts: localhost  
+- hosts: localhost
   vars:
     apnscp_user_defaults: /root/apnscp-vars.yml
   vars_files:
@@ -7,10 +7,6 @@
     - 'roles/common/vars/apnscp-internals.yml'
     - ['{{ apnscp_user_defaults }}', '/dev/null']
     - ['{{ apnscp_last_run_vars }}', '/dev/null']
-  handlers:
-    - name: Test
-      systemd: name=foobar state=started
-      ignore_errors: true
-  tasks:
-    - command: /bin/true
-      notify: Test
+  roles:
+    - fail2ban/configure-jails
+

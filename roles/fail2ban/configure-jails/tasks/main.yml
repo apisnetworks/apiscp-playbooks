@@ -12,7 +12,7 @@
   with_items: "{{ jails }}"
   loop_control:
     loop_var: config_grp
-  label: "Configuring jail {{ config_grp.name }}"
+    label: "Configuring jail {{ config_grp.name }}"
 - copy: 
     src: files/spambots.conf
     dest: "{{ fail2ban_directory }}/filter.d/spambots.conf"
