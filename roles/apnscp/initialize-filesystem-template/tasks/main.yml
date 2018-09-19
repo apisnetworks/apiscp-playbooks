@@ -109,19 +109,6 @@
       0 0
     dest: "{{ apnscp_filesystem_template }}/siteinfo/etc/mtab"
     force: no
-# This should be an alternative plugin to yum-synchronizer, but 
-# we can't match wildcards on plugin names yet
-- name: Copy PostgreSQL ldconfig
-  synchronize:
-    src: "{{ item }}"
-    dest: "{{ apnscp_filesystem_template }}/siteinfo/{{ item }}"
-  with_items:
-    - /etc/ld.so.conf.d/postgresql-pgdg-libs.conf
-    - /etc/alternatives/pgsql-ld-conf
-  notify: 
-    - Rebuild ld cache
-    - Reload filesystem template
-
 
 # And for MySQL...
 - name: Create mysql socket parent directory
