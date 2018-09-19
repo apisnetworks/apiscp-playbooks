@@ -1,8 +1,9 @@
 # Migration play
 # vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
-# Populate missing pgsql alternatives
+# Populate missing pgsql alternatives, tmpfiles.d
 ---
 - block:
+  - include_role: name=software/tmpfiles
   - include_role: name=packages/install tasks_from=configure-default-vars.yml
   - command: >
       {{ apnscp_root }}/bin/scripts/yum-post.php update {{ item }}

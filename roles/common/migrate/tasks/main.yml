@@ -4,7 +4,10 @@
   find: paths="{{ playbook_dir }}/migrations/" patterns="*.yml"
   register: g
   when: not migrations is defined
-  tags: up
+  tags: always
+- name: Reverse migration order
+  set_fact: g="{{ g | reverse }}"
+  tags: down
 - name: Locate migration files
   include_tasks: "{{ playbook_dir }}/migrations/{{ migration_file }}.yml"
   # g.files will fail if skipped
