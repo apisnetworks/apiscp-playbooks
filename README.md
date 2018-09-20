@@ -131,6 +131,25 @@ which is a combination of mod_security + ClamAV to scrub uploads. This frees up 
 env ANSIBLE_STDOUT_CALLBACK=actionable ansible-playbook bootstrap.yml  --extra-vars='has_low_memory=true' --extra-vars='panel_headless=true'
 ```
 
+# Running tasks within apnscp
+Bootstrapper provides an interface to run these tasks within apnscp. Change digests
+are sent to the control panel owner (`cpcmd common_set_email x@y.com`).
+
+*Bootstrapper::run(...tasks, array args)*
+
+**Example:** open up port 3000 in the firewall,
+```php
+Opcenter\Admin\Bootstrapper::run('network/setup-firewall', ['rules' => [['port' => '3000/tcp', 'state' => 'disabled']]]);
+```
+Runtime configuration may be updated using Opcenter\Admin\Bootstrapper\Config,
+```php
+$config = new Opcenter\Admin\Bootstrapper\Config();
+$config['panel_headless'] = true;
+unset($config);
+Opcenter\Admin\Bootstrapper::run('apnscp/bootstrap', 'network/setup-firewall', 'software/argos');
+```
+Variables are set in `/root/apnscp-vars-runtime.yml`, which takes precedence over `/root/apnscp-vars.yml`.
+
 # Contributing
 
 apnscp Playbooks are released under the [MIT License](LICENSE). Feel free to use and contribute.
