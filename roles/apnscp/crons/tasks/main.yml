@@ -8,6 +8,9 @@
     value: "{{ anacron_address | default('root') }}"
     no_extra_spaces: true
   when: anacron_address is defined
+- name: Validate anacron configuration
+  command: anacron -T
+  changed_when: false
 - name: Copy files
   copy: 
     src: "files/{{ item.src }}"
