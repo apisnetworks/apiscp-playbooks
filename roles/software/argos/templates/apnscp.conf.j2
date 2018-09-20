@@ -1,0 +1,7 @@
+check process apnscp with pidfile {{ apnscp_root }}/storage/run/apnscpd.pid
+	start "/usr/bin/systemctl start apnscp"
+	stop "/usr/bin/systemctl stop apnscp"
+	{% if not panel_headless %}
+	if failed host localhost port 2082 protocol http with timeout 30 seconds 2 times within 5 cycles
+	then restart
+	{% endif %}

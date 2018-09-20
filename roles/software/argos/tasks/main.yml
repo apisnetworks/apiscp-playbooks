@@ -7,3 +7,9 @@
   register: c
 - name: Verify monit enabled
   systemd: name=monit state={{ c.changed | ternary('reloaded','started') }} enabled=yes
+- name: Update apnscp monitoring profile
+  template: 
+    src: templates/apnscp.conf.j2
+    dest: /etc/monit.d/apnscp.conf
+    force: yes
+  notify: Restart monit
