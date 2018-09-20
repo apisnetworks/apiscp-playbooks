@@ -21,5 +21,6 @@ cron_template:
   - src: locate_webapps.sh.j2
     dest: "{{ cron_monthly }}/locate_webapps"
 # Automatically run Bootstrapper on update when auto-update
-apnscp_update_bootstrapper: true
+# Otherwise just migrations will run
+apnscp_update_bootstrapper: false
 apnscp_update_cron: "{{ cron_daily }}/apnscp_update.sh"
