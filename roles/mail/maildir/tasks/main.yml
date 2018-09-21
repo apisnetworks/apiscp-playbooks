@@ -41,13 +41,12 @@
       set tmpdir="{{ mutt_tmp_dir | default('/tmp') }}"
       source /etc/Muttrc.local
 - name: Relink Muttrc
-  file: 
-    force: yes
+  include_tasks: roles/common/tasks/copy-link.yml
+  vars:
     src: /etc/Muttrc
-    dest: "{{ apnscp_filesystem_template }}/{{ mutt_svc }}/etc/Muttrc"
-    state: hard
-  notify:
-    - Reload filesystem template
+    path: "{{ apnscp_filesystem_template }}/{{ mutt_svc }}/etc/Muttrc"  
+    notify:
+      - Reload filesystem template
 - name: Populate Muttrc.local
   include_role: name=apnscp/service-template
   vars:
