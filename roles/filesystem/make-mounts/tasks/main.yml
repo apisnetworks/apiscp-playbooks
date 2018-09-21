@@ -11,11 +11,21 @@
     - fail: msg="No supported filesystem detected"
   when: xfs.rc != 0
 - include_tasks: enable-quotas.yml
-- name: Mask tmp.mount
+- include_role: name=systemd/override-config
+  vars: 
+    service: tmp.mount
+    config:
+      - group: Mount
+        vars:
+          Options: "{{ tmpfs_attrs }}"
+    # Can't unmount /tmp without a reboot
+    notify:
+      - Restart services
+- name: Unmask tmp.mount
   systemd: 
     name: tmp.mount
-    masked: yes
-    enabled: no
+    masked: no
+    enabled: yes
 - name: Check /etc/mtab state
   stat: path=/etc/mtab
   register: s
@@ -32,14 +42,19 @@
 # Attempting to make convert /etc/mtab to a regular file is optimal
 # but some services obey /etc/mtab, others /proc/mounts, some both (systemd)
 # rely on /etc/mtab usage to reliably manage /tmp
-- name: Add /tmp to /etc/mtab
-  mount: 
-    fstab: /etc/fstab
-    fstype: tmpfs
-    path: /tmp
-    src: tmpfs
-    opts: "{{ tmpfs_attrs }}"
-    state: mounted
+- name: Remove /tmp from /etc/fstab
+  block:
+    - mount: 
+        fstab: /etc/fstab
+        path: /tmp
+        state: absent    
+  rescue:
+    - name: Reboot to bring use systemd tmp.mount
+      include_role: name=common/fail-and-save
+      vars: 
+        reboot: true
+        msg: |      
+          REBOOTING TO BRING USE SYSTEMD TMP.MOUNT.            
 # cf. https://chrisdown.name/2018/01/02/in-defence-of-swap.html
 - name: Check for presence of swap
   command: "swapon -s"
