@@ -48,6 +48,15 @@
     state: hard
   notify:
     - Reload filesystem template
+- name: Populate Muttrc.local
+  include_role: name=apnscp/service-template
+  vars:
+    files:
+      - content: |
+          # Local configuration for Mutt.
+
+        service: ssh
+        path: /etc/Muttrc.local
 - name: Remove root mbox
   file: 
     path: /var/spool/mail/root

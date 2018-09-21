@@ -35,6 +35,7 @@ goenv_version: 1.14.0
 # Others may be installed via "rbenv install", this is used primarily for
 # bootstrapping Passenger
 sys_ruby_version: 2.4.4
+rbenv_usergems_version: ad2fd08
 # Use SpamAssassin or rspamd for spam filtering. rspamd is experimental
 spamassassin_enabled: yes
 # apnscp is part of a multi-server environment

@@ -1,0 +1,9 @@
+# Create templated files
+---
+- include_tasks: install.yml
+  vars:
+    path: "{{ item.path }}"
+    service: "{{ item.service }}"
+    content: "{{ item.content | default(omit) }}"
+    template: "{{ item.template | default(omit) }}"
+  with_items: "{{ files }}"

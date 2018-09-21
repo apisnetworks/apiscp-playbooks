@@ -1,0 +1,15 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# Populate opcenter/storage/filelists
+---
+- block:
+  - name: "Add /etc/Muttrc.local to skiplist"
+    lineinfile: 
+      state: present
+      path: "{{ apnscp_root }}/config/synchronizer.skiplist"
+      line: "/etc/Muttrc.local"
+  - name: "Unlink /etc/Muttrc.local"
+    file: path="{{ apnscp_filesystem_template }}/ssh/etc/Muttrc.local" state=absent
+  - include_role: name=software/rbenv
+  - include_role: name=mail/maildir
+  tags: ['up']

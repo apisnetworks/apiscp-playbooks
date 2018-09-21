@@ -32,8 +32,15 @@
     path: "{{ git_target }}"
     src: "{{ apnscp_filesystem_template }}/{{rbenv_service_install }}/{{git_target}}"
     state: link
+- name: Add GEM_HOME pathing support
+  git:
+    clone: yes
+    repo: git://github.com/andyl/rbenv-usergems
+    dest: "{{ apnscp_filesystem_template }}/{{rbenv_service_install }}/{{git_target}}/plugins/rbenv-usergems"
+    force: "{{ rbenv_usergems_force | default('yes') }}"
+    version: "{{ rbenv_usergems_version | default('HEAD') }}"
 - name: Get rbenv code
-  command: "{{ git_target }}/bin/rbenv init -"
+  command: "{{ git_target }}/bin/rbenv usergems-init - | sed -e 's!\"/root!\"$HOME!g'"
   environment: 
     RBENV_ROOT: "{{ git_target }}"
   register: rbenv_code
@@ -96,6 +103,14 @@
   when:
     - ruby_selected.rc != 0
 
+- name: Set defaults for /etc/gemrc
+  include_role: name=apnscp/service-template
+  vars:
+    files:
+      - content: |
+          gem: --no-rdoc --no-ri 
+        service: ssh
+        path: /etc/gemrc
 # Back to apnscp
 - name: Check for rbenv.sh in FST
   stat: path="{{ apnscp_filesystem_template }}/{{ rbenv_service_install }}/{{rbenv_script}}"

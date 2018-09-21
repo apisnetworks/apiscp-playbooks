@@ -1,0 +1,3 @@
+---
+files: {}
+template_root: "{{ apnscp_root }}/storage/opcenter/filelists"

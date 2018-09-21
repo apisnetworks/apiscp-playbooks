@@ -7,6 +7,14 @@
     - 'roles/common/vars/apnscp-internals.yml'
     - ['{{ apnscp_user_defaults }}', '/dev/null']
     - ['{{ apnscp_last_run_vars }}', '/dev/null']
-  roles:
-    - fail2ban/configure-jails
+  tasks:
+    - name: Set defaults for /etc/gemrc
+      include_role: name=apnscp/service-template
+      vars:
+        files:
+          - content: >
+              gem: --no-rdoc --no-ri 
+            service: ssh
+            path: /etc/gemrc
+
 

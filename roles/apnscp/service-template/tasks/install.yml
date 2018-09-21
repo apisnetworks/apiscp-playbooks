@@ -1,0 +1,19 @@
+---
+- fail: msg="Both content and template defined {{ template }} {{ content }}"
+  when: template != omit and content != omit
+- name: "Verify {{ template_root + '/' + (service | default('siteinfo')) + '/' + path | dirname }} exists"
+  file: 
+    path: "{{ template_root + '/' + (service | default('siteinfo')) + '/' + path | dirname }}"
+    state: directory
+- name: "Template into {{ service | default('siteinfo') }}/{{ path }}"
+  template:
+    dest: "{{ template_root }}/{{ service | default('siteinfo') }}/{{ path }}"
+    src: "{{ template }}"
+    force: yes
+  when: template != omit
+- name: "Set content for {{ service | default('siteinfo') }}/{{ path }}"
+  copy:
+    content: "{{ content }}"
+    dest: "{{ template_root }}/{{ service | default('siteinfo') }}/{{ path }}"
+    force: yes
+  when: content != omit
