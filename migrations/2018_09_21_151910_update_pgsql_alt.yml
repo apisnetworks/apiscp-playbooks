@@ -1,0 +1,14 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# pg_config not included in alternatives; this causes issues with builds
+---
+- block:
+  - include_role: name=packages/install tasks_from=configure-default-vars.yml
+  - include_role: name=apnscp/service-template
+  - command: >
+      {{ apnscp_root }}/bin/scripts/yum-post.php update {{ item }}
+    register: r
+    changed_when: -1 !=  r.stdout.find("missing alternative")
+    with_items:
+    - "postgresql{{ pg_pkgversion }}"
+  tags: ['up']

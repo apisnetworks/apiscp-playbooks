@@ -61,6 +61,7 @@
     - mail/configure-courier-authlib
     - apnscp/link-bins
     - apnscp/initialize-filesystem-template
+    - apnscp/service-template
     - apnscp/php-filesystem-template
     - apnscp/bandwidth-log
     - apnscp/admin-helper

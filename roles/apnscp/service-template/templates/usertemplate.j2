@@ -1,0 +1,33 @@
+; Default settings for new users created via
+; Set User Defaults
+[default]
+; Default disk quota
+disk_quota=1024
+; Enable IMAP/SMTP access
+email_enable=1
+; Finer control-- enable IMAP, implies email_enable=true
+email_imap=1
+; Finer control-- enable SMTP, implies email_enable=true
+email_smtp=1
+; Create e-mail addresses for user
+email_create=1
+; Domains to use in address creation, * = all
+; Separate multiple entities with comma, e.g.
+; foo.com,bar.com,baz.com
+email_domains=*
+; Enable FTP access
+ftp_enable=1
+; Jail FTP users to home
+ftp_jail=1
+; Enable subdomain creation
+subdomain_enable=1
+; Subdomains to bind, * = all
+subdomain_domains=*
+; Enable CP access
+cp_enable=1
+; Enable SSH access
+ssh_enable=0
+; Enable DAV
+dav_enable=0
+; Enable API access
+api_enable=0

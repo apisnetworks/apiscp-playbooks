@@ -2,5 +2,5 @@
 nscd_replacements: 
   - {field: passwd, state: "no"}
   - {field: group, state: "yes"}
-  - {field: hosts, state: "yes"}
+  - {field: hosts, state: "no"}
   - {field: netgroup, state: "{{ enable_netgroup_caching | default(false) | bool | ternary('yes', 'no') }}"}

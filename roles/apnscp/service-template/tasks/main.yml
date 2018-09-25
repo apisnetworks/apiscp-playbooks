@@ -6,4 +6,5 @@
     service: "{{ item.service }}"
     content: "{{ item.content | default(omit) }}"
     template: "{{ item.template | default(omit) }}"
+    force: "{{ item.force | default(false) }}"
   with_items: "{{ files }}"

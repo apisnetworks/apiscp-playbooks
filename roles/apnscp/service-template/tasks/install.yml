@@ -9,11 +9,11 @@
   template:
     dest: "{{ template_root }}/{{ service | default('siteinfo') }}/{{ path }}"
     src: "{{ template }}"
-    force: yes
+    force: "{{ force | default(false) }}"
   when: template != omit
 - name: "Set content for {{ service | default('siteinfo') }}/{{ path }}"
   copy:
     content: "{{ content }}"
     dest: "{{ template_root }}/{{ service | default('siteinfo') }}/{{ path }}"
-    force: yes
+    force: "{{ force | default(false) }}"
   when: content != omit

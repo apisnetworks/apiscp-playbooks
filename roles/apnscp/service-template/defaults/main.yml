@@ -1,3 +1,6 @@
 ---
-files: {}
+files:
+  - service: siteinfo
+    path: /etc/usertemplate
+    template: templates/usertemplate.j2
 template_root: "{{ apnscp_root }}/storage/opcenter/filelists"
