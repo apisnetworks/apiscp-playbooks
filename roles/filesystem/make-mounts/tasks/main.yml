@@ -47,9 +47,12 @@
     - mount: 
         fstab: /etc/fstab
         path: /tmp
-        state: absent    
+        state: absent
+    - name: Activate tmp.mount
+      systemd: name=tmp.mount state=started
+      when: c.rc != 0
   rescue:
-    - name: Reboot to bring use systemd tmp.mount
+    - name: Reboot to bring up systemd tmp.mount
       include_role: name=common/fail-and-save
       vars: 
         reboot: true
