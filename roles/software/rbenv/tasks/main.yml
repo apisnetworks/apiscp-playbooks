@@ -51,7 +51,7 @@
     content: |
       #!/bin/sh  
       export RBENV_ROOT="{{ git_target }}"
-      {{ rbenv_code.stdout }}
+      {{ rbenv_code.stdout | regex_replace('(PATH="/[^/]*(?<!\$HOME)/?\.rbenv-usergems/)', 'PATH="$HOME/.rbenv-usergems/') }}
     mode: 0644
   register: rbenv_create
 - name: Link rbenv to /usr/bin
