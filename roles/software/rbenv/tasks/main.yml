@@ -39,21 +39,38 @@
     dest: "{{ apnscp_filesystem_template }}/{{rbenv_service_install }}/{{git_target}}/plugins/rbenv-usergems"
     force: "{{ rbenv_usergems_force | default('yes') }}"
     version: "{{ rbenv_usergems_version | default('HEAD') }}"
-- name: Get rbenv code
+# Run two separate rbenvs: system-wide and localized. System-wide is used by Passenger
+# whereas localized allows users to create gem bundles within their home directory
+- name: Get rbenv code - root
+  command: "{{ git_target }}/bin/rbenv init -"
+  environment: 
+    RBENV_ROOT: "{{ git_target }}"
+  register: rbenv_code
+  changed_when: false
+- name: Create rbenv.sh - root
+  copy:
+    dest: "{{rbenv_script}}"
+    content: |
+      #!/bin/sh  
+      export RBENV_ROOT="{{ git_target }}"
+      {{ rbenv_code.stdout }}
+    mode: 0644
+- name: Get rbenv code - non-root
   command: "{{ git_target }}/bin/rbenv usergems-init - | sed -e 's!\"/root!\"$HOME!g'"
   environment: 
     RBENV_ROOT: "{{ git_target }}"
   register: rbenv_code
   changed_when: false
-- name: Create rbenv.sh
+- name: Create rbenv.sh - non-root
   copy:
-    dest: "{{ rbenv_script }}"
+    dest: "{{ apnscp_filesystem_template }}/{{ rbenv_service_install }}/{{rbenv_script}}"
     content: |
       #!/bin/sh  
       export RBENV_ROOT="{{ git_target }}"
       {{ rbenv_code.stdout | regex_replace('(PATH="/[^/]*(?<!\$HOME)/?\.rbenv-usergems/)', 'PATH="$HOME/.rbenv-usergems/') }}
     mode: 0644
-  register: rbenv_create
+  notify: Reload filesystem template
+# End duplication
 - name: Link rbenv to /usr/bin
   file:
     path: "/usr/bin/rbenv"
@@ -111,17 +128,7 @@
           gem: --no-rdoc --no-ri 
         service: ssh
         path: /etc/gemrc
-# Back to apnscp
-- name: Check for rbenv.sh in FST
-  stat: path="{{ apnscp_filesystem_template }}/{{ rbenv_service_install }}/{{rbenv_script}}"
-  register: s
-- name: Link rbenv.sh to FST
-  include_tasks: roles/common/tasks/copy-link.yml
-  vars: 
-    src: "{{ rbenv_script }}"
-    path: "{{ apnscp_filesystem_template }}/{{ rbenv_service_install }}/{{rbenv_script}}"
-    notify: Reload filesystem template
-  when: rbenv_create.changed or not s.stat.exists
+
 - name: Symlink rbenv to {{git_target}}
   file: 
     src: "{{ git_target }}/bin/rbenv"
