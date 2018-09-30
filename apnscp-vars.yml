@@ -40,7 +40,7 @@ populate_filesystem_template: auto
 
 # Perform nightly panel updates? Panel may be updated manually with
 # "upcp" or running build/upcp.sh
-apnscp_nightly_update: false
+apnscp_nightly_update: true
 
 # Default IPv4 address for apnscp to listen to. If undefined will 
 # use the first address that has external routing
