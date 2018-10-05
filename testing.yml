@@ -8,13 +8,9 @@
     - ['{{ apnscp_user_defaults }}', '/dev/null']
     - ['{{ apnscp_last_run_vars }}', '/dev/null']
   tasks:
-    - name: Set defaults for /etc/gemrc
-      include_role: name=apnscp/service-template
-      vars:
-        files:
-          - content: >
-              gem: --no-rdoc --no-ri 
-            service: ssh
-            path: /etc/gemrc
-
+    - name: replace create
+      replace:
+        path: test.txt
+        regexp: '^(.*wtmp.+\n.+create) 0664 (.*)$'
+        replace: '\1 456 \2'
 

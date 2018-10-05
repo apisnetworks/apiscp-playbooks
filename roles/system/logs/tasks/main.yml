@@ -4,13 +4,13 @@
     path: /var/log/wtmp
     follow: yes
     mode: o-rw
-  when: wtmp_limit_snooping
+  when: (wtmp_limit_snooping | bool)
 - name: Grant world read on wtmp
   file:
     path: /var/log/wtmp
     follow: yes
     mode: o+r
-  when: not wtmp_limit_snooping
+  when: not (wtmp_limit_snooping | bool)
   # Copies up on init
 - name: Validate utmp existence
   stat:

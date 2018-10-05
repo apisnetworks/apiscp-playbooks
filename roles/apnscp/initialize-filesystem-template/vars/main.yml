@@ -57,7 +57,7 @@ relocated_paths:
       logrotate_vars: { 
         file: /etc/logrotate.conf,
         old: /var/log/wtmp,
-        new: /.socket/wtmp
+        new: "{{ apnscp_shared_root }}/wtmp"
       }
     }
   - { 
@@ -67,7 +67,7 @@ relocated_paths:
       logrotate_vars: { 
         file: /etc/logrotate.conf,
         old: /var/log/btmp,
-        new: /.socket/btmp
+        new: "{{ apnscp_shared_root }}/btmp"
       }
     }
   - { 

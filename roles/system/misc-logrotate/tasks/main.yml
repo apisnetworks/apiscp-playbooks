@@ -57,3 +57,9 @@
     src: templates/apnscp.j2
     dest: "{{ logrotate_path }}/apnscp"
     force: yes
+
+- name: Alter wtmp snooping
+  replace:
+    path: "/etc/logrotate.conf"
+    regexp: '^(\s*{{ apnscp_shared_root }}/wtmp\s+{\s{1,}(?:(?!})(?!create)[\w\W])*)create\s+\d+\s+((?:[\w\W](?<!}))+})'
+    replace: "\\1create {{ wtmp_limit_snooping | bool | ternary('0600', '0664') }} \\2"

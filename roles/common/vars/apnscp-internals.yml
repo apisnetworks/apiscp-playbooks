@@ -4,7 +4,8 @@
 ####################################
 DEV_TAG: ">>> DEVELOPMENT PLAY ONLY - REMOVE BEFORE FLIGHT <<<"
 apnscp_last_run_vars: /root/apnscp-vars-runtime.yml
-
+# Restrict last/lastlog usage
+wtmp_limit_snooping: true
 # Enable apnscp testing repo
 apnscp_testing_repo: "{{ apnscp_debug }}"
 # Location of apnscp
