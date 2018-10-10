@@ -5,4 +5,4 @@
     marker: "### {mark} APNSCP HELPER"
     insertafter: EOF
     state: present
-    block: "{{ lookup('file', 'files/apnscp-helpers.sh') }}"
+    block: "{{ lookup('template', 'templates/apnscp-helpers.sh.j2') }}"

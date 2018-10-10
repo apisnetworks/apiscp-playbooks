@@ -1,0 +1,8 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# apnscp-helper.sh incorrectly templated, flip action order
+---
+- block:
+  - include_role: name=apnscp/admin-helper
+  - include_role: name=system/yum
+  tags: ['up']
