@@ -1,5 +1,10 @@
 ---
-jails: 
+jails:
+  # Global config
+  - name: DEFAULT
+    vars:
+      banaction: "{{ f2b_default_banaction }}"
+      banaction_allports: firewallcmd-ipset-allports
   - name: postfix
     vars:
       port: 25,587,465
@@ -25,11 +30,11 @@ jails:
       protocol: all
       port: all
       # In fail2ban >= 0.10, firewallcmd-ipset[actiontype="<allports>"] is used
-      action: "firewallcmd-ipset-allports"
+      banaction: "%(banaction_allports)s"
       enabled: true
       bantime: "{{ f2b_recidive_bantime }}"
       findtime: "{{ f2b_recidive_findtime }}"
-      maxretry: "{{ f2b_recidive_maxretry }}"
+      maxretry: "{{ f2b_recidive_maxretry }}" 
   - name: dovecot
     vars:
       port: 110,995,143,993

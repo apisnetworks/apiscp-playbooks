@@ -6,7 +6,7 @@
     section: "{{ group }}"
     option: "{{ item.key }}"
     value: "{{ item.value | default(None) }}"
-    state: "{{ (item.value is defined) | ternary('present', 'absent') }}"
+    state: "{{ (item.value is defined and not item.value is none) | ternary('present', 'absent') }}"
     no_extra_spaces: true
   with_dict: "{{ cfgvars }}"
   notify: "{{ notify | default('noop') }}"

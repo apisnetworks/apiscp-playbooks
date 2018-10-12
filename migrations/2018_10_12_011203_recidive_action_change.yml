@@ -1,0 +1,15 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# rename action to banaction for recidive
+---
+- block:
+  - include_role: name=fail2ban/configure-jails
+  - include_vars: file={{ playbook_dir }}/roles/fail2ban/fail2ban-common/defaults/main.yml
+  - include_tasks: roles/common/tasks/write-config.yml
+    vars:
+      file: '{{ fail2ban_jail_config }}'
+      cfgvars:
+        action:
+      group: "recidive"
+      notify: Restart fail2ban
+  tags: ['up']
