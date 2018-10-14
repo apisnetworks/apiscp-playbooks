@@ -2,7 +2,9 @@
 - name: Import variables
   include_vars: apnscp.yml
 
-- include_tasks: tasks/verify-and-install.yml extension={{ extension }}
+- include_tasks: tasks/verify-and-install.yml 
+  vars:
+    extension: "{{ extension }}"
   with_items: "{{ pecl_extensions }}"
   loop_control: 
     loop_var: extension

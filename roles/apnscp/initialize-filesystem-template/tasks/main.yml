@@ -21,7 +21,10 @@
     populate_filesystem_template == "auto" and not fst_pure.stat.exists or
     (populate_filesystem_template | bool) and populate_filesystem_template != "auto"
 - include_role: role="packages/install" tasks_from="configure-default-vars.yml"
-- include_tasks: install-package.yml package="{{ item.package }}"  service="{{item.service}}"
+- include_tasks: install-package.yml 
+  vars:
+    package: "{{ item.package }}"
+    service: "{{item.service}}"
   with_items: "{{ packages }}"
   when: __populate_filesystem_template
 - name: "Build synchronizer RPM index"

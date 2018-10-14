@@ -12,7 +12,9 @@
 - template: src=templates/apnscp.sysconf.j2 dest=/etc/sysconfig/apnscp force=no backup=yes
 - systemd: daemon_reload=yes enabled=yes name=apnscp
   when: copied.changed
-- include_tasks: set-platform-version.yml version="{{ apnscp_platform_version }}"
+- include_tasks: set-platform-version.yml 
+  vars:
+    version: "{{ apnscp_platform_version }}"
 
 - name: Create shared filesystem slice {{ apnscp_shared_root }}
   file: 
@@ -72,7 +74,10 @@
 
 - include_vars: "vars/opcenter-links.yml"
 - name: Link opcenter resources to /etc
-  include_tasks: create-link-opcenter-controls.yml path="{{ item.path }}"  src="{{item.src}}"
+  include_tasks: create-link-opcenter-controls.yml 
+  vars:
+    path: "{{ item.path }}"
+    src: "{{item.src}}"
   with_items: "{{ opcenter_links }}"
 
 - stat: path="{{ apnscp_root }}/config/httpd-custom.conf"
