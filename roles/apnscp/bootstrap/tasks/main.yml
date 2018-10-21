@@ -84,7 +84,7 @@
   register: httpdchk
 - copy:
     content: |
-      ServerName {{ apnscp_fqdn | default(ansible_fqdn) }}
+      ServerName {{ apnscp_fqdn | default(ansible_nodename) }}
       User {{ apnscp_system_user }}
       Group {{ apnscp_system_user }}
       Use VHost {{ apnscp_ip4_address | default(ansible_default_ipv4.address) }} 
@@ -107,6 +107,14 @@
     - option: reply_address
       value: "{{ apnscp_system_user }}+tickets@{{ apnscp_hostname }}"
 
+- name: "Set cookie secret"
+  include_tasks: "set-config.yml"
+  vars:
+    section: auth
+    option: secret
+    value: "{{ cookie_secret }}"
+    check_value: false
+    
 - stat: path="{{ apnscp_root }}/storage/opcenter/namebased_ip_addrs"
   register: nbchk
 - copy:

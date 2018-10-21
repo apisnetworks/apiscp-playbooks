@@ -1,0 +1,24 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# Listen on 127.0.0.1, set cookie encryption
+---
+- block:
+  - include_role: name=apnscp/bootstrap
+  - include_role: name=apache/configure
+  - include_role: name=system/misc-logrotate
+  - name: Find erroneous files
+    find:
+      paths: '{{ apnscp_root }}/storage/logs/'
+      patterns: '*"*'
+    register: results
+  - name: "Remove erroneous files"
+    file:
+      path: "{{ item.path }}"
+      state: absent
+    with_items: '{{ results.files }}'
+  - name: Update tmpfiles exclusion list
+    include_role: name=software/tmpfiles
+    vars:
+      force: yes
+      src_files: templates/fst.conf.j2
+  tags: ['up']

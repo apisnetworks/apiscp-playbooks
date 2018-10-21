@@ -18,5 +18,5 @@
     value: 1
     no_extra_spaces: yes
 - name: Set git email address for etckeeper
-  command: git config --global user.email "{{ apnscp_admin_email | default('root@' + ansible_fqdn, true) }}"
+  command: git config --global user.email "{{ apnscp_admin_email | default('root@' + ansible_nodename, true) }}"
   when: o.stdout == ""

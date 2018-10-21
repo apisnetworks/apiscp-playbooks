@@ -53,7 +53,7 @@ apnscp_verify_account: true
 # Run Bootstrapper after update (upcp --auto)
 apnscp_update_bootstrapper: "{{ apnscp_nightly_update }}"
 # apnscp hostname used for email/LE setup
-# ${HOSTNAME} will use ansible_fqdn or your system hostname
+# ${HOSTNAME} will use ansible_nodename or your system hostname
 apnscp_hostname: "${HOSTNAME}"
 # Enable SELinux
 # true is absolutely guaranteed to break your system

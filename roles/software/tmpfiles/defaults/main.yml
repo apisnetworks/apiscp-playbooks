@@ -1,2 +1,3 @@
 ---
 tmpfiles_dir: /etc/tmpfiles.d/
+src_files: templates/*.j2

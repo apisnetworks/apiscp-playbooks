@@ -48,7 +48,7 @@ apnscp_nightly_update: true
 
 # Default hostnames to request SSL for.
 # Additional SSL hostnames may be requested by running apnscp/register-ssl
-ssl_hostnames: ["{{ ansible_fqdn | regex_search('\\.') | ternary(ansible_fqdn,None)}}"]
+ssl_hostnames: ["{{ ansible_nodename | regex_search('\\.') | ternary(ansible_nodename,None)}}"]
 
 # Use the following password. Note, can be changed at a later date using
 # apnscp/bin/cmd auth_change_password NEWPASSWORD
@@ -107,3 +107,8 @@ watchdog_load_threshold: "{{ ansible_processor_count * 25 }}"
 # Uncomment + set to forward all nightly cron messages from anacron to this address
 # Leave as "{{ apnscp_admin_email }}" to use the appliance admin email
 # anacron_address: "{{ apnscp_admin_email }}"
+
+# Set the panel secret used to encrypt cookies
+# In multi-server setups this should be overridden and consistent among all servers
+# See also https://github.com/apisnetworks/cp-proxy
+cookie_secret: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=48') }}"

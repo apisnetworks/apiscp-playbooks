@@ -24,6 +24,5 @@
     tasks_from: real-build.yml
     vars_from: main.yml
     defaults_from: main.yml
-    private: True
   vars:
     php_version: "{{ __php_version }}"
