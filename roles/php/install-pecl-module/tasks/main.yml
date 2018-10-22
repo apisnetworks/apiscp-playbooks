@@ -4,8 +4,8 @@
 
 - include_tasks: tasks/verify-and-install.yml 
   vars:
-    extension: "{{ extension }}"
+    extension: "{{ itr_extension }}"
   with_items: "{{ pecl_extensions }}"
   loop_control: 
-    loop_var: extension
+    loop_var: itr_extension
   when: pecl_extensions is defined
