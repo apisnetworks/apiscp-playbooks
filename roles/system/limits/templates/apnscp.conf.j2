@@ -1,7 +1,8 @@
 *                soft    nofile          2048
 # Absolute hard limit when cgroup,proclimit disabled. 
-# Prevents runaway forkbombs 
-*                hard    nproc           125
+# Prevents runaway forkbombs. Refers to threads NOT processes
+# See also ps -efL | wc -l
+*                hard    nproc           {{ nproc_limit | default(256) }}
 *                soft    fsize           4194304
 *                soft    priority        19
 *                soft    maxlogins       20

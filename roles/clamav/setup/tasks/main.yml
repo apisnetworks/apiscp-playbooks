@@ -1,7 +1,7 @@
 ---
 - include_vars: dir={{ role_path }}/../support/defaults/
 - include_tasks: setup-clamav.yml
-  when: clamav_enable | bool
+  when: clamav_enabled | bool
   tags: clamav
 - name: Disable ClamAV
   systemd:
@@ -11,4 +11,4 @@
   tags: clamav
   register: r
   failed_when: 'r.failed and "Could not find the requested service" not in r.msg'
-  when: not (clamav_enable | bool)
+  when: not (clamav_enabled | bool)

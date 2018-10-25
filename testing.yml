@@ -8,9 +8,12 @@
     - ['{{ apnscp_user_defaults }}', '/dev/null']
     - ['{{ apnscp_last_run_vars }}', '/dev/null']
   tasks:
-    - name: replace create
-      replace:
-        path: test.txt
-        regexp: '^(.*wtmp.+\n.+create) 0664 (.*)$'
-        replace: '\1 456 \2'
+    - include_tasks: "{{ playbook_dir }}/roles/apnscp/bootstrap/tasks/set-config.yml" 
+      vars: 
+        section: rampart 
+        option: "{{ item.option }}"
+        value: "{{ item.value }}"
+      with_items:
+        - {option: driver, value: "ipset" }
+        - {option: prefix, value: "fail2ban-" }
 

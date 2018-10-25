@@ -36,7 +36,8 @@
 - name: Copy Passenger configuration
   template:
     src: templates/passenger.conf.j2
-    dest: /etc/httpd/conf.d/passenger.conf
+    dest: "{{ passenger_apache_config }}"
+    force: yes
   notify: Restart apache
 - name: Create Passenger directories
   file: 

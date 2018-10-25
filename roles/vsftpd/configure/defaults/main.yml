@@ -36,3 +36,5 @@ vsftpd_directives:
   idle_session_timeout: "0"
   # Necessary for cgroup accounting
   session_support: "YES"
+  pasv_min_port: 40000
+  pasv_max_port: "{{ user_daemons | bool | ternary(49999, pasv_max_port) }}"

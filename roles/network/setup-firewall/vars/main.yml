@@ -2,6 +2,7 @@
 rules:
   # Services
   - service: ftp
+    state: "{{ ftp_enabled | bool | ternary('enabled', 'disabled') }}"
   - service: ssh
   # Mail
   - port: 25/tcp
@@ -32,7 +33,9 @@ rules:
     state: "{{ panel_headless | bool | ternary('disabled', 'enabled') }}"
   # For service support
   # @TODO integrate port openings in the panel
-  - port: 40000-49999/tcp
+  - port: "40000-{{ pasv_max_port }}/tcp"
+    state: "{{ ftp_enabled | bool | ternary('enabled', 'disabled') }}"
+  - port: "{{ (pasv_max_port | int) + 1 }}-49999/tcp"
     state: "{{ user_daemons | bool | ternary('enabled', 'disabled') }}"
   - port: 40000-49999/udp
     state: "{{ user_daemons | bool | ternary('enabled', 'disabled') }}"

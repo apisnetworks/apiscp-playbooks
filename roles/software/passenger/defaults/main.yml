@@ -1,4 +1,5 @@
 ---
+passenger_apache_config: /etc/httpd/conf.d/passenger.conf
 passenger_repo: https://github.com/apisnetworks/passenger.git
 passenger_repo_ver: local
 passenger_home: "{{ apnscp_shared_root}}/passenger"

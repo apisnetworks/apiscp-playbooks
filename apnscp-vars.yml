@@ -73,7 +73,7 @@ apnscp_bootstrapper_reboot: true
 
 # Disable clamav if server memory is limited
 # Frees 85 - 100 MB
-clamav_enable: "{{ not (has_low_memory | bool) | default(true) | ternary(true, false) }}"
+clamav_enabled: "{{ not (has_low_memory | bool) | default(true) | ternary(true, false) }}"
 
 # Enable sending mail by this server from authenticated third-party
 # sources. Does not affect relaying mail that originates FROM this server

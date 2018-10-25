@@ -1,3 +1,11 @@
 ---
 - include_tasks: passenger-surrogate.yml
-  when: passenger_enabled
+  when: passenger_enabled | bool
+- block:
+  - name: Remove Passenger
+    file: path="{{ item }}" state=absent
+    with_items:
+      - "{{ passenger_apache_config }}"
+      - "{{ passenger_home }}"
+      - "{{ passenger_fst_log_location }}"
+  when: not (passenger_enabled | bool)

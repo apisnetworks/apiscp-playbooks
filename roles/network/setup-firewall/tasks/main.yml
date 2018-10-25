@@ -29,6 +29,19 @@
     label: "Setting rule {{ item.port | default(item.rule is defined | ternary(item.rule, item.service)) }} => {{ item.state | default('enabled') }}"
   when: true
   notify: Reload firewalld
+- name: Add ipset to firewalld
+  command: >
+    firewall-cmd --permanent --new-ipset=whitelist --type=hash:net
+  register: r
+  changed_when: r.rc != 26
+  failed_when: r.rc not in [26,0]
+- name: "Create whitelist"
+  firewalld:
+    zone: public
+    source: "ipset:whitelist"
+    permanent: true
+    state: present
+  notify: Reload firewalld
 - name: "Apply direct firewalld rules"
   command: >
     /bin/firewall-cmd {{ item.permanent|default(default_permanent)| bool | default(default_permanent) | ternary("--permanent", "") }}

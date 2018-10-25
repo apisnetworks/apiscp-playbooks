@@ -1,5 +1,5 @@
 ---
-- include_vars: "{{ role_path }}/vars/main.yml"
+- include_vars: file="{{ role_path }}/vars/main.yml"
   when: php_bin is defined
 - name: Install apnscp build RPMs
   yum: name={{item}} state=installed

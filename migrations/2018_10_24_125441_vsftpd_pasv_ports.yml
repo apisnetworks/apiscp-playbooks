@@ -1,0 +1,23 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# Open PASV ports for FTP, add whitelist ipset, 
+# null provider, increase nproc ceiling
+---
+- block:
+  - include_role: name=network/setup-firewall
+  - include_role: name=vsftpd/configure
+  - include_role: name=system/limits
+    vars: 
+      force: yes
+  - name: "Update provider"
+    include_tasks: "{{ role_path }}/../../apnscp/bootstrap/tasks/set-config.yml" 
+    vars:
+      append: true
+      section: "{{ item.key }}"
+      option: providers
+      value: "{{ item.value }}"
+      check_value: true
+    with_dict:  
+      mail: "null"       
+      dns: "null"
+  tags: ['up']

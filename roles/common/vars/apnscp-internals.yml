@@ -37,6 +37,13 @@ goenv_version: 1.14.0
 # bootstrapping Passenger
 sys_ruby_version: 2.4.4
 rbenv_usergems_version: ad2fd08
+# Enable remote FTP connections. FTP will always be enable for Wordpress 
+# to operate. If off, WebDAV, sftp, ssh (rsync), and git are the only
+# means to manage files
+ftp_enabled: yes
+# Maximum PASV port when user_daemons disabled. Supports up to 10 concurrent transfers
+pasv_max_port: 40010
+
 # Use SpamAssassin or rspamd for spam filtering. rspamd is experimental
 spamassassin_enabled: yes
 # apnscp is part of a multi-server environment
@@ -64,3 +71,5 @@ apnscp_hostname: "${HOSTNAME}"
 # Only enable if you plan on helping out!
 use_selinux: false
 
+# Backwards compatibility
+clamav_enable: "{{ clamav_enabled | default(true) }}"
