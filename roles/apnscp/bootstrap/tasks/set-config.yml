@@ -1,10 +1,10 @@
 - set_fact: 
     config_val: "{{ value }}"
+    old_val: "_NOTSET"
 - set_fact:
     old_val: "{{ lookup('ini', option + ' file=' + apnscp_root + '/config/custom/config.ini default=_NOTSET section=' + section) }}"
   register: old
   ignore_errors: true
-  when: check_value is not defined or check_value or (append | default(false))
 - name: "Append config"
   set_fact:
     config_val: "{{ (old_val.split(',') + [value]) | unique | join(',') }}"
