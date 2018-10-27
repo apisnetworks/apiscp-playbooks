@@ -1,0 +1,7 @@
+- name: "Create ipset {{ ipset_name }}"
+  command: >
+    firewall-cmd --permanent --new-ipset="{{ ipset_name }}" --type=hash:net
+  register: r
+  changed_when: r.rc != 26
+  failed_when: r.rc not in [26,0]
+  notify: Reload firewalld

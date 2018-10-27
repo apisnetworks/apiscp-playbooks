@@ -1,0 +1,13 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# Add firewalld blacklist support
+---
+- block:
+  - name: Move whitelist to rich rule
+    firewalld:
+      zone: public
+      permanent: true
+      source: "ipset:whitelist"
+      state: disabled
+  - include_role: name=network/setup-firewall
+  tags: ['up']

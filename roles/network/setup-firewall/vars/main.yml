@@ -63,3 +63,11 @@ direct_rules:
     priority: 1
   - rule: "-p tcp -m tcp --dport 25 -j REJECT --reject-with icmp-port-unreachable"
     priority: 1
+  - rule: "-m set --match-set whitelist src -j ACCEPT"
+    table: filter
+    chain: INPUT
+    priority: 0
+  - rule: "-m set --match-set blacklist src -j DROP"
+    table: filter
+    chain: INPUT
+    priority: 1

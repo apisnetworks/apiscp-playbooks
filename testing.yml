@@ -8,12 +8,9 @@
     - ['{{ apnscp_user_defaults }}', '/dev/null']
     - ['{{ apnscp_last_run_vars }}', '/dev/null']
   tasks:
-    - include_tasks: "{{ playbook_dir }}/roles/apnscp/bootstrap/tasks/set-config.yml" 
-      vars: 
-        section: rampart 
-        option: "{{ item.option }}"
-        value: "{{ item.value }}"
-      with_items:
-        - {option: driver, value: "ipset" }
-        - {option: prefix, value: "fail2ban-" }
-
+    - name: Move whitelist to trusted
+      firewalld:
+        zone: trusted
+        permanent: true
+        source: "ipset:whitelist"
+        state: disabled
