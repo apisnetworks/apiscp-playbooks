@@ -23,4 +23,5 @@ cron_template:
 # Automatically run Bootstrapper on update when auto-update
 # Otherwise just migrations will run
 apnscp_update_bootstrapper: false
+apnscp_update_flags: ""
 apnscp_update_cron: "{{ cron_daily }}/apnscp_update.sh"

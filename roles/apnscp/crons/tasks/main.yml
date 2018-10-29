@@ -33,8 +33,6 @@
     dest: "{{ apnscp_update_cron }}"
     mode: 0755
     force: true
-  vars: 
-    apnscp_update_flags: "{{ apnscp_update_bootstrapper | bool | ternary('--auto','') }}"
   when: apnscp_nightly_update | bool
 - name: Disable apnscp nightly updates
   file: path={{ apnscp_update_cron }} state=absent
