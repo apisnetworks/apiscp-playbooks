@@ -5,6 +5,8 @@
 - name: Install argos
   yum: name=argos state=installed
   register: c
+- name: Install ntfy
+  pip: name=ntfy state=present version="{{ ntfy_version }}"
 - name: Verify monit enabled
   systemd: name=monit state={{ c.changed | ternary('reloaded','started') }} enabled=yes
 - name: Update apnscp monitoring profile

@@ -1,0 +1,61 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# Convert Argos to ntfy
+---
+- block:
+  - set_fact:
+      convert_yaml: false
+  - name: Check for argos.conf
+    stat: path=/root/.argos.conf
+    register: s
+  - name: Update Argos
+    yum: name=argos state=latest
+  tags: ['up']
+- block:
+  - block:
+    - name: Check if YAMLized
+      include_vars: /root/.argos.conf
+      register: yaml
+      ignore_errors: true
+  - set_fact: convert_yaml=true
+    when: yaml.failed
+  - name: Appease ini lookup module
+    lineinfile: path=/root/.argos.conf line='[default]' state=present insertbefore=BOF
+    when: convert_yaml
+  - name: Convert Argos configuration
+    set_fact:
+      pushover:
+        user_key: "{{ lookup('ini', 'USER section=default file=/root/.argos.conf')}}"
+        api_token: "{{ lookup('ini', 'TOKEN section=default file=/root/.argos.conf')}}"
+        title: "{{ lookup('ini', 'ARGOS_NAME section=default file=/root/.argos.conf default=Argos')}}"
+    when: convert_yaml
+  - name: Rewrite YAML configuration
+    copy:
+      dest: /root/.argos.conf
+      force: yes
+      content: |
+        ---
+        # Default backends
+        # See cpcmd config_set argos.backends for configuration
+        # Additionally https://hq.apnscp.com/monitoring-with-monit-argos/
+        backends:
+          - default
+        # Backend configuration
+        # See also https://github.com/dschep/ntfy
+        default: &default
+        {{ pushover | to_nice_yaml | indent(2, true) }}
+        # High priority backend ntfy -b high
+        high:
+          title: "❗ {{ pushover.title }}"
+          backend: pushover
+          priority: 2
+          expire: 3600
+          retry: 120
+          <<: *default
+    when: convert_yaml
+  when: s.stat.exists
+  tags: ['up']
+- block:
+  - include_role: name=apnscp/admin-helper
+  - include_role: name=software/argos
+  tags: ['up']
