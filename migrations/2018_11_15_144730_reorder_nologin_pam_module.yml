@@ -1,0 +1,11 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# pam_nologin comes before system-auth stack
+# Resolves pam_unix terminating stack early
+# Ensure ssl_hostnames is list
+---
+- block:
+    - include_role: name=apnscp/register-ssl
+    - file: path="{{ apnscp_filesystem_template }}/ssh/etc/pam.d/sshd" state=absent
+    - include_role: name=system/pam
+  tags: ['up']

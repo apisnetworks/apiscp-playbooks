@@ -22,8 +22,11 @@
     regexp: '^\s*session.*{{vwh_module}}'
     line: "session required {{ vwh_module }} restorelogin restoreroot"
     insertafter: EOF
-    state: present  
+    state: present
 # cgroup provided by dovecot22-apnscp    
 - include_tasks: listfile.yml
   vars:
     file: "/etc/{{ pam_service }}.pamlist"
+- include_tasks: nologin.yml
+  vars:
+    file: "{{ pam_file }}"

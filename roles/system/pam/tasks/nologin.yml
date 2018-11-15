@@ -1,0 +1,21 @@
+---
+# Assume all of these services include system-auth
+- name: "Look for system-auth stack in {{ pam_file }}"
+  command:
+    grep -qE '^\s*auth\s+\S+\s+system-auth\s*$' {{ pam_file }}
+  register: conf
+  failed_when: false
+  changed_when: false
+- name: "Remove nologin after system-auth from {{ pam_file }}"
+  replace:
+    path: "{{ pam_file }}"
+    regexp: '^\s*auth\s+.*pam_nologin.so\s*$\s+^(?![\s\S]*?\s*auth\s+\S+\s+system-auth)'
+    replace: ''
+  when: conf.rc == 0
+- name: "Add nologin to {{ pam_file }}"
+  lineinfile:
+    path: "{{ pam_file }}"
+    regexp: '^\s*auth\s+\S+\s+pam_nologin.so\s*$'
+    line: "auth\trequired\tpam_nologin.so"
+    insertafter: '^\s*auth\s+\S+\s+{{ vwh_module }}'
+    state: present

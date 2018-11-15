@@ -1,4 +1,7 @@
 ---
+- name: Cast ssl_hostnames to list
+  set_fact: ssl_hostnames="['{{ssl_hostnames}}']"
+  when: (ssl_hostnames | type_debug) != 'list'
 - name: "Enabling SSL certificate"
   include_tasks: "{{ role_path }}/../bootstrap/tasks/set-config.yml" 
   vars: 

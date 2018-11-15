@@ -1,8 +1,8 @@
 #%PAM-1.0
 auth       required	pam_apnscpvwh.so canonical
+auth       required	pam_nologin.so
 auth       required	pam_listfile.so onerr=fail sense=allow file=/etc/ssh.pamlist item=user
 auth       include	system-auth
-auth       required	pam_nologin.so
 # account won't work, because pubkey uses NSS to pull pwd
 account    required pam_apnscpvwh.so canonical
 account    include  system-auth

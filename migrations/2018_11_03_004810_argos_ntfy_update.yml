@@ -43,11 +43,11 @@
         # Backend configuration
         # See also https://github.com/dschep/ntfy
         default: &default
+          backend: pushover
         {{ pushover | to_nice_yaml | indent(2, true) }}
         # High priority backend ntfy -b high
         high:
           title: "❗ {{ pushover.title }}"
-          backend: pushover
           priority: 2
           expire: 3600
           retry: 120

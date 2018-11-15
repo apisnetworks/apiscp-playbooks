@@ -14,12 +14,19 @@
 - include_tasks: cgroup.yml
   vars:
     file: "{{ apnscp_filesystem_template }}/ssh/etc/pam.d/sshd"
-- include_tasks: "{{ role_path }}/tasks/listfile.yml"
+- include_tasks: listfile.yml
   vars:
     pam_file: "{{ apnscp_filesystem_template }}/ssh/etc/pam.d/sshd"
     file: "/etc/ssh.pamlist"
+- set_fact: _pam_file="{{ pam_file }}"
+- include_tasks: nologin.yml
+  vars:
+    pam_file: "{{ pam_item }}"
+  with_items:
+    - "{{ apnscp_filesystem_template }}/ssh/etc/pam.d/sshd"
+    - "{{ _pam_file }}"
+  loop_control:
+    loop_var: pam_item
 - include_tasks: ./cgroup.yml
   vars:
     aftermodule: '^\s*session\s+\S+\s+pam_loginuid.so'
-
-  

@@ -6,8 +6,11 @@
     line: "auth\trequired\t{{ vwh_module }}"
     insertbefore: '^\s*auth\s'
     firstmatch: yes
-    state: present  
+    state: present
 - include_tasks: listfile.yml
   vars: 
-    file: "/etc/ftp.pamlist"  
+    file: "/etc/ftp.pamlist"
+- include_tasks: nologin.yml
+  vars:
+    file: "{{ pam_file }}"
 - include_tasks: cgroup.yml
