@@ -8,6 +8,8 @@ The playbook must always be run as root. It can be located under `/usr/local/apn
 ansible-playbook bootstrap.yml
 ```
 
+[![asciicast](https://asciinema.org/a/196963.png)](https://asciinema.org/a/196963)
+
 ## Viewing changes
 
 To view only tasks that have changed, specify `actionable` as your callback plugin either in [ansible.cfg](https://docs.ansible.com/ansible/latest/reference_appendices/config.html#ansible-configuration-settings-locations) or `ANSIBLE_STDOUT_CALLBACK`. It's easy from the command-line:
