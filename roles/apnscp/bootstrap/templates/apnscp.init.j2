@@ -11,13 +11,15 @@
 SYSTEMCTL_SKIP_REDIRECT=1
 . /etc/rc.d/init.d/functions
 
-# Prevent runaway logging
-ulimit -f 4096000
-CP_DIR={{apnscp_root|quote}}
-#CP_DIR=/usr/local/apnscp
+[[ -f /etc/sysconfig/apnscp ]] && . /etc/sysconfig/apnscp
 
-declare -x HOSTNAME=`hostname -f`
-HTTPD_ARGS=""
+# Prevent runaway logging
+# Maximum blocksize of all files, 1 block = 4 KB
+ulimit -f "${MAX_FILESIZE:-524288}"
+CP_DIR={{apnscp_root|quote}}
+
+declare -x HOSTNAME="$(hostname -f)"
+HTTPD_ARGS="${HTTPD_ARGS:-}"
 PID=$CP_DIR/storage/run/apnscpd.pid
 
 start() {
@@ -31,7 +33,7 @@ start() {
     fi
   fi
 	daemon $CP_DIR/bin/apnscpd 
-	ps faux | grep apnscpd > /dev/null
+  pidof apnscp_php > /dev/null
 	RETVAL=$?
   if [ $RETVAL -eq 0 ] ; then
     success "$prog startup"
