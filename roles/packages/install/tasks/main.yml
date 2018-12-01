@@ -28,7 +28,7 @@
       register: mariadb_repo
 
 - name: "Remove MySQL/MariaDB system packages"
-  yum: name="mariadb* mysql*" state=absent
+  yum: name="mariadb*,mysql*" state=absent
   when: mariadb_repo is defined and mariadb_repo.changed
 
 - name: "Install PostgreSQL"      
