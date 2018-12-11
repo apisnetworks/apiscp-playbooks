@@ -27,7 +27,9 @@ config:
     $virtual_alias_domains $virtual_mailbox_maps $virtual_mailbox_domains
     $relay_recipient_maps $relay_domains $canonical_maps $sender_canonical_maps
     $recipient_canonical_maps $relocated_maps $transport_maps $mynetworks $smtp_sasl_auth_cache_name
-  smtpd_recipient_restrictions:
+  # ">" breaks idempotency
+  smtpd_recipient_restrictions: 
+    '{{ postfix_relay_mynetworks | bool | ternary("permit_mynetworks,", "") }}
     permit_sasl_authenticated,
     reject_unauth_destination,
     reject_unknown_recipient_domain,
@@ -41,7 +43,9 @@ config:
     reject_unauth_pipelining,
     reject_invalid_hostname,
     reject_unknown_sender_domain,
-    reject_unknown_reverse_client_hostname
+    reject_unknown_reverse_client_hostname'
+  # Remove permit_mynetworks to prevent unauthorized relaying 
+  smtpd_relay_restrictions: '{{ postfix_relay_mynetworks | bool | ternary("permit_mynetworks,", "") }}permit_sasl_authenticated,defer_unauth_destination'
   smtpd_helo_required: "yes"
   smtpd_error_sleep_time: 60
   maximal_backoff_time: 8h
@@ -86,3 +90,9 @@ config:
   smtp_tls_security_level: may
   sender_dependent_default_transport_maps: hash:/etc/postfix/sender_transport
   inet_interfaces: "{{ postfix_inet_interfaces | default('all') }}"
+  mydomain: "{{ postfix_mydomain }}"
+  # PostSRS
+  sender_canonical_maps: "{{ postsrsd_enabled | ternary('tcp:localhost:' + postsrs_sender_map_port|string, None) }}"
+  sender_canonical_classes: "{{ postsrsd_enabled | ternary('envelope_sender', None) }} "
+  recipient_canonical_maps: "{{ postsrsd_enabled | ternary('tcp:localhost:' + postsrs_recipient_map_port|string, None) }}"
+  recipient_canonical_classes: "{{ postsrsd_enabled | ternary('envelope_recipient,header_recipient', None) }}"

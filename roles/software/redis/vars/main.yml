@@ -1,0 +1,6 @@
+---
+redis_service: redis
+redis_handler: noop
+redis_vars: {}
+redis_cfg_file: /etc/redis.conf
+redis_enabled: true

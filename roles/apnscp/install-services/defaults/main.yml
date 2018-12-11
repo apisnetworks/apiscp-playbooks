@@ -1,0 +1,76 @@
+---
+services:
+  - name: fsmount
+    files: 
+      - src: fsmount.init
+        dest: /etc/systemd/user/fsmount.init
+        perm: "0755"
+      - src: fsmount.service
+        dest: /etc/systemd/system/fsmount.service
+    systemd:
+      state: started
+  - name: populate-tmp
+    files: 
+      - src: fstmp.init
+        dest: /etc/systemd/user/fstmp.init
+        perm: "0755"
+      - src: populate-tmp.service
+        dest: /etc/systemd/system/populate-tmp.service
+    systemd:
+      state: started
+  - name: virtualcroncleanstate
+    files: 
+      - src: virtualcroncleanstate.service
+        dest: /etc/systemd/system/virtualcroncleanstate.service
+    systemd:
+      state: stopped
+  - name: virtualcron
+    files: 
+      - src: virtualcron.init
+        dest: /etc/systemd/user/virtualcron.init
+        perm: "0755"
+      - src: virtualcron.service
+        dest: /etc/systemd/system/virtualcron.service
+    systemd:
+      state: started
+  - name: virtualhosting
+    files: 
+      - src: virtualhosting.init
+        dest: /etc/systemd/user/virtualhosting.init
+        perm: "0755"
+      - src: virtualhosting.service
+        dest: /etc/systemd/system/virtualhosting.service
+    systemd:
+      state: started
+  - name: rc-local
+    files: 
+      - src: rc-local.service
+        dest: /etc/systemd/system/rc-local.service
+    systemd:
+      enabled: yes
+      state: started
+  - name: bwcron.timer
+    files: 
+      - src: bwcron.timer
+        dest: /etc/systemd/system/bwcron.timer
+        perm: "0644"
+      - src: "{{ bwcron_service_file }}"
+        dest: /etc/systemd/system/bwcron.service
+    systemd:
+      state: started
+  # Handled otherwise by apnscp-update.cron
+  - name: apnscp-housekeeping.timer
+    files: 
+      - src: apnscp-housekeeping.timer
+        dest: /etc/systemd/system/apnscp-housekeeping.timer
+        perm: "0644"
+      - src: "{{ apnscp_housekeeping_service_file }}"
+        dest: /etc/systemd/system/apnscp-housekeeping.service
+    systemd:
+      state: "{{ apnscp_nightly_update | bool | ternary('stopped', 'started') }}"
+      enabled: "{{ apnscp_nightly_update | bool | ternary('no', 'yes') }}"
+templated_services:
+  - service: bwcron
+    template: bwcron.service.j2
+  - service: apnscp-housekeeping
+    template: apnscp-housekeeping.service.j2

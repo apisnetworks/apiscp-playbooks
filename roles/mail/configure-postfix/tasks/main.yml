@@ -1,5 +1,11 @@
 ---
+- include_vars: "{{playbook_dir}}/roles/mail/maildir/defaults/main.yml"
 - include_tasks: register-password.yml
+- include_tasks: install-postsrs.yml
+  when: postsrsd_enabled
+- name: Remove postsrsd
+  yum: name=postsrsd state=absent
+  when: not postsrsd_enabled
 - name: Create Postfix user
   postgresql_user:
     name: "{{ postfix_user }}"
@@ -19,14 +25,12 @@
     mode: 0640
   with_items: "{{ template_files }}"
   notify: Restart postfix
-- name: Set main.cf configuration
-  ini_file:
-    path: "{{ config_file }}"
-    section: null
-    option: "{{ item.key }}"
-    value: "{{ item.value }}"
+- include_tasks: set-configuration.yml
   with_dict: "{{ config }}"
-  notify: Restart postfix
+  vars:
+    notify: Restart postfix
+  loop_control:
+    label: "Set {{ item.key }} => {{ item.value }}"
 - name: Create aliases
   lineinfile:
     path: "{{ aliases_file }}"
@@ -34,7 +38,8 @@
     line: '{{ item.key }}: {{ item.value }}'
     state: present
   with_dict:
-    site_blackhole: /dev/null
+    site_blackhole: >
+      {{ (spamfilter == 'rspamd') | ternary('rspamc learn_spam', '/dev/null') }}
     "{{ apnscp_system_user }}": root
   loop_control:
     label: "Adding alias {{ item.key }} to {{ item.value }}"

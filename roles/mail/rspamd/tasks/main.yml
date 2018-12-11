@@ -1,0 +1,49 @@
+---
+- include_tasks: enable-rspamd.yml
+  when: rspamd_enabled
+- block:
+    - name: Disable rspamd
+      systemd: name=rspamd state=disabled enabled=false
+      failed_when: false
+  when: not rspamd_enabled
+
+# General spam filtering
+# @TODO move to separate role?
+- name: "{{ rspamd_passive_learning_mode | ternary('Set', 'Remove' ) }} piggyback SpamAssassin results"
+  blockinfile:
+    path: "{{ item }}"
+    marker: "# {mark} MANAGED BLOCK - DO NOT TOUCH"
+    block: |
+      /X-Spam-Score: (\d+)/
+      if ($MATCH1 >= $DELETE_THRESHOLD) 
+      {% raw -%} { {% endraw %}
+        cc "|{{ rspamd_learn_spam }}"  
+      {% raw -%} } {% endraw %}    
+      elsif ($MATCH1 < {{ rspamd_learn_piggyback_threshold }})
+      {% raw -%} { {% endraw %}
+        cc "|{{rspamd_learn_ham}}"
+      {% raw -%} } {% endraw %}
+    insertafter: '^DELETE_THRESHOLD=[\d\.]+$'
+    state: "{{ rspamd_passive_learning_mode | ternary('present', 'absent') }}"
+  with_items: "{{ maildrop_files }}"
+
+- name: Remove spamassassin configuration
+  file: path="{{ rspamd_local_config_dir }}/spamassassin.conf" state=absent
+  when: not rspamd_use_spamassassin_rules
+
+- name: "{{ (spamfilter == 'spamassassin') | ternary('Enable', 'Disable') }} spamc usage"
+  replace:
+    path: "{{ item }}"
+    regexp: '^(\s*){{ (spamfilter == "spamassassin") | ternary("#\s*", "") }}(xfilter\s+.*?(?<=[\/\s])spamc\s+.*)$'
+    replace: '\1{{ (spamfilter == "spamassassin") | ternary("", "#") }}\2'  
+  with_items: "{{ maildrop_files }}"
+
+
+- name: '{{ rspamd_enabled | ternary("Add", "Remove") }} milter configuration for Postfix'
+  include_role: name=mail/configure-postfix tasks_from=set-configuration.yml
+  vars:
+    notify: 
+      - Restart rspamd
+      - Restart postfix
+  with_dict: "{{ postfix_config }}"
+

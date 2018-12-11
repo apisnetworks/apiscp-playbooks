@@ -1,8 +1,20 @@
 ---
+- name: Set yum update policy
+  ini_file:
+    section: commands
+    option: update_cmd
+    value: "{{ yum_update_policy }}"
+    path: "{{ update_config }}"
+  when: yum_update_policy != false
+- name: "{{ (yum_update_policy | ternary('Enable', 'Disable')) }} yum-cron"
+  systemd: 
+    name: yum-cron 
+    state: "{{ yum_update_policy | ternary('started', 'stopped') }}" 
+    enabled: " {{ yum_update_policy | ternary('yes', 'no') }}"
 - ini_file:
     section: commands
     option: apply_updates
-    value: "yes"
+    value: "{{ yum_update_policy | ternary('yes', 'no')}}"
     path: "{{ update_config }}"
 - ini_file:
     section: base

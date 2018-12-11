@@ -1,0 +1,21 @@
+---
+- name: Verify Redis installed
+  yum: name=redis state=present
+- name: Create Redis configuration
+  template:
+    src: templates/redis.conf.j2
+    dest: "{{ redis_cfg_file }}"
+    force: no
+- name: Configure Redis
+  lineinfile:
+    path: "{{ redis_cfg_file }}" 
+    regexp: '^\s*{{ item.key }}\s+.*$'
+    line: '{{ (item.value != None) | ternary(item.key + " " + (item.value|string), omit) }}'
+    state: '{{ (item.value != None) | ternary("present", "absent") }}'
+  loop_control:
+    label: "{{ (item.value != None) | ternary('Setting', 'Removing') }} {{ item.key }} => {{ item.value }}"
+  with_dict: "{{ redis_vars }}"
+  notify: "{{ redis_handler | default(omit) }}"
+- name: Enable Redis
+  systemd: name="{{ redis_service }}" enabled=yes state=started
+  when: redis_enabled

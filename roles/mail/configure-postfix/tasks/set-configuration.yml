@@ -1,0 +1,8 @@
+- name: "{{ item.value | default(false, true) | ternary('Set', 'Remove') }} {{item.key}} => {{ item.value}} in {{ config_file }}"
+  ini_file:
+    path: "{{ config_file }}"
+    section: null
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: "{{ item.value | default(false, True) | ternary('present', 'absent') }}"
+  notify: "{{ notify | default(omit) }}"

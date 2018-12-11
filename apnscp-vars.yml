@@ -38,8 +38,27 @@ has_low_memory: false
 # - no bypasses fst creation
 populate_filesystem_template: auto
 
+# apnscp update policy. Possible values:
+# - edge: nightly updates off Gitlab - DEFAULT
+# - minor: update patch levels (3.0.x)
+# - major: update minor levels (3.x.x)
+# - all: update all releases (x.x.x)
+# - false: disable updates
+apnscp_update_policy: edge
+
+# Automatic update policy with yum. Possible values:
+# - default: yum upgrade (always update) - DEFAULT
+# - security: yum --security upgrade
+# - security-severity: yum --sec-severity=critical upgrade
+# - minimal: yum --bugfix upgrade-minimal
+# - minimal-security: yum --security upgrade-minimal
+# - minimal-security-severity: yum --sec-severity=critical upgrade-minimal
+# - false: disable 
+yum_update_policy: default
+
 # Perform nightly panel updates? Panel may be updated manually with
-# "upcp" or running build/upcp.sh
+# "upcp" or running build/upcp.sh. Panel follows apnscp_update_policy
+# Setting apnscp_update_policy to false disables updates.
 apnscp_nightly_update: true
 
 # Default IPv4 address for apnscp to listen to. If undefined will 

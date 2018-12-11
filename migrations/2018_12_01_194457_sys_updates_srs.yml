@@ -1,0 +1,71 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# - Add SRS support
+# - Change tracking repo over to Gitlab
+# - Startup delay for MySQL on large systems
+# - rspamd experimental support
+# - Unlink /etc/sudoers
+---
+- block:
+    - name: Update synchronizer skiplist
+      lineinfile:
+        path: "{{ apnscp_root }}/config/synchronizer.skiplist"
+        line: "{{ item }}"
+        state: present
+      with_items: 
+        - /etc/authlib/*
+        - /usr/libexec/courier-authlib/*
+        - /var/spool/authdaemon/*
+        - /etc/sudoers
+    - name: Match alternative X-Spam-Flag form
+      replace:
+        path: "{{ item }}"
+        regexp: "X-Spam-Flag: YES"
+        replace: "X-Spam-Flag: (?:YES|yes)"
+      with_items: 
+        - "{{ (apnscp_account_root + '/site*/fst/etc/maildroprc') | fileglob }}"
+        - "{{ apnscp_filelists }}/siteinfo/etc/maildroprc"
+    - name: Add courier-authlib RPM
+      include_role: name=apnscp/initialize-filesystem-template tasks_from=install-package.yml
+      vars: 
+        package: courier-authlib
+        service: siteinfo
+    - include_role: name=mail/rspamd
+    - include_role: name=mail/configure-postfix
+    - include_role: name=apnscp/crons
+    - include_role: name=mysql/install
+    - include_role: name=system/yum
+    - name: Check if repo is bitbucket
+      shell: git remote -v | grep bitbucket | grep fetch | cut -f1
+      register: r
+      failed_when: false
+      changed_when: r.rc == 0 and r.stdout != ""
+      args:
+        chdir: "{{ apnscp_root }}"
+    - name: Change tracking repo to Gitlab
+      shell: git remote set-url "{{ r.stdout }}" "{{ apnscp_release_repo }}"
+      args:
+        chdir: "{{ apnscp_root }}"
+      when: r.changed
+    - name: Fetch refs
+      shell: git fetch "{{ r.stdout }}"
+      args:
+        chdir: "{{ apnscp_root }}"
+      when: r.changed
+    - name: Unlink /etc/sudoers
+      include_role: 
+        name: apnscp/initialize-filesystem-template
+        tasks_from: oneshot-files.yml
+      vars:
+        force: yes
+        item:
+          service: siteinfo
+          file: /etc/sudoers
+
+    - name: Remove %wheel sudo access
+      lineinfile:
+        path: "{{ apnscp_filesystem_template }}/siteinfo/etc/sudoers"
+        regexp: '^\s*%wheel\s+ALL\s*=\s*\(ALL\)\s+ALL'
+        state: absent
+
+  tags: ['up']

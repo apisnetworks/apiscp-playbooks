@@ -7,7 +7,6 @@
 - name: Add tomcat system user
   user:
     name: tomcat
-    system: yes
     update_password: on_create
     shell: /sbin/nologin
     home: /opt/tomcat

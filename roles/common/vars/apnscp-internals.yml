@@ -3,7 +3,10 @@
 #     Don't change below here      #
 ####################################
 DEV_TAG: ">>> DEVELOPMENT PLAY ONLY - REMOVE BEFORE FLIGHT <<<"
+apnscp_release_repo: https://gitlab.com/apisnetworks/apnscp.git
 apnscp_last_run_vars: /root/apnscp-vars-runtime.yml
+# SRS - reformatting forwarded email 
+postsrsd_enabled: "{{ mail_enabled | bool }}"
 # Restrict last/lastlog usage
 wtmp_limit_snooping: true
 # Enable apnscp testing repo
@@ -43,7 +46,8 @@ rbenv_usergems_version: ad2fd08
 ftp_enabled: yes
 # Maximum PASV port when user_daemons disabled. Supports up to 10 concurrent transfers
 pasv_max_port: 40010
-
+# Enable outgoing filtering with rspamd - experimental
+rspamd_enabled: false
 # Use SpamAssassin or rspamd for spam filtering. rspamd is experimental
 spamassassin_enabled: yes
 # apnscp is part of a multi-server environment

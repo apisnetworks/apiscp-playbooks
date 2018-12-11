@@ -33,7 +33,14 @@
     dest: "{{ apnscp_update_cron }}"
     mode: 0755
     force: true
-  when: apnscp_nightly_update | bool
+  when: (apnscp_nightly_update | bool) and apnscp_update_policy != false 
 - name: Disable apnscp nightly updates
   file: path={{ apnscp_update_cron }} state=absent
-  when: not apnscp_nightly_update | bool
+  when: not (apnscp_nightly_update | bool) or apnscp_update_policy == false 
+- name: Set apnscp update policy
+  ini_file: 
+    path: /etc/sysconfig/apnscp
+    no_extra_spaces: yes
+    section: null
+    option: APNSCP_UPDATE_POLICY
+    value: "{{ (apnscp_update_policy != false) | ternary(apnscp_update_policy, '')}}"

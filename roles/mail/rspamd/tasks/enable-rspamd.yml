@@ -1,0 +1,31 @@
+---
+- name: Install rspamd channel
+  get_url: 
+    url: "{{ rspamd_rpm_url }}" 
+    force: "{{ force | default(false) }}"
+    dest: "{{ rspamd_repo }}"
+  when: false
+- name: Install rspamd RPM
+  yum: name=rspamd state=present
+  when: false
+
+- name: Create Redis server
+  include_tasks: setup-redis.yml
+  when: rspamd_redis_service
+
+- name: Remove Redis rspamd service
+  systemd: service=redis-rspamd state=stopped
+  register: c
+  when: not rspamd_redis_service
+
+- name: Populate rspamd configuration
+  include_tasks: set-rspamd-configuration.yml
+  vars:
+    rspamd_dir: "{{ rspamd_local_config_dir }}"
+    file: "{{ item.file }}"
+    config: "{{ item.vars }}"
+  with_items: 
+    - "{{ config_files }}"
+    - "{{ rspamd_use_spamassassin_rules | ternary(rspamd_spamassassin_config, omit) }}"
+  loop_control:
+    label: "Installing {{ item }} to {{ rspamd_config_dir }}"

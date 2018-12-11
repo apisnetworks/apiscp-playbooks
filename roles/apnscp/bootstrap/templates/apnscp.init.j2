@@ -14,8 +14,8 @@ SYSTEMCTL_SKIP_REDIRECT=1
 [[ -f /etc/sysconfig/apnscp ]] && . /etc/sysconfig/apnscp
 
 # Prevent runaway logging
-# Maximum blocksize of all files, 1 block = 4 KB
-ulimit -f "${MAX_FILESIZE:-524288}"
+# Maximum blocksize of all files, works out to be 2 GB... ?!
+ulimit -f "${MAX_FILESIZE:-4194304}"
 CP_DIR={{apnscp_root|quote}}
 
 declare -x HOSTNAME="$(hostname -f)"

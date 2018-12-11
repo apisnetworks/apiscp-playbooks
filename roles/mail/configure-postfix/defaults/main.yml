@@ -3,6 +3,10 @@ aliases_file: /etc/aliases
 postfix_conf_dir: /etc/postfix
 # apnscp-specific lookup file for database configuration
 postfix_control_file: "{{ postfix_conf_dir }}/mailboxes.cf"
+# Allow unauthenticated relaying from 127.0.0.1
+# See also StealCat malware
+postfix_relay_mynetworks: false
+
 postfix_sysuser: postfix
 postfix_user: postfix
 # Override to force a password otherwise randomly assigned
@@ -17,4 +21,9 @@ template_files:
   - postscreen_access.cidr.j2
   - client_access.j2
   - domains.cf.j2
+
 postfix_inet_interfaces: "{{ mail_enabled | bool | ternary('all','loopback-only') }}"
+postfix_mydomain: "{{ data_center_mode | bool | ternary(ansible_nodename, None) }}"
+# PostSRS
+postsrs_sender_map_port: 10001
+postsrs_recipient_map_port: 10002

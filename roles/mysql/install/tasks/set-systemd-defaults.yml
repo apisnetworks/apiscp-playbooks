@@ -17,5 +17,6 @@
           OOMScoreAdjust: -500
           LimitNOFILE: 65535
           Nice: -15
+          TimeoutStartUSec: "{{ mysql_startup_timeout }}"
           ExecStartPre: "{{ mysql_check_path }}"
     notify: Restart mariadb

@@ -1,0 +1,3 @@
+---
+- name: Restart redis-rspamd
+  systemd: name=redis-rspamd state=restarted enabled=yes

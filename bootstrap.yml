@@ -33,11 +33,11 @@
     - packages/install
     - apnscp/testing
     - pgsql/install
-    - mysql/install    
+    - mysql/install
     - system/rsyslog
     - vsftpd/configure
     - browscap
-    - php/install  
+    - php/install
     - php/install-pecl-module
     - php/create-configuration
     - java/tomcat
@@ -73,14 +73,13 @@
     - system/cgroup
     - system/sysctl
     - system/tuned
-    - system/sshd    
+    - system/sshd
     - network/setup-firewall
     - fail2ban/whitelist-self
     - fail2ban/configure-jails
     - mail/maildir
     - mail/spamassassin
-    #  Needs more testing...
-    #- mail/rspamd
+    - mail/rspamd
     - apnscp/register-ssl
     - network/optimizations
     # Odds and ends
@@ -110,8 +109,6 @@
     # Last checkpoint, validate a mock account
     - apnscp/assert-account-works
     - apnscp/notify-installed
-    # Holy shit, DONE!
-    # 🎉🙌🎊🍺
     ####################################
     # Add post-provisioning roles here #
     ####################################

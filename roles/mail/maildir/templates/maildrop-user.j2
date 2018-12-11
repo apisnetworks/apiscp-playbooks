@@ -9,7 +9,7 @@ if ($SIZE < 524288)
 }
 
 DELETE_THRESHOLD=7.0
-if (/^X-Spam-Flag: YES/)
+if (/^X-Spam-Flag: (?:YES|yes)/)
 {
     /X-Spam-Score: (\d+)/
     if ($MATCH1 >= $DELETE_THRESHOLD)

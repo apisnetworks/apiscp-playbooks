@@ -1,0 +1,27 @@
+# Set override configuration with the following,
+#
+# include_tasks: set-rspamd-configuration
+# vars:
+#   rspamd_dir: "{{ rspamd_config_dir }}/overrides.d"
+#   file: actions.conf
+#   config:
+#     var1: val1
+#     var2: val2
+---
+- set_fact: cfgpath="{{ rspamd_dir | default(rspamd_config_dir) }}/{{file}}"
+- stat: path="{{ cfgpath }}"
+  register: st
+- name: "{{ st.stat.exists | ternary('Assert permissions on', 'Create file') }} {{ cfgpath}}"
+  file: 
+    path: "{{ cfgpath }}"
+    state: "{{ st.stat.exists | ternary('file', 'touch') }}"
+    owner: "{{ rspamd_user }}"
+    mode: 0600
+  register: r
+- set_fact: 
+    json: "{{ ('{' + (lookup('file', cfgpath) | default('', True)) + '}') | from_json | combine( config, recursive=True ) }}"
+- name: "Merging configuration in {{ cfgpath }}"
+  copy: 
+    dest: "{{ cfgpath }}"
+    content: '{{ json | to_nice_json | regex_replace("^{|}$", "")}}'
+  notify: Restart rspamd

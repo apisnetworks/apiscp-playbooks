@@ -118,6 +118,7 @@ oneshot_files:
   - {file: /etc/services }
   - {file: /etc/shells }
   - {file: /etc/skel }
+  - {file: /etc/sudoers }
   - {file: /etc/profile.d/lang.csh}
   - {file: /etc/profile.d/lang.sh}
   - {file: /etc/profile.d/256term.csh}

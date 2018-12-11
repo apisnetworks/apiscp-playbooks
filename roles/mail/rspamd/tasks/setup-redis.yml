@@ -1,0 +1,31 @@
+---
+- stat: path="{{ rspamd_redis_config }}"
+  register: r
+- name: Create redis-rspamd.conf
+  file: path="{{ rspamd_redis_config }}" state=touch owner="{{ rspamd_redis_user }}"
+  when: not r.stat.exists
+- file: path="{{ rspamd_redis_dir }}" state=directory owner="{{ rspamd_redis_user }}" mode="0700"
+- include_role:
+    name: software/redis
+  vars:
+    redis_cfg_file: "{{ rspamd_redis_config }}"
+    redis_vars: "{{ rspamd_redis_vars}}"
+    redis_service: redis-rspamd
+    redis_enabled: false
+    redis_handler: Restart redis-rspamd
+
+- name: Install Redis rspamd service
+  include_role: role=apnscp/install-services
+  vars:
+    templated_services:
+      - service: redis-rspamd
+        template: redis-rspamd.service.j2
+    services:
+      - name: redis-rspamd
+        files:
+          - src: "{{ redis_rspamd_service_file }}"
+            dest: "/etc/systemd/system/redis-rspamd.service"
+        systemd:
+          state: started
+          enabled: yes
+  when: rspamd_redis_service

@@ -6,7 +6,6 @@
   with_items: "{{ templated_services }}"
   loop_control:
     label: "Templating {{ item.service }}"
-- include_vars: vars/main.yml
 - name: "Install systemd services"
   include_tasks: install-service.yml
   vars: 

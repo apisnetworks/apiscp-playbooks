@@ -1,0 +1,19 @@
+[Unit]
+Description=Redis service for rspamd
+After=network.target
+After=network-online.target
+Before=rspamd.service
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/bin/redis-server {{ rspamd_redis_config }} --supervised systemd
+ExecStop=/usr/libexec/redis-shutdown {{ rspamd_redis_config | regex_replace('^/etc/|\.conf$', '') }}
+Type=notify
+User={{ rspamd_user }}
+Group={{ rspamd_user }}
+RuntimeDirectory=rspamd
+RuntimeDirectoryMode=0755
+PidFile={{ rspamd_redis_pid_file }}
+
+[Install]
+WantedBy=multi-user.target

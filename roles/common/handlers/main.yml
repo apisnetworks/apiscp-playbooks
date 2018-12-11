@@ -24,19 +24,40 @@
 - name: Restart postgresql
   systemd: state=restarted name=postgresql 
   listen: Restart services
+- name: Restart redis
+  systemd: state=restarted name=redis
 - name: Reload firewalld
   command: /bin/firewall-cmd --reload
 - name: Reload fail2ban
   systemd: state=reloaded name=fail2ban enabled=yes
-- name: Restart spamassassin
-  block:
-    - command: rpm -q spamassassin
-      ignore_errors: true
-      register: sa_present
-    - systemd: state=restarted name=spamassassin
-      when: sa_present.rc == 0
+
+- command: rpm -q spamassassin
+  args:
+    warn: false
+  failed_when: false
+  changed_when: false
+  register: sa_present
+  listen: Restart spamassassin
+- systemd: state=restarted name=spamassassin enabled=yes
+  when: sa_present.rc == 0
+  listen: Restart spamassassin
+
+- command: rpm -q rspamd
+  args:
+    warn: false
+  changed_when: false
+  failed_when: false
+  register: rspamd_present
+  listen: Restart rspamd
+  
+- systemd: state=restarted name=rspamd enabled=yes
+  when: rspamd_present.rc == 0
+  listen: Restart rspamd
+
 - name: Restart postfix
   systemd: state=restarted name=postfix enabled=yes
+- name: Restart postsrsd
+  systemd: state=restarted name=postsrsd enabled=yes
 - name: Restart fail2ban
   systemd: state=restarted name=fail2ban enabled=yes
 - name: Restart sshd
