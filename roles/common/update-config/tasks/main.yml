@@ -13,15 +13,3 @@
   with_first_found:
     - "{{ apnscp_last_run_vars }}"
     - /dev/null
-- name: Update apnscp-vars with --extra-vars overrides
-  set_fact: 
-    customdiff: "{{ customdiff|default({}) | combine({item: hostvars[inventory_hostname][item]}) }}"
-  with_items: "{{ hostvars[inventory_hostname] | intersect(original)}}"
-  when: item not in custom or hostvars[inventory_hostname][item] != custom[item]
-  loop_control: 
-    label: "Setting {{ item }} => {{ hostvars[inventory_hostname][item] }}"
-- name: Save apnscp-vars state
-  copy:
-    dest: "{{ apnscp_last_run_vars }}"
-    content: "{{ customdiff | default({}) | to_nice_yaml(indent=4) }}"
-  when: customdiff
