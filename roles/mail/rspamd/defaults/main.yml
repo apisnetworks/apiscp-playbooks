@@ -43,8 +43,13 @@ rspamd_filter_origination: true
 #############
 # Learning
 #############
+# Valid values: standalone, piggyback. 
+# Setting spamfilter in apnscp-vars.yml to spamassassin implies piggyback
+# "piggyback" will feed off SA data
+rspamd_method: "{{ spamfilter == 'spamassassin' | ternary('piggyback', 'standalone') }}"
+
 # piggyback off results from spamassassin to train algorithm
-rspamd_passive_learning_mode: "{{ rspamd_method == 'piggyback' | default(false) }}"
+rspamd_passive_learning_mode: "{{ (rspamd_method == 'piggyback') | default(false) }}"
 
 # Suitable for low-volume environments
 rspamd_use_spamassassin_rules: true
@@ -54,14 +59,13 @@ rspamd_spamassassin_rules_dir: "/var/lib/spamassassin/3.004002/updates_spamassas
 
 # Enable neural training. CPU intensive
 rspamd_enable_neural_training: "{{ (not has_low_memory or data_center_mode) and rspamd_redis_enabled }}"
-# Valid values: standalone, piggyback. 
-# Setting spamfilter in apnscp-vars.yml to spamassassin implies piggyback
-# "piggyback" will feed off SA data
-rspamd_method: "{{ spamfilter == 'spamassassin' | ternary('piggyback', 'standalone') }}"
 
 # 13.19 is approximately 15% percentile with a trained data set
 # n = 532, mu = 18.90, s = 5.39
-rspamd_reject_score: "{{ rspamd_learn_piggyback_threshold | ternary(25, 13.2) }}"
+rspamd_reject_piggyback_score: 25
+rspamd_reject_score: 13.2
+# JSON problem...
+_rspamd_reject_score: "{{ rspamd_passive_learning_mode | ternary(rspamd_reject_piggyback_score, rspamd_reject_score) }}"
 rspamd_greylist_score: 6
 rspamd_add_header_score: 2
 
@@ -88,7 +92,7 @@ rspamd_spamassassin_config:
   - file: spamassassin.conf
     vars:
       ruleset: "{{ rspamd_spamassassin_rules_dir }}/*.cf"
-      match_limit: 100k;
+      match_limit: 100k
 # rspamd config
 config_files:
   - file: neural_group.conf
@@ -101,7 +105,7 @@ config_files:
   - file: neural.conf
     vars:
       enabled: "{{ rspamd_enable_neural_training }}"
-      servers: "localhost"
+      servers: "{{ rspamd_redis_server }}"
       dbname: "{{ rspamd_neural_db | default(2) }}"
   - file: reputation.conf
     vars:
