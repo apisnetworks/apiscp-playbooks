@@ -1,0 +1,9 @@
+- name: "Manage alias {{ email }} => {{ destination }}"
+  lineinfile:
+    path: "{{ aliases_file }}"
+    regexp: '^\s*{{ email }}\s*:'
+    line: '{{ email }}: {{ destination }}'
+    state: '{{ destination  | ternary("present", "absent") }}'
+  loop_control:
+    label: "Adding alias {{ email }} to {{ destination }}"
+  notify: Update aliases

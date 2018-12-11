@@ -9,23 +9,6 @@
 
 # General spam filtering
 # @TODO move to separate role?
-- name: "{{ rspamd_passive_learning_mode | ternary('Set', 'Remove' ) }} piggyback SpamAssassin results"
-  blockinfile:
-    path: "{{ item }}"
-    marker: "# {mark} MANAGED BLOCK - DO NOT TOUCH"
-    block: |
-      /X-Spam-Score: (\d+)/
-      if ($MATCH1 >= $DELETE_THRESHOLD) 
-      {% raw -%} { {% endraw %}
-        cc "|{{ rspamd_learn_spam }}"  
-      {% raw -%} } {% endraw %}    
-      elsif ($MATCH1 < {{ rspamd_learn_piggyback_threshold }})
-      {% raw -%} { {% endraw %}
-        cc "|{{rspamd_learn_ham}}"
-      {% raw -%} } {% endraw %}
-    insertafter: '^DELETE_THRESHOLD=[\d\.]+$'
-    state: "{{ rspamd_passive_learning_mode | ternary('present', 'absent') }}"
-  with_items: "{{ maildrop_files }}"
 
 - name: Remove spamassassin configuration
   file: path="{{ rspamd_local_config_dir }}/spamassassin.conf" state=absent
@@ -35,15 +18,41 @@
   replace:
     path: "{{ item }}"
     regexp: '^(\s*){{ (spamfilter == "spamassassin") | ternary("#\s*", "") }}(xfilter\s+.*?(?<=[\/\s])spamc\s+.*)$'
-    replace: '\1{{ (spamfilter == "spamassassin") | ternary("", "#") }}\2'  
+    replace: '\1{{ (spamfilter == "spamassassin") | ternary("", "#") }}\2'
   with_items: "{{ maildrop_files }}"
+- name: Always add X-Spam-Score header
+  lineinfile:
+    path: /etc/mail/spamassassin/local.cf
+    regexp: '^\s*add_header\s+spam\s+score\s+'
+    line: 'add_header all score _SCORE_'
+    state: present
+  notify: Restart spamassassin
+  when: spamfilter == "spamassassin"
 
+- name: '{{ rspamd_enabled | ternary("Add", "Remove") }} learning aliases'
+  include_role:
+    name: mail/configure-postfix
+    tasks_from: manage-alias.yml
+  vars:
+    email: "{{ item.key }}"
+    destination: "{{ rspamd_enabled | ternary(item.value, None) }}"
+  with_dict:
+    "{{ rspamd_learn_ham_email }}": "{{ rspamd_learn_ham }}"
+    "{{ rspamd_learn_spam_email }}": "{{ rspamd_learn_spam }}"
 
 - name: '{{ rspamd_enabled | ternary("Add", "Remove") }} milter configuration for Postfix'
   include_role: name=mail/configure-postfix tasks_from=set-configuration.yml
   vars:
-    notify: 
+    notify:
       - Restart rspamd
       - Restart postfix
   with_dict: "{{ postfix_config }}"
 
+- name: "{{ rspamd_passive_learning_mode | ternary('Set', 'Remove' ) }} piggyback SpamAssassin results"
+  blockinfile:
+    path: "{{ item }}"
+    marker: "# {mark} MANAGED BLOCK - DO NOT TOUCH"
+    block: "{{ rspamd_piggyback_block }}"
+    insertafter: '^DELETE_THRESHOLD=[\d\.]+$'
+    state: "{{ rspamd_passive_learning_mode | ternary('present', 'absent') }}"
+  with_items: "{{ maildrop_files }}"

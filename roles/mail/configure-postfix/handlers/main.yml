@@ -1,0 +1,2 @@
+- name: Update aliases
+  command: /usr/sbin/postalias "{{ aliases_file }}"

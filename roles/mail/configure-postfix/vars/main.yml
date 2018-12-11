@@ -5,7 +5,7 @@ config:
   virtual_mailbox_domains: proxy:pgsql:/etc/postfix/domains.cf
   alias_maps: "proxy:hash:{{aliases_file}}"
   virtual_transport: vmaildrop
-  local_transport: localmaildrop
+  local_transport: local:$myhostname
   virtual_alias_maps: proxy:pgsql:/etc/postfix/aliases.cf
   vmaildrop_destination_recipient_limit: 1
   localmaildrop_destination_recipient_limit: $vmaildrop_destination_recipient_limit
@@ -28,7 +28,7 @@ config:
     $relay_recipient_maps $relay_domains $canonical_maps $sender_canonical_maps
     $recipient_canonical_maps $relocated_maps $transport_maps $mynetworks $smtp_sasl_auth_cache_name
   # ">" breaks idempotency
-  smtpd_recipient_restrictions: 
+  smtpd_recipient_restrictions:
     '{{ postfix_relay_mynetworks | bool | ternary("permit_mynetworks,", "") }}
     permit_sasl_authenticated,
     reject_unauth_destination,
@@ -44,7 +44,7 @@ config:
     reject_invalid_hostname,
     reject_unknown_sender_domain,
     reject_unknown_reverse_client_hostname'
-  # Remove permit_mynetworks to prevent unauthorized relaying 
+  # Remove permit_mynetworks to prevent unauthorized relaying
   smtpd_relay_restrictions: '{{ postfix_relay_mynetworks | bool | ternary("permit_mynetworks,", "") }}permit_sasl_authenticated,defer_unauth_destination'
   smtpd_helo_required: "yes"
   smtpd_error_sleep_time: 60
@@ -54,12 +54,14 @@ config:
   localmaildrop_destination_rate_delay: $vmaildrop_destination_rate_delay
   smtpd_sasl_security_options: noanonymous
   mailbox_size_limit: $message_size_limit
+  mailbox_transport: localmaildrop
   minimal_backoff_time: 4h
   queue_run_delay: 8h
   data_directory: /var/lib/postfix
   smtpd_tls_session_cache_database: proxy:btree:$data_directory/smtpd_scache
   smtp_sasl_auth_cache_name: proxy:btree:$data_directory/sasl_auth_cache
   message_size_limit: "{{ postfix_message_size_limit | default(1000000000) }}"
+  virtual_mailbox_limit: $message_size_limit
   smtpd_soft_error_limit: ${stress?2}${stress:5}
   smtpd_hard_error_limit: 2
   virtual_destination_rate_delay: 1s

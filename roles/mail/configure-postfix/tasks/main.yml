@@ -32,21 +32,16 @@
   loop_control:
     label: "Set {{ item.key }} => {{ item.value }}"
 - name: Create aliases
-  lineinfile:
-    path: "{{ aliases_file }}"
-    regexp: '^\s*{{ item.key }}\s*:'
-    line: '{{ item.key }}: {{ item.value }}'
-    state: present
+  include_tasks: manage-alias.yml
+  vars:
+    email: "{{ item.key }}"
+    destination: "{{ item.value }}"
   with_dict:
     site_blackhole: >
       {{ (spamfilter == 'rspamd') | ternary('rspamc learn_spam', '/dev/null') }}
     "{{ apnscp_system_user }}": root
   loop_control:
     label: "Adding alias {{ item.key }} to {{ item.value }}"
-  register: lif
-- name: Update aliases
-  command: /usr/sbin/postalias "{{ aliases_file }}"
-  when: lif.changed
 - name: Check if sender transport creation necessary
   stat: path="{{ postfix_conf_dir}}/sender_transport"
   register: st
