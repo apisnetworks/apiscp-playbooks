@@ -40,6 +40,8 @@
     echo "SELECT column_name FROM INFORMATION_SCHEMA.columns WHERE 
       table_schema = 'mysql' AND table_name = 'user' AND column_name = 
       'authentication_string'" | mysql --column-names=false
+  environment:
+    HOME: /root
   register: o
   changed_when: false
 - set_fact: mysql_delete_clause="password = ''"

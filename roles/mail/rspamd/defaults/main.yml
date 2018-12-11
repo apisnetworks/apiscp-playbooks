@@ -7,6 +7,11 @@ rspamd_config_dir: /etc/rspamd
 rspamd_local_config_dir: "{{ rspamd_config_dir }}/local.d"
 rspamd_user: _rspamd
 
+# Change to a higher count if more CPUs. Cannot infer from 
+# has_low_memory or CPU count, which forces type to string (and bombs JSON).
+# https://github.com/ansible/ansible/issues/30366
+rspamd_worker_process_count: 1
+
 # Redis configuration
 # Enable redis for rspamd
 rspamd_redis_enabled: "{{ not has_low_memory }}"
@@ -32,6 +37,20 @@ rspamd_proxy_port: 10003
 rspamd_proxy_host: localhost
 # Filter mail that originates from sendmail or PHP mail() function
 rspamd_filter_outbound: true
+# filter mail that comes from the server as well as SRS forwards
+rspamd_filter_origination: true
+
+#############
+# Learning
+#############
+# piggyback off results from spamassassin to train algorithm
+rspamd_passive_learning_mode: "{{ rspamd_method == 'piggyback' | default(false) }}"
+
+# Suitable for low-volume environments
+rspamd_use_spamassassin_rules: true
+# Learns roughly half of ham in a trained database
+rspamd_learn_piggyback_threshold: -1
+rspamd_spamassassin_rules_dir: "/var/lib/spamassassin/3.004002/updates_spamassassin_org"
 
 # Enable neural training. CPU intensive
 rspamd_enable_neural_training: "{{ (not has_low_memory or data_center_mode) and rspamd_redis_enabled }}"
@@ -40,12 +59,9 @@ rspamd_enable_neural_training: "{{ (not has_low_memory or data_center_mode) and 
 # "piggyback" will feed off SA data
 rspamd_method: "{{ spamfilter == 'spamassassin' | ternary('piggyback', 'standalone') }}"
 
-# piggyback off results from spamassassin to train algorithm
-rspamd_passive_learning_mode: "{{ rspamd_method == 'piggyback' | default(false) }}"
-# override.d/actions.conf
-# filter mail that comes from the server as well as SRS forwards
-rspamd_filter_origination: true
-rspamd_reject_score: 15
+# 13.19 is approximately 15% percentile with a trained data set
+# n = 532, mu = 18.90, s = 5.39
+rspamd_reject_score: "{{ rspamd_learn_piggyback_threshold | ternary(25, 13.2) }}"
 rspamd_greylist_score: 6
 rspamd_add_header_score: 2
 
@@ -56,7 +72,10 @@ rspamd_learn_ham: "{{ rspamd_learn_command }} learn_ham"
 maildrop_files:
   - "{{ (apnscp_account_root + '/site*/fst/etc/maildroprc') | fileglob }}"
   - "{{ apnscp_filelists }}/siteinfo/etc/maildroprc"
+
+##############
 # Postfix main.cf configuration
+##############
 postfix_config:
   # All inbound and forwarded mail
   smtpd_milters: "{{ rspamd_enabled | ternary('inet:' + rspamd_proxy_host + ':' + rspamd_proxy_port|string, None) }}"
@@ -65,15 +84,6 @@ postfix_config:
   non_smtpd_milters: "{{ rspamd_enabled and rspamd_filter_outbound | ternary('inet:' + rspamd_proxy_host + ':' + rspamd_proxy_port|string, None) }}"
   milter_mail_macros: "i {mail_addr} {client_addr} {client_name} {auth_authen}"
 
-# Change to a higher count if more CPUs. Cannot infer from 
-# has_low_memory or CPU count, which forces type to string (and bombs JSON).
-# https://github.com/ansible/ansible/issues/30366
-rspamd_worker_process_count: 1
-
-# Suitable for low-volume environments
-rspamd_use_spamassassin_rules: true
-rspamd_learn_piggyback_threshold: 0.5
-rspamd_spamassassin_rules_dir: "/var/lib/spamassassin/3.004002/updates_spamassassin_org"
 rspamd_spamassassin_config:
   - file: spamassassin.conf
     vars:
