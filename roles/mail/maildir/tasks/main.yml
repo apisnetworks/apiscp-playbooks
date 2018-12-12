@@ -1,6 +1,6 @@
 ---
 - name: Edit Mail storage location
-  lineinfile: 
+  lineinfile:
     path: /etc/login.defs
     regexp: '^[^#]*MAIL_DIR'
     state: present
@@ -19,12 +19,14 @@
 - template:
     src: templates/maildrop-system.j2
     dest: /etc/maildroprc
+    force: no
 - file:
     path: "{{ apnscp_filelists }}/siteinfo/etc"
     state: directory
-- template: 
+- template:
     src: templates/maildrop-user.j2
     dest: "{{ apnscp_filelists }}/siteinfo/etc/maildroprc"
+    force: no
 - name: Edit Muttrc Mail storage
   blockinfile:
     path: /etc/Muttrc
@@ -44,7 +46,7 @@
   include_tasks: roles/common/tasks/copy-link.yml
   vars:
     src: /etc/Muttrc
-    path: "{{ apnscp_filesystem_template }}/{{ mutt_svc }}/etc/Muttrc"  
+    path: "{{ apnscp_filesystem_template }}/{{ mutt_svc }}/etc/Muttrc"
     notify:
       - Reload filesystem template
 - name: Populate Muttrc.local
@@ -57,7 +59,7 @@
         service: ssh
         path: /etc/Muttrc.local
 - name: Remove root mbox
-  file: 
+  file:
     path: /var/spool/mail/root
     state: absent
 - name: Create root spool

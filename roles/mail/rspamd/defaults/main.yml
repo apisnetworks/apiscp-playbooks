@@ -3,6 +3,7 @@ rspamd_experimental: false
 rspamd_rpm_url: "https://rspamd.com/rpm{{ rspamd_experimental | ternary('', '-stable') }}/{{ ansible_distribution == 'Fedora' | ternary('fedora', 'centos') }}-{{ansible_distribution_major_version}}/rspamd.repo"
 rspamd_repo: /etc/yum.repos.d/rspamd.repo
 
+rspamd_runtime_dir: /var/lib/rspamd
 rspamd_config_dir: /etc/rspamd
 rspamd_local_config_dir: "{{ rspamd_config_dir }}/local.d"
 rspamd_user: _rspamd
@@ -11,27 +12,33 @@ rspamd_user: _rspamd
 # has_low_memory or CPU count, which forces type to string (and bombs JSON).
 # https://github.com/ansible/ansible/issues/30366
 rspamd_worker_process_count: 1
+# Change to a higher count if more CPUs.
+rspamd_fuzzy_worker_process_count: 1
 
 # Redis configuration
 # Enable redis for rspamd
 rspamd_redis_enabled: "{{ not has_low_memory }}"
 # Give an absolute path to use a UNIX socket + install service
-rspamd_redis_server: "/var/lib/rspamd/redis.sock"
+rspamd_redis_server: "{{ rspamd_runtime_dir }}/redis.sock"
 rspamd_redis_service: "{{ rspamd_redis_server.find('/') == 0 }}"
 rspamd_redis_config: "{{ rspamd_local_config_dir }}/redis-server.conf"
 rspamd_redis_user: "{{ rspamd_user }}"
-rspamd_redis_pid_file: "/var/lib/rspamd/redis.pid"
+rspamd_redis_pid_file: "{{ rspamd_runtime_dir }}/redis.pid"
 # Database storage
-rspamd_redis_dir: /var/lib/rspamd/redis
+rspamd_redis_dir: "{{ rspamd_runtime_dir }}/redis"
+rspamd_redis_memory_allocation: "{{ has_low_memory | ternary('256mb', (ansible_memtotal_mb * 0.5) | string + 'mb')}}"
 rspamd_redis_vars:
   bind: "127.0.0.1"
   daemonize: "yes"
   unixsocketperm: "0600"
+  "maxmemory-policy": "volatile-lru"
   port: 0
+  maxmemory: "{{ rspamd_redis_memory_allocation }}"
   "protected-mode": "no"
   pidfile: "{{ rspamd_redis_pid_file }}"
   unixsocket: "{{ (rspamd_redis_server.find('/') == 0) |  ternary(rspamd_redis_server, omit) }}"
   dir: "{{ rspamd_redis_dir }}"
+
 # rspamd milter
 rspamd_proxy_port: 10003
 rspamd_proxy_host: localhost
@@ -55,7 +62,7 @@ rspamd_passive_learning_mode: "{{ rspamd_enabled and (rspamd_method == 'piggybac
 rspamd_use_spamassassin_rules: true
 # Learns roughly half of ham in a trained database
 rspamd_learn_piggyback_threshold: -0.5
-rspamd_spamassassin_rules_dir: "/var/lib/spamassassin/3.004002/updates_spamassassin_org"
+rspamd_spamassassin_rules: "/var/lib/spamassassin/3.004002/updates_spamassassin_org/[0-9]*.cf"
 
 # Enable neural training. CPU intensive
 rspamd_enable_neural_training: "{{ not (has_low_memory or data_center_mode) and rspamd_redis_enabled }}"
@@ -65,13 +72,17 @@ rspamd_enable_neural_training: "{{ not (has_low_memory or data_center_mode) and 
 rspamd_reject_piggyback_score: 25
 rspamd_reject_score: 13.2
 # JSON problem...
-_rspamd_reject_score: "{{ rspamd_passive_learning_mode | ternary(rspamd_reject_piggyback_score, rspamd_reject_score) }}"
+_rspamd_reject_score: "{{ rspamd_passive_learning_mode | ternary(rspamd_reject_piggyback_score, rspamd_reject_score) | float }}"
 rspamd_greylist_score: 6
 rspamd_add_header_score: 2
 
 rspamd_learn_command: /usr/bin/rspamc
 rspamd_learn_spam: '"|{{ rspamd_learn_command }} learn_spam"'
 rspamd_learn_ham: '"|{{ rspamd_learn_command }} learn_ham"'
+__default_rspamd_worker_socket: "{{ rspamd_runtime_dir }}/rspamd-worker.sock"
+
+# Change to a different server or host if clustered
+rspamd_worker_socket: "{{ __default_rspamd_worker_socket }}"
 
 rspamd_piggyback_block: |
   /^X-Spam-Score: ([-\d\.]+)/
@@ -81,7 +92,7 @@ rspamd_piggyback_block: |
     cc "! {{ rspamd_learn_spam_email }}"
   {% raw -%} } {% endraw %}
 
-  elsif ($MATCH1 < {{ rspamd_learn_piggyback_threshold }})
+  elsif ($MATCH1 <= {{ rspamd_learn_piggyback_threshold }})
   {% raw -%} { {% endraw %}
 
     cc "! {{ rspamd_learn_ham_email }}"
@@ -108,7 +119,7 @@ postfix_config:
 rspamd_spamassassin_config:
   - file: spamassassin.conf
     vars:
-      ruleset: "{{ rspamd_spamassassin_rules_dir }}/*.cf"
+      ruleset: "{{ rspamd_spamassassin_rules }}"
       match_limit: 100k
 # rspamd config
 config_files:
@@ -124,20 +135,54 @@ config_files:
       enabled: "{{ rspamd_enable_neural_training }}"
       servers: "{{ rspamd_redis_server }}"
       dbname: "{{ rspamd_neural_db | default(2) }}"
+  - file: replies.conf
+    vars:
+      action: no action
+  - file: "url_tags.conf"
+    vars:
+      enabled: "{{ rspamd_redis_enabled }}"
   - file: reputation.conf
     vars:
       rules:
         ip_reputation:
-          redis:
-            servers: "{{ rspamd_redis_enabled | ternary(rspamd_redis_server, None) }}"
+          symbol: IP_REPUTATION
+          selector:
+            ip: {}
+          backend: &redis
+            redis:
+              servers: "{{ rspamd_redis_enabled | ternary(rspamd_redis_server, None) }}"
+        spf_reputation:
+          symbol: SPF_REPUTATION
+          selector:
+            spf: {}
+          backend: *redis
+        dkim_reputation:
+          symbol: DKIM_REPUTATION
+          selector:
+            dkim: {}
+          backend: *redis
+
   - file: actions.conf
     vars:
-      reject: "{{ rspamd_reject_score }}"
       add_header: "{{ rspamd_add_header_score }}"
       greylist: "{{ rspamd_greylist_score }}"
-      subject: "{{ (rspamd_passive_learning_mode == 'piggyback') | ternary(null, '[SPAM] (%d) %s') }}"
+      # Jinja improperly translates None => null
+      subject: "{{ rspamd_passive_learning_mode | ternary('%s', '[SPAM] (%d) %s') }}"
+  - file: classifier-bayes.conf
+    vars:
+      backend: "{{ rspamd_redis_enabled | ternary('redis', 'sqlite') }}"
+      autolearn: [-2.5, 7.5]
+  - file: redis.conf
+    vars:
+      servers: "{{ rspamd_redis_enabled | ternary(rspamd_redis_server, None) }}"
+      expand_keys: true
+  - file: worker-normal.inc
+    vars:
+      enabled: "{{ not has_low_memory  }}"
+      bind_socket: "{{ rspamd_worker_socket }}"
   - file: worker-proxy.inc
     vars:
+      self_scan: "{{ has_low_memory and  (__default_rspamd_worker_socket == rspamd_worker_socket )}}"
       bind_socket: "localhost:{{ rspamd_proxy_port }}"
       spam_header: 'X-Spam-Status'
   - file: worker-controller.inc
@@ -145,17 +190,11 @@ config_files:
       extended_spam_headers: true
       # Does this affect just outbound or inbound?
       quarantine_on_reject: false
+      bind_socket: "127.0.0.1:11334"
+      #bind_socket: "{{ rspamd_runtime_dir }}/rspamd-controller.sock"
       count: "{{ rspamd_worker_process_count }}"
-  - file: statistics.conf
-    vars:
-      classifier:
-        bayes:
-          backend: "{{ rspamd_redis_enabled | ternary('redis', 'sqlite3') }}"
-          autolearn: "true"
-  - file: redis.conf
-    vars:
-      servers: "{{ rspamd_redis_enabled | ternary(rspamd_redis_server, None) }}"
   - file: worker-fuzzy.inc
     vars:
-      backend: "{{ rspamd_redis_enabled | ternary('redis', 'sqlite3') }}"
+      backend: "{{ rspamd_redis_enabled | ternary('redis', 'sqlite') }}"
+      count: "{{ rspamd_fuzzy_worker_process_count }}"
       hash_file: "{{ rspamd_redis_enabled | ternary(omit, '${DBDIR}/fuzzy.db') }}"

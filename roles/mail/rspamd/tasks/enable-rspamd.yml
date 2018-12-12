@@ -1,7 +1,8 @@
 ---
+
 - name: Install rspamd channel
-  get_url: 
-    url: "{{ rspamd_rpm_url }}" 
+  get_url:
+    url: "{{ rspamd_rpm_url }}"
     force: "{{ force | default(false) }}"
     dest: "{{ rspamd_repo }}"
   when: false
@@ -24,8 +25,27 @@
     rspamd_dir: "{{ rspamd_local_config_dir }}"
     file: "{{ item.file }}"
     config: "{{ item.vars }}"
-  with_items: 
+  with_items:
     - "{{ config_files }}"
     - "{{ rspamd_use_spamassassin_rules | ternary(rspamd_spamassassin_config, omit) }}"
   loop_control:
     label: "Installing {{ item }} to {{ rspamd_config_dir }}"
+- name: Type coercion workaround - passive mode
+  set_fact:
+    __rspamd_rejection_threshold: "{{ rspamd_reject_piggyback_score }}"
+  when: rspamd_passive_learning_mode
+- name: Type coercion workaround - active enforcement
+  set_fact:
+    __rspamd_rejection_threshold: "{{ rspamd_reject_score }}"
+  when: not rspamd_passive_learning_mode
+# Type coercion workaround
+# Fixed supposedly in 2.7:
+# https://github.com/pallets/jinja/pull/708
+- name: Set reject threshold for piggyback mode
+  include_tasks: set-rspamd-configuration.yml
+  vars:
+    rspamd_dir: "{{ rspamd_local_config_dir }}"
+    file: actions.conf
+    config:
+      reject: "{{ __rspamd_rejection_threshold }}"
+  when: true

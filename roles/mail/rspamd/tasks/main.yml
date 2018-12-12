@@ -21,11 +21,10 @@
     replace: '\1{{ (spamfilter == "spamassassin") | ternary("", "#") }}\2'
   with_items: "{{ maildrop_files }}"
 - name: Always add X-Spam-Score header
-  lineinfile:
+  replace:
     path: /etc/mail/spamassassin/local.cf
-    regexp: '^\s*add_header\s+spam\s+score\s+'
-    line: 'add_header all score _SCORE_'
-    state: present
+    regexp: '^\s*add_header\s+(?!all\S+)\s+score\s+.*$'
+    replace: 'add_header all score _SCORE_'
   notify: Restart spamassassin
   when: spamfilter == "spamassassin"
 
