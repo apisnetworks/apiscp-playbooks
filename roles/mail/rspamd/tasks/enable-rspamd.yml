@@ -5,10 +5,9 @@
     url: "{{ rspamd_rpm_url }}"
     force: "{{ force | default(false) }}"
     dest: "{{ rspamd_repo }}"
-  when: false
+
 - name: Install rspamd RPM
   yum: name=rspamd state=present
-  when: false
 
 - name: Create Redis server
   include_tasks: setup-redis.yml
@@ -34,12 +33,15 @@
 - name: Type coercion workaround - passive mode
   set_fact:
     __rspamd_rejection_threshold: "{{ rspamd_reject_piggyback_score }}"
+    __rspamd_greylist_score: "{{ rspamd_greylist_piggyback_score }}"
   when: rspamd_passive_learning_mode
 - name: Type coercion workaround - active enforcement
   set_fact:
     __rspamd_rejection_threshold: "{{ rspamd_reject_score }}"
+    __rspamd_greylist_score: "{{ rspamd_greylist_score }}"
   when: not rspamd_passive_learning_mode
-# Type coercion workaround
+
+# Type coercion workaround. Deferenced vars coerced to string
 # Fixed supposedly in 2.7:
 # https://github.com/pallets/jinja/pull/708
 - name: Set reject threshold for piggyback mode
@@ -49,4 +51,5 @@
     file: actions.conf
     config:
       reject: "{{ __rspamd_rejection_threshold }}"
+      greylist: "{{ __rspamd_greylist_score }}"
   when: true

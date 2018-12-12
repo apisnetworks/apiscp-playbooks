@@ -69,10 +69,10 @@ rspamd_enable_neural_training: "{{ not (has_low_memory or data_center_mode) and 
 
 # 13.19 is approximately 15% percentile with a trained data set
 # n = 532, mu = 18.90, s = 5.39
+# JSON problems...
 rspamd_reject_piggyback_score: 25
 rspamd_reject_score: 13.2
-# JSON problem...
-_rspamd_reject_score: "{{ rspamd_passive_learning_mode | ternary(rspamd_reject_piggyback_score, rspamd_reject_score) | float }}"
+rspamd_greylist_piggyback_score: 10
 rspamd_greylist_score: 6
 rspamd_add_header_score: 2
 
@@ -165,7 +165,6 @@ config_files:
   - file: actions.conf
     vars:
       add_header: "{{ rspamd_add_header_score }}"
-      greylist: "{{ rspamd_greylist_score }}"
       # Jinja improperly translates None => null
       subject: "{{ rspamd_passive_learning_mode | ternary('%s', '[SPAM] (%d) %s') }}"
   - file: classifier-bayes.conf
