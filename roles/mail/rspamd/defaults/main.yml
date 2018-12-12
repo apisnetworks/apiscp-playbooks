@@ -1,6 +1,6 @@
 # RPM
 rspamd_experimental: false
-rspamd_rpm_url: "https://rspamd.com/rpm{{ rspamd_experimental | ternary('', '-stable') }}/{{ ansible_distribution == 'Fedora' | ternary('fedora', 'centos') }}-{{ansible_distribution_major_version}}/rspamd.repo"
+rspamd_rpm_url: "https://rspamd.com/rpm{{ rspamd_experimental | ternary('', '-stable') }}/{{ (ansible_distribution == 'Fedora') | ternary('fedora', 'centos') }}-{{ansible_distribution_major_version}}/rspamd.repo"
 rspamd_repo: /etc/yum.repos.d/rspamd.repo
 
 rspamd_runtime_dir: /var/lib/rspamd
