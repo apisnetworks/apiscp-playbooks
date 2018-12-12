@@ -10,7 +10,7 @@
 # General spam filtering
 # @TODO move to separate role?
 
-- name: Remove spamassassin configuration
+- name: Remove spamassassin rules configuration
   file: path="{{ rspamd_local_config_dir }}/spamassassin.conf" state=absent
   when: not rspamd_use_spamassassin_rules
 

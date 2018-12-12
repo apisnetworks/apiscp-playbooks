@@ -27,7 +27,8 @@
     config: "{{ item.vars }}"
   with_items:
     - "{{ config_files }}"
-    - "{{ rspamd_use_spamassassin_rules | ternary(rspamd_spamassassin_config, omit) }}"
+    - "{{ rspamd_use_spamassassin_rules | ternary(rspamd_spamassassin_config, None) }}"
+  when: item
   loop_control:
     label: "Installing {{ item }} to {{ rspamd_config_dir }}"
 - name: Type coercion workaround - passive mode
