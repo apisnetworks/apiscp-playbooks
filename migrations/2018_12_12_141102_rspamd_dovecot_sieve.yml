@@ -1,0 +1,12 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# - Relocate Dovecot to /.socket
+# - rspamd backup policy
+# - Dovecot sieve
+---
+- block:
+    - file: path="/etc/rspamd/local.d/redis-server.conf" state=absent
+    - file: path=/etc/systemd/system/redis-rspamd.service state=absent
+    - include_role: name=mail/rspamd
+    - include_role: name=mail/configure-dovecot
+  tags: ['up']

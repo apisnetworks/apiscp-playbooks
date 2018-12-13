@@ -21,7 +21,7 @@
     populate_filesystem_template == "auto" and not fst_pure.stat.exists or
     (populate_filesystem_template | bool) and populate_filesystem_template != "auto"
 - include_role: role="packages/install" tasks_from="configure-default-vars.yml"
-- include_tasks: install-package.yml 
+- include_tasks: install-package.yml
   vars:
     package: "{{ item.package }}"
     service: "{{item.service}}"
@@ -38,14 +38,21 @@
   when: not st.stat.exists
 # @TODO debugging crap?
 - meta: flush_handlers
-- include_tasks: "{{ role_path }}/tasks/relocate-shared-directory.yml" 
-  vars: 
+- include_tasks: "{{ role_path }}/tasks/relocate-shared-directory.yml"
+  vars:
     service: "{{ item.service }}"
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     logrotate_vars: "{{ item.logrotate_vars | default(None) }}"
     force: "{{ item.force | default(false) }}"
   with_items: "{{ relocated_paths }}"
+
+- name: "Link /proc to {{ apnscp_shared_root }}"
+  file:
+    path: "{{ apnscp_filesystem_template }}/siteinfo/proc"
+    src: "{{ apnscp_shared_root }}/proc"
+    state: link
+    force: yes
 
 - include_tasks: "{{ role_path }}/../bootstrap/tasks/set-platform-version.yml"
   vars:
@@ -55,7 +62,7 @@
 - name: "Replace /bin/hostname"
   copy:
     content: |
-      #!/bin/sh 
+      #!/bin/sh
       cat /etc/HOSTNAME
     dest: "{{ apnscp_filesystem_template }}/siteinfo/bin/hostname"
     mode: 0755
@@ -105,10 +112,10 @@
 - name: Populate /etc/mtab
   copy:
     content: >
-      {{ ansible_mounts | json_query('[?mount==`/`] | [0].device') }} 
-      {{ ansible_mounts | json_query('[?mount==`/`] | [0].mount') }} 
-      {{ ansible_mounts | json_query('[?mount==`/`] | [0].fstype') }} 
-      {{ ansible_mounts | json_query('[?mount==`/`] | [0].options') }} 
+      {{ ansible_mounts | json_query('[?mount==`/`] | [0].device') }}
+      {{ ansible_mounts | json_query('[?mount==`/`] | [0].mount') }}
+      {{ ansible_mounts | json_query('[?mount==`/`] | [0].fstype') }}
+      {{ ansible_mounts | json_query('[?mount==`/`] | [0].options') }}
       0 0
     dest: "{{ apnscp_filesystem_template }}/siteinfo/etc/mtab"
     force: no
@@ -143,7 +150,7 @@
 - wait_for:
     path: "{{ mysql_shared_path }}"
     state: present
-    timeout: 60    
+    timeout: 60
 - file:
     path: "{{ apnscp_filesystem_template }}/siteinfo/var/lib/mysql/mysql.sock"
     src: "{{ mysql_shared_path }}"
@@ -152,7 +159,7 @@
   file:
     path: /var/lib/mysql/mysql.sock
     src: "{{ mysql_shared_path }}"
-    state: link 
+    state: link
     force: yes
 - name: Copy apnscp profile aliases
   template:
@@ -161,4 +168,3 @@
 - name: Touch filesystem purity marker
   file: state=touch path="{{ apnscp_filesystem_template_purity_marker }}"
   when: not fst_pure.stat.exists
-    

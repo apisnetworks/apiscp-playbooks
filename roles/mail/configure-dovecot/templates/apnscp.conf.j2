@@ -43,7 +43,9 @@ userdb {
   driver = apnscp
   args = blocking=yes
 }
+service managesieve {
 
+}
 service imap-login {
 }
 service pop3-login {
@@ -58,11 +60,11 @@ service imap-login {
   service_count = {{ dovecot_secure_mode | bool | ternary("1", "0") }}
 }
 
-mail_plugins = expire quota acl cgroup fts fts_lucene
+mail_plugins = {{ dovecot_mail_plugins }}
 
 protocol imap {
   mail_max_userip_connections = 25
-  mail_plugins = $mail_plugins imap_quota snarf imap_acl
+  mail_plugins = {{ dovecot_imap_plugins }}
   imap_logout_format = bytes=%i/%o
 }
 
@@ -121,7 +123,7 @@ lock_method = fcntl
 maildir_copy_with_hardlinks = yes
 #maildir_very_dirty_syncs = yes
 
-namespace { 
+namespace {
   type = shared
   separator = .
   prefix = shared.%%u.
@@ -135,8 +137,8 @@ service auth {
   }
   unix_listener {{ postfix_auth_socket }} {
     mode = 0660
-    user = {{ postfix_user }}
-    group = {{ postfix_group }}
+    user = {{ postfix_sysuser }}
+    group = {{ postfix_sysgroup }}
   }
   user = root
 }
@@ -160,3 +162,37 @@ plugin {
   quota2 = fs:Account:group
   quota = fs:User:user
 }
+
+plugin {
+  sieve_plugins = sieve_imapsieve sieve_extprograms
+
+  imapsieve_mailbox1_name = {{ dovecot_spam_folder }}
+  imapsieve_mailbox1_causes = COPY
+  imapsieve_mailbox1_before = file:{{ dovecot_sieve_bindir }}/report-spam.sieve
+
+  imapsieve_mailbox2_name = *
+  imapsieve_mailbox2_from = {{ dovecot_spam_folder }}
+  imapsieve_mailbox2_causes = COPY
+  imapsieve_mailbox2_before = file:{{ dovecot_sieve_bindir }}/report-ham.sieve
+
+  sieve_pipe_bin_dir = {{ dovecot_sieve_bindir }}
+
+  sieve_global_extensions = +vnd.dovecot.pipe +vnd.dovecot.environment
+}
+
+{% if dovecot_enable_stats %}
+
+service stats {
+  fifo_listener {{ dovecot_shared_root }}/stats-mail {
+    user = dovecot
+    mode = 0666
+  }
+}
+
+plugin {
+  # how often to session statistics (must be set)
+  stats_refresh = 30 secs
+  # track per-IMAP command statistics (optional)
+  stats_track_cmds = yes
+}
+{% endif %}

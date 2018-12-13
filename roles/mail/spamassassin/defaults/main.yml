@@ -1,3 +1,5 @@
 ---
-enable_spamd_tell: yes
+# Enable --tell usage with spamc
+spamassassin_enable_spamd_tell: true
+mail_spamassassin_marker: true
 sa_compiled_rules_dir: /var/lib/spamassassin/compiled/5.016/3.004001/Mail

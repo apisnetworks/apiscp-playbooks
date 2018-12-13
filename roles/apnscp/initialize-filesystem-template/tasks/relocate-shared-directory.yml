@@ -1,7 +1,7 @@
 ---
 - name: "Relocate {{ dest }} to {{ src }} {{ force}}"
-  block: 
-    - file: 
+  block:
+    - file:
         path: "{{ src | dirname }}"
         state: directory
     - stat: path="{{ dest }}"
@@ -25,22 +25,16 @@
     path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest }}"
   register: r
 - block:
-  - file: 
+  - file:
       path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest }}"
       state: absent
       follow: no
-  - file: 
+  - file:
       path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest | dirname }}"
       state: directory
-  - file: 
+  - file:
       path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest }}"
       state: link
-      src: "{{ src }}"      
+      src: "{{ src }}"
+    notify: Reload filesystem template
   when: not r.stat.exists or not r.stat.islnk
-
-- name: "Link /proc to {{ apnscp_shared_root }}"
-  file:
-    path: "{{ apnscp_filesystem_template }}/siteinfo/proc"
-    src: "{{ apnscp_shared_root }}/proc"
-    state: link
-    force: yes

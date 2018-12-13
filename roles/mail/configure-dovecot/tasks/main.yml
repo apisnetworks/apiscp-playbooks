@@ -1,20 +1,7 @@
 ---
-- name: Verify Dovecot starts on boot
-  systemd:
-    name: dovecot
-    enabled: "{{ mail_enabled | bool | ternary('yes', 'no') }}"
-    state: "{{ mail_enabled | bool | ternary('started', 'stopped') }}"
-  failed_when: false
-- name: Remove conflicting Dovecot configuration
-  file:
-    path: "{{ dovecot_conf_dir }}/{{ item }}"
-    state: absent
-  with_items: "{{ dovecot_conflicting_conf }}"
-  loop_control:
-    label: "Removing conflicting configuration {{ dovecot_conf_dir}}/{{item}}"
-- name: Copy Dovecot configuration
-  template:
-    src: "apnscp.conf.j2"
-    dest: "{{ dovecot_conf_dir }}/apnscp.conf"
-  notify: Restart dovecot
-
+- include_tasks: enable-dovecot.yml
+  when: mail_enabled
+- block:
+  - name: Remove Dovecot package
+    yum: name=dovecot state=absent
+  when: not mail_enabled

@@ -1,21 +1,37 @@
 ---
 - name: Verify Redis installed
   yum: name=redis state=present
+
 - name: Create Redis configuration
   template:
     src: templates/redis.conf.j2
     dest: "{{ redis_cfg_file }}"
     force: no
+
+- name: Configure Redis
+  blockinfile:
+    path: "{{ redis_cfg_file }}"
+    insertbefore: BOF
+    marker: "# {mark} apnscp MANAGED BLOCK - MAKE CHANGES BELOW ME"
+    block: |
+      {% for key, value in redis_vars.items() %}
+      {% if value is not none %}
+      {{ key }} {{ value }}
+      {% endif %}
+      {% endfor %}
+  notify: "{{ redis_handler | default(omit) }}"
+
 - name: Configure Redis
   lineinfile:
-    path: "{{ redis_cfg_file }}" 
-    regexp: '^\s*{{ item.key }}\s+.*$'
-    line: '{{ (item.value != None) | ternary(item.key + " " + (item.value|string), omit) }}'
-    state: '{{ (item.value != None) | ternary("present", "absent") }}'
+    path: "{{ redis_cfg_file }}"
+    regexp: '^\s*{{item.key}}(?:\s*|\s+.*)$'
+    state: absent
   loop_control:
-    label: "{{ (item.value != None) | ternary('Setting', 'Removing') }} {{ item.key }} => {{ item.value }}"
+    label: "Removing {{ item.key }}"
   with_dict: "{{ redis_vars }}"
+  when: item.value is none
   notify: "{{ redis_handler | default(omit) }}"
+
 - name: Enable Redis
   systemd: name="{{ redis_service }}" enabled=yes state=started
   when: redis_enabled

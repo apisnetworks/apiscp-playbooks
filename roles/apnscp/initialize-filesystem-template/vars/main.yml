@@ -2,41 +2,41 @@
 synchronizer: "{{apnscp_root}}/bin/php-bins/php {{ apnscp_root }}/bin/scripts/yum-post.php"
 relocated_paths:
   - {
-    service: siteinfo, 
-    src: "{{ apnscp_shared_root }}/php/pear", 
-    dest: /usr/share/pear 
+    service: siteinfo,
+    src: "{{ apnscp_shared_root }}/php/pear",
+    dest: /usr/share/pear
   }
   - {
-    service: siteinfo, 
-    src: "{{ apnscp_shared_root }}/php/pear-data", 
+    service: siteinfo,
+    src: "{{ apnscp_shared_root }}/php/pear-data",
     dest: /usr/share/pear-data,
     force: yes
   }
   - {
-      service: siteinfo, 
-      src: "{{ apnscp_shared_root }}/perl/lib64", 
+      service: siteinfo,
+      src: "{{ apnscp_shared_root }}/perl/lib64",
       dest: /usr/lib64/perl5,
       handler: Restart spamassassin
     }
   - {
-      service: siteinfo, 
-      src: "{{ apnscp_shared_root }}/perl/spamassassin", 
+      service: siteinfo,
+      src: "{{ apnscp_shared_root }}/perl/spamassassin",
       dest: /usr/share/spamassassin,
       handler: Restart spamassassin
     }
-  - { 
-      service: siteinfo, 
-      src: "{{ apnscp_shared_root }}/perl/share", 
-      dest: /usr/share/perl5 
+  - {
+      service: siteinfo,
+      src: "{{ apnscp_shared_root }}/perl/share",
+      dest: /usr/share/perl5
   }
-  - { 
-      service: siteinfo, 
-      src: "{{ apnscp_shared_root }}/fcgi", 
-      dest: /var/tmp/fcgi 
+  - {
+      service: siteinfo,
+      src: "{{ apnscp_shared_root }}/fcgi",
+      dest: /var/tmp/fcgi
     }
   - {
-      service: siteinfo, 
-      src: "{{ apnscp_shared_root }}/postfix", 
+      service: siteinfo,
+      src: "{{ apnscp_shared_root }}/postfix",
       dest: /var/spool/postfix,
       handler: Restart postfix
     }
@@ -50,48 +50,48 @@ relocated_paths:
       src: "{{ apnscp_shared_root }}/ssl/pki/tls/certs",
       dest: /etc/ssl/certs
     }
-  - { 
+  - {
       service: siteinfo,
       src: "{{ apnscp_shared_root }}/wtmp",
-      dest: "/var/log/wtmp",    
-      logrotate_vars: { 
+      dest: "/var/log/wtmp",
+      logrotate_vars: {
         file: /etc/logrotate.conf,
         old: /var/log/wtmp,
         new: "{{ apnscp_shared_root }}/wtmp"
       }
     }
-  - { 
+  - {
       service: siteinfo,
       src: "{{ apnscp_shared_root }}/btmp",
-      dest: "/var/log/btmp",    
-      logrotate_vars: { 
+      dest: "/var/log/btmp",
+      logrotate_vars: {
         file: /etc/logrotate.conf,
         old: /var/log/btmp,
         new: "{{ apnscp_shared_root }}/btmp"
       }
     }
-  - { 
+  - {
       service: siteinfo,
       src: "{{ apnscp_shared_root }}/majordomo",
-      dest: "/usr/lib/majordomo",  
+      dest: "/usr/lib/majordomo",
     }
-  - { 
+  - {
       service: ssh,
       src: "{{ apnscp_shared_root }}/php/build",
-      dest: "/usr/lib64/build",  
+      dest: "/usr/lib64/build",
     }
-  - { 
+  - {
       service: ssh,
       src: "{{ apnscp_shared_root }}/php/include",
-      dest: "/usr/include/php",  
+      dest: "/usr/include/php",
     }
-  - { 
+  - {
       service: ssh,
       src: "{{ apnscp_shared_root }}/php/bin/phpize",
       dest: "/usr/bin/phpize",
       force: yes
     }
-  - { 
+  - {
       service: ssh,
       src: "{{ apnscp_shared_root }}/php/bin/php-config",
       dest: "/usr/bin/php-config",
@@ -414,7 +414,7 @@ packages:
   - { package: compat-libtidy-devel, service: ssh }
   - { package: cpp, service: ssh }
   - { package: cronie, service: ssh }
-  - { package: cyrus-sasl-devel, service: ssh }  
+  - { package: cyrus-sasl-devel, service: ssh }
   - { package: e2fsprogs-devel, service: ssh }
   - { package: elinks, service: ssh }
   - { package: emacs-common, service: ssh }

@@ -3,7 +3,8 @@ rspamd_experimental: false
 rspamd_rpm_url: "https://rspamd.com/rpm{{ rspamd_experimental | ternary('', '-stable') }}/{{ (ansible_distribution == 'Fedora') | ternary('fedora', 'centos') }}-{{ansible_distribution_major_version}}/rspamd.repo"
 rspamd_repo: /etc/yum.repos.d/rspamd.repo
 
-rspamd_runtime_dir: /var/lib/rspamd
+rspamd_lib_dir: /var/lib/rspamd
+rspamd_runtime_dir: /run/rspamd
 rspamd_config_dir: /etc/rspamd
 rspamd_local_config_dir: "{{ rspamd_config_dir }}/local.d"
 rspamd_user: _rspamd
@@ -19,14 +20,21 @@ rspamd_fuzzy_worker_process_count: 1
 # Enable redis for rspamd
 rspamd_redis_enabled: "{{ not has_low_memory }}"
 # Give an absolute path to use a UNIX socket + install service
-rspamd_redis_server: "{{ rspamd_runtime_dir }}/redis.sock"
+rspamd_redis_runtime_dir: "{{ rspamd_runtime_dir }}/redis"
+rspamd_redis_server: "{{ rspamd_redis_runtime_dir }}/redis.sock"
+rspamd_redis_pid_file: "{{ rspamd_redis_runtime_dir }}/redis.pid"
 rspamd_redis_service: "{{ rspamd_redis_server.find('/') == 0 }}"
 rspamd_redis_config: "{{ rspamd_local_config_dir }}/redis-server.conf"
 rspamd_redis_user: "{{ rspamd_user }}"
-rspamd_redis_pid_file: "{{ rspamd_runtime_dir }}/redis.pid"
 # Database storage
-rspamd_redis_dir: "{{ rspamd_runtime_dir }}/redis"
+rspamd_redis_dir: "{{ rspamd_lib_dir }}/redis"
 rspamd_redis_memory_allocation: "{{ has_low_memory | ternary('256mb', (ansible_memtotal_mb * 0.5) | string + 'mb')}}"
+# Save every 60 seconds if more than 1000 keys change
+rspamd_redis_snapshot_policy: &snapshot_policy
+  rdbchecksum: "yes"
+  save: |-
+    60 100
+    save 900 1
 rspamd_redis_vars:
   bind: "127.0.0.1"
   daemonize: "yes"
@@ -38,7 +46,9 @@ rspamd_redis_vars:
   pidfile: "{{ rspamd_redis_pid_file }}"
   unixsocket: "{{ (rspamd_redis_server.find('/') == 0) |  ternary(rspamd_redis_server, omit) }}"
   dir: "{{ rspamd_redis_dir }}"
-
+  "rename-command": |
+    CONFIG ""
+  <<: *snapshot_policy
 # rspamd milter
 rspamd_proxy_port: 10003
 rspamd_proxy_host: localhost
@@ -184,6 +194,10 @@ config_files:
       self_scan: "{{ has_low_memory and  (__default_rspamd_worker_socket == rspamd_worker_socket )}}"
       bind_socket: "localhost:{{ rspamd_proxy_port }}"
       spam_header: 'X-Spam-Status'
+      upstream:
+        local:
+          default: true
+          hosts: "{{ rspamd_worker_socket }}"
   - file: worker-controller.inc
     vars:
       extended_spam_headers: true

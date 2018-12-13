@@ -1,0 +1,68 @@
+---
+- include_role: name=apnscp/initialize-filesystem-template tasks_from=relocate-shared-directory
+  vars:
+    service: "siteinfo"
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    logrotate_vars: "{{ item.logrotate_vars | default(None) }}"
+    force: "{{ item.force | default(false) }}"
+  with_items: "{{ dovecot_relocatable_paths }}"
+- include_vars:
+    file: ../configure-postfix/defaults/main.yml
+  when: mail_configure_postfix_marker is not defined
+
+- block:
+  - name: Verify "{{ dovecot_virtual_rundir }} exists"
+    file: path="{{ dovecot_virtual_rundir }}" state=directory owner=dovecot
+  - name: Link stats-mail to "{{ dovecot_shared_root }}"
+    file: path="{{ dovecot_virtual_rundir }}/stats-mail" state=link src="{{ dovecot_shared_root }}/stats-mail"
+    notify: Reload filesystem template
+  when: dovecot_enable_stats
+- name: Remove stats-mail link
+  file: path="{{ apnscp_filesystem_template }}"
+  when: not dovecot_enable_stats
+  notify: Reload filesystem template
+
+- include_vars:
+    file: ../spamassassin/defaults/main.yml
+  when: mail_spamassassin_marker is not defined
+- name: Install Dovecot RPM
+  yum: name=dovecot,dovecot-pigeonhole state=installed
+- name: Verify Dovecot starts on boot
+  systemd:
+    name: dovecot
+    enabled: "{{ mail_enabled | bool | ternary('yes', 'no') }}"
+    state: "{{ mail_enabled | bool | ternary('started', 'stopped') }}"
+  failed_when: false
+- name: Remove conflicting Dovecot configuration
+  file:
+    path: "{{ dovecot_conf_dir }}/{{ item }}"
+    state: absent
+  with_items: "{{ dovecot_conflicting_conf }}"
+  loop_control:
+    label: "Removing conflicting configuration {{ dovecot_conf_dir}}/{{item}}"
+- name: Copy Dovecot configuration
+  template:
+    src: "apnscp.conf.j2"
+    dest: "{{ dovecot_conf_dir }}/apnscp.conf"
+    force: yes
+  notify: Restart dovecot
+- name: Create Dovecot Sieve directory
+  file: path="{{ dovecot_sieve_bindir }}" state=directory
+- name: Install Dovecot Sieve helpers
+  template:
+    src: learn.sh.j2
+    dest: "{{ dovecot_sieve_bindir }}/learn-{{ item }}.sh"
+    mode: 0755
+  vars:
+    type: "{{ item }}"
+  with_items:
+    - ham
+    - spam
+- name: Install Dovecot Sieve
+  copy:
+    src: "{{ item }}"
+    dest: "{{ dovecot_sieve_bindir }}/{{ item | basename}}"
+    force: yes
+  with_fileglob: "{{role_path }}/files/*.sieve"
+  notify: Compile sieved applications

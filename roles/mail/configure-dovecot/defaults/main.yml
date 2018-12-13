@@ -1,4 +1,11 @@
 ---
+dovecot_shared_root: "{{ apnscp_shared_root }}/dovecot"
+dovecot_virtual_rundir: "{{ apnscp_filesystem_template }}/siteinfo/var/run/dovecot"
+dovecot_relocatable_paths:
+  - dest: /usr/lib64/dovecot
+    src: "{{ dovecot_shared_root }}/lib64"
+  - dest: /usr/libexec/dovecot
+    src: "{{ dovecot_shared_root }}/libexec"
 dovecot_conflicting_conf:
   # Overrides userdb/passdb
   - 10-auth.conf
@@ -6,10 +13,17 @@ dovecot_conflicting_conf:
   - 10-mail.conf
 dovecot_home: /etc/dovecot
 config_file: "{{ dovecot_home }}/apnscp.conf"
-postfix_user: postfix
-postfix_group: postfix
 postfix_auth_socket: /var/spool/postfix/private/auth
 dovecot_conf_dir: "{{ dovecot_home }}/conf.d"
-# in secure_mode each IMAP connection creates a separate
+# In secure_mode each IMAP connection creates a separate
 # process. SSL/TLS also creates a separate process
-dovecot_secure_mode: "{{ not has_low_memory | bool }}"
+dovecot_secure_mode: "{{ not (has_low_memory | bool) }}"
+
+# Enable stats module. Requires world-writeable socket.
+dovecot_enable_stats: false
+# Sieve for spam filtering
+dovecot_sieve_dir: "/usr/lib64/dovecot/sieve"
+dovecot_sieve_bindir: "/usr/libexec/dovecot/sieve"
+dovecot_spam_folder: INBOX.Spam
+dovecot_mail_plugins: "expire quota acl cgroup fts fts_lucene {{ dovecot_enable_stats | ternary('stats', None) }}"
+dovecot_imap_plugins: "$mail_plugins imap_quota snarf imap_acl imap_sieve {{ dovecot_enable_stats | ternary('imap_stats', None) }}"

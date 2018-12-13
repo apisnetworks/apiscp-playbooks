@@ -23,8 +23,8 @@
 - name: Always add X-Spam-Score header
   replace:
     path: /etc/mail/spamassassin/local.cf
-    regexp: '^\s*add_header\s+(?!all\S+)\s+score\s+.*$'
-    replace: 'add_header all score _SCORE_'
+    regexp: '^\s*add_header\s+(?!all\S+)\s+[sS]core\s+.*$'
+    replace: 'add_header all Score _SCORE_'
   notify: Restart spamassassin
   when: spamfilter == "spamassassin"
 

@@ -1,0 +1,5 @@
+- name: Compile sieved applications
+  command: sievec "{{ sieve_path | default(dovecot_sieve_bindir) }}"
+  # Squelch "userdb didn't return a home directory, but mail_location used it"
+  environment:
+    HOME: /
