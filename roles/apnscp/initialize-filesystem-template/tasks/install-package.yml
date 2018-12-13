@@ -1,6 +1,6 @@
 ---
 - name: "Install {{ package }} to {{ service }}"
-  file: 
+  file:
     name: "{{ apnscp_filesystem_template }}/{{ service }}"
     state: directory
   register: fstnew

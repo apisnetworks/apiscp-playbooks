@@ -56,11 +56,11 @@
     # Hook: apnscp is minimally viable
     - custom/apnscp-bootstrapped
     # Onto provisioning a test account
+    - apnscp/link-bins
+    - apnscp/initialize-filesystem-template
     - mail/configure-dovecot
     - mail/configure-postfix
     - mail/configure-courier-authlib
-    - apnscp/link-bins
-    - apnscp/initialize-filesystem-template
     - apnscp/service-template
     - apnscp/php-filesystem-template
     - apnscp/bandwidth-log
