@@ -60,9 +60,9 @@
     - ham
     - spam
 - name: Install Dovecot Sieve
-  copy:
+  template:
     src: "{{ item }}"
-    dest: "{{ dovecot_sieve_bindir }}/{{ item | basename}}"
+    dest: '{{ dovecot_sieve_bindir }}/{{ item | basename | regex_replace("\.j2$", "")}}'
     force: yes
-  with_fileglob: "{{role_path }}/files/*.sieve"
+  with_fileglob: "{{role_path }}/templates/*.sieve.j2"
   notify: Compile sieved applications

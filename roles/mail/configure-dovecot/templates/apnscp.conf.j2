@@ -92,7 +92,7 @@ ssl_cipher_list = RSA:!EXP:!NULL:!RC4:+HIGH:+MEDIUM:-LOW
 namespace {
   type = private
   separator = .
-  prefix = INBOX.
+  prefix = {{ dovecot_imap_root }}
   inbox = yes
   hidden = no
   list = yes
@@ -100,16 +100,15 @@ namespace {
 
   mailbox Drafts {
     special_use = \Drafts
-  }
-  mailbox Spam {
     auto = subscribe
   }
-  mailbox Junk {
+  mailbox Spam {
     special_use = \Junk
     auto = subscribe
   }
   mailbox Trash {
     special_use = \Trash
+    auto = subscribe
   }
   mailbox Sent {
     special_use = \Sent
