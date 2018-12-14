@@ -25,4 +25,11 @@
     state: touch
   when: not s.stat.exists
   notify: Reload filesystem template
-
+- name: Set journald configuration
+  ini_file:
+    path: /etc/systemd/journald.conf
+    section: null
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  with_dict: "{{ systemd_journald_config }}"
+  notify: Restart journald

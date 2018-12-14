@@ -1,0 +1,11 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# - Remove nightly Yum cache generation
+# - Add nightly resync command (yum-cron workaround)
+# - Restrict journalctl growth under 4 GB, fail2ban segfault workaround
+---
+- block:
+    - include_role: name=apnscp/crons
+    - include_role: name=system/logs
+    - file: path="/etc/cron.daily/99generate_fst_cache" state=absent
+  tags: ['up']

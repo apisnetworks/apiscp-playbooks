@@ -12,7 +12,7 @@
   command: anacron -T
   changed_when: false
 - name: Copy files
-  copy: 
+  copy:
     src: "files/{{ item.src }}"
     dest: "{{ item.dest }}"
     mode: 0755
@@ -20,11 +20,12 @@
   loop_control:
     label: "Copy {{item.src}} to {{item.dest}}"
 - name: Copy templated files
-  template: 
+  template:
     src: "templates/{{ item.src }}"
     dest: "{{ item.dest }}"
     mode: 0755
   with_items: "{{cron_template}}"
+  when: not item.when is defined or item.when
   loop_control:
     label: "Copy {{item.src}} to {{item.dest}}"
 - name: Enable apnscp nightly updates
@@ -33,12 +34,15 @@
     dest: "{{ apnscp_update_cron }}"
     mode: 0755
     force: true
-  when: (apnscp_nightly_update | bool) and apnscp_update_policy != false 
+  when: (apnscp_nightly_update | bool) and apnscp_update_policy != false
+- name: Remove nightly fst sync
+  file: path="{{ nightly_fst_sync }}" state=absent
+  when: not apnscp_resync_filesystem_nightly
 - name: Disable apnscp nightly updates
   file: path={{ apnscp_update_cron }} state=absent
-  when: not (apnscp_nightly_update | bool) or apnscp_update_policy == false 
+  when: not (apnscp_nightly_update | bool) or apnscp_update_policy == false
 - name: Set apnscp update policy
-  ini_file: 
+  ini_file:
     path: /etc/sysconfig/apnscp
     no_extra_spaces: yes
     section: null
