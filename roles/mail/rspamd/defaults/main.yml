@@ -4,7 +4,7 @@ rspamd_rpm_url: "https://rspamd.com/rpm{{ rspamd_experimental | ternary('', '-st
 rspamd_repo: /etc/yum.repos.d/rspamd.repo
 
 rspamd_lib_dir: /var/lib/rspamd
-rspamd_runtime_dir: /run/rspamd
+rspamd_runtime_dir: "{{ rspamd_lib_dir }}"
 rspamd_config_dir: /etc/rspamd
 rspamd_local_config_dir: "{{ rspamd_config_dir }}/local.d"
 rspamd_user: _rspamd

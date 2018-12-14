@@ -11,9 +11,6 @@ ExecStop=/usr/libexec/redis-shutdown {{ rspamd_redis_config | regex_replace('^/e
 Type=notify
 User={{ rspamd_user }}
 Group={{ rspamd_user }}
-ExecStartPre=-/usr/bin/mkdir {{ rspamd_redis_runtime_dir }}
-RuntimeDirectory=rspamd/redis
-RuntimeDirectoryMode=0755
 LimitNOFILE=10032
 PidFile={{ rspamd_redis_pid_file }}
 
