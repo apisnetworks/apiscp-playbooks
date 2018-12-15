@@ -29,6 +29,10 @@ rspamd_redis_user: "{{ rspamd_user }}"
 # Database storage
 rspamd_redis_dir: "{{ rspamd_lib_dir }}/redis"
 rspamd_redis_memory_allocation: "{{ has_low_memory | ternary('256mb', (ansible_memtotal_mb * 0.5) | string + 'mb')}}"
+# rspamd_redis_custom_config
+# rspamd_neural_custom_config
+# rspamd_reputation_custom_config etc
+
 # Save every 60 seconds if more than 1000 keys change
 rspamd_redis_snapshot_policy: &snapshot_policy
   rdbchecksum: "yes"

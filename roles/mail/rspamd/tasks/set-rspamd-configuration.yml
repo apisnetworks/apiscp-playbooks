@@ -12,16 +12,26 @@
 - stat: path="{{ cfgpath }}"
   register: st
 - name: "{{ st.stat.exists | ternary('Assert permissions on', 'Create file') }} {{ cfgpath}}"
-  file: 
+  file:
     path: "{{ cfgpath }}"
     state: "{{ st.stat.exists | ternary('file', 'touch') }}"
     owner: "{{ rspamd_user }}"
     mode: 0600
   register: r
-- set_fact: 
-    json: "{{ ('{' + (lookup('file', cfgpath) | default('', True)) + '}') | from_json | combine( config, recursive=True ) }}"
+- name: Merge custom config
+  block:
+    - include_tasks: "roles/common/tasks/implicitly-import-overrides.yml"
+      vars:
+        base: "{{ config }}"
+        varname: __config
+        prefix: rspamd
+        name: "{{ cfgpath | basename | regex_replace('\\.conf$','') }}"
+    - set_fact:
+        json: "{{ ('{' + (lookup('file', cfgpath) | default('', True)) + '}') | from_json | combine( __config, recursive=True ) }}"
+  rescue:
+    - fail: msg="Failed to parse/merge configuration for {{ cfgpath }} - invalid partial JSON?"
 - name: "Merging configuration in {{ cfgpath }}"
-  copy: 
+  copy:
     dest: "{{ cfgpath }}"
     content: '{{ json | to_nice_json | regex_replace("^{|}$", "")}}'
   notify: Restart rspamd

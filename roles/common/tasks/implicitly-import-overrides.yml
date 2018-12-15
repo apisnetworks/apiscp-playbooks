@@ -1,0 +1,13 @@
+# Conditionally import variables into Playbook
+#
+# vars:
+#   base: base var dictionary to merge into
+#   varname: variable to store result
+#   prefix: optional variable prefix
+#   name: variable override name
+#
+# See mail/rspamd/tasks/set-rspamd-configuration.yml for example
+
+---
+- set_fact:
+    "{{ varname }}": "{{ base | combine(lookup('vars', (prefix | ternary(prefix + '_', '')) + name + '_custom_config', default={}), recursive=True) }}"
