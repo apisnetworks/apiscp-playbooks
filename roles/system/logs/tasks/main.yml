@@ -28,7 +28,7 @@
 - name: Set journald configuration
   ini_file:
     path: /etc/systemd/journald.conf
-    section: null
+    section: Journal
     option: "{{ item.key }}"
     value: "{{ item.value }}"
   with_dict: "{{ systemd_journald_config }}"
