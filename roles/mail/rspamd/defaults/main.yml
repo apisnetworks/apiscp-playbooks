@@ -26,6 +26,7 @@ rspamd_redis_pid_file: "{{ rspamd_redis_runtime_dir }}/redis.pid"
 rspamd_redis_service: "{{ rspamd_redis_server.find('/') == 0 }}"
 rspamd_redis_config: "{{ rspamd_local_config_dir }}/redis-server.conf"
 rspamd_redis_user: "{{ rspamd_user }}"
+rspamd_redis_password: ""
 # Database storage
 rspamd_redis_dir: "{{ rspamd_lib_dir }}/redis"
 rspamd_redis_memory_allocation: "{{ has_low_memory | ternary('256mb', (ansible_memtotal_mb * 0.5) | string + 'mb')}}"
@@ -148,6 +149,7 @@ config_files:
     vars:
       enabled: "{{ rspamd_enable_neural_training }}"
       servers: "{{ rspamd_redis_server }}"
+      password: "{{ rspamd_redis_password }}"
       dbname: "{{ rspamd_neural_db | default(2) }}"
   - file: replies.conf
     vars:
@@ -165,6 +167,7 @@ config_files:
           backend: &redis
             redis:
               servers: "{{ rspamd_redis_enabled | ternary(rspamd_redis_server, None) }}"
+              password: "{{ rspamd_redis_password }}"
         spf_reputation:
           symbol: SPF_REPUTATION
           selector:
@@ -186,8 +189,9 @@ config_files:
       backend: "{{ rspamd_redis_enabled | ternary('redis', 'sqlite') }}"
       autolearn: [-2.5, 7.5]
   - file: redis.conf
-    vars:
+    vars: &redis_vars
       servers: "{{ rspamd_redis_enabled | ternary(rspamd_redis_server, None) }}"
+      password: "{{ rspamd_redis_password }}"
       expand_keys: true
   - file: worker-normal.inc
     vars:

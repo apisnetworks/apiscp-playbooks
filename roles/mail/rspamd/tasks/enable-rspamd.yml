@@ -14,7 +14,7 @@
   when: rspamd_redis_service
 
 - name: Remove Redis rspamd service
-  systemd: service=redis-rspamd state=stopped
+  systemd: service=redis-rspamd state=stopped enabled=no
   register: c
   when: not rspamd_redis_service
 

@@ -9,10 +9,11 @@
     changed_when: false
   rescue:
     - fail: msg="No supported filesystem detected"
+      when: not dockerized
   when: xfs.rc != 0
 - include_tasks: enable-quotas.yml
 - include_role: name=systemd/override-config
-  vars: 
+  vars:
     service: tmp.mount
     config:
       - group: Mount
@@ -22,7 +23,7 @@
     notify:
       - Restart services
 - name: Unmask tmp.mount
-  systemd: 
+  systemd:
     name: tmp.mount
     masked: no
     enabled: yes
@@ -44,7 +45,7 @@
 # rely on /etc/mtab usage to reliably manage /tmp
 - name: Remove /tmp from /etc/fstab
   block:
-    - mount: 
+    - mount:
         fstab: /etc/fstab
         path: /tmp
         state: absent
@@ -54,10 +55,10 @@
   rescue:
     - name: Reboot to bring up systemd tmp.mount
       include_role: name=common/fail-and-save
-      vars: 
+      vars:
         reboot: true
-        msg: |      
-          REBOOTING TO BRING USE SYSTEMD TMP.MOUNT.            
+        msg: |
+          REBOOTING TO BRING USE SYSTEMD TMP.MOUNT.
 # cf. https://chrisdown.name/2018/01/02/in-defence-of-swap.html
 - name: Check for presence of swap
   command: "swapon -s"
@@ -75,7 +76,7 @@
   systemd: name="{{ item }}" masked=yes state=stopped
   with_items:
     - proc-sys-fs-binfmt_misc.automount
-    - systemd-binfmt.service 
+    - systemd-binfmt.service
 
 - name: Mount procfs with hidepid=2
   mount:
@@ -84,4 +85,3 @@
     state: mounted
     path: /proc
     src: proc
-

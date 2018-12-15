@@ -77,3 +77,6 @@ use_selinux: false
 
 # Backwards compatibility
 clamav_enable: "{{ clamav_enabled | default(true) }}"
+
+# CI via Docker
+dockerized: false
