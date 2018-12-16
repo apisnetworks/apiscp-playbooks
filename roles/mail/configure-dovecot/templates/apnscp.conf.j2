@@ -44,8 +44,8 @@ userdb {
   args = blocking=yes
 }
 service managesieve {
-
 }
+
 service imap-login {
 }
 service pop3-login {
@@ -165,12 +165,12 @@ plugin {
 plugin {
   sieve_plugins = sieve_imapsieve sieve_extprograms
 
-  imapsieve_mailbox1_name = {{ dovecot_spam_folder }}
+  imapsieve_mailbox1_name = {{ dovecot_learn_spam_folder }}
   imapsieve_mailbox1_causes = COPY
   imapsieve_mailbox1_before = file:{{ dovecot_sieve_bindir }}/report-spam.sieve
 
   imapsieve_mailbox2_name = *
-  imapsieve_mailbox2_from = {{ dovecot_spam_folder }}
+  imapsieve_mailbox2_from = {{ dovecot_learn_ham_folder }}
   imapsieve_mailbox2_causes = COPY
   imapsieve_mailbox2_before = file:{{ dovecot_sieve_bindir }}/report-ham.sieve
 

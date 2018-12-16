@@ -26,6 +26,9 @@ dovecot_sieve_dir: "/usr/lib64/dovecot/sieve"
 dovecot_sieve_bindir: "/usr/libexec/dovecot/sieve"
 # Root folder is prefixed with "INBOX"
 dovecot_imap_root: INBOX.
-dovecot_spam_folder: "{{ dovecot_imap_root }}Spam"
+# Messages pulled out of here are learned as Ham
+dovecot_learn_ham_folder: "{{ dovecot_imap_root }}Spam"
+# Messages sent here are learned as Spam
+dovecot_learn_spam_folder: "{{ dovecot_learn_ham_folder }}"
 dovecot_mail_plugins: "expire quota acl cgroup fts fts_lucene {{ dovecot_enable_stats | ternary('stats', None) }}"
 dovecot_imap_plugins: "$mail_plugins imap_quota snarf imap_acl imap_sieve {{ dovecot_enable_stats | ternary('imap_stats', None) }}"
