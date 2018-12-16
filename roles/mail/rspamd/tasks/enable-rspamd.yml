@@ -16,6 +16,7 @@
 - name: Remove Redis rspamd service
   systemd: service=redis-rspamd state=stopped enabled=no
   register: c
+  ignore_errors: true
   when: not rspamd_redis_service
 
 - name: Populate rspamd configuration

@@ -15,6 +15,10 @@ rspamd_user: _rspamd
 rspamd_worker_process_count: 1
 # Change to a higher count if more CPUs.
 rspamd_fuzzy_worker_process_count: 1
+# Default logging level
+# See https://rspamd.com/doc/configuration/logging.html
+# Additional vars set with "rspamd_logging_custom_config" dict
+rspamd_logging_level: info
 
 # Redis configuration
 # Enable redis for rspamd
@@ -188,6 +192,9 @@ config_files:
     vars:
       backend: "{{ rspamd_redis_enabled | ternary('redis', 'sqlite') }}"
       autolearn: [-2.5, 7.5]
+  - file: logging.inc
+    vars:
+      level: "{{ rspamd_logging_level }}"
   - file: redis.conf
     vars: &redis_vars
       servers: "{{ rspamd_redis_enabled | ternary(rspamd_redis_server, None) }}"

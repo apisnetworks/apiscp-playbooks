@@ -12,6 +12,7 @@
 
 - name: Remove spamassassin rules configuration
   file: path="{{ rspamd_local_config_dir }}/spamassassin.conf" state=absent
+  notify: Restart rspamd
   when: not rspamd_use_spamassassin_rules
 
 - name: "{{ (spamfilter == 'spamassassin') | ternary('Enable', 'Disable') }} spamc usage"
