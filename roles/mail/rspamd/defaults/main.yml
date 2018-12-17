@@ -78,7 +78,7 @@ rspamd_method: "{{ (spamfilter == 'spamassassin') | ternary('piggyback', 'standa
 rspamd_passive_learning_mode: "{{ rspamd_enabled and (rspamd_method == 'piggyback') }}"
 
 # Suitable for low-volume environments
-rspamd_use_spamassassin_rules: true
+rspamd_use_spamassassin_rules: false
 # Learns roughly half of ham in a trained database
 rspamd_learn_piggyback_threshold: -0.5
 rspamd_spamassassin_rules: "/var/lib/spamassassin/3.004002/updates_spamassassin_org/[0-9]*.cf"
@@ -92,8 +92,12 @@ rspamd_enable_neural_training: "{{ not (has_low_memory or data_center_mode) and 
 rspamd_reject_piggyback_score: 25
 rspamd_reject_score: 13.2
 rspamd_greylist_piggyback_score: 10
-rspamd_greylist_score: 6
-rspamd_add_header_score: 2
+# Used when spamfilter == rspamd, triggers delivery in Spam mailbox
+# When piggybacking, a SA score of 4 adds this header anyway
+rspamd_add_header_score: 6
+rspamd_greylist_score: 4
+# Add headers to email
+rspamd_extended_spam_headers: "{{ (rspamd_method == 'piggyback') }}"
 
 rspamd_learn_command: /usr/bin/rspamc
 rspamd_learn_spam: '"|{{ rspamd_learn_command }} learn_spam"'
@@ -170,8 +174,6 @@ config_files:
             ip: {}
           backend: &redis
             redis:
-              servers: "{{ rspamd_redis_enabled | ternary(rspamd_redis_server, None) }}"
-              password: "{{ rspamd_redis_password }}"
         spf_reputation:
           symbol: SPF_REPUTATION
           selector:
@@ -206,16 +208,18 @@ config_files:
       bind_socket: "{{ rspamd_worker_socket }}"
   - file: worker-proxy.inc
     vars:
-      self_scan: "{{ has_low_memory and  (__default_rspamd_worker_socket == rspamd_worker_socket )}}"
+      self_scan: "{{ (has_low_memory and  (__default_rspamd_worker_socket == rspamd_worker_socket )) }}"
       bind_socket: "localhost:{{ rspamd_proxy_port }}"
-      spam_header: 'X-Spam-Status'
+      spam_header: 'X-Spam-Flag'
       upstream:
         local:
           default: true
           hosts: "{{ rspamd_worker_socket }}"
+  - file: milter_headers.conf
+    vars:
+      extended_spam_headers: "{{ rspamd_extended_spam_headers }}"
   - file: worker-controller.inc
     vars:
-      extended_spam_headers: true
       # Does this affect just outbound or inbound?
       quarantine_on_reject: false
       bind_socket: "127.0.0.1:11334"

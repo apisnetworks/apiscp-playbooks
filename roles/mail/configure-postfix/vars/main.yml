@@ -50,7 +50,7 @@ config:
   smtpd_error_sleep_time: 60
   maximal_backoff_time: 8h
   smtpd_timeout: ${stress?10}${stress:300}
-  vmaildrop_destination_rate_delay: 3s
+  vmaildrop_destination_rate_delay: "{{ postfix_local_delivery_delay }}"
   localmaildrop_destination_rate_delay: $vmaildrop_destination_rate_delay
   smtpd_sasl_security_options: noanonymous
   mailbox_size_limit: $message_size_limit

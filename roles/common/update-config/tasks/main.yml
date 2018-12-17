@@ -1,15 +1,2 @@
-# Import apnscp-vars definition, save state to allow rewrite
+# Nothing for now
 ---
-- name: Source apnscp-vars
-  include_vars: file={{ item }} name=custom
-  with_first_found:
-    - "{{ apnscp_user_defaults }}"
-    - "{{ playbook_dir }}/apnscp-vars.yml"
-  register: found
-- name: Source Playbook var definitions
-  include_vars: file="{{ playbook_dir }}/apnscp-vars.yml" name=original
-- name: Source runtime vars
-  include_vars: file="{{ item }}" name=customdiff
-  with_first_found:
-    - "{{ apnscp_last_run_vars }}"
-    - /dev/null
