@@ -11,24 +11,24 @@
     dest: "{{ logrotate_path }}/webmail"
     force: "{{ force | default('no') }}"
 - include_vars: "{{ playbook_dir }}/roles/software/passenger/defaults/main.yml"
-  when: passenger_enabled
+  when: passenger_enabled | bool
 - name: Add Passenger logfile rotation
   template:
     src: templates/passenger.j2
     dest: "{{ logrotate_path }}/passenger"
     force: "{{ force | default('no') }}"
-  when: passenger_enabled
+  when: passenger_enabled | bool
 
 - stat: path={{ grants_backup }}
   register: s
 - name: Initialize grants backup
-  file: 
+  file:
     path: "{{ grants_backup }}"
     state: touch
     owner: root
     group: root
     mode: 0640
-  when: not s.stat.exists  
+  when: not s.stat.exists
 - name: Backup mysql grants
   template:
     src: templates/mysql-backup.j2
@@ -38,7 +38,7 @@
 - stat: path={{ mailer_backup }}
   register: s
 - name: Initialize email backup
-  file: 
+  file:
     path: "{{ mailer_backup }}"
     state: touch
     owner: "root"
@@ -51,9 +51,9 @@
     src: templates/mailer-table.j2
     dest: "{{ logrotate_path }}/mailer-table"
     force: "{{ force | default('no') }}"
-    
+
 - name: Add apnscp logrotate
-  template: 
+  template:
     src: templates/apnscp.j2
     dest: "{{ logrotate_path }}/apnscp"
     force: yes
