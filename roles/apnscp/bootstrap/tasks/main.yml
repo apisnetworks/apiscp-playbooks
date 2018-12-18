@@ -12,32 +12,32 @@
 - template: src=templates/apnscp.sysconf.j2 dest=/etc/sysconfig/apnscp force=no backup=yes
 - systemd: daemon_reload=yes enabled=yes name=apnscp
   when: copied.changed
-- include_tasks: set-platform-version.yml 
+- include_tasks: set-platform-version.yml
   vars:
     version: "{{ apnscp_platform_version }}"
 
 - name: Create shared filesystem slice {{ apnscp_shared_root }}
-  file: 
+  file:
     path: "{{ apnscp_shared_root }}"
     mode: 0711
     state: directory
   register: dir_created
 
-- include_tasks: "set-config.yml" 
-  vars: 
-    section: core 
-    option: filesystem_shared 
+- include_tasks: "set-config.yml"
+  vars:
+    section: core
+    option: filesystem_shared
     value: "{{ apnscp_shared_root }}"
-    
+
 - include_tasks: set-config.yml
-  vars: 
+  vars:
     section: cron
     option: low_memory
     value: true
   when: has_low_memory
 
 - include_tasks: set-config.yml
-  vars: 
+  vars:
     section: "{{ item.section }}"
     option: "{{ item.option }}"
     value: "{{ item.value }}"
@@ -50,7 +50,7 @@
       value: "{{ panel_headless }}"
 
 - name: Create apnscp user {{ apnscp_system_user }}
-  user: 
+  user:
     home: "{{ apnscp_root }}/storage"
     createhome: no
     shell: /sbin/nologin
@@ -74,7 +74,7 @@
 
 - include_vars: "vars/opcenter-links.yml"
 - name: Link opcenter resources to /etc
-  include_tasks: create-link-opcenter-controls.yml 
+  include_tasks: create-link-opcenter-controls.yml
   vars:
     path: "{{ item.path }}"
     src: "{{item.src}}"
@@ -87,16 +87,16 @@
       ServerName {{ apnscp_fqdn | default(ansible_nodename) }}
       User {{ apnscp_system_user }}
       Group {{ apnscp_system_user }}
-      Use VHost {{ apnscp_ip4_address | default(ansible_default_ipv4.address) }} 
+      Use VHost {{ apnscp_ip4_address | default(ansible_default_ipv4.address) }}
     dest: "{{ apnscp_root }}/config/httpd-custom.conf"
     owner: "{{ apnscp_system_user }}"
     group: "{{ apnscp_system_user }}"
   when: not httpdchk.stat.exists
 
-- include_tasks: "set-config.yml" 
+- include_tasks: "set-config.yml"
   vars:
-    section: crm 
-    option: "{{ item.option }}" 
+    section: crm
+    option: "{{ item.option }}"
     value: "{{ item.value }}"
     check_value: false
   with_items:
@@ -114,7 +114,7 @@
     option: secret
     value: "{{ cookie_secret }}"
     check_value: false
-    
+
 - stat: path="{{ apnscp_root }}/storage/opcenter/namebased_ip_addrs"
   register: nbchk
 - copy:
@@ -124,7 +124,7 @@
   notify: Restart virtualhosting
 - stat: path="{{ apnscp_root }}/storage/opcenter/namebased_ip6_addrs"
   register: nbchk
-- block: 
+- block:
     - copy:
         content: "{{ apnscp_ip6_address | default([ansible_default_ipv6.address]) | join('\n') }}"
         dest: "{{ apnscp_root }}/storage/opcenter/namebased_ip6_addrs"
@@ -135,7 +135,7 @@
         option: my_ip6
         value: "{{ apnscp_ip6_address | default(ansible_default_ipv6.address) }}"
   when: >
-    (not nbchk.stat.exists or nbchk.stat.size == 0) and 
+    (not nbchk.stat.exists or nbchk.stat.size == 0) and
     ansible_default_ipv6 is defined and ansible_default_ipv6.has_key('address')
 - stat: path="{{ apnscp_root }}/storage/opcenter/interface"
   register: stif
@@ -144,15 +144,15 @@
     dest: "{{ apnscp_root }}/storage/opcenter/interface"
   when: not stif.stat.exists or stif.stat.size == 0
 - name: Assign UUID
-  include_tasks: "set-config.yml" 
+  include_tasks: "set-config.yml"
   vars:
     section: dns
-    option: uuid 
+    option: uuid
     value: "{{ 999999999999999999999 | random | string + (lookup('pipe', 'date +%s%N')) | to_uuid() }}"
     check_value: false
   when: not data_center_mode
 - name: Copy /etc/resolv.conf config to config.ini
-  set_fact: 
+  set_fact:
     nameservers: "{{ (nameservers | default([])) + [item]}}"
   with_lines: "egrep '^\\s*nameserver\\b' /etc/resolv.conf | cut -d' ' -f2"
   when: apnscp_nameservers is not defined
@@ -168,3 +168,5 @@
   command: chown -c -R {{ apnscp_system_user }}:{{ apnscp_system_user }} {{ apnscp_root }}
   register: o
   changed_when: o.stdout != "" and apnscp_notify_ownership_change
+  args:
+    warn: False

@@ -1,11 +1,11 @@
 ---
 - include_tasks: enable-rspamd.yml
-  when: rspamd_enabled
+  when: rspamd_enabled | bool
 - block:
     - name: Disable rspamd
       systemd: name=rspamd state=disabled enabled=false
       failed_when: false
-  when: not rspamd_enabled
+  when: not rspamd_enabled | bool
 
 # General spam filtering
 # @TODO move to separate role?
@@ -13,7 +13,7 @@
 - name: Remove spamassassin rules configuration
   file: path="{{ rspamd_local_config_dir }}/spamassassin.conf" state=absent
   notify: Restart rspamd
-  when: not rspamd_use_spamassassin_rules
+  when: not rspamd_use_spamassassin_rules | bool
 
 - name: "{{ (spamfilter == 'spamassassin') | ternary('Enable', 'Disable') }} spamc usage"
   replace:

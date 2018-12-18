@@ -37,7 +37,7 @@
   when: (apnscp_nightly_update | bool) and apnscp_update_policy != false
 - name: Remove nightly fst sync
   file: path="{{ nightly_fst_sync }}" state=absent
-  when: not apnscp_resync_filesystem_nightly
+  when: not apnscp_resync_filesystem_nightly | bool
 - name: Disable apnscp nightly updates
   file: path={{ apnscp_update_cron }} state=absent
   when: not (apnscp_nightly_update | bool) or apnscp_update_policy == false

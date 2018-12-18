@@ -22,4 +22,4 @@
     backrefs: true
     line: 'SPAMDOPTIONS=\g<quote>\g<options> -l\g<quote>'
     state: present
-  when: spamassassin_enable_spamd_tell
+  when: spamassassin_enable_spamd_tell | bool

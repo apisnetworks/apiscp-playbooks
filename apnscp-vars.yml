@@ -8,9 +8,12 @@
 #####################################################################################
 # This is part of the core apnscp configuration - it is updated with each new release
 # To make changes, copy this file to /root prior to running this playbook:
-# 
+#
 # cp /usr/local/apnscp/resources/playbooks/apnscp-vars.yml /root
 # cd /usr/local/apnscp/resources/playbooks && ansible-playbook bootstrap.yml
+#
+# Alternatively use cpcmd config_set apnscp.bootstrapper to change values here
+# or override any Playbook default. See README.md
 #
 #####################################################################################
 # Default PHP interpreter
@@ -23,12 +26,12 @@ apnscp_debug: false
 
 # Email address of the owner of the server
 # Used for Let's Encrypt registration, login notifications,
-# and other events 
+# and other events
 # Note, it can be changed at a later date using
 # apnscp/bin/cmd admin_set_email new@address.com
 apnscp_admin_email:
 
-# Server/admin is miserly. Reduce service memory usage 
+# Server/admin is miserly. Reduce service memory usage
 # when possible. Not recommended. Not fully tested.
 has_low_memory: false
 
@@ -53,7 +56,7 @@ apnscp_update_policy: edge
 # - minimal: yum --bugfix upgrade-minimal
 # - minimal-security: yum --security upgrade-minimal
 # - minimal-security-severity: yum --sec-severity=critical upgrade-minimal
-# - false: disable 
+# - false: disable
 yum_update_policy: default
 
 # Perform nightly panel updates? Panel may be updated manually with
@@ -61,7 +64,7 @@ yum_update_policy: default
 # Setting apnscp_update_policy to false disables updates.
 apnscp_nightly_update: true
 
-# Default IPv4 address for apnscp to listen to. If undefined will 
+# Default IPv4 address for apnscp to listen to. If undefined will
 # use the first address that has external routing
 #apnscp_ip4_address:
 
@@ -99,20 +102,20 @@ clamav_enabled: "{{ not (has_low_memory | bool) | default(true) | ternary(true, 
 # but rather who can connect.
 mail_enabled: true
 
-# Use a global spamassassin database for bayesian storage. 
+# Use a global spamassassin database for bayesian storage.
 spamassassin_global: true
 
-# Enable Passenger - allows a dead simple system to run 
+# Enable Passenger - allows a dead simple system to run
 # Node, Python, and Ruby applications with automatic restarts
 passenger_enabled: yes
 
 # Place each account's InnoDB data files in a separate directory
 # Loses performance benefits, increases overhead, but allows for storage tracking
-# May potential cause cyclic segfault in MariaDB if 
+# May potential cause cyclic segfault in MariaDB if
 # a user goes over quota with InnoDB data
 mysqld_per_account_innodb: "{{ data_center_mode }}"
 
-# Horde is a different beast of dependencies and 
+# Horde is a different beast of dependencies and
 # requires more care than other webmail options
 enable_horde: "{{ mail_enabled | bool }}"
 
