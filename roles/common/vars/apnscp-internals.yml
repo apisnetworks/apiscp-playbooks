@@ -13,10 +13,10 @@ wtmp_limit_snooping: true
 apnscp_testing_repo: "{{ apnscp_debug }}"
 # Location of apnscp
 apnscp_root: /usr/local/apnscp
-# Location of FST
-apnscp_filesystem_template: /home/virtual/FILESYSTEMTEMPLATE
 # Account root
 apnscp_account_root: /home/virtual
+# Location of FST
+apnscp_filesystem_template: "{{ apnscp_account_root }}/FILESYSTEMTEMPLATE"
 # Filelists provide additional resources for service installation
 apnscp_filelists: "{{apnscp_root}}/storage/opcenter/filelists"
 # Default apnscp user - not tested
