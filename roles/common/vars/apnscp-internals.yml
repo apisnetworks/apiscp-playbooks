@@ -50,6 +50,8 @@ pasv_max_port: 40010
 rspamd_enabled: false
 # Use SpamAssassin or rspamd for spam filtering. rspamd is experimental
 spamassassin_enabled: yes
+# Enable installing MongoDB
+mongodb_enabled: false
 # apnscp is part of a multi-server environment
 # requires extra configuration
 # see https://github.com/apisnetworks/cp-proxy

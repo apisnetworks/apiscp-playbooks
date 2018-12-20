@@ -1,7 +1,7 @@
 ---
 title: MongoDB v{{ mongodb.version | default (mongodb.default) }}
 repo_name: "mongodb-org-{{ mongodb.version | default (mongodb.default) }}"
-rpms: 
+rpms:
   - mongodb-org
   - mongodb-org-mongos
   - mongodb-org-server
@@ -9,3 +9,4 @@ rpms:
   - mongodb-org-tools
 notify:
   - Disable mongodb
+when: '{{ mongodb_enabled }}'

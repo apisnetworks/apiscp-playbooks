@@ -512,11 +512,11 @@ packages:
   - { package: mesa-libgbm, service: ssh }
   - { package: mesa-libglapi, service: ssh }
   - { package: mesa-libGL, service: ssh }
-  - { package: mongodb-org-mongos, service: ssh }
-  - { package: mongodb-org-server, service: ssh }
-  - { package: mongodb-org-shell, service: ssh }
-  - { package: mongodb-org-tools, service: ssh }
-  - { package: mongodb-org, service: ssh }
+  - { package: mongodb-org-mongos, service: ssh, when: '{{ mongodb_enabled }}' }
+  - { package: mongodb-org-server, service: ssh, when: '{{ mongodb_enabled }}' }
+  - { package: mongodb-org-shell, service: ssh, when: '{{ mongodb_enabled }}' }
+  - { package: mongodb-org-tools, service: ssh, when: '{{ mongodb_enabled }}' }
+  - { package: mongodb-org, service: ssh, when: '{{ mongodb_enabled }}' }
   - { package: mutt, service: ssh }
   - { package: nano, service: ssh }
   - { package: ncurses-base, service: ssh }
