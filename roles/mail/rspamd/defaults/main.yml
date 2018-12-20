@@ -83,8 +83,11 @@ rspamd_passive_learning_mode: "{{ rspamd_enabled and (rspamd_method == 'piggybac
 
 # Suitable for low-volume environments
 rspamd_use_spamassassin_rules: false
+# Learns egregious violators
+rspamd_piggyback_learn_spam_threshold: 7.0
 # Learns roughly half of ham in a trained database
-rspamd_learn_piggyback_threshold: -0.5
+rspamd_piggyback_learn_ham_threshold: -0.5
+# Optional location for SA rule usage
 rspamd_spamassassin_rules: "/var/lib/spamassassin/3.004002/updates_spamassassin_org/[0-9]*.cf"
 
 # Enable neural training. CPU intensive
@@ -109,13 +112,13 @@ rspamd_learn_ham: '"|{{ rspamd_learn_command }} learn_ham"'
 
 rspamd_piggyback_block: |
   /^X-Spam-Score: ([-\d\.]+)/
-  if ($MATCH1 >= $DELETE_THRESHOLD)
+  if ($MATCH1 >= {{ rspamd_piggyback_learn_spam_threshold }})
   {% raw -%} { {% endraw %}
 
     cc "! {{ rspamd_learn_spam_email }}"
   {% raw -%} } {% endraw %}
 
-  elsif ($MATCH1 <= {{ rspamd_learn_piggyback_threshold }})
+  elsif ($MATCH1 <= {{ rspamd_piggyback_learn_ham_threshold }})
   {% raw -%} { {% endraw %}
 
     cc "! {{ rspamd_learn_ham_email }}"
