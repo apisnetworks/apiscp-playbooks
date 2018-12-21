@@ -5,3 +5,11 @@ sysctl_config:
   # Fixes ab timeouts
   net.ipv4.tcp_max_syn_backlog: 1024
   net.ipv4.tcp_tw_reuse: 1
+  # Restrict dmesg inspection to root
+  kernel.dmesg_restrict: 1
+  # @TODO Requires further testing
+  # Restrict hardlink creation to owner only
+  fs.protected_hardlinks: "{{ apnscp_debug | int }}"
+  # Symlink hardening, only follow if outside sticky world-writable directory
+  # or when the UID <-> follower match
+  fs.protected_symlinks: "{{ apnscp_debug | int }}"
