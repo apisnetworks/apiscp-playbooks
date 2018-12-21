@@ -92,10 +92,11 @@ rspamd_spamassassin_rules: "/var/lib/spamassassin/3.004002/updates_spamassassin_
 
 # Enable neural training. CPU intensive
 rspamd_enable_neural_training: "{{ not has_low_memory and rspamd_redis_enabled }}"
-
+###################
+# Action thresholds
+###################
 # 13.19 is approximately 15% percentile with a trained data set
 # n = 532, mu = 18.90, s = 5.39
-# JSON problems...
 rspamd_reject_piggyback_score: 25
 rspamd_reject_score: 13.2
 rspamd_greylist_piggyback_score: 10
@@ -105,6 +106,16 @@ rspamd_add_header_score: 6
 rspamd_greylist_score: 4
 # Add headers to email
 rspamd_extended_spam_headers: "{{ (rspamd_method == 'piggyback') }}"
+
+#################
+# Weighted scores
+#################
+# Various weighted scores maximums. As p → 100%, score → var
+rspamd_weight_neural_spam: 3.0
+rspamd_weight_neural_ham: -3.0
+# 5.10 is default, with a mature Bayes DB bump this value up to 10
+rspamd_weight_bayes_spam: 5.10
+rspamd_weight_bayes_ham: -3.0
 
 rspamd_learn_command: /usr/bin/rspamc
 rspamd_learn_spam: '"|{{ rspamd_learn_command }} learn_spam"'
@@ -149,13 +160,20 @@ rspamd_spamassassin_config:
       match_limit: 100k
 # rspamd config
 config_files:
+  - file: statistics_group.conf
+    vars:
+      symbols:
+        BAYES_HAM:
+          weight: "{{ rspamd_weight_bayes_ham }}"
+        BAYES_SPAM:
+          weight: "{{ rspamd_weight_bayes_spam }}"
   - file: neural_group.conf
     vars:
       symbols:
         NEURAL_SPAM:
-          weight: 3.0
+          weight: "{{ rspamd_weight_neural_spam }}"
         NEURAL_HAM:
-          weight: -3.0
+          weight: "{{ rspamd_weight_neural_ham }}"
   - file: neural.conf
     vars:
       enabled: "{{ rspamd_enable_neural_training }}"
