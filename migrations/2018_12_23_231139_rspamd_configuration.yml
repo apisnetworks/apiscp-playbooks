@@ -1,0 +1,23 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# - Update rspamd/clamav state in config.ini
+# - Update redis extension
+---
+- block:
+    - name: "Set rspamd installation state in apnscp"
+      include_tasks: "{{ role_path }}/../../apnscp/bootstrap/tasks/set-config.yml"
+      vars:
+        section: mail
+        option: "rspamd_present"
+        value: "{{ rspamd_enabled | bool }}"
+    - name: "Set rspamd installation state in apnscp"
+      include_tasks: "{{ role_path }}/../../apnscp/bootstrap/tasks/set-config.yml"
+      vars:
+        section: antivirus
+        option: "installed"
+        value: "{{ clamav_enabled | bool }}"
+    - name: "Update extensions"
+      include_role: name=apnscp/install-extensions
+      vars:
+        force: yes
+  tags: ['up']

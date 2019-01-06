@@ -2,7 +2,7 @@
 # on a copy-up layer in FST to allow write-access by admin
 # Downside is that anything root installs will also propagate
 # to child nodes, so don't do that!
-# 
+#
 # rbenv forcefully overwrites a few things, including rbenv.sh
 # and version (default_ruby) settings, so it always triggers
 # idempotency violations; sorry!
@@ -23,7 +23,7 @@
     rbenv_tmpdir: "{{ apnscp_root }}/storage/cache"
     rbenv:
       env: system
-      default_ruby: 
+      default_ruby:
       version: "{{ __rbenv_version }}"
       rubies: []
   when: not (rbenv_idempotency_hotfix | default(true))  or not r.stat.exists
@@ -35,7 +35,7 @@
 - name: Add GEM_HOME pathing support
   git:
     clone: yes
-    repo: git://github.com/andyl/rbenv-usergems
+    repo: git://github.com/apisnetworks/rbenv-usergems
     dest: "{{ apnscp_filesystem_template }}/{{rbenv_service_install }}/{{git_target}}/plugins/rbenv-usergems"
     force: "{{ rbenv_usergems_force | default('yes') }}"
     version: "{{ rbenv_usergems_version | default('HEAD') }}"
@@ -43,7 +43,7 @@
 # whereas localized allows users to create gem bundles within their home directory
 - name: Get rbenv code - root
   command: "{{ git_target }}/bin/rbenv init -"
-  environment: 
+  environment:
     RBENV_ROOT: "{{ git_target }}"
   register: rbenv_code
   changed_when: false
@@ -51,13 +51,13 @@
   copy:
     dest: "{{rbenv_script}}"
     content: |
-      #!/bin/sh  
+      #!/bin/sh
       export RBENV_ROOT="{{ git_target }}"
       {{ rbenv_code.stdout }}
     mode: 0644
 - name: Get rbenv code - non-root
   command: "{{ git_target }}/bin/rbenv usergems-init - | sed -e 's!\"/root!\"$HOME!g'"
-  environment: 
+  environment:
     RBENV_ROOT: "{{ git_target }}"
   register: rbenv_code
   changed_when: false
@@ -65,7 +65,7 @@
   copy:
     dest: "{{ apnscp_filesystem_template }}/{{ rbenv_service_install }}/{{rbenv_script}}"
     content: |
-      #!/bin/sh  
+      #!/bin/sh
       export RBENV_ROOT="{{ git_target }}"
       {{ rbenv_code.stdout | regex_replace('(PATH="/[^/]*(?<!\$HOME)/?\.rbenv-usergems/)', 'PATH="$HOME/.rbenv-usergems/') }}
     mode: 0644
@@ -83,14 +83,14 @@
 - name: Build Ruby {{ sys_ruby_version }} outside FST
   shell: >
     $SHELL -lc "{{ git_target }}/bin/rbenv install {{ sys_ruby_version }}"
-  environment: 
+  environment:
     TMPDIR: "{{ apnscp_root }}/storage/cache"
     RBENV_SHELL: bash
     RBENV_ROOT: "{{ git_target }}"
   when: sys_ruby_version is defined and not rv.stat.exists
 - name: Add {{ git_target }} to wheel
   command: >
-    find {{ git_target | quote }} -follow  
+    find {{ git_target | quote }} -follow
       -iname ".git" -prune -o -not -group wheel
       -exec chgrp -c wheel {} +
   register: rbenv_chown
@@ -125,12 +125,12 @@
   vars:
     files:
       - content: |
-          gem: --no-rdoc --no-ri 
+          gem: --no-rdoc --no-ri
         service: ssh
         path: /etc/gemrc
 
 - name: Symlink rbenv to {{git_target}}
-  file: 
+  file:
     src: "{{ git_target }}/bin/rbenv"
     path: "{{ apnscp_filesystem_template }}/{{ rbenv_service_install }}/usr/bin/rbenv"
     state: link
@@ -138,4 +138,3 @@
   lineinfile:
     path: "{{ apnscp_filesystem_template}}/siteinfo/etc/profile"
     line: 'export GEM_PATH="$GEM_PATH:$HOME/.gems"'
-

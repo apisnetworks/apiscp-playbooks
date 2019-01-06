@@ -1,4 +1,5 @@
 ---
+apnscp_build_php_vars: true
 builddir: "{{ apnscp_root }}/build/php/php-{{ apnscp_php_version }}"
 work_dir: "{{ apnscp_root }}/build/php"
 php_version: "{{ apnscp_php_version }}"

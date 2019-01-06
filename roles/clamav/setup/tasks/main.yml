@@ -3,6 +3,7 @@
 - include_tasks: setup-clamav.yml
   when: clamav_enabled | bool
   tags: clamav
+
 - name: Disable ClamAV
   systemd:
     name: "{{ clamav_service }}"
@@ -12,3 +13,10 @@
   register: r
   failed_when: 'r.failed and "Could not find the requested service" not in r.msg'
   when: not (clamav_enabled | bool)
+
+- name: "Set clamav installation state in apnscp"
+  include_tasks: "{{ role_path }}/../../apnscp/bootstrap/tasks/set-config.yml"
+  vars:
+    section: antivirus
+    option: "installed"
+    value: "{{ clamav_enabled | bool }}"
