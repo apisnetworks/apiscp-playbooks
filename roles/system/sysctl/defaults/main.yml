@@ -9,7 +9,7 @@ sysctl_config:
   kernel.dmesg_restrict: 1
   # @TODO Requires further testing
   # Restrict hardlink creation to owner only
-  fs.protected_hardlinks: "{{ apnscp_debug | int }}"
+  fs.protected_hardlinks: 1
   # Symlink hardening, only follow if outside sticky world-writable directory
   # or when the UID <-> follower match
-  fs.protected_symlinks: "{{ apnscp_debug | int }}"
+  fs.protected_symlinks: 1

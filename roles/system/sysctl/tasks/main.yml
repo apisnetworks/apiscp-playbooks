@@ -1,10 +1,17 @@
 ---
+- name: Merge custom config
+  include_tasks: "roles/common/tasks/implicitly-import-overrides.yml"
+  vars:
+    base: "{{ sysctl_config }}"
+    varname: __config
+    prefix: None
+    name: sysctl
 - sysctl:
     name: "{{ item.key }}"
     value: "{{ item.value }}"
     state: present
     reload: yes
     sysctl_file: "{{ sysctl_file }}"
-  with_dict: "{{ sysctl_config }}"
+  with_dict: "{{ __config }}"
   loop_control:
     label: "Setting sysctl {{ item.key }} = {{ item.value }}"
