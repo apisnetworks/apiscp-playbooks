@@ -1,0 +1,12 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# - Add apnscp to virusscan group
+---
+- block:
+    - name: Enable ClamAV scanning by apnscp
+      user:
+        append: true
+        groups: "{{ clamav_scan_group }}"
+        name: "{{ apnscp_system_user }}"
+  when: clamav_enabled
+  tags: ['up']

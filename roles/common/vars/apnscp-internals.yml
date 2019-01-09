@@ -82,3 +82,6 @@ clamav_enable: "{{ clamav_enabled | default(true) }}"
 
 # CI via Docker
 dockerized: false
+
+# Virus scanning group used by ClamAV
+clamav_scan_group: virusgroup

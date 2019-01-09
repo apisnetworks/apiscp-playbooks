@@ -98,14 +98,17 @@ rspamd_enable_neural_training: "{{ not has_low_memory and rspamd_redis_enabled }
 # 13.19 is approximately 15% percentile with a trained data set
 # n = 532, mu = 18.90, s = 5.39
 rspamd_reject_piggyback_score: 25
-rspamd_reject_score: 13.2
+rspamd_reject_score: 15
 rspamd_greylist_piggyback_score: 10
 # Used when spamfilter == rspamd, triggers delivery in Spam mailbox
 # When piggybacking, a SA score of 4 adds this header anyway
-rspamd_add_header_score: 6
+rspamd_add_header_score: 8
 rspamd_greylist_score: 4
 # Add headers to email
 rspamd_extended_spam_headers: "{{ (rspamd_method == 'piggyback') }}"
+# Duration an IP address that revisits the mail server will be
+# allowed despite scoring >= rspamd_greylist_score
+rspamd_greylist_expire: 5d
 
 #################
 # Weighted scores
@@ -215,6 +218,9 @@ config_files:
     vars:
       backend: "{{ rspamd_redis_enabled | ternary('redis', 'sqlite') }}"
       autolearn: [-2.5, 7.5]
+  - file: greylist.conf
+    vars:
+      expire: "{{ rspamd_greylist_expire }}"
   - file: logging.inc
     vars:
       level: "{{ rspamd_logging_level }}"

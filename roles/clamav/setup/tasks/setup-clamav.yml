@@ -1,13 +1,13 @@
 ---
 - name: Install clamav packages
-  yum: 
+  yum:
     name: "{{ clamav_packages }}"
     state: present
 - name: Validate clamav version
   command: clamav-config --version
   register: v
-  changed_when: false  
-- include_vars: file="{{ role_path }}/../support/defaults/main.yaml" name=local   
+  changed_when: false
+- include_vars: file="{{ role_path }}/../support/defaults/main.yaml" name=local
 - set_fact: ignoredVars="{{ ignoredVars + ['AllowSupplementaryGroups'] }}"
   when: v.stdout is version('0.100.0', '>=')
 - include_tasks: omit-clamav-var.yml
@@ -26,3 +26,8 @@
   vars:
     clamav_clamd_config: "{{ cleanedVars }}"
     clamav_freshclam_config: "{{ cleanedFreshclam }}"
+- name: Enable ClamAV scanning by apnscp
+  user:
+    append: true
+    groups: "{{ clamav_scan_group }}"
+    name: "{{ apnscp_system_user }}"
