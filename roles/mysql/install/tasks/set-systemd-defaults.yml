@@ -4,11 +4,11 @@
     src: files/mysqlcheck.sh
     dest: "{{ mysql_check_path }}"
     mode: "0755"
-- name: Override mariadb.service 
+- name: Override mariadb.service
   include_role: name=systemd/override-config
   vars:
     service: "{{ mysql_systemd_service }}"
-    config: 
+    config:
       - group: Service
         vars:
           ProtectSystem: false
@@ -17,6 +17,6 @@
           OOMScoreAdjust: -500
           LimitNOFILE: 65535
           Nice: -15
-          TimeoutStartUSec: "{{ mysql_startup_timeout }}"
+          TimeoutStartSec: "{{ mysql_startup_timeout }}"
           ExecStartPre: "{{ mysql_check_path }}"
     notify: Restart mariadb

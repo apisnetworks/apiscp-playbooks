@@ -138,7 +138,7 @@ rpms:
   - groff
   - groff-base
   - gsl
-  - gsl-devel 
+  - gsl-devel
   - gzip
   - hesiod
   - http-parser
@@ -182,7 +182,6 @@ rpms:
   - libdb-devel
   - libdrm
   - libedit
-  - libevent
   - libevent
   - libffi
   - libffi-devel

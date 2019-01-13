@@ -232,6 +232,7 @@ packages:
   - { package: libcurl, service: siteinfo }
   - { package: libdb4, service: siteinfo }
   - { package: libdb, service: siteinfo }
+  - { package: libevent, service: siteinfo }
   - { package: libffi, service: siteinfo }
   - { package: libgcc, service: siteinfo }
   - { package: libgcrypt, service: siteinfo }
@@ -462,7 +463,6 @@ packages:
   - { package: libdb-devel, service: ssh }
   - { package: libdrm, service: ssh }
   - { package: libedit, service: ssh }
-  - { package: libevent, service: ssh }
   - { package: libffi-devel, service: ssh }
   - { package: libgcrypt-devel, service: ssh }
   - { package: libgfortran, service: ssh }

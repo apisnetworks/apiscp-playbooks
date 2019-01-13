@@ -1,19 +1,20 @@
 ---
 # Deprecated vars
-ignoredVars: []
+ignoredVars:
+  - AllowSupplementaryGroups
+  - DetectBrokenExecutables
 clamav_enable: false
 _clamav_allow_supplementary_groups: "yes"
 _clamav_scan_cron: false
 _clamav_clamd_config__custom:
   LogClean: yes
   ExtendedDetectionInfo: yes
-  AllowSupplementaryGroups: "{{ _clamav_allow_supplementary_groups | default(omit) }}"
+  AllowSupplementaryGroups: omit
   ScanPE: yes
-  DetectBrokenExecutables: yes
-  User: clamscan
+  User: "{{ clamav_user }}"
 _clamav_clamd_daemon_nicelevel: 5
 _clamav_update_user: clamupdate
-_clamav_freshclam_config__custom: 
+_clamav_freshclam_config__custom:
   AllowSupplementaryGroups: yes
   DatabaseOwner: "{{ _clamav_update_user }}"
 clamav_packages:

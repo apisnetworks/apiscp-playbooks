@@ -31,3 +31,7 @@
     append: true
     groups: "{{ clamav_scan_group }}"
     name: "{{ apnscp_system_user }}"
+- name: Validate clamav ownership
+  file:
+    path: "{{ clamav_clamd_database_directory }}"
+    group: "{{ clamav_user }}"
