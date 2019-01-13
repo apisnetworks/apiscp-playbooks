@@ -1,0 +1,4 @@
+- name: "Removing package {{ package }} from FST"
+  command: "{{ synchronizer }} remove {{ soft_delete_package | default(false) | ternary('--soft', None)}} {{ package }}"
+  args:
+    chdir: "{{ apnscp_root }}"

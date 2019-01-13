@@ -4,7 +4,8 @@
     name: "{{ apnscp_filesystem_template }}/{{ service }}"
     state: directory
   register: fstnew
-- file:
+- name: Create FST service initial structure
+  file:
     path: "{{apnscp_filesystem_template}}/{{service}}/{{sitem.src}}"
     state: link
     src: "{{sitem.dest}}"
@@ -19,10 +20,13 @@
     loop_var: sitem
   when: fstnew.changed
 
-- yum:
+- name: "Verify {{ package }} installed"
+  yum:
     name: "{{ package }}"
     state: present
-- command: "{{ synchronizer }} install {{ __populate_filesystem_template | ternary('--force', None)}} {{ package }} {{ service }}"
+
+- name: "Install {{ package }} into FST/{{ service }}"
+  command: "{{ synchronizer }} install {{ __populate_filesystem_template | ternary('--force', None)}} {{ package }} {{ service }}"
   args:
     chdir: "{{ apnscp_root }}"
   register: result

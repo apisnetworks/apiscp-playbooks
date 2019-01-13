@@ -17,6 +17,25 @@
     option: "rspamd_present"
     value: "{{ rspamd_enabled | bool }}"
 
+- name: Replicate rspamd package
+  include_role:
+    name: apnscp/initialize-filesystem-template
+    tasks_from: "install-package.yml"
+  vars:
+    package: "{{ item.package }}"
+    service: "{{ item.service }}"
+  with_items: "{{ rspamd_packages }}"
+  when: rspamd_enabled
+
+- name: Remove rspamd package
+  include_role:
+    name: apnscp/initialize-filesystem-template
+    tasks_from: "remove-package.yml"
+  vars:
+    package: "{{ item.package }}"
+  with_items: "{{ rspamd_packages }}"
+  when: not rspamd_enabled
+
 # General spam filtering
 # @TODO move to separate role?
 

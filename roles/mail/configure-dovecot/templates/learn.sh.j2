@@ -1,5 +1,5 @@
 {% if spamfilter == 'rspamd' %}
-exec /usr/bin/rspamc -h "{{ rspamd_worker_socket }}" learn_{{ type }}
+exec /usr/bin/rspamc -h "{{ rspamd_controller_socket }}" learn_{{ type }}
 {% elif (spamd_allow_tell | default(false)) %}
 /usr/bin/spamc -u ${1} -L {{ type }} -C report
 {% else %}

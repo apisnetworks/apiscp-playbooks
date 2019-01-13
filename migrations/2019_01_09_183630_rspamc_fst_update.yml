@@ -1,0 +1,27 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# - Install rspamc + dependencies (fann) in FST
+# - Update maildrop permissions in FST
+# - Match X-Spam header by rspamd
+---
+- block:
+    - include_role: name=mail/rspamd
+    - name: Update maildrop permissions
+      include_role:
+        name: apnscp/initialize-filesystem-template
+        tasks_from: "{{ item }}"
+      vars:
+        package: maildrop
+        service: siteinfo
+      with_items:
+        - remove-package.yml
+        - install-package.yml
+    - name: Match alternative X-Spam form
+      replace:
+        path: "{{ item }}"
+        regexp: "X-Spam-Flag:"
+        replace: "X-Spam(?:-Flag)?:"
+      with_items:
+        - "{{ (apnscp_account_root + '/site*/fst/etc/maildroprc') | fileglob }}"
+        - "{{ apnscp_filelists }}/siteinfo/etc/maildroprc"
+  tags: ['up']

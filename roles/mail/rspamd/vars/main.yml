@@ -1,0 +1,5 @@
+rspamd_packages:
+  - package: rspamd
+    service: siteinfo
+  - package: fann
+    service: siteinfo
