@@ -11,5 +11,12 @@ $servers['imap'] = array(
     // [6.2.3]), so TLS is the only guaranteed authentication available by
     // default.
     'secure' => 'tls',
+    'smtp' => array(
+        'host' => 'localhost',
+        'port' => 587,
+        'auth' => true
+    ),
+    'quota' => array(
+        'driver' => 'imap'
+    )
 );
-

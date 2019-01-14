@@ -1,7 +1,9 @@
 <?php
+$backends['imap']['disabled'] = true;
 $backends['maildrop'] = array(
     // Disabled by default
     'disabled' => false,
+    'hordeauth' => 'full',
     'transport' => array(
         Ingo::RULE_ALL => array(
             'driver' => 'vfs',
@@ -21,7 +23,6 @@ $backends['maildrop'] = array(
                 //   This would be translated into:
                 //   '/data/maildrop/filters/<filter_owners_domainname>/<filter_owners_username>/.mailfilter'
                 // 'vfs_path' => '/path/to/maildrop',
-
                 // VFS: FTP example
                 // The VFS driver to use
                 'vfstype' => 'ftp',

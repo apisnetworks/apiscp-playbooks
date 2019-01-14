@@ -3,10 +3,10 @@
 - stat: path={{ horde_path }}/config/conf.php
   register: init
 - name: Copy Horde configuration template
-  template: 
+  template:
     src: "templates/{{ item.src }}"
     dest: "{{ horde_path }}/{{ item.dest }}"
-    force: no
+    force: "{{ horde_force_config_update | default('no') }}"
   with_items: "{{ horde_configs }}"
 - name: Create Horde database
   mysql_db:
@@ -33,7 +33,7 @@
   # Should complete within 2 retries
   retries: 10
 - name: Change Horde permissions
-  file: 
+  file:
     path: "{{ item }}"
     owner: apache
     group: root
@@ -44,7 +44,7 @@
   file: path={{ horde_path }} owner=root recurse=yes
 - file: path={{ item }} mode=0700 owner=root
   with_items: "{{ lookup('fileglob', '/usr/bin/horde-*', wantlist=true) | reject('search', '/horde-alarms') | list }}"
-  loop_control: 
+  loop_control:
     label: "Removing group/other permissions from {{ item }}"
 - name: "Open /usr/bin/horde-alarms to {{ apnscp_system_user }}"
   file: path=/usr/bin/horde-alarms group={{ apnscp_system_user }} mode=0750

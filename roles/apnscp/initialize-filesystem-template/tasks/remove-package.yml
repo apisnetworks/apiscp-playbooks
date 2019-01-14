@@ -2,3 +2,5 @@
   command: "{{ synchronizer }} remove {{ soft_delete_package | default(false) | ternary('--soft', None)}} {{ package }}"
   args:
     chdir: "{{ apnscp_root }}"
+  register: o
+  changed_when: -1 == o.stdout.find("is not installed")
