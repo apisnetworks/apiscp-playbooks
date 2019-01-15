@@ -49,14 +49,15 @@ postfix_postscreen_cache_map: "{{ (postfix_memcache_server | default('', true) |
 # Assign 1 server responsibility of periodically purging Postscreen results
 postfix_postscreen_cache_cleanup_interval: "{{ (-1 == postfix_postscreen_cache_map.find('memcache:')) | ternary(86400, 0) }}"
 
+# Remove postscreen from proxymap, errors not permitted when in fact in proxy_write_maps
 postfix_memcache_maps:
   - config: "memcache-address_verify.cf"
     params:
       - memcache: "{{ (postfix_memcache_server[0] == '/') | ternary('unix', 'inet')}}:{{ postfix_memcache_server }}"
-      - backup: "{{ postfix_local_address_verify_map }}"
+      - backup: "{{ postfix_local_address_verify_map  | regex_replace('^proxy:', '') }}"
       - key_format: "vrfy:%s"
   - config: "memcache-postscreen_cache.cf"
     params:
       - memcache: "{{ (postfix_memcache_server[0] == '/') | ternary('unix', 'inet')}}:{{ postfix_memcache_server }}"
-      - backup: "{{ postfix_local_postscreen_cache_map }}"
+      - backup: "{{ postfix_local_postscreen_cache_map | regex_replace('^proxy:', '') }}"
       - key_format: "ps:%s"
