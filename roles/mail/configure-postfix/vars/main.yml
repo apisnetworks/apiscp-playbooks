@@ -80,9 +80,9 @@ config:
   home_mailbox: "{{ maildir_home }}/"
   postscreen_dnsbl_ttl: 24h
   postscreen_pipelining_action: drop
-  address_verify_map: proxy:btree:$data_directory/verify_cache
-  postscreen_cache_map: $data_directory/postscreen_cache
-  postscreen_cache_cleanup_interval: 43200
+  address_verify_map: "{{ postfix_address_verify_map }}"
+  postscreen_cache_map: "{{ postfix_postscreen_cache_map }}"
+  postscreen_cache_cleanup_interval: "{{ postfix_postscreen_cache_cleanup_interval | default(43200) }}"
   proxy_write_maps: $postscreen_cache_map,$address_verify_map,$smtpd_tls_session_cache_database,$smtp_sasl_auth_cache_name
   inet_protocols: ipv4
   postscreen_greet_wait: ${stress?2}${stress:6}s
@@ -93,6 +93,7 @@ config:
   sender_dependent_default_transport_maps: hash:/etc/postfix/sender_transport
   inet_interfaces: "{{ postfix_inet_interfaces | default('all') }}"
   mydomain: "{{ postfix_mydomain }}"
+
   # PostSRS
   sender_canonical_maps: "{{ postsrsd_enabled | ternary('tcp:localhost:' + postsrs_sender_map_port|string, None) }}"
   sender_canonical_classes: "{{ postsrsd_enabled | ternary('envelope_sender', None) }} "

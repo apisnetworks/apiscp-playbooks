@@ -1,5 +1,9 @@
 ---
 mail_configure_postfix_marker: true
+# Configure in data_center_mode to enable a centralized memcache server
+# Server :qformatted as ip.addr:port, [ip6::addr]:port, or /path/to/unix/domain.sock
+postfix_memcache_server:
+
 aliases_file: /etc/aliases
 postfix_conf_dir: /etc/postfix
 # apnscp-specific lookup file for database configuration
@@ -32,3 +36,27 @@ postfix_local_delivery_delay: "{{ (spamfilter == 'spamassassin') | ternary('3s',
 # PostSRS
 postsrs_sender_map_port: 10001
 postsrs_recipient_map_port: 10002
+
+# Address verification/postscreen map cache
+# When data_center_mode is true, replace the maps
+# with an aggregate memcache instance
+postfix_local_address_verify_map: "proxy:btree:$data_directory/verify_cache"
+postfix_local_postscreen_cache_map: "proxy:btree:$data_directory/postscreen_cache"
+
+postfix_address_verify_map: "{{ (postfix_memcache_server | default('', true) | length > 0) | ternary('memcache:' + postfix_conf_dir + '/memcache-address_verify.cf', postfix_local_address_verify_map) }}"
+postfix_postscreen_cache_map: "{{ (postfix_memcache_server | default('', true) | length  > 0) | ternary('memcache:' + postfix_conf_dir + '/memcache-postscreen_cache.cf', postfix_local_postscreen_cache_map) }}"
+
+# Assign 1 server responsibility of periodically purging Postscreen results
+postfix_postscreen_cache_cleanup_interval: "{{ (-1 == postfix_postscreen_cache_map.find('memcache:')) | ternary(86400, 0) }}"
+
+postfix_memcache_maps:
+  - config: "memcache-address_verify.cf"
+    params:
+      - memcache: "{{ (postfix_memcache_server[0] == '/') | ternary('unix', 'inet')}}:{{ postfix_memcache_server }}"
+      - backup: "{{ postfix_local_address_verify_map }}"
+      - key_format: "vrfy:%s"
+  - config: "memcache-postscreen_cache.cf"
+    params:
+      - memcache: "{{ (postfix_memcache_server[0] == '/') | ternary('unix', 'inet')}}:{{ postfix_memcache_server }}"
+      - backup: "{{ postfix_local_postscreen_cache_map }}"
+      - key_format: "ps:%s"

@@ -1,4 +1,16 @@
 ---
+- fail:
+    msg: >-
+      IMPORTANT: Data center mode enabled but address verify map or
+      postscreen map not shared in memcache instance! Set postfix_address_verify_map
+      and postfix_postscreen_cache_map for best performance.
+  ignore_errors: true
+  when: >
+    data_center_mode and (
+      -1 == postfix_address_verify_map.find("memcache:") or
+      -1 == postfix_postscreen_cache_map.find("memcache:")
+    )
+
 - include_vars: "{{playbook_dir}}/roles/mail/maildir/defaults/main.yml"
 - include_tasks: register-password.yml
 - include_tasks: install-postsrs.yml
@@ -6,16 +18,18 @@
 - name: Remove postsrsd
   yum: name=postsrsd state=absent
   when: not postsrsd_enabled
+
 - name: Create Postfix user
   postgresql_user:
     name: "{{ postfix_user }}"
     password: "{{ postfix_password }}"
     db: "{{ postfix_db }}"
     encrypted: YES
-    priv: "uids:select/gids:select/domain_lookup:select/email_lookup:select"    
+    priv: "uids:select/gids:select/domain_lookup:select/email_lookup:select"
   become: yes
   become_user: postgres
   register: user
+
 - name: Copy Postfix configuration templates
   template:
     src: "templates/{{ item }}"
@@ -31,6 +45,7 @@
     notify: Restart postfix
   loop_control:
     label: "Set {{ item.key }} => {{ item.value }}"
+
 - name: Create aliases
   include_tasks: manage-alias.yml
   vars:
@@ -42,12 +57,13 @@
     "{{ apnscp_system_user }}": root
   loop_control:
     label: "Adding alias {{ item.key }} to {{ item.value }}"
+
 - name: Check if sender transport creation necessary
   stat: path="{{ postfix_conf_dir}}/sender_transport"
   register: st
 - name: Create sender transport
   block:
-  - file: 
+  - file:
       path: "{{ postfix_conf_dir}}/sender_transport"
       state: touch
   - command: /usr/sbin/postmap "{{ postfix_conf_dir }}/sender_transport"
@@ -55,4 +71,19 @@
 - name: Update transport
   command: /usr/sbin/postmap "{{ postfix_conf_dir }}/transport"
   changed_when: false
+
+- name: Set postscreen/address verify caches
+  include_tasks: set-configuration.yml
+  vars:
+    config_file: "{{ postfix_conf_dir }}/{{ subitem.0.config }}"
+    item: "{{ lookup('dict', subitem.1) }}"
+    notify: Restart postfix
+  when: (postfix_memcache_server | default('', true) | length > 0)
+  loop_control:
+    label: "Setting {{ lookup('dict', subitem.1).key }} in {{ subitem.0.config }}"
+    loop_var: subitem
+  with_subelements:
+    - "{{ postfix_memcache_maps }}"
+    - params
+
 - meta: flush_handlers
