@@ -6,6 +6,7 @@ postfix_memcache_server:
 
 aliases_file: /etc/aliases
 postfix_conf_dir: /etc/postfix
+postfix_data_dir: /var/lib/postfix
 # apnscp-specific lookup file for database configuration
 postfix_control_file: "{{ postfix_conf_dir }}/mailboxes.cf"
 # Allow unauthenticated relaying from 127.0.0.1
@@ -40,8 +41,8 @@ postsrs_recipient_map_port: 10002
 # Address verification/postscreen map cache
 # When data_center_mode is true, replace the maps
 # with an aggregate memcache instance
-postfix_local_address_verify_map: "proxy:btree:$data_directory/verify_cache"
-postfix_local_postscreen_cache_map: "proxy:btree:$data_directory/postscreen_cache"
+postfix_local_address_verify_map: "proxy:btree:/var/lib/postfix/verify_cache"
+postfix_local_postscreen_cache_map: "proxy:btree:/var/lib/postfix/postscreen_cache"
 
 postfix_address_verify_map: "{{ (postfix_memcache_server | default('', true) | length > 0) | ternary('memcache:' + postfix_conf_dir + '/memcache-address_verify.cf', postfix_local_address_verify_map) }}"
 postfix_postscreen_cache_map: "{{ (postfix_memcache_server | default('', true) | length  > 0) | ternary('memcache:' + postfix_conf_dir + '/memcache-postscreen_cache.cf', postfix_local_postscreen_cache_map) }}"
@@ -54,10 +55,10 @@ postfix_memcache_maps:
   - config: "memcache-address_verify.cf"
     params:
       - memcache: "{{ (postfix_memcache_server[0] == '/') | ternary('unix', 'inet')}}:{{ postfix_memcache_server }}"
-      - backup: "{{ postfix_local_address_verify_map  | regex_replace('^proxy:', '') }}"
+      - backup: "{{ postfix_local_address_verify_map }}"
       - key_format: "vrfy:%s"
   - config: "memcache-postscreen_cache.cf"
     params:
       - memcache: "{{ (postfix_memcache_server[0] == '/') | ternary('unix', 'inet')}}:{{ postfix_memcache_server }}"
-      - backup: "{{ postfix_local_postscreen_cache_map | regex_replace('^proxy:', '') }}"
+      - backup: "{{ postfix_local_postscreen_cache_map }}"
       - key_format: "ps:%s"

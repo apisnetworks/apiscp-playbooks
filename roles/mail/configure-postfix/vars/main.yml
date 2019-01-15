@@ -29,7 +29,12 @@ config:
     $relay_recipient_maps $relay_domains $canonical_maps $sender_canonical_maps
     $recipient_canonical_maps $relocated_maps $transport_maps $mynetworks $smtp_sasl_auth_cache_name
   proxy_write_maps:
-    $postscreen_cache_map $address_verify_map $smtpd_tls_session_cache_database $smtp_sasl_auth_cache_name
+    $smtpd_tls_session_cache_database $smtp_sasl_auth_cache_name
+    {% if -1 != postfix_address_verify_map.find('memcache:') %}
+    {{ postfix_local_address_verify_map  }} {{ postfix_local_postscreen_cache_map }}
+    {% else %}
+    $postscreen_cache_map $address_verify_map
+    {% endif %}
   smtpd_recipient_restrictions:
     '{{ postfix_relay_mynetworks | bool | ternary("permit_mynetworks,", "") }}
     permit_sasl_authenticated,
@@ -46,7 +51,7 @@ config:
     reject_invalid_hostname,
     reject_unknown_sender_domain,
     reject_unknown_reverse_client_hostname'
-  # Remove permit_mynetworks to prevent unauthorized relaying
+  # Remove permit_mynetworks to prevent TCP access without SMTP authentication
   smtpd_relay_restrictions: '{{ postfix_relay_mynetworks | bool | ternary("permit_mynetworks,", "") }}permit_sasl_authenticated,defer_unauth_destination'
   smtpd_helo_required: "yes"
   smtpd_error_sleep_time: 60
@@ -59,7 +64,7 @@ config:
   mailbox_transport: localmaildrop
   minimal_backoff_time: 4h
   queue_run_delay: 8h
-  data_directory: /var/lib/postfix
+  data_directory: "{{ postfix_data_dir }}"
   smtpd_tls_session_cache_database: proxy:btree:$data_directory/smtpd_scache
   smtp_sasl_auth_cache_name: proxy:btree:$data_directory/sasl_auth_cache
   message_size_limit: "{{ postfix_message_size_limit | default(1000000000) }}"

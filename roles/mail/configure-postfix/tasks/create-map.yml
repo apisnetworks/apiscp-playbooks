@@ -1,0 +1,22 @@
+---
+- name: Check if map needs creation
+  stat:
+    path: "{{ path }}{{ (suffix | length > 0) | ternary('.' + suffix, '') }}"
+  register: s
+- name: Create map skeleton
+  file:
+    path: "{{ path }}"
+    owner: "{{ postfix_sysuser }}"
+    group: "{{ postfix_sysgroup }}"
+    state: touch
+    mode:  0600
+  when: not s.stat.exists
+  register: t
+- name: Create hash from skeleton
+  command: >
+    postmap {{ (type | length > 0) | ternary(type + ':', '') }}{{ path }}
+  args:
+    chdir: "{{ path | dirname }}"
+    creates: "{{ path }}{{ (suffix | length > 0) | ternary('.' + suffix, '') }}"
+  when: not s.stat.exists
+  register: h

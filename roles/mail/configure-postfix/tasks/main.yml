@@ -72,6 +72,27 @@
   command: /usr/sbin/postmap "{{ postfix_conf_dir }}/transport"
   changed_when: false
 
+  # Postfix looks for maps in main.cf, not backups specified
+- name: Populate backup maps
+  include_tasks: create-map.yml
+  vars:
+    path: "{{ item | regex_replace('^[^/]*', '')}}"
+    type: "btree"
+    suffix: "db"
+  with_items:
+    - "{{ postfix_local_address_verify_map }}"
+    - "{{ postfix_local_postscreen_cache_map }}"
+  when: (postfix_memcache_server | default('', true) | length > 0)
+
+- name: Bug #30599 workaround
+  include_role: name=common tasks_from=ini-bug-30599.yml
+  vars:
+    path: "{{ postfix_conf_dir }}/{{ item.config }}"
+    key: "key_format"
+  with_items:
+    - "{{ postfix_memcache_maps }}"
+  when: (postfix_memcache_server | default('', true) | length > 0)
+
 - name: Set postscreen/address verify caches
   include_tasks: set-configuration.yml
   vars:
