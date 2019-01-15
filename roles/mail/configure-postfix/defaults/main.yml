@@ -41,8 +41,8 @@ postsrs_recipient_map_port: 10002
 # Address verification/postscreen map cache
 # When data_center_mode is true, replace the maps
 # with an aggregate memcache instance
-postfix_local_address_verify_map: "proxy:btree:/var/lib/postfix/verify_cache"
-postfix_local_postscreen_cache_map: "proxy:btree:/var/lib/postfix/postscreen_cache"
+postfix_local_address_verify_map: "proxy:btree:{{ postfix_data_dir }}/verify_cache"
+postfix_local_postscreen_cache_map: "proxy:btree:{{ postfix_data_dir }}/postscreen_cache"
 
 postfix_address_verify_map: "{{ (postfix_memcache_server | default('', true) | length > 0) | ternary('memcache:' + postfix_conf_dir + '/memcache-address_verify.cf', postfix_local_address_verify_map) }}"
 postfix_postscreen_cache_map: "{{ (postfix_memcache_server | default('', true) | length  > 0) | ternary('memcache:' + postfix_conf_dir + '/memcache-postscreen_cache.cf', postfix_local_postscreen_cache_map) }}"
