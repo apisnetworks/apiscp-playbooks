@@ -13,13 +13,13 @@
     - command: mount -o remount /
       args:
         warn: false
-    - name: Building quotas 
+    - name: Building quotas
       command: quotaoff -augv
     - command: quotacheck -augvm
     - command: quotaon -augv
   when: xfs.rc != 0 and ext4.changed
 - name: Alter mount options for / (xfs)
-  block: 
+  block:
     - mount:
         path: /
         src: "{{ ansible_mounts | json_query('[?mount==`/`] | [0].device') }}"

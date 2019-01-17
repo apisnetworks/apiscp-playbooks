@@ -262,6 +262,7 @@ rpms:
   - libXxf86vm
   - libyaml
   - libyaml-devel
+  - libzip-devel
   - lm_sensors-devel
   - lm_sensors-libs
   - logrotate

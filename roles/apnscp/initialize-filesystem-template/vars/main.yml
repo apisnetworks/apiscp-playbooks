@@ -282,6 +282,7 @@ packages:
   - { package: libxslt, service: siteinfo }
   - { package: libXt, service: siteinfo }
   - { package: libyaml, service: siteinfo }
+  - { package: libzip, service: siteinfo }
   - { package: lm_sensors-libs, service: siteinfo }
   - { package: logrotate, service: siteinfo }
   - { package: lua, service: siteinfo }
@@ -500,6 +501,7 @@ packages:
   - { package: libXt-devel, service: ssh }
   - { package: libXxf86vm, service: ssh }
   - { package: libyaml-devel, service: ssh }
+  - { package: libzip-devel, service: ssh }
   - { package: lm_sensors-devel, service: ssh }
   - { package: lsof, service: ssh }
   - { package: m4, service: ssh }
