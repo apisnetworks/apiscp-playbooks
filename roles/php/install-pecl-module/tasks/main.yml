@@ -1,11 +1,8 @@
 ---
-- name: Import variables
-  include_vars: apnscp.yml
-
-- include_tasks: tasks/verify-and-install.yml 
+- include_tasks: tasks/verify-and-install.yml
   vars:
     extension: "{{ itr_extension }}"
   with_items: "{{ pecl_extensions }}"
-  loop_control: 
+  loop_control:
     loop_var: itr_extension
   when: pecl_extensions is defined

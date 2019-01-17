@@ -20,6 +20,10 @@
 - stat:
     path: "{{ php_module_directory }}/ioncube_loader_lin_{{ php_version }}.so"
   register: icst
+- file:
+    path: "{{ ioncube_workplace_temp_dir }}"
+    state: absent
+  when: not icst.stat.exists
 - include_role:
     name: php/ioncube-loader
   vars:
@@ -31,6 +35,7 @@
     php_ioncube_group: "{{ apnscp_system_user }}"
     php_extension_conf_paths:
       - "{{ apnscp_root }}/config/php.d"
+    workplace: "{{ ioncube_workplace_temp_dir }}"
     handlers:
       - Restart apnscp
   when: not icst.stat.exists

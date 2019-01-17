@@ -1,0 +1,1 @@
+ioncube_workplace_temp_dir: "{{ apnscp_root }}/build/php/ioncube"
