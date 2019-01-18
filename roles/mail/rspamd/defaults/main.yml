@@ -5,6 +5,7 @@
 rspamd_experimental: false
 rspamd_rpm_url: "https://rspamd.com/rpm{{ rspamd_experimental | ternary('', '-stable') }}/{{ (ansible_distribution == 'Fedora') | ternary('fedora', 'centos') }}-{{ansible_distribution_major_version}}/rspamd.repo"
 rspamd_repo: /etc/yum.repos.d/rspamd.repo
+
 #######################
 # System configuration
 #######################
@@ -36,7 +37,9 @@ rspamd_controller_socket: "127.0.0.1:11334"
 # Fuzzy worker
 rspamd_fuzzy_socket: "127.0.0.1:11335"
 
+######################
 # Redis configuration
+######################
 # Enable redis for rspamd. Enable if worker exists on local socket
 rspamd_redis_enabled: "{{ not has_low_memory and rspamd_worker_socket.find('/') != -1 }}"
 # Give an absolute path to use a UNIX socket + install service
@@ -74,7 +77,10 @@ rspamd_redis_vars:
   "rename-command": |
     CONFIG ""
   <<: *snapshot_policy
+
+#################
 # rspamd milter
+#################
 rspamd_proxy_port: 10003
 rspamd_proxy_host: localhost
 # Filter mail that originates from sendmail or PHP mail() function
@@ -95,7 +101,7 @@ rspamd_passive_learning_mode: "{{ rspamd_enabled and (rspamd_method == 'piggybac
 
 # Suitable for low-volume environments
 rspamd_use_spamassassin_rules: false
-# Learns egregious violators
+# Learns egregious violators based upon SpamAssassin's scoring
 rspamd_piggyback_learn_spam_threshold: 7.0
 # Learns roughly half of ham in a trained database
 rspamd_piggyback_learn_ham_threshold: -0.5
@@ -103,8 +109,8 @@ rspamd_piggyback_learn_ham_threshold: -0.5
 rspamd_spamassassin_rules: "/var/lib/spamassassin/3.004002/updates_spamassassin_org/[0-9]*.cf"
 # Enable neural training. CPU intensive
 rspamd_enable_neural_training: "{{ not has_low_memory and rspamd_redis_enabled }}"
-# Autolearn threshold when not piggybacked
-rspamd_autolearn_threshold: [-2.5, 7.5]
+# Autolearn threshold when not piggybacked. Set to false to disable autolearning
+rspamd_autolearn_threshold: [-2.5, 10]
 # Fuzzy signature storage for detecting spammy attachments
 rspamd_fuzzy_learning_active: true
 
@@ -144,6 +150,9 @@ rspamd_bayes_expiry_time: 2592000
 # See https://rspamd.com/doc/modules/bayes_expiry.html
 rspamd_bayes_lazy_expire: false
 
+######################
+# Learning commands
+######################
 rspamd_learn_command: /usr/bin/rspamc
 rspamd_learn_spam: '"|{{ rspamd_learn_command }} learn_spam"'
 rspamd_learn_ham: '"|{{ rspamd_learn_command }} learn_ham"'
@@ -245,8 +254,15 @@ config_files:
       backend: "{{ rspamd_redis_enabled | ternary('redis', 'sqlite') }}"
       autolearn: "{{ rspamd_autolearn_threshold }}"
       new_schema: true
+      name: bayes
       expire: "{{ rspamd_bayes_expiry_time }}"
       lazy: "{{ rspamd_bayes_lazy_expire }}"
+      statfile:
+        symbol: BAYES_HAM
+        spam: false
+      statfile:
+        symbol: BAYES_SPAM
+        spam: true
   - file: dmarc.conf
     vars:
       reporting: "{{ rspamd_redis_enabled }}"
