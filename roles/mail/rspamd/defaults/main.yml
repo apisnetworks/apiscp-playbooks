@@ -258,11 +258,13 @@ config_files:
       expire: "{{ rspamd_bayes_expiry_time }}"
       lazy: "{{ rspamd_bayes_lazy_expire }}"
       statfile:
-        symbol: BAYES_HAM
-        spam: false
+        BAYES_HAM:
+          symbol: BAYES_HAM
+          spam: false
       statfile:
-        symbol: BAYES_SPAM
-        spam: true
+        BAYES_SPAM:
+          symbol: BAYES_SPAM
+          spam: true
   - file: dmarc.conf
     vars:
       reporting: "{{ rspamd_redis_enabled }}"
