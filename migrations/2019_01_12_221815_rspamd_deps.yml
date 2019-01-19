@@ -1,0 +1,48 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# - Correct clamav group ownership on broken installs
+# - Move libevent from ssh to siteinfo
+# - Update Horde configuration (SMTP + FTP auth)
+# - Postfix memcache postscreen/verify support
+# - Use btree for Postscreen cache
+# - PHP 7.3 libzip dependencies
+---
+- block:
+    - include_role: name=clamav/setup
+    - name: Upgrade Postscreen cache to btree
+      file: path=/var/lib/postfix/postscreen_cache.db state=absent
+    - include_role: name=mail/configure-postfix
+    - name: Remove libevent from ssh
+      include_role:
+        name: apnscp/initialize-filesystem-template
+        tasks_from: "remove-package.yml"
+      vars:
+        package: "libevent"
+    - name: Install libevent under siteinfo
+      include_role:
+        name: apnscp/initialize-filesystem-template
+        tasks_from: "install-package.yml"
+      vars:
+        package: "libevent"
+        service: siteinfo
+    # Trigger regeneration of Horde database credentials
+    - name: Unlink horde/config/conf.php
+      file: path="/var/www/html/horde/config/conf.php" state=absent
+    - include_role: name=mail/webmail-horde tasks_from=configure-horde
+      vars:
+        horde_force_config_update: true
+    - name: Add libzip-devel package
+      yum: name=libzip-devel state=installed
+    - name: Add libzip dependency
+      include_role:
+        name: apnscp/initialize-filesystem-template
+        tasks_from: "install-package.yml"
+      vars:
+        package: "{{ item.package }}"
+        service: "{{ item.service }}"
+      with_items:
+        - package: libzip
+          service: siteinfo
+        - package: libzip-devel
+          service: ssh
+  tags: ['up']
