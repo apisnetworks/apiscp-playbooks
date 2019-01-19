@@ -252,7 +252,7 @@ config_files:
   - file: classifier-bayes.conf
     vars:
       backend: "{{ rspamd_redis_enabled | ternary('redis', 'sqlite') }}"
-      autolearn: "{{ rspamd_autolearn_threshold }}"
+      autolearn: "{{ (rspamd_method == 'piggyback') | ternary(false, rspamd_autolearn_threshold) }}"
       new_schema: true
       name: bayes
       expire: "{{ rspamd_bayes_expiry_time }}"
@@ -261,7 +261,6 @@ config_files:
         BAYES_HAM:
           symbol: BAYES_HAM
           spam: false
-      statfile:
         BAYES_SPAM:
           symbol: BAYES_SPAM
           spam: true
