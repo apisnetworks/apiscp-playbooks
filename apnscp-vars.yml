@@ -117,7 +117,9 @@ mysqld_per_account_innodb: "{{ data_center_mode }}"
 
 # Horde is a different beast of dependencies and
 # requires more care than other webmail options
-enable_horde: "{{ mail_enabled | bool }}"
+
+# PEAR hacked. Disable for now...
+enable_horde: false
 
 # apnscp provides a watchdog service to reboot your server when all hope is lost
 # Set this to a value CPU x process depth. On a 2 CPU system the system is deemed

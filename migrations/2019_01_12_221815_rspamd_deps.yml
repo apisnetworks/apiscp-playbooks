@@ -31,6 +31,7 @@
     - include_role: name=mail/webmail-horde tasks_from=configure-horde
       vars:
         horde_force_config_update: true
+      when: enable_horde | bool
     - name: Add libzip-devel package
       yum: name=libzip-devel state=installed
     - name: Add libzip dependency
