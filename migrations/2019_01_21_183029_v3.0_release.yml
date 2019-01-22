@@ -1,0 +1,8 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# - Set update policy to "major"
+---
+- block:
+    - name: Update apnscp_update_policy to "major"
+      include_role: name=apnscp/crons
+  tags: ['up']

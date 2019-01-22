@@ -47,7 +47,7 @@ populate_filesystem_template: auto
 # - major: update minor levels (3.x.x)
 # - all: update all releases (x.x.x)
 # - false: disable updates
-apnscp_update_policy: edge
+apnscp_update_policy: major
 
 # Automatic update policy with yum. Possible values:
 # - default: yum upgrade (always update) - DEFAULT
