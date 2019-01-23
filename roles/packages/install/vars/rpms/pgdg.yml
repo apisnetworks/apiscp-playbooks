@@ -2,7 +2,7 @@
 # pgversion is fact after importing config
 title: PostgreSQL v{{ pgversion }}
 repo_name: "pgdg{{ pg_pkgversion }}"
-rpms: 
+rpms:
   - postgis24_{{ pg_pkgversion }}
   - postgresql{{ pg_pkgversion }}
   - postgresql{{ pg_pkgversion }}-contrib
@@ -11,7 +11,8 @@ rpms:
   - postgresql{{ pg_pkgversion }}-server
   - python-psycopg2
 repo_location:
-  "10": https://download.postgresql.org/pub/repos/yum/testing/10/redhat/rhel-7-x86_64/pgdg-{{ ansible_distribution | lower }}10-10-2.noarch.rpm
+  "11": https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-{{ ansible_distribution | lower }}11-11-2.noarch.rpm
+  "10": https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-{{ ansible_distribution | lower }}10-10-2.noarch.rpm
   "9.6": https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-{{ ansible_distribution | lower }}96-9.6-3.noarch.rpm
   "9.5": https://download.postgresql.org/pub/repos/yum/9.5/redhat/rhel-7-x86_64/pgdg-{{ ansible_distribution | lower }}95-9.5-3.noarch.rpm
   "9.4": https://download.postgresql.org/pub/repos/yum/9.4/redhat/rhel-7-x86_64/pgdg-{{ ansible_distribution | lower }}94-9.4-3.noarch.rpm

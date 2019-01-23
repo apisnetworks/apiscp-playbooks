@@ -36,8 +36,8 @@
   block:
     - set_fact:
         # PostgreSQL packages are xx-<MAJOR><MINOR> sans period
-        pgversion: "{{ pgsql.version | default(pgsql.default) }}"
-        pg_pkgversion: '{{ pgsql.version | default(pgsql.default) | regex_replace("\.","") }}'
+        pgversion: "{{ pgsql_version | default(pgsql.default) }}"
+        pg_pkgversion: '{{ pgsql_version | default(pgsql.default) | regex_replace("\.","") }}'
     - include_vars: "vars/rpms/pgdg.yml"
     - yum: name={{ repo_location[pgversion] }} state=present
 
