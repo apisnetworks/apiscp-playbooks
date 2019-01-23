@@ -10,5 +10,4 @@
     section: null
     option: SRS_DOMAIN
     value: "{{ srs_domain|default(ansible_fqdn) }}"
-  when: (data_center_mode | bool)
   notify: Restart postsrsd

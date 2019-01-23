@@ -54,11 +54,11 @@
     - apnscp/create-admin
     - apnscp/assert-admin-works
     # Hook: apnscp is minimally viable
-    - network/hostname
     - custom/apnscp-bootstrapped
     # Onto provisioning a test account
     - apnscp/link-bins
     - apnscp/initialize-filesystem-template
+    - network/hostname
     - mail/configure-dovecot
     - mail/configure-postfix
     - mail/configure-courier-authlib

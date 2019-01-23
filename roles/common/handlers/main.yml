@@ -1,5 +1,5 @@
 ---
-- name: noop    
+- name: noop
   debug: msg=noop verbosity=4
 - name: Restart rsyslog
   systemd: state=restarted name=rsyslog enabled=yes
@@ -12,6 +12,7 @@
   systemd: state=reloaded name=httpd enabled=yes
 - name: Restart dovecot
   systemd: state=restarted name=dovecot enabled=yes
+  when: (mail_enabled | bool)
 - name: Restart vsftpd
   systemd: state=restarted name=vsftpd  enabled=yes
 - name: Restart authlib
@@ -22,7 +23,7 @@
 - name: Restart nscd
   systemd: state=restarted name=nscd enabled=yes
 - name: Restart postgresql
-  systemd: state=restarted name=postgresql 
+  systemd: state=restarted name=postgresql
   listen: Restart services
 - name: Restart redis
   systemd: state=restarted name=redis
@@ -49,7 +50,7 @@
   failed_when: false
   register: rspamd_present
   listen: Restart rspamd
-  
+
 - systemd: state=restarted name=rspamd enabled=yes
   when: rspamd_present.rc == 0
   listen: Restart rspamd
@@ -58,6 +59,7 @@
   systemd: state=restarted name=postfix enabled=yes
 - name: Restart postsrsd
   systemd: state=restarted name=postsrsd enabled=yes
+  when: (postsrsd_enabled | bool)
 - name: Restart fail2ban
   systemd: state=restarted name=fail2ban enabled=yes
 - name: Restart sshd

@@ -10,4 +10,3 @@
   notify:
     - Restart postfix
     - Restart apnscp
-    - Restart postsrsd
