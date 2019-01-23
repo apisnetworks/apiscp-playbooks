@@ -28,8 +28,15 @@ apnscp_debug: false
 # Used for Let's Encrypt registration, login notifications,
 # and other events
 # Note, it can be changed at a later date using
-# apnscp/bin/cmd admin_set_email new@address.com
+# apnscp/bin/cmd common_set_email new@address.com
 apnscp_admin_email:
+
+# Server hostname. Set this value to automatically
+# configure hostname on install. A resolvable
+# domain is necessary for post-install notice email.
+# Hostname should be one level deeper than your domain e.g.
+# domain is apnscp.com, system_hostname is paixhans.apnscp.com
+system_hostname:
 
 # Server/admin is miserly. Reduce service memory usage
 # when possible. Not recommended. Not fully tested.

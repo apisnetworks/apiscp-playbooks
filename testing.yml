@@ -8,13 +8,5 @@
     - ['{{ apnscp_user_defaults }}', '/dev/null']
     - ['{{ apnscp_last_run_vars }}', '/dev/null']
   tasks:
-    - set_fact:
-        test: foo
-        bar: ['baz']
-    - name: List cast test
-      set_fact: test="[{{ test }}]"
-      when: (test | type_debug) != 'list'
-    - name: Validate list cast test
-      set_fact: bar=[{{bar}}]
-      when: (bar | type_debug) != 'list'
-    - fail: msg="{{ test }} {{ bar }} {{ bar | type_debug }}"
+    - include_role: name=network/hostname
+    - include_role: name=mail/configure-postfix

@@ -1,0 +1,13 @@
+---
+- name: Query hostname
+  command: /usr/bin/hostname
+  register: o
+  changed_when: false
+- name: Set hostname
+  hostname: name="{{ system_hostname }}"
+  when: (system_hostname | default(false, true)) and o.stdout != system_hostname
+  register: chg
+  notify:
+    - Restart postfix
+    - Restart apnscp
+    - Restart postsrsd

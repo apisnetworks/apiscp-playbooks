@@ -30,7 +30,7 @@ template_files:
   - domains.cf.j2
 
 postfix_inet_interfaces: "{{ mail_enabled | bool | ternary('all','loopback-only') }}"
-postfix_mydomain: "{{ data_center_mode | bool | ternary(ansible_nodename, None) }}"
+postfix_mydomain: "{{ ((data_center_mode | bool) or (regex_findall(ansible_nodename, '\\.') | length) < 2) | ternary(ansible_nodename, None) }}"
 # Same recipient delivery delay. With SpamAssassin, set to a number > 0 to prevent monopolization
 # of an inundated mailbox since SA has a very limited number of slots to scan mail.
 postfix_local_delivery_delay: "{{ (spamfilter == 'spamassassin') | ternary('3s', '0') }}"

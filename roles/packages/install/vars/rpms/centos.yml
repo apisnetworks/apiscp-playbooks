@@ -141,6 +141,7 @@ rpms:
   - gsl-devel
   - gzip
   - hesiod
+  - hostname
   - http-parser
   - http-parser-devel
   - icu
