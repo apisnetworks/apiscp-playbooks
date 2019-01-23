@@ -1,21 +1,19 @@
 ---
 mariadb:
   default: 10.3
-  allowed: 
+  allowed:
     - 10.4
     - 10.3
     - 10.2
     - 10.1
     - 10.0
     - 5.5
-pgsql:  
+pgsql:
   default: 10
   allowed:
     - 11
     - 10
     - 9.6
-    - 9.5
-    - 9.4
 mongodb:
   default: 3.6
   allowed:
