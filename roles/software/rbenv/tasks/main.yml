@@ -76,18 +76,7 @@
     path: "/usr/bin/rbenv"
     src: "{{ git_target }}/bin/rbenv"
     state: link
-- name: Check if {{ sys_ruby_version }} installed
-  stat: path={{ git_target }}/versions/{{sys_ruby_version | default("")}}
-  register: rv
-# Install Ruby manually to avoid using incorrect FST markup in playbook
-- name: Build Ruby {{ sys_ruby_version }} outside FST
-  shell: >
-    $SHELL -lc "{{ git_target }}/bin/rbenv install {{ sys_ruby_version }}"
-  environment:
-    TMPDIR: "{{ apnscp_root }}/storage/cache"
-    RBENV_SHELL: bash
-    RBENV_ROOT: "{{ git_target }}"
-  when: sys_ruby_version is defined and not rv.stat.exists
+
 - name: Add {{ git_target }} to wheel
   command: >
     find {{ git_target | quote }} -follow
@@ -125,7 +114,7 @@
   vars:
     files:
       - content: |
-          gem: --no-rdoc --no-ri
+          gem: --no-document -E
         service: ssh
         path: /etc/gemrc
 
