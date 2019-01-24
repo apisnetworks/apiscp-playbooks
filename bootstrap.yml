@@ -43,8 +43,6 @@
     - java/tomcat
     - apnscp/install-services
     - apnscp/bootstrap
-    - apache/configure
-    - apache/modpagespeed
     #- apache/fcgid
     - apnscp/build-php
     - apnscp/install-extensions
@@ -56,9 +54,11 @@
     # Hook: apnscp is minimally viable
     - custom/apnscp-bootstrapped
     # Onto provisioning a test account
+    - network/hostname
+    - apache/configure
+    - apache/modpagespeed
     - apnscp/link-bins
     - apnscp/initialize-filesystem-template
-    - network/hostname
     - mail/configure-dovecot
     - mail/configure-postfix
     - mail/configure-courier-authlib
