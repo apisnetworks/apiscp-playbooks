@@ -1,6 +1,6 @@
 ---
 - name: Clone Passenger repository
-  git: 
+  git:
     repo: "{{ passenger_repo }}"
     version: "{{ passenger_repo_ver }}"
     dest: "{{ passenger_home }}"
@@ -10,15 +10,16 @@
   copy:
     dest: "{{ passenger_home }}/.ruby-version"
     content: "{{ sys_ruby_version }}"
+  # Use system Ruby
 - name: Build Passenger
-  shell: exec $SHELL -ic -- 'rbenv exec rake -m -j "{{ ansible_processor_vcpus | int }}" apache2'
+  shell: exec $SHELL -ic -- 'gem install -E --no-document rake ; rake -m -j "{{ ansible_processor_vcpus | int }}" apache2'
   args:
     chdir: "{{ passenger_home }}"
   notify: Restart apache
   when: repochkout.changed
 # Necessary for Python support
 - name: Include Python configuration
-  include_vars: 
+  include_vars:
     file: "{{ playbook_dir }}/roles/software/pyenv/defaults/main.yml"
     name: pyenv
 - set_fact:
@@ -40,7 +41,7 @@
     force: yes
   notify: Restart apache
 - name: Create Passenger directories
-  file: 
+  file:
     path: "{{ passenger_home }}/{{ item }}"
     state: directory
   with_items:
