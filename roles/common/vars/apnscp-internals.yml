@@ -37,9 +37,8 @@ pyenv_version: 1.2.4
 rbenv_version: 1.1.1
 goenv_version: 1.14.0
 # Others may be installed via "rbenv install", this is used primarily for
-# bootstrapping Passenger. system Ruby shipped with RHEL 7 (2.0) is too
-# old and too broken to be of use
-sys_ruby_version: 2.4.5
+# bootstrapping Passenger
+sys_ruby_version: system
 rbenv_usergems_version: ad2fd08
 # Enable remote FTP connections. FTP will always be enable for Wordpress
 # to operate. If off, WebDAV, sftp, ssh (rsync), and git are the only

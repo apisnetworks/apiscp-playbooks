@@ -355,6 +355,9 @@ rpms:
   - readline-devel
   - rpm-libs
   - rsync
+  - ruby
+  - ruby-devel
+  - rubygems
   - screen
   - setools-console
   - sed
