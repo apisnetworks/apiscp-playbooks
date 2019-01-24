@@ -108,7 +108,7 @@
     - shims
 # Stolen from rbenv-support playbook, needs late init to correct path
 - name: Check if current system ruby version is {{ sys_ruby_version }}
-  shell: $SHELL -lc "{{ git_target }}/bin/rbenv version | cut -d ' ' -f 1 | grep -Fx '{{ sys_ruby_version }}'"
+  shell: $SHELL -ic "{{ git_target }}/bin/rbenv version | cut -d ' ' -f 1 | grep -Fx '{{ sys_ruby_version }}'"
   register: ruby_selected
   changed_when: false
   ignore_errors: yes
@@ -117,7 +117,7 @@
 
 - name: Set Ruby {{ sys_ruby_version }} for system
   become: yes
-  shell: $SHELL -lc "{{ git_target }}/bin/rbenv global {{ sys_ruby_version }} && {{ git_target }}/bin/rbenv rehash"
+  shell: $SHELL -ic "{{ git_target }}/bin/rbenv global {{ sys_ruby_version }} && {{ git_target }}/bin/rbenv rehash"
   when:
     - ruby_selected.rc != 0
 

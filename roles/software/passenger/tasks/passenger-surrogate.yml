@@ -10,13 +10,24 @@
   copy:
     dest: "{{ passenger_home }}/.ruby-version"
     content: "{{ sys_ruby_version }}"
+- name: Verify Rake installed
+  command: /bin/bash -ic 'rbenv exec gem query rake'
+  environment:
+    RBENV_VERSION: "{{ sys_ruby_version }}"
+  register: o
+  changed_when: false
 - name: Install Rake
-  shell: exec $SHELL -ic -- 'gem install -E --no-document rake'
+  command: /bin/bash -ic 'rbenv exec gem install -E --no-document rake'
+  environment:
+    RBENV_VERSION: "{{ sys_ruby_version }}"
+  when: -1 == o.stdout.find('rake')
   # Use system Ruby
 - name: Build Passenger
-  shell: exec $SHELL -ic -- 'rake -m -j "{{ ansible_processor_vcpus | int }}" apache2'
+  command: /bin/bash -ic 'rbenv exec rake -j"{{ ansible_processor_vcpus | int }}" apache2'
   args:
     chdir: "{{ passenger_home }}"
+  environment:
+    RBENV_VERSION: "{{ sys_ruby_version }}"
   notify: Restart apache
   when: repochkout.changed
 # Necessary for Python support
@@ -30,7 +41,7 @@
   find: paths={{ passenger_python | dirname }} patterns="*"
   register: ch
 - name: Install Python {{ passenger_default_python }}
-  command: $SHELL -lc "{{ pyenv.git_target }}/bin/pyenv install {{ passenger_default_python }}"
+  shell: $SHELL -ic "{{ pyenv.git_target }}/bin/pyenv install {{ passenger_default_python }}"
   environment:
     TMPDIR: "{{ apnscp_root }}/storage/cache"
   when: ch.matched|int == 0
