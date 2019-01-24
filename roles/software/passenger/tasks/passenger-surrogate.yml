@@ -10,9 +10,11 @@
   copy:
     dest: "{{ passenger_home }}/.ruby-version"
     content: "{{ sys_ruby_version }}"
+- name: Install Rake
+  shell: exec $SHELL -ic -- 'gem install -E --no-document rake'
   # Use system Ruby
 - name: Build Passenger
-  shell: exec $SHELL -ic -- 'gem install -E --no-document rake ; rake -m -j "{{ ansible_processor_vcpus | int }}" apache2'
+  shell: exec $SHELL -ic -- 'rake -m -j "{{ ansible_processor_vcpus | int }}" apache2'
   args:
     chdir: "{{ passenger_home }}"
   environment:
