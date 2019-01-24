@@ -3,6 +3,8 @@ mysql_pass_file: /root/.my.cnf
 mysql_systemd_service: mariadb
 mysql_check_path: /etc/systemd/user/mysqlcheck.sh
 configuration:
+  # https://dev.mysql.com/doc/refman/8.0/en/load-data-local.html
+  local_infile: "{{ mysqld_enable_local_infile | default('off') }}"
   innodb_file_per_table: '{{ mysqld_per_account_innodb | ternary("1","0") }}'
   large_pages: "1"
   "log-error": /var/lib/mysql/mysqld.log
