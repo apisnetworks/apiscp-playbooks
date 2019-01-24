@@ -9,5 +9,5 @@
     path: /etc/default/postsrsd
     section: null
     option: SRS_DOMAIN
-    value: "{{ srs_domain|default(ansible_fqdn) }}"
+    value: "{{ srs_domain|default(system_hostname | default(ansible_fqdn)) }}"
   notify: Restart postsrsd

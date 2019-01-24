@@ -59,7 +59,6 @@
     - apache/modpagespeed
     - apnscp/link-bins
     - apnscp/initialize-filesystem-template
-    - network/hostname
     - mail/configure-dovecot
     - mail/configure-postfix
     - mail/configure-courier-authlib
