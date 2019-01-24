@@ -350,3 +350,6 @@ config_files:
       bind_socket: "127.0.0.1:11334"
       #bind_socket: "{{ rspamd_runtime_dir }}/rspamd-controller.sock"
       count: "{{ rspamd_worker_process_count }}"
+
+# Dependency marker
+mail_rspamd_marker: true

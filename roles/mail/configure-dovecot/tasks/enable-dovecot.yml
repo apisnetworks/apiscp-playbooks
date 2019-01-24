@@ -10,7 +10,9 @@
 - include_vars:
     file: ../configure-postfix/defaults/main.yml
   when: mail_configure_postfix_marker is not defined
-
+- include_vars:
+    file: ../rspamd/defaults/main.yml
+  when: mail_rspamd_marker is not defined and spamfilter == "rspamd"
 - block:
   - name: Verify "{{ dovecot_virtual_rundir }} exists"
     file: path="{{ dovecot_virtual_rundir }}" state=directory owner=dovecot
