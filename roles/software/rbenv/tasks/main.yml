@@ -80,6 +80,9 @@
   stat: path={{ git_target }}/versions/{{sys_ruby_version | default("")}}
   register: rv
   when: (sys_ruby_version | default("system", true)) != "system"
+- name: Remove old Ruby builds
+  file: path="{{ item }}" state="absent"
+  with_fileglob: "{{ apnscp_root }}/storage/cache/ruby-build*"
 # Install Ruby manually to avoid using incorrect FST markup in playbook
 - name: Build Ruby {{ sys_ruby_version }} outside FST
   shell: >
