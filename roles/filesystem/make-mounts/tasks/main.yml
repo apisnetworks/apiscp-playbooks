@@ -78,6 +78,16 @@
     - proc-sys-fs-binfmt_misc.automount
     - systemd-binfmt.service
 
+# Can break apps that mmap via PROT_EXEC
+- name: Mount /dev/shm with noexec
+  mount:
+    fstype: tmpfs
+    opts: noexec,nosuid,nodev,rw
+    state: mounted
+    path: /dev/shm
+    src: tmpfs
+  when: (mount_shm_noexec | bool)
+
 - name: Mount procfs with hidepid=2
   mount:
     fstype: proc
