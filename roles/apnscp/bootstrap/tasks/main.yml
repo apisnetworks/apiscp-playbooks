@@ -151,6 +151,16 @@
     value: "{{ 999999999999999999999 | random | string + (lookup('pipe', 'date +%s%N')) | to_uuid() }}"
     check_value: false
   when: not data_center_mode
+  # bootstrap.sh compatibility
+- name: Set default DNS providers
+  include_tasks: "set-config.yml"
+  vars:
+    section: dns
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  with_dict:
+    provider_default: "{{ dns_default_provider | default('builtin', true )}}"
+    provider_key: "{{ dns_default_provider_key | default('', true )}}"
 - name: Copy /etc/resolv.conf config to config.ini
   set_fact:
     nameservers: "{{ (nameservers | default([])) + [item]}}"
