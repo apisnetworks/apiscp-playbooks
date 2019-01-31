@@ -1,9 +1,18 @@
 ---
 - name: Fail if OS is not RHEL/CentOS
-  fail: 
+  fail:
     msg: OS must be RHEL 7.x/CentOS 7.x - try again!
   when: ansible_os_family != "RedHat"
 - name: Fail if RHEL/CentOS is not sufficient version
   fail:
     msg: apnscp requires RHEL 7.4 or greater
   when: ansible_distribution_version is version_compare('7.4.0', '<')
+- name: Check virtualization method
+  command: systemd-detect-virt -c
+  register: o
+  changed_when: false
+  failed_when: false
+- name: Fail if Virtuozzo or OpenVZ used
+  fail:
+    msg: apnscp cannot run in a container (OpenVZ, Virtuozzo, etc)
+  when: o.rc == 0
