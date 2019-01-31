@@ -1,4 +1,4 @@
 ---
 force: false
 extra_flags: ""
-php_xml_feed: http://php.net/releases/feed.php
+php_release_feed: http://www.php.net/releases/?json

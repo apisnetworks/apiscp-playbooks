@@ -8,3 +8,4 @@ default_immediate: false
 default_permanent: true
 default_net: ipv4
 mysql_conn_limit: 20/s
+sshd_port: 22

@@ -1,25 +1,16 @@
 ---
 - block:
     - name: Download PHP release feed
-      uri: 
-        url: "{{ php_xml_feed }}" 
+      uri:
+        url: "{{ php_release_feed }}&version={{php_version}}"
         return_content: yes
-      register: feed  
-    - name: Find latest PHP version for "{{ php_version }}"
-      xml:
-        xmlstring: "{{ feed.content }}"
-        xpath: "//ns:feed/ns:entry/php:version[starts-with(., '{{php_version}}.')]"      
-        content: text
-        namespaces:
-          php: http://php.net/ns/releases
-          ns: http://www.w3.org/2005/Atom
-      register: vinfo  
+      register: feed
   when: ((php_version | string ).split('.') | length) == 2
-- set_fact: __php_version="{{ lookup('dict', vinfo.matches[0]).value | default(php_version) }}" cacheable=yes
-  when: vinfo is defined and vinfo.matches is defined
 - set_fact: __php_version="{{ php_version }}"
-  when: not vinfo is defined or not vinfo.matches is defined
-- include_role: 
+  when: feed is not defined
+- set_fact: __php_version="{{ feed.json.source[0].filename | default(php_version) | regex_replace('^php-|\.tar.(?:bz2|gz)$', '') }}" cacheable=yes
+  when: feed is defined
+- include_role:
     name: php/build-from-source
     tasks_from: real-build.yml
     vars_from: main.yml
