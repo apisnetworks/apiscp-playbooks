@@ -1,16 +1,19 @@
 ---
 - include_vars: "{{ role_path }}/defaults/main.yml"
+- name: "Add {{ php_dbg }} to php_bins var"
+  set_fact: php_bins="{{ php_bins + [php_dbg]}}"
+  when: system_php_version is version('7.0', '>=')
 - name: Link PHP binaries
   include_tasks: roles/common/tasks/copy-link.yml
-  vars: 
+  vars:
     src: "{{ item }}"
     path: "{{ apnscp_filesystem_template }}/{{service}}/{{item}}"
-    notify: 
+    notify:
       - Reload filesystem template
-  with_items: "{{ php_bins }}"  
+  with_items: "{{ php_bins }}"
 - include_vars: "{{ playbook_dir }}/roles/php/build-from-source/vars/main.yml"
 - name: Create PHP configuration directories
-  file: 
+  file:
     path: "{{ apnscp_filesystem_template }}/{{service}}/{{scan_dir}}"
     state: directory
     owner: root

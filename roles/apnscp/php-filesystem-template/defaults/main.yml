@@ -5,9 +5,9 @@ php_cgi: /usr/bin/php-cgi
 php_fpm: /usr/sbin/php-fpm
 php_dbg: /usr/bin/phpdbg
 php_config: /etc/php.ini
+# php_dbg not available in 5.6
 php_bins:
   - "{{ php_bin }}"
   - "{{ php_cgi }}"
   - "{{ php_fpm }}"
-  - "{{ php_dbg }}"
   - "{{ php_config }}"
