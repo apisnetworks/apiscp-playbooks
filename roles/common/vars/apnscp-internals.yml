@@ -5,6 +5,7 @@
 DEV_TAG: ">>> DEVELOPMENT PLAY ONLY - REMOVE BEFORE FLIGHT <<<"
 apnscp_release_repo: https://gitlab.com/apisnetworks/apnscp.git
 apnscp_last_run_vars: /root/apnscp-vars-runtime.yml
+apnscp_bootstrapper_log: /root/apnscp-bootstrapper.log
 # SRS - reformatting forwarded email
 postsrsd_enabled: "{{ mail_enabled | bool }}"
 # Restrict last/lastlog usage
@@ -87,3 +88,6 @@ clamav_scan_group: virusgroup
 # brute-force and attackers blocked following
 # fail2ban/configure-jails settings. Change at your own risk.
 sshd_port: 22
+# Maximum number of retries for components that may fail due
+# to flaky network settings
+network_max_retries: 3

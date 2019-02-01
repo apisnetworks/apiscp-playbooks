@@ -12,12 +12,12 @@
   register: installed_php_version
 - set_fact:
     do_install_php: >
-      force or extra_flags or 
-      installed_php_version.skipped is defined or 
-      installed_php_version.stdout != __php_version or 
+      force or extra_flags or
+      installed_php_version.skipped is defined or
+      installed_php_version.stdout != __php_version or
       s1.stat.exists and s2.stat.exists and s1.stat.mtime > s2.stat.mtime
 - name: Cleanup older PHPs
-  find: 
+  find:
     file_type: directory
     paths: "{{ work_dir }}"
     excludes: "php-{{__php_version }}"
@@ -29,17 +29,18 @@
     state: absent
   with_items: "{{ phps.files }}"
 - set_fact: force_module_rebuild=false
-- block:  
+- block:
     - name: Download PHP {{ __php_version }}
       unarchive:
         dest: "{{ work_dir }}"
         src: "http://php.net/get/php-{{ __php_version }}.tar.bz2/from/this/mirror"
         remote_src: yes
+      retries: "{{ network_max_retries }}"
       when: not st.stat.exists
-    - name: Compile PHP {{ __php_version }}      
+    - name: Compile PHP {{ __php_version }}
       shell: "{{ php_configure }} {{ extra_flags }}"
       args:
-        chdir: "{{ build_dir }}"       
+        chdir: "{{ build_dir }}"
       environment:
         SCANDIR: "{{ scan_dir }}"
       register: configuration
@@ -54,16 +55,15 @@
       when: ansible_memtotal_mb <= 2048
       failed_when: false
       ignore_errors: true
-    - make: 
-        chdir: "{{ build_dir }}" 
-        target: all 
+    - make:
+        chdir: "{{ build_dir }}"
+        target: all
         params:
-          '--jobs': "{{ ansible_processor_vcpus | int }}"    
+          '--jobs': "{{ ansible_processor_vcpus | int }}"
     - command: "strip {{ build_dir }}/.libs/libphp{{__php_version | regex_replace('^(\\d+)\\..*$', '\\1') }}.so"
       when: not php_debug
-    - make: chdir="{{ build_dir }}" target=install    
-      notify: "{{ notify_handler }}"        
+    - make: chdir="{{ build_dir }}" target=install
+      notify: "{{ notify_handler }}"
     - file: path="{{ scan_dir }}" state=directory
     - set_fact: force_module_rebuild=true
   when: do_install_php
-

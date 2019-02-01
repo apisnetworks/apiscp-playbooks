@@ -7,6 +7,7 @@
   yum:
     name: "{{ rv.bootstrap.repo_rpm }}"
     state: present
+  retries: "{{ network_max_retries }}"
   when:
     - rv.bootstrap is defined
     - rv.bootstrap.repo_rpm is defined
@@ -25,16 +26,17 @@
 - name: "Install packages"
   yum: state="installed" name="{{ rv.rpms | join(',') }}" skip_broken=yes
   # @XXX Broken in Ansible 2.5.1...
+  retries: "{{ network_max_retries }}"
   notify: "{{ rv.notify | default('noop') }}"
   register: c
   when:
     - rv.when | default(true)
-
   # Workaround for https://github.com/ansible/ansible/issues/26995
 - name: "Update packages"
   command: yum update -y --skip-broken {{ rv.rpms|join(' ') }}
   args:
     warn: no
+  retries: "{{ network_max_retries }}"
   register: o
   changed_when: -1 == o.stdout.find('No packages marked')
   when: c.changed and rv.state is defined and rv.state == 'latest'

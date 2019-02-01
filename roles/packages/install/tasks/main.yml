@@ -40,6 +40,7 @@
         pg_pkgversion: '{{ pgsql_version | default(pgsql.default) | regex_replace("\.","") }}'
     - include_vars: "vars/rpms/pgdg.yml"
     - yum: name={{ repo_location[pgversion] }} state=present
+      retries: "{{ network_max_retries }}"
 
 - name: "Install MongoDB"
   tags: ['install', 'sql', 'mongodb']
@@ -57,6 +58,7 @@
     - yum:
         name: "http://pkg.cloudflare.com/cloudflare-release-latest.el{{ ansible_distribution_major_version }}.rpm"
         state: present
+      retries: "{{ network_max_retries }}"
       when:
         - cf_stat.stat is defined and not cf_stat.stat.exists
 
@@ -69,6 +71,7 @@
         # Installing mod-pagespeed automatically pulls in repo config
         name: "https://dl-ssl.google.com/dl/linux/direct/mod-pagespeed-stable_current_{{ ansible_machine }}.rpm"
         state: present
+      retries: "{{ network_max_retries }}"
       when: ps_stat.stat is defined and not ps_stat.stat.exists
 
 - include_tasks: tasks/setup-channel.yml
