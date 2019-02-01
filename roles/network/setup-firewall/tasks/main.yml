@@ -9,26 +9,26 @@
     - iptables
     - ip6tables
     - ebtables
-  loop_control: 
+  loop_control:
     loop_var: iptsvc
   ignore_errors: true
 - name: Verify firewalld running
   systemd: name=firewalld state=started enabled=yes
-- name: "Open ports with firewalld"
-  firewalld:
-    immediate: "{{ item.immediate | default(default_immediate) }}"
-    port: "{{ item.port | default(omit) }}"
-    service: "{{ item.service | default(omit) }}"
-    state: '{{ item.state | default("enabled") }}'
-    zone: '{{ item.zone | default(default_zone) }}'
-    rich_rule: '{{ item.rich | default(omit) }}'
-    permanent: '{{ item.permament | default(default_permanent) }}'
+- name: Set firewall rules
+  include_tasks: "add-firewall.yml"
+  vars:
+    immediate: "{{ item.immediate | default(None) }}"
+    port: "{{ item.port | default(None) }}"
+    service: "{{ item.service | default(None) }}"
+    state: '{{ item.state | default(None) }}'
+    zone: '{{ item.zone | default(None) }}'
+    rich_rule: '{{ item.rich_rule | default(None) }}'
+    permanent: '{{ item.permament | default(None) }}'
   with_items:
     "{{ rules }}"
+  when: item.when is not defined or item.when
   loop_control:
     label: "Setting rule {{ item.port | default(item.rule is defined | ternary(item.rule, item.service)) }} => {{ item.state | default('enabled') }}"
-  when: true
-  notify: Reload firewalld
 - name: Create ipset list
   include_tasks: create-ipset.yml
   with_items:
@@ -40,17 +40,17 @@
 - name: "Apply direct firewalld rules"
   command: >
     /bin/firewall-cmd {{ item.permanent|default(default_permanent)| bool | default(default_permanent) | ternary("--permanent", "") }}
-    --direct --add-rule {{ item.net | default(default_net) }} 
-    {{ item.table | default(default_chain) }} 
-    {{ item.chain | default("OUTPUT") }} 
-    {{ item.priority | default("0") }} 
+    --direct --add-rule {{ item.net | default(default_net) }}
+    {{ item.table | default(default_chain) }}
+    {{ item.chain | default("OUTPUT") }}
+    {{ item.priority | default("0") }}
     {{ item.rule }}
   register: o
   changed_when: "o.stdout is search('success') and not o.stderr is search('Warning')"
   with_items: "{{ direct_rules }}"
   loop_control:
     label: "Setting {{ item.rule }}"
-  notify: 
+  notify:
     - Reload firewalld
     - Reload fail2ban
 # Defer reloading fail2ban until after fail2ban/configure-jails

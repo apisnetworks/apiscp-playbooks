@@ -1,4 +1,5 @@
 ---
+network_setup_firewall_marker: true
 # From apnscp-vars.yml
 user_daemons: true
 panel_headless: false

@@ -3,7 +3,7 @@ rules:
   # Services
   - service: ftp
     state: "{{ ftp_enabled | bool | ternary('enabled', 'disabled') }}"
-  - service: ssh
+  # sshd can change ports, covered in system/sshd
   # Mail
   - port: 25/tcp
     state: "{{ mail_enabled | bool | ternary('enabled', 'disabled') }}"

@@ -15,4 +15,4 @@
 - name: Fail if Virtuozzo or OpenVZ used
   fail:
     msg: apnscp cannot run in a container (OpenVZ, Virtuozzo, etc)
-  when: o.rc == 0
+  when: o.rc == 0 and not dockerized

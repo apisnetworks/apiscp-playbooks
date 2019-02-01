@@ -1,3 +1,7 @@
 ---
 sshd_config: /etc/ssh/sshd_config
 sshd_max_auth_tries: 8
+sshd_old_port: 22
+sshd_ports_close: []
+# Ports to open
+sshd_ports_open: [22]

@@ -1,6 +1,6 @@
 ---
 # fail2ban should catch the majority of offenders...
-# sshd begins emitting login failure notices at 1/2 MaxAuthTries 
+# sshd begins emitting login failure notices at 1/2 MaxAuthTries
 # raise it for the sake of an admin locking himself out
 - name: "Reconfigure sshd"
   blockinfile:
@@ -12,3 +12,56 @@
       X11Forwarding no
     state: present
   notify: Restart sshd
+- name: Convert sshd_port to list
+  set_fact:
+    sshd_port: "{{ [sshd_port] }}"
+  when: (sshd_port | type_debug) != "list"
+- name: Get sshd port
+  shell: grep -P '^\s*Port\s+\d+\s*$' "{{ sshd_config }}" | tr -s ' ' | cut -d' ' -f2
+  register: o
+  changed_when: false
+- name: Save old SSH ports
+  set_fact:
+    sshd_old_port: "{{ o.stdout.split('\n') | map('int') | list }}"
+
+- name: Calculate port changes
+  set_fact:
+    # Ports to close
+    sshd_ports_close: "{{ sshd_old_port | difference(sshd_port) }}"
+    # Ports to open
+    sshd_ports_open: "{{ sshd_port | difference(sshd_old_port)  }}"
+  when: o.stdout != ""
+- include_vars: "{{ playbook_dir }}/roles/network/setup-firewall/defaults/main.yml"
+  when: network_setup_firewall_marker is not defined
+- block:
+  - name: "Ensure firewall port is open"
+    include_role:
+      name: network/setup-firewall
+      tasks_from: add-firewall.yml
+    vars:
+      port: "{{ (item.1 | string) | default(None) }}/tcp"
+      service: "{{ omit }}"
+      state: "{{ item.0.state }}"
+      permanent: true
+    with_subelements:
+      - - ports: "{{ sshd_ports_close }}"
+          state: disabled
+        - ports: "{{ sshd_ports_open }}"
+          state: enabled
+      - ports
+  - name: "Remove sshd ports"
+    lineinfile:
+      path: "{{ sshd_config }}"
+      regexp: '^\s*Port\s+(?!{{ sshd_port | join("|") }})\d+\s*$'
+      state: absent
+    notify: Restart sshd
+  - name: "Set sshd ports"
+    lineinfile:
+      path:  "{{ sshd_config }}"
+      regexp: '^\s*Port\s+{{ item }}\s*$'
+      state: present
+      line: 'Port {{ item }}'
+    notify: Restart sshd
+    with_items: "{{ sshd_port }}"
+    loop_control:
+      label: "Adding port {{ item }} "

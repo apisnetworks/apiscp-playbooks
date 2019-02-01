@@ -77,12 +77,13 @@ apnscp_hostname: "${HOSTNAME}"
 # off is recommended - a reboot is required
 # Only enable if you plan on helping out!
 use_selinux: false
-
 # Backwards compatibility
 clamav_enable: "{{ clamav_enabled | default(true) }}"
-
 # CI via Docker
 dockerized: false
-
 # Virus scanning group used by ClamAV
 clamav_scan_group: virusgroup
+# Change sshd port - note that ssh is monitored for
+# brute-force and attackers blocked following
+# fail2ban/configure-jails settings. Change at your own risk.
+sshd_port: 22
