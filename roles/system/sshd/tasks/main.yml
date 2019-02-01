@@ -23,7 +23,6 @@
 - name: Save old SSH ports
   set_fact:
     sshd_old_port: "{{ o.stdout.split('\n') | map('int') | list }}"
-
 - name: Calculate port changes
   set_fact:
     # Ports to close
@@ -31,8 +30,6 @@
     # Ports to open
     sshd_ports_open: "{{ sshd_port | difference(sshd_old_port)  }}"
   when: o.stdout != ""
-- include_vars: "{{ playbook_dir }}/roles/network/setup-firewall/defaults/main.yml"
-  when: network_setup_firewall_marker is not defined
 - block:
   - name: "Ensure firewall port is open"
     include_role:

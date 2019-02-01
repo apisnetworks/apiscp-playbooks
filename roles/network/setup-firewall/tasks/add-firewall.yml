@@ -1,11 +1,5 @@
-- debug:
-    msg: >
-      {{ immediate | default(default_immediate,true) }} | {{ port | default(omit,true) }} |
-      {{ service | default(omit,true) }} |
-      {{ state | default("enabled",true) }} |
-      {{ zone | default(default_zone,true) }} |
-      {{ rich | default(omit,true) }} |
-      {{ permament | default(default_permanent,true) }}
+- include_vars: "defaults/main.yml"
+  when: network_setup_firewall_marker is not defined
 - name: "Setting rule {{ port | default(rule is defined | ternary(rule, service), true) }} => {{ state | default('enabled',true) }}"
   firewalld:
     immediate: "{{ immediate | default(default_immediate,true) }}"
