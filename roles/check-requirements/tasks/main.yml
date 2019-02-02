@@ -7,6 +7,34 @@
   fail:
     msg: apnscp requires RHEL 7.4 or greater
   when: ansible_distribution_version is version_compare('7.4.0', '<')
+- name: Fail if memory less than 1 GB
+  fail:
+      msg: >
+          apnscp requires at least 1 GB memory to run.
+          Total memory detected: {{ ansible_memtotal_mb }} MB
+  when: ansible_memtotal_mb < 990
+- name: Fail if memory >= 1 GB and < 2 GB
+  fail:
+      msg: >
+          apnscp on machines with less than 2 GB memory requires
+          has_low_memory to be set to true and passenger_enabled
+          set to false in /root/apnscp-vars.yml.
+          Total memory detected: {{ ansible_memtotal_mb }} MB
+  when:
+    - ansible_memtotal_mb >= 990
+    - ansible_memtotal_mb < 1838
+    - not (has_low_memory | bool) or (passenger_enabled | bool)
+- name: Warn if memory < 2 GB
+  block:
+  - fail:
+      msg: |
+        WARNING: apnscp is not guaranteed to work on a 1 GB machine. Continue at your own risk.
+        Hit CTRL + C to abort or wait 30 seconds to continue.
+        ---
+        Total memory detected: {{ ansible_memtotal_mb }} MB
+    ignore_errors: true
+  - pause: seconds=30
+  when: ansible_memtotal_mb < 1838
 - name: Check virtualization method
   command: systemd-detect-virt -c
   register: o

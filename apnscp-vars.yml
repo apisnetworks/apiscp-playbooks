@@ -114,7 +114,7 @@ spamassassin_global: true
 
 # Enable Passenger - allows a dead simple system to run
 # Node, Python, and Ruby applications with automatic restarts
-passenger_enabled: yes
+passenger_enabled: "{{ not (has_low_memory | bool) }}"
 
 # Place each account's InnoDB data files in a separate directory
 # Loses performance benefits, increases overhead, but allows for storage tracking
