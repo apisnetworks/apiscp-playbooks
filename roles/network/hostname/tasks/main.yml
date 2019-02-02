@@ -11,3 +11,23 @@
     - Restart postfix
     - Restart apnscp
     - Restart apache
+- name: "Remove {{ o.stdout }} from /etc/hosts"
+  lineinfile:
+    path: /etc/hosts
+    regexp: '^\s*\S+\s+{{ o.stdout | regex_escape }}\s*$'
+    state: absent
+  when: chg.changed and o.stdout != "localhost"
+- name: "Update /etc/hosts with {{ system_hostname }} - IPv4"
+  lineinfile:
+    path: /etc/hosts
+    regexp: '^\s*[^: ]+\s+{{ system_hostname | regex_escape }}\s*$'
+    line: '{{ apnscp_ip4_address | default(ansible_default_ipv4.address, true) }} {{ system_hostname }}'
+    state: present
+  when: chg.changed and ansible_default_ipv4.address is defined
+- name: "Update /etc/hosts with {{ system_hostname }} - IPv6"
+  lineinfile:
+    path: /etc/hosts
+    regexp: '^\s*(?:[0-9a-fA-F]{0,4}:){1,7}[0-9a-fA-F]{0,4}\s+{{ system_hostname | regex_escape }}\s*$'
+    line: '{{ apnscp_ip6_address | default(ansible_default_ipv6.address, true) }} {{ system_hostname }}'
+    state: present
+  when: chg.changed and ansible_default_ipv6.address is defined
