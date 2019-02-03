@@ -126,7 +126,7 @@ oneshot_files:
   - {file: /usr/share/empty}
   - {file: /usr/bin/composer}
 
-packages:
+apnscp_fst_packages:
   - { package: sudo, service: siteinfo }
   - { package: acl, service: siteinfo }
   - { package: alsa-lib, service: siteinfo }
@@ -550,18 +550,17 @@ packages:
   - { package: readline-devel, service: ssh }
   - { package: redis, service: ssh }
   - { package: rsync, service: ssh }
-  - { package: ruby-devel, service: ssh }
-  - { package: ruby-irb, service: ssh }
-  - { package: ruby-libs, service: ssh }
-  - { package: ruby, service: ssh }
+  - { package: ruby-devel, service: ssh, when: sys_ruby_version == 'system' }
+  - { package: ruby-irb, service: ssh, when: sys_ruby_version == 'system' }
+  - { package: ruby-libs, service: ssh, when: sys_ruby_version == 'system' }
+  - { package: rubygems, service: ssh, when: sys_ruby_version == 'system' }
+  - { package: ruby, service: ssh, when: sys_ruby_version == 'system' }
   - { package: screen, service: ssh }
   - { package: snappy, service: ssh }
   - { package: sqlite-devel, service: ssh }
   - { package: strace, service: ssh }
   - { package: subversion-devel, service: ssh }
   - { package: subversion-libs, service: ssh }
-  - { package: subversion-perl, service: ssh }
-  - { package: subversion-ruby, service: ssh }
   - { package: subversion, service: ssh }
   - { package: tcl-devel, service: ssh }
   - { package: tmux, service: ssh }

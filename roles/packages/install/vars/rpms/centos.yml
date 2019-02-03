@@ -367,8 +367,6 @@ rpms:
   - subversion
   - subversion-devel
   - subversion-libs
-  - subversion-perl
-  - subversion-ruby
   - sudo
   - systemd-libs
   - systemd-devel
