@@ -92,7 +92,6 @@
     owner: "{{ apnscp_system_user }}"
     group: "{{ apnscp_system_user }}"
   when: not httpdchk.stat.exists or (force | bool)
-  notify: Restart apnscp
 
 - include_tasks: "set-config.yml"
   vars:
