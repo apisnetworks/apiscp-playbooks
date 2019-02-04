@@ -1,0 +1,3 @@
+limit_memory_1gb: 990
+# Hetzner gives 1790, surveyed 1838 elsewhere
+limit_memory_2gb: 1790

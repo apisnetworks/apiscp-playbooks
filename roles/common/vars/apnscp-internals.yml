@@ -49,7 +49,7 @@ ftp_enabled: yes
 # Maximum PASV port when user_daemons disabled. Supports up to 10 concurrent transfers
 pasv_max_port: 40010
 # Enable outgoing filtering with rspamd - experimental
-rspamd_enabled: "{{ spamfilter == 'rspamd' }}""
+rspamd_enabled: "{{ spamfilter == 'rspamd' }}"
 # Use SpamAssassin or rspamd for spam filtering. rspamd is experimental
 spamassassin_enabled: yes
 # Enable installing MongoDB

@@ -84,6 +84,7 @@ ssl_hostnames: ["{{ ansible_nodename | regex_search('\\.') | ternary(ansible_nod
 apnscp_admin_password: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=16') }}"
 
 # Optional admin to user otherwise "admin"
+# rspamd increases memory utilization by 75-100 MB
 apnscp_admin_user: admin
 
 # Spam filter engine, spamassassin or rspamd

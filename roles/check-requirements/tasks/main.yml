@@ -12,7 +12,7 @@
       msg: >
           apnscp requires at least 1 GB memory to run.
           Total memory detected: {{ ansible_memtotal_mb }} MB
-  when: ansible_memtotal_mb < 990
+  when: ansible_memtotal_mb < limit_memory_1gb
 - name: Fail if memory >= 1 GB and < 2 GB
   fail:
       msg: >
@@ -21,8 +21,8 @@
           set to false in /root/apnscp-vars.yml.
           Total memory detected: {{ ansible_memtotal_mb }} MB
   when:
-    - ansible_memtotal_mb >= 990
-    - ansible_memtotal_mb < 1838
+    - ansible_memtotal_mb >= limit_memory_1gb
+    - ansible_memtotal_mb < limit_memory_2gb
     - not (has_low_memory | bool) or (passenger_enabled | bool)
 - name: Warn if memory < 2 GB
   block:
@@ -34,7 +34,7 @@
         Total memory detected: {{ ansible_memtotal_mb }} MB
     ignore_errors: true
   - pause: seconds=30
-  when: ansible_memtotal_mb < 1838
+  when: ansible_memtotal_mb < limit_memory_2gb
 - name: Check virtualization method
   command: systemd-detect-virt -c
   register: o
