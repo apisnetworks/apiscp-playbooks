@@ -25,7 +25,6 @@
   vars:
     package: "{{ item.package }}"
     service: "{{item.service}}"
-  when: "{{ item.when | default(true) }}"
   with_items: "{{ apnscp_fst_packages }}"
   when: item.when | default(true) and __populate_filesystem_template
 - name: "Build synchronizer RPM index"
