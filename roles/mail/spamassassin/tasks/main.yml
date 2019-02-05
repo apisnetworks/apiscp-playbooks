@@ -1,3 +1,7 @@
+  # SA only performs after-queue filtering
 - name: Install SpamAssassin
   include_tasks: install-spamassassin.yml
-  when: spamassassin_enabled | bool
+  when: (spamassassin_enabled | bool) and (mail_enabled | bool)
+- name: Remove SpamAssassin
+  yum: name=spamassassin state=absent
+  when: not (spamassassin_enabled | bool) or not (mail_enabled | bool)

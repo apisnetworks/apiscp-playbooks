@@ -315,10 +315,34 @@ config_files:
             LOCAL_FUZZY_WHITE:
               weight: -2.5
               description: Whitelisted fuzzy hash
+      group:
+        mx:
+          symbol:
+            MX_MISSING:
+              score: 2
+              description: No MX record
+              one_shot: true
+            MX_GOOD:
+              score: -0.01
+              description: MX record valid
+              one_shot: true
+            MX_INVALID:
+              score: 1
+              description: MX found but could not connect
+              one_shot: true
 
   - file: milter_headers.conf
     vars:
       extended_spam_headers: "{{ rspamd_extended_spam_headers }}"
+  - file: mx_check.conf
+    vars:
+      timeout: 5
+      symbol_bad_mx: "MX_INVALID"
+      symbol_no_mx: "MX_MISSING"
+      symbol_good_mx: "MX_GOOD"
+      expire: 86400
+      key_prefix: "rmx"
+      enabled: true
   - file: redis.conf
     vars: &redis_vars
       servers: "{{ rspamd_redis_enabled | ternary(rspamd_redis_server, None) }}"
