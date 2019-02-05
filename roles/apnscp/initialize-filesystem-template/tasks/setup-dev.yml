@@ -20,6 +20,7 @@
         src: "{{ dev }}"
         dest: "{{ base }}/siteinfo/{{ dev | dirname }}"
         archive: yes
+        times: false
         rsync_opts:
           - "-L"
           - "-x"

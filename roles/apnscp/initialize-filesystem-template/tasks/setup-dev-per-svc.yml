@@ -7,6 +7,7 @@
     src: "/dev/{{ device }}"
     dest: "{{ base }}/{{ svcname }}/dev/"
     archive: yes
+    times: no
   delegate_to: "{{ inventory_hostname }}"
   with_items: "{{ svcdirs[svcname] }}"
   loop_control:

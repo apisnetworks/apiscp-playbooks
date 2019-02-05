@@ -24,12 +24,14 @@
   # Called when {{ horde_path }} is missing
 - name: Install Horde packages
   command: pear install --force horde/groupware
-  creates: "{{ horde_doc_base }}/groupware"
+  args:
+    creates: "{{ horde_doc_base }}/groupware"
   when: true
   # 5.2.x isn't officially compatible with PHP 7.2
   # No errors with clients
   # https://lists.horde.org/archives/horde/Week-of-Mon-20160905/055988.html
 - name: Install Horde webmail package
   command: pear install --force horde/webmail
-  creates: "{{ horde_doc_base }}/webmail"
+  args:
+    creates: "{{ horde_doc_base }}/webmail"
   when: true

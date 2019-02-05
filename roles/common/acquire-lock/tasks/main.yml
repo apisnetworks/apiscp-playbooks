@@ -37,6 +37,7 @@
     copy:
       dest: "{{ bootstrapper_lock_file }}"
       content: "{{ ansible_pid }}"
+    changed_when: false
   when: inventory_hostname == "localhost"
   # Will not work unless inspecting the ssh pid in remote environments, ew.
   tags:

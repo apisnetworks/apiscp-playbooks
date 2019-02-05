@@ -2,10 +2,6 @@
 - name: Install SpamAssassin
   include_tasks: install-spamassassin.yml
   when: (spamassassin_enabled | bool) and (mail_enabled | bool)
-- block:
-    - name: Remove SpamAssassin
-      yum: name=spamassassin state=absent
-    - name: Unlink SpamAssassin relocations
-      file: path="{{ item.src }}" state=absent
-      with_items: "{{ spamassassin_relocation_paths }}"
+- name: Remove SpamAssassin
+  yum: name=spamassassin state=absent
   when: not (spamassassin_enabled | bool) or not (mail_enabled | bool)
