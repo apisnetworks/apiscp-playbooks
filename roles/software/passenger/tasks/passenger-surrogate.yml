@@ -6,6 +6,7 @@
     dest: "{{ passenger_home }}"
     update: "{{ passenger_update }}"
   register: repochkout
+  until: repochkout is succeeded
   retries: "{{ network_max_retries }}"
 - name: Set system Ruby for Passenger
   copy:

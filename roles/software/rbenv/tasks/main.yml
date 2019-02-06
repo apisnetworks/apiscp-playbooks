@@ -39,6 +39,8 @@
     dest: "{{ apnscp_filesystem_template }}/{{rbenv_service_install }}/{{git_target}}/plugins/rbenv-usergems"
     force: "{{ rbenv_usergems_force | default('yes') }}"
     version: "{{ rbenv_usergems_version | default('HEAD') }}"
+  register: result
+  until: result is succeeded
   retries: "{{ network_max_retries }}"
 # Run two separate rbenvs: system-wide and localized. System-wide is used by Passenger
 # whereas localized allows users to create gem bundles within their home directory

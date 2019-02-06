@@ -4,8 +4,9 @@
       uri:
         url: "{{ php_release_feed }}&version={{php_version}}"
         return_content: yes
-      retries: "{{ network_max_retries }}"
       register: feed
+      until: feed is succeeded
+      retries: "{{ network_max_retries }}"
   when: ((php_version | string ).split('.') | length) == 2
 - set_fact: __php_version="{{ php_version }}"
   when: feed is not defined

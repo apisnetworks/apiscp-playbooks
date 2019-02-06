@@ -3,7 +3,9 @@
   yum:
     name: "{{ clamav_packages }}"
     state: present
+  register: result
   retries: "{{ network_max_retries }}"
+  until: result is succeeded
 - name: Validate clamav version
   command: clamav-config --version
   register: v

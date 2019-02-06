@@ -2,15 +2,20 @@
 - name: Update PEAR channels
   command: pear update-channels
   changed_when: false
+  register: result
+  until: result is succeeded
   retries: "{{ network_max_retries }}"
 - name: Add Horde PEAR channel
   command: pear channel-discover pear.horde.org
   register: o
   changed_when: '"succeeded" in o.stdout'
   failed_when: 'o.rc == 1 and "already initialized" not in o.stdout'
+  until: o is succeeded
   retries: "{{ network_max_retries }}"
 - name: Install horde/role
   pear: name=horde/horde_role state=present
+  register: result
+  until: result is succeeded
   retries: "{{ network_max_retries }}"
 - name: Configure Horde installation path
   command:

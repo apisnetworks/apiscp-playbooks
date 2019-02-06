@@ -7,12 +7,13 @@
   yum:
     name: "{{ rv.bootstrap.repo_rpm }}"
     state: present
+  register: rpm_repo_status
+  until: rpm_repo is succeeded
   retries: "{{ network_max_retries }}"
   when:
     - rv.bootstrap is defined
     - rv.bootstrap.repo_rpm is defined
     - rv.when | default(true)
-  register: rpm_repo_status
 
 - name: Import RPM key {{ rv.title | default('') }}
   rpm_key:
@@ -26,11 +27,13 @@
 - name: "Install packages"
   yum: state="installed" name="{{ rv.rpms | join(',') }}" skip_broken=yes
   # @XXX Broken in Ansible 2.5.1...
+  register: c
+  until: c is succeeded
   retries: "{{ network_max_retries }}"
   notify: "{{ rv.notify | default('noop') }}"
-  register: c
   when:
     - rv.when | default(true)
+
   # Workaround for https://github.com/ansible/ansible/issues/26995
 - name: "Update packages"
   command: yum update -y --skip-broken {{ rv.rpms|join(' ') }}

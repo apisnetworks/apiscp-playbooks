@@ -1,6 +1,6 @@
 ---
 title: Fedora Extra Packages Library
-bootstrap:    
+bootstrap:
   - repo_rpm: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
     repo_key: "/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"
 repo_name: epel
@@ -68,7 +68,6 @@ rpms:
   - pkcs11-helper
   - proj
   - python2-pip
-  - python-redis
   - pyzor
   - re2c
   - redis

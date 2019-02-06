@@ -544,7 +544,6 @@ apnscp_fst_packages:
   - { package: "postgresql{{pg_pkgversion}}", service: ssh }
   - { package: pth-devel, service: ssh }
   - { package: python-devel, service: ssh }
-  - { package: python-redis, service: ssh }
   - { package: python-virtualenv, service: ssh }
   - { package: rcs, service: ssh }
   - { package: readline-devel, service: ssh }

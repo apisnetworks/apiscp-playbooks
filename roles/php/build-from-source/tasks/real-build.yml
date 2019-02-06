@@ -35,7 +35,9 @@
         dest: "{{ work_dir }}"
         src: "http://php.net/get/php-{{ __php_version }}.tar.bz2/from/this/mirror"
         remote_src: yes
+      register: result
       retries: "{{ network_max_retries }}"
+      until: result is succeeded
       when: not st.stat.exists
     - name: Compile PHP {{ __php_version }}
       shell: "{{ php_configure }} {{ extra_flags }}"
