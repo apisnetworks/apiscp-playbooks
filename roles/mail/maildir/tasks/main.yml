@@ -43,7 +43,7 @@
       set tmpdir="{{ mutt_tmp_dir | default('/tmp') }}"
       source /etc/Muttrc.local
 - name: Relink Muttrc
-  include_tasks: roles/common/tasks/copy-link.yml
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/copy-link.yml"
   vars:
     src: /etc/Muttrc
     path: "{{ apnscp_filesystem_template }}/{{ mutt_svc }}/etc/Muttrc"

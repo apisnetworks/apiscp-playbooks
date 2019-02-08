@@ -1,13 +1,15 @@
 ---
-- import_role: name=php/build-from-source
-- stat: path=/usr/share/pear
-  register: stsrc
+- name: Import php/build-from-source role
+  import_role: name=php/build-from-source
+
 - stat: path="{{ apnscp_shared_root}}/php/pear"
   register: stdst
-- name: Migrate pear to {{ apnscp_shared_root }}
-  block: 
-    - file: path="{{apnscp_shared_root}}/php" state=directory
-    - command: "mv /usr/share/pear {{ apnscp_shared_root }}/php"
+- name: "Migrate pear to {{ apnscp_shared_root }}"
+  block:
+    - name: "Create {{apnscp_shared_root}}/php base path"
+      file: path="{{apnscp_shared_root}}/php" state=directory
+    - name: "Relocate /usr/share/pear to {{apnscp_shared_root}}/php"
+      command: "mv /usr/share/pear {{ apnscp_shared_root }}/php"
   when: not stdst.stat.exists
 - name: Check if {{ php_pear_data_path }} exists
   stat: path="{{ php_pear_data_path }}"
@@ -17,15 +19,18 @@
     - file: path={{ php_pear_data_path }} state=absent
     - file: path={{ php_pear_data_path }} state=directory
   when: spd.stat.islnk is defined and not spd.stat.exists
-  
-- block:
-    - stat: path=/usr/share/pear
-      register: r
-    - file: path=/usr/share/pear state=absent
-      when: r.stat and r.stat.islnk is defined and not r.stat.islnk
-    - file: src="{{ apnscp_shared_root }}/php/pear" dest="/usr/share/pear" state=link
+
+- name: Revalidate /usr/share/pear
+  stat: path=/usr/share/pear
+  register: r
+
+- file: path=/usr/share/pear state=absent
+  when: r.stat and r.stat.islnk is defined and not r.stat.islnk
+- file: src="{{ apnscp_shared_root }}/php/pear" dest="/usr/share/pear" state=link
+
 - import_role: name=php/composer
   vars:
     composer_path: /usr/share/pear/composer.phar
+
 - name: Link composer to /usr/bin
   file: src=/usr/share/pear/composer.phar dest=/usr/bin/composer state=link

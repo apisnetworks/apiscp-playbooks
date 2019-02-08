@@ -3,10 +3,11 @@
     path: "{{ base }}/{{ svcname }}/dev"
     state: directory
 - name: "Link devices for {{ svcname }}"
-  command: >
-    rsync -a "/dev/{{ device }}" "{{ base }}/{{ svcname }}/dev/"
-  args:
-    creates: "{{ base }}/{{ svcname }}/dev/{{ device }}" 
+  synchronize:
+    src: "/dev/{{ device }}"
+    dest: "{{ base }}/{{ svcname }}/dev/"
+    archive: yes
+  delegate_to: "{{ inventory_hostname }}"
   with_items: "{{ svcdirs[svcname] }}"
   loop_control:
     loop_var: device

@@ -2,7 +2,7 @@
 # All RPMs derive from rpm.apnscp.com
 ---
 title: apnscp Packages Library
-bootstrap:    
+bootstrap:
   - repo_rpm: "http://yum.apnscp.com/apnscp-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm"
     repo_key: "/etc/pki/rpm-gpg/RPM-GPG-KEY-apnscp-{{ ansible_distribution_major_version }}"
 repo_name: apnscp
@@ -37,7 +37,6 @@ rpms:
   - nss-apnscp
   - pam-apnscp
   - postfix
-  - spamassassin
   - uw-imap
   - uw-imap-devel
   - uw-imap-static

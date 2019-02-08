@@ -25,4 +25,3 @@
     insertbefore: "</[Ii]f[mM]odule>"
   when: st.stat.exists
   notify: Reload apache
-  

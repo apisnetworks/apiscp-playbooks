@@ -6,9 +6,9 @@
     owner: "{{apnscp_system_user}}"
     group: "{{apnscp_system_user}}"
   changed_when: false
-- file: 
-    state: link 
-    path: "/etc/{{path}}" 
+- file:
+    state: link
+    path: "/etc/{{path}}"
     src: "{{apnscp_root}}/{{src}}"
     owner: "{{apnscp_system_user}}"
   when: path != ""

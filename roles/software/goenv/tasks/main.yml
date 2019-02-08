@@ -1,6 +1,6 @@
 ---
 - name: Clone goenv repository
-  git: 
+  git:
     repo: "{{ goenv_repo }}"
     version: "{{ goenv_repo_ver }}"
     dest: "{{ apnscp_filesystem_template }}/{{goenv_service_install}}/{{ git_target }}"
@@ -15,8 +15,8 @@
     state: link
 - name: Add {{ git_target }} to wheel
   command: >
-    find {{ git_target | quote }} -follow  
-      -iname ".git" -prune -o -exec chmod g+w {} + 
+    find {{ git_target | quote }} -follow
+      -iname ".git" -prune -o -exec chmod g+w {} +
       -exec chgrp wheel {} \;
   register: goenv_chmod
   changed_when: goenv_chmod.stdout != ""
@@ -29,7 +29,7 @@
     state: directory
 - name: Get goenv code
   command: "{{ git_target }}/bin/goenv init -"
-  environment: 
+  environment:
     GOENV_ROOT: "{{ git_target }}"
   register: goenv_code
   changed_when: false
@@ -51,14 +51,14 @@
   stat: path="{{ apnscp_filesystem_template }}/{{ goenv_service_install }}/{{goenv_script}}"
   register: s
 - name: Link goenv.sh to FST
-  include_tasks: roles/common/tasks/copy-link.yml
-  vars: 
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/copy-link.yml"
+  vars:
     src: "{{ goenv_script }}"
     path: "{{ apnscp_filesystem_template }}/{{ goenv_service_install }}/{{goenv_script}}"
     notify: Reload filesystem template
   when: goenv_create.changed or not s.stat.exists
 - name: Symlink goenv to {{git_target}}
-  file: 
+  file:
     src: "{{ git_target }}/bin/goenv"
     path: "{{ apnscp_filesystem_template }}/{{ goenv_service_install }}/usr/bin/goenv"
     state: link

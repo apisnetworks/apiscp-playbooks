@@ -1,10 +1,10 @@
 ---
-- shell: "grep -E '\\s+/\\s+xfs' /proc/mounts"
+- command: grep -E '\s+/\s+xfs' /proc/mounts
   register: xfs
   failed_when: false
   changed_when: false
 - block:
-  - shell: "grep -E '\\s+/\\s+ext4' /proc/mounts"
+  - command: grep -E '\s+/\s+ext4' /proc/mounts
     register: ext4
     changed_when: false
   rescue:

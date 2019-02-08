@@ -1,0 +1,43 @@
+---
+- block:
+  - name: Validate lock existence
+    stat: path="{{ bootstrapper_lock_file }}"
+    register: st
+
+  - name: Acquire lock
+    file:
+      path: "{{ bootstrapper_lock_file }}"
+      state: touch
+    when: not st.stat.exists
+
+  - set_fact:
+      lock_pid_filename: "/proc/{{ lookup('file', bootstrapper_lock_file ) }}/comm"
+
+  - name: Check if PID {{ lock_pid_filename }} present
+    stat: path="{{ lock_pid_filename }}"
+    register: st
+
+  - name: Verify process matches ansible
+    pause:
+      prompt: |
+        Ansible running with PID {{ lookup('file', bootstrapper_lock_file, errors='ignore' ) }}.
+        Start time: {{ '%Y-%m-%d %H:%M:%S' | strftime(st.stat.mtime) }}
+        Waiting for completion. My PID: {{ ansible_pid }}.
+      seconds: 30
+      echo: yes
+    retries: '{{ (bootstrapper_lock_max_wait/30) | int }}'
+    until: >
+      lookup('file', lock_pid_filename, errors='ignore') == None or
+      -1 == lookup('file', lock_pid_filename, errors='ignore').find("ansible")
+    when: >
+      st.stat.exists and
+      -1 != lookup('file', lock_pid_filename).find("ansible")
+    register: out
+  - name: Save PID in {{ bootstrapper_lock_file }}
+    copy:
+      dest: "{{ bootstrapper_lock_file }}"
+      content: "{{ ansible_pid }}"
+  when: inventory_hostname == "localhost"
+  # Will not work unless inspecting the ssh pid in remote environments, ew.
+  tags:
+    - always

@@ -4,6 +4,8 @@ horde_storage_path: /var/lib/horde
 horde_log_file: "{{ horde_storage_path }}/log/horde.log"
 horde_config_file: "{{ horde_path }}/config/conf.php"
 horde_template_file: "templates/horde-conf.conf.j2"
+# Used to validate install
+horde_doc_base: "/usr/share/pear/doc"
 horde_user: horde
 horde_db: horde
 horde_password: "{{ lookup('password', '/dev/null length=32') }}"

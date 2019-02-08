@@ -11,7 +11,7 @@
   when: not rspamd_enabled | bool
 
 - name: "Set rspamd installation state in apnscp"
-  include_tasks: "{{ role_path }}/../../apnscp/bootstrap/tasks/set-config.yml"
+  import_role: name="apnscp/bootstrap" tasks_from="set-config.yml"
   vars:
     section: mail
     option: "rspamd_present"
@@ -50,13 +50,14 @@
     regexp: '^(\s*){{ (spamfilter == "spamassassin") | ternary("#\s*", "") }}(xfilter\s+.*?(?<=[\/\s])spamc\s+.*)$'
     replace: '\1{{ (spamfilter == "spamassassin") | ternary("", "#") }}\2'
   with_items: "{{ maildrop_files }}"
-- name: Always add X-Spam-Score header
+
+- name: Ensure X-Spam-Score header present in piggyback mode
   replace:
     path: /etc/mail/spamassassin/local.cf
     regexp: '^\s*add_header\s+(?!all\S+)\s+[sS]core\s+.*$'
     replace: 'add_header all Score _SCORE_'
   notify: Restart spamassassin
-  when: spamfilter == "spamassassin"
+  when: rspamd_method == "piggyback"
 
 - name: '{{ rspamd_enabled | ternary("Add", "Remove") }} learning aliases'
   include_role:

@@ -38,7 +38,7 @@
   when: not st.stat.exists
 # @TODO debugging crap?
 - meta: flush_handlers
-- include_tasks: "{{ role_path }}/tasks/relocate-shared-directory.yml"
+- include_tasks: "relocate-shared-directory.yml"
   vars:
     service: "{{ item.service }}"
     src: "{{ item.src }}"
@@ -145,7 +145,7 @@
     state: directory
     owner: mysql
     group: mysql
-    mode: 2751
+    mode: 02751
 - meta: flush_handlers
 - wait_for:
     path: "{{ mysql_shared_path }}"

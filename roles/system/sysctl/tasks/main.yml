@@ -1,6 +1,6 @@
 ---
 - name: Merge custom config
-  include_tasks: "roles/common/tasks/implicitly-import-overrides.yml"
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/implicitly-import-overrides.yml"
   vars:
     base: "{{ sysctl_config }}"
     varname: __config

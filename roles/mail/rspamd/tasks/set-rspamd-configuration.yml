@@ -20,7 +20,7 @@
   register: r
 - name: Merge custom config
   block:
-    - include_tasks: "roles/common/tasks/implicitly-import-overrides.yml"
+    - include_tasks: "{{ playbook_dir }}/roles/common/tasks/implicitly-import-overrides.yml"
       vars:
         base: "{{ config }}"
         varname: __config

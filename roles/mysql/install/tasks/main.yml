@@ -1,4 +1,4 @@
----  
+---
 - name: Override systemd defaults
   include_tasks: set-systemd-defaults.yml
 
@@ -10,35 +10,35 @@
   stat: path={{ mysql_pass_file }}
   register: s
 - name: Enable root MySQL user
-  mysql_user: 
-    name: root 
-    password: "{{password}}" 
-    host: localhost 
-    priv: "*.*:ALL,GRANT" 
-    update_password: always 
-    state: present 
-    check_implicit_admin: yes 
+  mysql_user:
+    name: root
+    password: "{{password}}"
+    host: localhost
+    priv: "*.*:ALL,GRANT"
+    update_password: always
+    state: present
+    check_implicit_admin: yes
     encrypted: no
   register: user_enabled
   when: not s.stat.exists
 - name: Save MySQL password
-  template: 
+  template:
     src: templates/my.cnf.j2
     dest: "{{ mysql_pass_file }}"
     mode: 0600
   when: user_enabled is defined and user_enabled.changed
-- mysql_user: 
-    name: root 
-    host: localhost 
+- mysql_user:
+    name: root
+    host: localhost
     check_implicit_admin: yes
     # ALL excludes GRANT. GRANT itself yields syntax error
     priv: "*.*:ALL,GRANT"
     append_privs: yes
     state: present
 - name: Find password column in mysql.user
-  shell: > 
-    echo "SELECT column_name FROM INFORMATION_SCHEMA.columns WHERE 
-      table_schema = 'mysql' AND table_name = 'user' AND column_name = 
+  shell: >
+    echo "SELECT column_name FROM INFORMATION_SCHEMA.columns WHERE
+      table_schema = 'mysql' AND table_name = 'user' AND column_name =
       'authentication_string'" | mysql --column-names=false
   environment:
     HOME: /root
@@ -50,7 +50,7 @@
   when: o.stdout != ''
 - name: Remove passwordless users
   shell: >
-    echo "DELETE FROM user WHERE {{ mysql_delete_clause }}; 
+    echo "DELETE FROM user WHERE {{ mysql_delete_clause }};
       SELECT ROW_COUNT(); FLUSH PRIVILEGES;" | mysql mysql --column-names=false
   register: o
   changed_when: (o.stdout | int) > 0
@@ -66,15 +66,15 @@
     name: ""
     host: "%"
     state: absent
-  when: test is defined and test.changed or 
+  when: test is defined and test.changed or
     user_enabled is defined and user_enabled.changed
 - name: Remove test db grants
   shell: >
-    echo "DELETE FROM db WHERE db IN('test', 'test\_%') AND host = '%'; 
+    echo "DELETE FROM db WHERE db IN('test', 'test\_%') AND host = '%';
       SELECT ROW_COUNT(); FLUSH PRIVILEGES;" | mysql mysql --column-names=false
   register: o
   changed_when: (o.stdout | int) > 0
-  when: test is defined and test.changed or 
+  when: test is defined and test.changed or
     user_enabled is defined and user_enabled.changed
 - name: Reconfigure mysql
   ini_file:

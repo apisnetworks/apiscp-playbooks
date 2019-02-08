@@ -1,4 +1,4 @@
-- set_fact: 
+- set_fact:
     config_val: "{{ value }}"
     old_val: "_NOTSET"
 - set_fact:
@@ -23,6 +23,6 @@
     no_extra_spaces: yes
   notify: Restart apnscp
   when: >
-    check_value is not defined or 
+    check_value is not defined or
     not check_value and 'failed' in old and (old.failed or old_val == "_NOTSET") or
     check_value and old_val != config_val

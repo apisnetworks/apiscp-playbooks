@@ -3,3 +3,8 @@
 spamassassin_enable_spamd_tell: true
 mail_spamassassin_marker: true
 sa_compiled_rules_dir: /var/lib/spamassassin/compiled/5.016/3.004002/Mail
+spamassassin_relocation_paths:
+  - service: siteinfo,
+    src: "{{ apnscp_shared_root }}/perl/spamassassin"
+    dest: /usr/share/spamassassin,
+    handler: Restart spamassassin

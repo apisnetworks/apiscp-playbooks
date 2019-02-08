@@ -2,13 +2,13 @@
 - set_fact:
     PHPMYADMIN_PASSWORD: "{{ phpmyadmin_password }}"
 - name: Install phpMyAdmin
-  yum: name=phpmyadmin state=present 
+  yum: name=phpmyadmin state=present
   register: installed
 - name: Check if phpMyAdmin configured
   stat: path="{{ phpmyadmin_config_file }}"
   register: c
 - name: Copy phpMyAdmin configuration template
-  template: 
+  template:
     src: "{{ phpmyadmin_template_file }}"
     dest: "{{ phpmyadmin_config_file }}"
   register: init
@@ -38,7 +38,7 @@
   when: init is defined and init.changed
 
 - name: Change phpMyAdmin permissions
-  file: 
+  file:
     path: "{{ item }}"
     owner: apache
     group: apache
@@ -46,7 +46,7 @@
   with_items:
     - "{{ phpmyadmin_storage_path }}"
 - name: Remove setup files
-  file: 
+  file:
     path: "{{ phpmyadmin_path }}/{{ item }}"
     state: absent
   with_items:

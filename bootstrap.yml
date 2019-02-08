@@ -22,6 +22,7 @@
     - ['{{ apnscp_last_run_vars }}', '/dev/null']
   roles:
     # Hook: before running playbooks
+    - common/acquire-lock
     - custom/preflight
     - check-requirements
     - common/update-config

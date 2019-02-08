@@ -1,12 +1,12 @@
 ---
 - include_vars: vars/sshd.yml
-- lineinfile: 
+- lineinfile:
     path: "{{ pam_file }}"
     regexp: '^\s*auth.*{{vwh_module}}'
     line: "auth\trequired\t{{ vwh_module }}"
     insertbefore: '^\s*auth\s'
     firstmatch: yes
-    state: present  
+    state: present
 - copy:
     src: ./templates/sshd
     dest: "{{ apnscp_filesystem_template }}/ssh/etc/pam.d/sshd"

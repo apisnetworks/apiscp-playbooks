@@ -2,7 +2,7 @@
 - include_role: name=packages/install tasks_from=configure-default-vars.yml
 - name: Symlink include/pgsql
   file: src=/usr/pgsql-{{ pgversion }}/include  dest=/usr/include/pgsql state=link
-- name: alias pgsql 
+- name: alias pgsql
   file:
     src: /usr/lib/systemd/system/postgresql-{{pgversion}}.service
     dest: /etc/systemd/system/postgresql.service
@@ -11,15 +11,15 @@
 - stat: path="/var/lib/pgsql/{{pgversion}}/data/base"
   register: ddir
 - name: Initialize PostgreSQL data dictionary
-  shell: /usr/pgsql-{{pgversion}}/bin/postgresql-{{pgversion}}-setup initdb
+  command: /usr/pgsql-{{pgversion}}/bin/postgresql-{{pgversion}}-setup initdb
   args:
-    creates: /var/lib/pgsql/{{pgversion}}/postgresql.conf     
+    creates: /var/lib/pgsql/{{pgversion}}/postgresql.conf
   when: not ddir.stat.exists
 - stat: path="/var/lib/pgsql/{{pgversion}}/data/pg_hba.conf"
   register: pghba
 - block:
   - name: copy pg_hba.conf
-    copy: 
+    copy:
       src: templates/pg_hba.conf
       dest: /var/lib/pgsql/{{pgversion}}/data/pg_hba.conf
   - systemd: name=postgresql state=restarted
@@ -36,10 +36,10 @@
 - name: Enable root PostgreSQL user
   become_user: postgres
   become: True
-  postgresql_user: name=root role_attr_flags=SUPERUSER no_password_changes=yes password={{password}} db=template1 encrypted=yes 
+  postgresql_user: name=root role_attr_flags=SUPERUSER no_password_changes=yes password={{password}} db=template1 encrypted=yes
   register: user_changed
 - name: "Save PostgreSQL password"
-  lineinfile: 
+  lineinfile:
     path: "{{ passwdfile }}"
     regexp: '^([^:]+:){3}root:'
     create: yes

@@ -1,14 +1,14 @@
 ---
-- name: Prepare {{ git_target }}
+- name: "Prepare {{ git_target }}"
   file:
     path: "{{ git_target|dirname}}"
     state: directory
 - name: Download nvm
-  git: 
+  git:
     repo: "{{ git_repo }}"
     dest: "{{ git_target }}"
     version: "{{ (git_version != 'master') | ternary('v', '') }}{{ git_version }}"
-- name: Add nvm.sh 
+- name: Add nvm.sh
   template:
     dest: "{{ nvm_script }}"
     group: root
@@ -16,8 +16,8 @@
     mode: 0755
     src: "templates/nvm.sh.j2"
 - name: Link nvm.sh to FST
-  include_tasks: roles/common/tasks/copy-link.yml
-  vars: 
+  import_role: name=common tasks_from=copy-link.yml
+  vars:
     src: "{{ nvm_script }}"
     path: "{{ apnscp_filesystem_template }}/{{ nvm_service_install }}/{{nvm_script}}"
 - name: Check for LTS installation

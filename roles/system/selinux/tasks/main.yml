@@ -4,7 +4,7 @@
     selinux: disabled
     selinuxtype: minimum
   when: not use_selinux
-- set_fact: 
+- set_fact:
     selinux: permissive
     selinuxtype: targeted
   when: use_selinux == "debug"
@@ -28,15 +28,16 @@
       section: null
       path: /etc/selinux/config
       option: SELINUXTYPE
-      value: "{{ selinuxtype }}"      
+      value: "{{ selinuxtype }}"
       no_extra_spaces: yes
     register: c2
   when: seconfig.stat.exists
-- get_argv:
+- name: Save argv
+  get_argv:
 - include_role: name=common/fail-and-save
-  vars: 
+  vars:
     reboot: true
-    msg: |      
+    msg: |
       SELINUX POLICY HAS CHANGED. REBOOT SERVER, THEN CONTINUE
       RUNNING PLAYBOOK TO RESUME.
   when: c1.changed or c2.changed and use_selinux != false

@@ -1,0 +1,5 @@
+parseable: true
+quiet: true
+skip_list:
+  - ANSIBLE0011
+  - ANSIBLE0016

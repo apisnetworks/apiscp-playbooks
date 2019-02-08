@@ -1,8 +1,8 @@
 ---
-- include_role: 
-    role: "mail/configure-postfix" 
-    tasks_from: "register-password.yml" 
-    defaults_from: "main.yml" 
+- include_role:
+    role: "mail/configure-postfix"
+    tasks_from: "register-password.yml"
+    defaults_from: "main.yml"
     vars_from: "main.yml"
 - name: "Configure {{ daemon_config }}"
   ini_file:
@@ -22,7 +22,7 @@
   template:
     src: "templates/authpgsqlrc.j2"
     dest: "{{ pg_config }}"
-    owner: "{{ authlib_user }}" 
+    owner: "{{ authlib_user }}"
     group: "{{ authlib_group }}"
     mode: 0640
   notify: Restart authlib

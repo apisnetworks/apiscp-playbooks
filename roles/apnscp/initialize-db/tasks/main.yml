@@ -12,7 +12,7 @@
       exists: {stat: {exists: false} }
     # db.yaml.dist leaves field empty
     when: not 'password' in oldconfig['apnscp'] or not oldconfig['apnscp']['password']
-  - set_fact: 
+  - set_fact:
       __apnscp_password: "{{ oldconfig['apnscp']['password'] }}"
       __appliance_password: "{{ oldconfig['appldb']['password'] }}"
   when: exists.stat.exists
@@ -20,16 +20,16 @@
   when: not exists.stat.exists
 
 - name: Verify {{ apnscp_db }} database exists
-  mysql_db: 
+  mysql_db:
     name: "{{ apnscp_db }}"
     state: present
   register: exists
 
 - name: Create {{ apnscp_db }} database
-  mysql_db: 
-    name: "{{ apnscp_db }}" 
-    state: import 
-    config_file: /root/.my.cnf 
+  mysql_db:
+    name: "{{ apnscp_db }}"
+    state: import
+    config_file: /root/.my.cnf
     target: "{{ role_path }}/files/mysql/apnscp.sql"
   when: exists.changed
 
@@ -82,7 +82,7 @@
     notify: Restart apnscp
 
   - name: Verify {{ appliance_db }} database exists
-    postgresql_db: 
+    postgresql_db:
       name: "{{ appliance_db}}"
       owner: "{{ appliance_user }}"
       template: template1
@@ -99,7 +99,7 @@
       - template:
           src: "{{ role_path }}/files/pgsql/appldb.sql.j2"
           dest: "{{ temp.path }}"
-      - postgresql_db: 
+      - postgresql_db:
           name: "{{ appliance_db}}"
           state: restore
           target: "{{ temp.path }}"

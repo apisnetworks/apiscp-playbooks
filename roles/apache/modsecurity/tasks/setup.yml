@@ -5,7 +5,7 @@
     state: present
   notify: Restart apache
 - name: Load mod_security module
-  lineinfile: 
+  lineinfile:
     path: /etc/httpd/conf/httpd-custom.conf
     regexp: '^\s*LoadModule\s+security2_module\s+'
     line: LoadModule security2_module modules/mod_security2.so

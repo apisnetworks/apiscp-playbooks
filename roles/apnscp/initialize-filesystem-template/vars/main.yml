@@ -5,30 +5,24 @@ relocated_paths:
     service: siteinfo,
     src: "{{ apnscp_shared_root }}/php/pear",
     dest: /usr/share/pear
-  }
+    }
   - {
     service: siteinfo,
     src: "{{ apnscp_shared_root }}/php/pear-data",
     dest: /usr/share/pear-data,
     force: yes
-  }
+    }
+  - {
+      service: siteinfo,
+      src: "{{ apnscp_shared_root }}/perl/share",
+      dest: /usr/share/perl5
+    }
   - {
       service: siteinfo,
       src: "{{ apnscp_shared_root }}/perl/lib64",
       dest: /usr/lib64/perl5,
       handler: Restart spamassassin
     }
-  - {
-      service: siteinfo,
-      src: "{{ apnscp_shared_root }}/perl/spamassassin",
-      dest: /usr/share/spamassassin,
-      handler: Restart spamassassin
-    }
-  - {
-      service: siteinfo,
-      src: "{{ apnscp_shared_root }}/perl/share",
-      dest: /usr/share/perl5
-  }
   - {
       service: siteinfo,
       src: "{{ apnscp_shared_root }}/fcgi",

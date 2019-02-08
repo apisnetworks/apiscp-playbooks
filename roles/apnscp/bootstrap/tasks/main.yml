@@ -6,8 +6,8 @@
     msg: "apnscp bootstrapper isn't completed properly"
   when: not s.stat.exists
 
-- template: src=templates/apnscp.init.j2 dest=/etc/systemd/user/apnscp.init mode=755 backup=no
-- template: src=templates/apnscp.service.j2 dest=/etc/systemd/system/apnscp.service mode=644
+- template: src=templates/apnscp.init.j2 dest=/etc/systemd/user/apnscp.init mode=0755 backup=no
+- template: src=templates/apnscp.service.j2 dest=/etc/systemd/system/apnscp.service mode=0644
   register: copied
 - template: src=templates/apnscp.sysconf.j2 dest=/etc/sysconfig/apnscp force=no backup=yes
 - systemd: daemon_reload=yes enabled=yes name=apnscp
@@ -165,7 +165,8 @@
 - name: Copy /etc/resolv.conf config to config.ini
   set_fact:
     nameservers: "{{ (nameservers | default([])) + [item]}}"
-  with_lines: "egrep '^\\s*nameserver\\b' /etc/resolv.conf | cut -d' ' -f2"
+  with_lines:
+    - "egrep '^\\s*nameserver\\b' /etc/resolv.conf | cut -d' ' -f2"
   when: apnscp_nameservers is not defined
 - include_tasks: set-config.yml
   vars:

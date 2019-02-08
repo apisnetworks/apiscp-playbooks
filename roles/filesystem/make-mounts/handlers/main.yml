@@ -5,3 +5,5 @@
 - name: Remount tmp
   command: mount -o remount /tmp
   failed_when: false
+  tags:
+    - skip_ansible_lint

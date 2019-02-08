@@ -1,6 +1,6 @@
 ---
 - include_vars: vars/ftp.yml
-- lineinfile: 
+- lineinfile:
     path: "{{ pam_file }}"
     regexp: '^\s*auth.*{{vwh_module}}'
     line: "auth\trequired\t{{ vwh_module }}"
@@ -8,7 +8,7 @@
     firstmatch: yes
     state: present
 - include_tasks: listfile.yml
-  vars: 
+  vars:
     file: "/etc/ftp.pamlist"
 - include_tasks: nologin.yml
   vars:

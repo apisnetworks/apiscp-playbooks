@@ -29,7 +29,7 @@
       option: watchdog-device
       value: /dev/watchdog
   - name: Load watchdog kernel module
-    copy: 
+    copy:
       dest: "{{ watchdog_modprobe_config }}"
       content: "{{ watchdog_module }}"
   when: st2.rc is defined and st2.rc == 0

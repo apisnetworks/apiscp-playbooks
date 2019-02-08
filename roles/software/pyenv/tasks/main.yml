@@ -22,8 +22,8 @@
     state: link
 - name: Add {{ git_target }} to wheel
   shell:
-    find {{ git_target | quote }} -follow 
-      -iname ".git" -prune -o -not -group wheel -print 
+    find {{ git_target | quote }} -follow
+      -iname ".git" -prune -o -not -group wheel -print
       -exec chgrp wheel {} +
   register: pyenv_chmod
   changed_when: pyenv_chmod.stdout != ""
@@ -40,7 +40,7 @@
     dest: "{{ apnscp_filesystem_template }}/{{pyenv_service_install }}/{{ git_target }}"
 - name: Get pyenv code
   command: "{{ git_target }}/bin/pyenv init -"
-  environment: 
+  environment:
     PYENV_ROOT: "{{ git_target }}"
   register: pyenv_code
   changed_when: false
@@ -62,8 +62,8 @@
     src: "{{ git_target }}/bin/pyenv"
     state: link
 - name: Link pyenv.sh to FST
-  include_tasks: roles/common/tasks/copy-link.yml
-  vars: 
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/copy-link.yml"
+  vars:
     src: "{{ pyenv_script }}"
     path: "{{ apnscp_filesystem_template }}/{{ pyenv_service_install }}/{{pyenv_script}}"
     notify: Reload filesystem template
@@ -75,7 +75,7 @@
       echo "pyenv: cannot rehash: \$SHIM_PATH isn't writable"
     state: absent
 - name: Symlink pyenv to {{git_target}}
-  file: 
+  file:
     src: "{{ git_target }}/bin/pyenv"
     path: "{{ apnscp_filesystem_template }}/{{ pyenv_service_install }}/usr/bin/pyenv"
     state: link

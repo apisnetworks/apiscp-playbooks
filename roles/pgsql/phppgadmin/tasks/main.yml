@@ -6,7 +6,7 @@
   stat: path="{{ phppgadmin_config_file }}"
   register: c
 - name: Copy phpPgAdmin configuration template
-  template: 
+  template:
     src: "{{ phppgadmin_template_file }}"
     dest: "{{ phppgadmin_config_file }}"
   register: init

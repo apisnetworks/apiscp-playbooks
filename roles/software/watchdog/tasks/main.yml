@@ -4,7 +4,7 @@
   when: (watchdog_load_threshold | int) != 0
 - block:
     - name: Disable Watchdog
-      systemd: 
+      systemd:
         name: watchdog
         state: "{{ watchdog_has_nowayout | ternary(omit, 'stopped') }}"
         enabled: no

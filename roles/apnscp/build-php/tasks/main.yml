@@ -14,7 +14,7 @@
     option: extension_dir
     value: "{{ apnscp_root }}/sys/php/{{ apnscp_php_module_api }}"
 - include_role:
-    name: php/build-from-source  
+    name: php/build-from-source
   vars:
     notify_handler: Restart apnscp
     php_version: "{{ apnscp_php_version }}"

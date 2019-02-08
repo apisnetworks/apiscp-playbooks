@@ -4,7 +4,7 @@
   loop_control:
     loop_var: svcname
 - name: "Create pts directory"
-  file: 
+  file:
     path: "{{ base }}/ssh/dev/pts"
     state: directory
 - name: "Register rootfs in siteinfo/dev/"
@@ -16,14 +16,18 @@
     - set_fact:
         dev: '{{ mount.stdout | regex_search("/dev/\S+")}}'
     # device points to mapper, mapper points to symlink, copy referent
-    - command: rsync -axL "{{ dev }}" "{{ base }}/siteinfo/{{ dev | dirname }}"
-      args:
-        creates: "{{ base }}/siteinfo/{{ dev }}"
+    - synchronize:
+        src: "{{ dev }}"
+        dest: "{{ base }}/siteinfo/{{ dev | dirname }}"
+        archive: yes
+        rsync_opts:
+          - "-L"
+          - "-x"
   when: mount.rc == 0
 - debug: msg="Failed to detect rootfs, ignoring device creation in {{ apnscp_filesystem_template }}"
   when: mount.rc != 0
 - systemd: name=rsyslog state=started
-- file: 
+- file:
     path: "{{ apnscp_filesystem_template }}/siteinfo/dev/log"
     src: "{{ apnscp_shared_root }}/log"
     state: link

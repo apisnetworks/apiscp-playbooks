@@ -2,7 +2,7 @@
 - include_vars: "{{ role_path }}/../build-from-source/vars/main.yml"
 - include_role:
     name: php/common
-    tasks_from: query-extension-dir  
+    tasks_from: query-extension-dir
 - name: Populate OPCache configuration
   template:
     src: templates/opcache.ini.j2
@@ -15,9 +15,9 @@
     src: files/php.ini
     dest: "{{ php_main_config}}"
   when: not s.stat.exists
-- name: Set PHP defaults 
+- name: Set PHP defaults
   blockinfile:
-    marker: '#{mark} APNSCP MANAGED BLOCK' 
+    marker: '#{mark} APNSCP MANAGED BLOCK'
     path: "{{ php_main_config }}"
     content: "{{ php_default_config }}"
   notify: Restart apache

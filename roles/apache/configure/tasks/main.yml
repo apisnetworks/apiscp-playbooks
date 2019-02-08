@@ -1,7 +1,7 @@
 ---
 - include_tasks: configure-fcgid.yml
 - name: "Configure virtualhosts from namebased_ip_addrs"
-  set_fact: 
+  set_fact:
     addr_list: "{{ addr_list + lookup('file', item).split('\n') | reject('match', '^$') | list}}"
   with_items:
     - "{{ apnscp_root }}/storage/opcenter/namebased_ip_addrs"
@@ -40,4 +40,3 @@
     name: htcacheclean
     enabled: yes
     state: "{{ c.changed | ternary('restarted', 'started') }}"
-

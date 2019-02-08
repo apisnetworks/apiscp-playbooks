@@ -6,24 +6,24 @@
   file: path={{pam_file}} state=absent
   when: st.stat.exists and st.stat.islnk
 - name: Copy mail template to {{ pam_file }}
-  template: 
+  template:
     src: templates/dovecot
     dest: "{{ pam_file }}"
     force: no
-- lineinfile: 
+- lineinfile:
     path: "{{ pam_file }}"
     regexp: '^\s*auth.*{{vwh_module}}'
     line: "auth\trequired\t{{ vwh_module }}\tsaveroot"
     insertbefore: '^\s*auth\s'
     firstmatch: yes
-    state: present  
-- lineinfile: 
+    state: present
+- lineinfile:
     path: "{{ pam_file }}"
     regexp: '^\s*session.*{{vwh_module}}'
     line: "session required {{ vwh_module }} restorelogin restoreroot"
     insertafter: EOF
     state: present
-# cgroup provided by dovecot22-apnscp    
+# cgroup provided by dovecot22-apnscp
 - include_tasks: listfile.yml
   vars:
     file: "/etc/{{ pam_service }}.pamlist"

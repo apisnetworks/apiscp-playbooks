@@ -20,6 +20,7 @@
     - ['{{ apnscp_user_defaults }}', '/dev/null']
     - ['{{ apnscp_last_run_vars }}', '/dev/null']
   roles:
+    - common/acquire-lock
     - common/update-config
     - custom/premigrate
     - common/migrate

@@ -1,5 +1,5 @@
 ---
-- include_tasks: tasks/verify-and-install.yml
+- include_tasks: verify-and-install.yml
   vars:
     extension: "{{ itr_extension }}"
   with_items: "{{ pecl_extensions }}"

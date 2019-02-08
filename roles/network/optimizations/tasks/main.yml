@@ -4,10 +4,10 @@
   register: kernel_shell_output
   changed_when: false
 - name: Save TCP initial window size
-  lineinfile: 
+  lineinfile:
     path: /etc/rc.local
     line: '/sbin/ip route | while read p; do /sbin/ip route change $p initcwnd 10 initrwnd 10; done'
-    state: present 
+    state: present
   register: c
 # https://tools.ietf.org/html/rfc6928
 - name: Expand TCP initial window to 10

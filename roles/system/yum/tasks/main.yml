@@ -1,9 +1,9 @@
---- 
+---
 - name: Verify yum-cron installed
   yum: name=yum-cron state=present
 - name: Enable yum auto-updates
   include_tasks: enable-auto-updates.yml
 - name: "Add {{ apnscp_filesystem_template }} yum synchronization"
-  template: 
+  template:
     src: files/apnscp.action.j2
     dest: /etc/yum/post-actions/apnscp.action

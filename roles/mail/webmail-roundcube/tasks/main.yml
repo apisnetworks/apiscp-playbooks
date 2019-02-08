@@ -8,7 +8,7 @@
   stat: path="{{ roundcube_config_file }}"
   register: c
 - name: Copy Roundcube configuration template
-  template: 
+  template:
     src: "{{ roundcube_template_file }}"
     dest: "{{ roundcube_config_file }}"
   register: init
@@ -28,7 +28,7 @@
   when: import.changed
   # Todo, parse out YYYYMMDD from migration date
 - block:
-  - find: 
+  - find:
       path: "{{ roundcube_sql }}/mysql/"
     register: o
   - name: Run Roundcube database migrations
@@ -53,7 +53,7 @@
   debug: msg=todo
   when: not c.stat.exists
 - name: Change Roundcube permissions
-  file: 
+  file:
     path: "{{ item }}"
     owner: apache
     group: apache
@@ -61,8 +61,8 @@
   with_items:
     - "{{ roundcube_storage_path }}"
 - name: Remove setup files
-  file: 
+  file:
     path: "{{ roundcube_path }}/{{ item }}"
-    state: absent  
+    state: absent
   with_items:
     - SQL

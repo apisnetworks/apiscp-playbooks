@@ -1,7 +1,6 @@
 ---
 - name: Include Postfix database configuration
-  include_vars: 
-    file: "{{ playbook_dir }}/roles/mail/configure-postfix/defaults/main.yml"
-- name: Get Postfix 
+  include_vars: "{{playbook_dir}}/roles/mail/configure-postfix/defaults/main.yml"
+- name: Get Postfix
   set_fact:
     postfix_db: "{{ lookup('ini', 'dbname type=properties file=' + postfix_control_file) | regex_replace('^\"|\"$', '')}}"

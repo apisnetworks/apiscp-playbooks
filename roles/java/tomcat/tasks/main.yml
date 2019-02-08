@@ -3,7 +3,7 @@
   stat:
     path: /var/log/tomcat
   register: st
-- file: 
+- file:
     path: /var/log/tomcat
     state: directory
   when: not st.stat.exists

@@ -51,7 +51,7 @@ pasv_max_port: 40010
 # Enable outgoing filtering with rspamd - experimental
 rspamd_enabled: "{{ spamfilter == 'rspamd' }}"
 # Use SpamAssassin or rspamd for spam filtering. rspamd is experimental
-spamassassin_enabled: yes
+spamassassin_enabled: '{{ (spamfilter == "spamassassin") and (mail_enabled | bool) }}'
 # Enable installing MongoDB
 mongodb_enabled: false
 # apnscp is part of a multi-server environment
@@ -91,3 +91,6 @@ sshd_port: 22
 # Maximum number of retries for components that may fail due
 # to flaky network settings
 network_max_retries: 3
+# Ansible lockfile
+bootstrapper_lock_file: "{{ apnscp_root }}/storage/run/.ansible.lock"
+bootstrapper_lock_max_wait: 900

@@ -7,6 +7,34 @@
     - 'roles/common/vars/apnscp-internals.yml'
     - ['{{ apnscp_user_defaults }}', '/dev/null']
     - ['{{ apnscp_last_run_vars }}', '/dev/null']
-  tasks:
-    - include_role: name=network/hostname
-    - include_role: name=mail/configure-postfix
+  roles:
+    - apnscp/crons
+    - system/yum
+    - mysql/phpmyadmin
+    - pgsql/phppgadmin
+    - mail/webmail-squirrelmail
+    - mail/webmail-roundcube
+    - mail/webmail-horde
+    - software/nvm
+    - software/pyenv
+    - software/rbenv
+    - software/goenv
+    - software/passenger
+    - software/etckeeper
+    - software/tmpfiles
+    - software/watchdog
+    - system/logs
+    - clamav/setup
+    - apache/modsecurity
+    - system/misc-logrotate
+    - software/argos
+    # Hook: before creating account (AddDomain)
+    # Perform additional unit tests
+    - custom/apnscp-validate-account
+    # Last checkpoint, validate a mock account
+    - apnscp/assert-account-works
+    - apnscp/notify-installed
+    ####################################
+    # Add post-provisioning roles here #
+    ####################################
+    - custom/installed

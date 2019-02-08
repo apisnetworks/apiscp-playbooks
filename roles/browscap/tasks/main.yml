@@ -4,7 +4,7 @@
   register: browscap
 
 - name: Download browscap.ini
-  get_url: 
+  get_url:
     url: http://yum.apnscp.com/browscap.ini
     dest: /etc/browscap.ini
   when: not browscap.stat.exists

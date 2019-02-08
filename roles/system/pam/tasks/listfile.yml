@@ -10,13 +10,13 @@
     regexp: '^\s*auth\s+pam_listfile.so\s+'
     state: absent
   when: r.changed
-- lineinfile: 
+- lineinfile:
     path: "{{ pam_file }}"
     regexp: '^\s*auth.*pam_listfile.so'
     line: "auth\trequired\tpam_listfile.so onerr={{ onerr | default('fail') }} item=user sense={{ sense | default('allow') }} file={{ file }}"
     insertafter: '^\s*auth\s+\S+\s+{{vwh_module}}'
     state: present
 # Add global listfile to silence warnings in the global context
-- file: 
+- file:
     path: "{{ pam_file }}"
     state: file

@@ -1,6 +1,6 @@
 ---
 - name: Start apnscp
-  systemd: state=started name=apnscp enabled=yes 
+  systemd: state=started name=apnscp enabled=yes
 - command: "{{ apnscp_root }}/bin/cmd common_get_load"
   register: output
   changed_when: false

@@ -4,7 +4,7 @@
   set_fact: php_bins="{{ php_bins + [php_dbg]}}"
   when: system_php_version is version('7.0', '>=')
 - name: Link PHP binaries
-  include_tasks: roles/common/tasks/copy-link.yml
+  include_role: name="common" tasks_from="copy-link.yml"
   vars:
     src: "{{ item }}"
     path: "{{ apnscp_filesystem_template }}/{{service}}/{{item}}"

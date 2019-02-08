@@ -1,6 +1,6 @@
 ---
 - name: Verify tuned installed
-  yum: name=tuned state=installed 
+  yum: name=tuned state=installed
 - name: Set tuned profile to {{ tuned_profile }}
   copy:
     content: >

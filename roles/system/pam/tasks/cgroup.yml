@@ -1,8 +1,8 @@
 ---
 - name: "Add cgroup to {{ pam_file }}"
-  lineinfile: 
+  lineinfile:
     path: "{{ pam_file }}"
     regexp: '^\s*session.*pam_cgroup.so'
     line: "session\toptional\tpam_cgroup.so"
     insertafter: "{{ aftermodule | default('EOF') }}"
-    state: present  
+    state: present

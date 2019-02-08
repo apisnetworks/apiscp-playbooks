@@ -1,3 +1,5 @@
+- name: Install SpamAssassin RPM
+  yum: name=spamassassin state=installed
 - name: Replicate SpamAssassin to fst
   include_role:
     name: apnscp/initialize-filesystem-template
@@ -11,10 +13,6 @@
 - name: Compile SpamAssassin rules
   command: /usr/bin/sa-compile
   when: not s.stat.exists
-- name: Start SpamAssassin
-  systemd: name=spamassassin state=started enabled=yes
-- name: Enable sa-update timer
-  systemd: name=sa-update.timer enabled=yes
 - name: Enable allow-tell support in spamd
   lineinfile:
     path: /etc/sysconfig/spamassassin
@@ -23,3 +21,16 @@
     line: 'SPAMDOPTIONS=\g<quote>\g<options> -l\g<quote>'
     state: present
   when: spamassassin_enable_spamd_tell | bool
+  notify: Restart spamassassin
+- name: Relocate SpamAssassin to {{ apnscp_shared_root }}
+  include_tasks: "{{ playbook_dir }}/roles/apnscp/initialize-filesystem-template/tasks/relocate-shared-directory.yml"
+  vars:
+    service: siteinfo
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    handler: Restart spamassassin
+  with_items: "{{ spamassassin_relocation_paths }}"
+- name: Start SpamAssassin
+  systemd: name=spamassassin state=started enabled=yes
+- name: Enable sa-update timer
+  systemd: name=sa-update.timer enabled=yes

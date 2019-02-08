@@ -11,7 +11,7 @@
     src: templates/system.conf.j2
     dest: "{{ dropin_limits_path }}/10-apnscp-system.conf"
 - name: Set filesystem template limits
-  file: 
+  file:
     path: "{{ apnscp_filesystem_template }}/siteinfo/{{ system_limits_file }}"
     state: touch
   changed_when: false

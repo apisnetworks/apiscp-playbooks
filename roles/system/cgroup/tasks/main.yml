@@ -9,13 +9,13 @@
     src: "{{ apnscp_shared_root }}/cgroup"
     state: link
     force: yes
-- name: Copy cgroup structure 
-  synchronize: 
+- name: Copy cgroup structure
+  synchronize:
     src: "{{ cgroup_path }}/"
     archive: yes
     recursive: no
     links: yes
-    rsync_opts: 
+    rsync_opts:
       - '--keep-dirlinks'
       - '--dirs'
     dest: "{{ apnscp_shared_root }}/cgroup/"

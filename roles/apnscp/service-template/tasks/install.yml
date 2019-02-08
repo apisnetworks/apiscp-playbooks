@@ -2,7 +2,7 @@
 - fail: msg="Both content and template defined {{ template }} {{ content }}"
   when: template != omit and content != omit
 - name: "Verify {{ template_root + '/' + (service | default('siteinfo')) + '/' + path | dirname }} exists"
-  file: 
+  file:
     path: "{{ template_root + '/' + (service | default('siteinfo')) + '/' + path | dirname }}"
     state: directory
 - name: "Template into {{ service | default('siteinfo') }}/{{ path }}"

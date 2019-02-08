@@ -10,7 +10,7 @@
     label: "Copy {{ file.src }} -> {{ file.dest }}"
   register: svc
 - name: "{{ systemd.enabled | bool | default(true) | ternary('Enable','Disable') }} {{ name }} service"
-  systemd: 
+  systemd:
     daemon_reload: true
     state: "{{ systemd.state | default(omit) }}"
     enabled: "{{ systemd.enabled | default('yes') }}"
