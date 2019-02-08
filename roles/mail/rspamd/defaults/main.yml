@@ -315,8 +315,7 @@ config_files:
             LOCAL_FUZZY_WHITE:
               weight: -2.5
               description: Whitelisted fuzzy hash
-      group:
-        mx:
+        MX:
           symbol:
             MX_MISSING:
               score: 2
