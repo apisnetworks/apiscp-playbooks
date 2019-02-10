@@ -3,7 +3,7 @@
   set_fact: ssl_hostnames="['{{ssl_hostnames}}']"
   when: (ssl_hostnames | type_debug) != 'list'
 - name: "Enabling SSL certificate"
-  include_role: name=apnscp/bootstrap tasks_from="set-config.yml"
+  include_role: name=apnscp/boostrap tasks_from="set-config.yml"
   vars:
     section: letsencrypt
     option: "{{ item.option }}"

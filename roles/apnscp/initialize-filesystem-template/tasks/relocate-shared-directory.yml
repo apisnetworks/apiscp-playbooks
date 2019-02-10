@@ -38,5 +38,5 @@
       src: "{{ src }}"
     notify:
       - Reload filesystem template
-      - "{{ handler | default('noop') }}"
+      - "{{ handler | default(omit) }}"
   when: not r.stat.exists or not r.stat.islnk
