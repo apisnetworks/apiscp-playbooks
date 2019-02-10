@@ -36,5 +36,7 @@
       path: "{{ apnscp_filesystem_template }}/{{ service }}{{ dest }}"
       state: link
       src: "{{ src }}"
-    notify: Reload filesystem template
+    notify:
+      - Reload filesystem template
+      - "{{ handler | default('noop') }}"
   when: not r.stat.exists or not r.stat.islnk
