@@ -1,3 +1,4 @@
 ---
 mount_shm_noexec: true
-tmpfs_attrs: "mode=1777,strictatime,nosuid,nodev,noexec,noatime,nr_inodes=500000,size={{ [ansible_memtotal_mb *0.25, 1024] | min | int}}M"
+tmpfs_size: '{{ [ansible_memtotal_mb *0.25, 4096] | min | int}}'
+tmpfs_attrs: "mode=1777,strictatime,nosuid,nodev,noexec,noatime,nr_inodes=500000,size={{ tmpfs_size }}M"

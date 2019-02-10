@@ -25,7 +25,7 @@
     - rv.bootstrap.repo_key is defined
 
 - name: "Install packages"
-  yum: state="installed" name="{{ rv.rpms | join(',') }}" skip_broken=yes
+  yum: state="installed" name="{{ rv.rpms }}" skip_broken=yes
   # @XXX Broken in Ansible 2.5.1...
   register: c
   until: c is succeeded

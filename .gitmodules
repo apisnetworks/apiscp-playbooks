@@ -18,7 +18,7 @@
 	url = https://github.com/jtyr/ansible-config_encoder_filters.git
 [submodule "roles/software/pyenv-support"]
 	path = roles/software/pyenv-support
-	url = https://github.com/suzuki-shunsuke/ansible-pyenv.git
+	url = https://github.com/msaladna/ansible-pyenv.git
 [submodule "roles/software/rbenv-support"]
 	path = roles/software/rbenv-support
-	url = https://github.com/zzet/ansible-rbenv-role.git
+	url = https://github.com/msaladna/ansible-rbenv-role.git

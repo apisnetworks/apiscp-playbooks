@@ -25,6 +25,7 @@
   vars:
     package: "{{ item.package }}"
     service: "{{item.service}}"
+    notify: "{{ item.handler | default(omit) }}"
   with_items: "{{ apnscp_fst_packages }}"
   when: item.when | default(true) and __populate_filesystem_template
 - name: "Build synchronizer RPM index"
@@ -54,7 +55,7 @@
     state: link
     force: yes
 
-- include_tasks: "{{ role_path }}/../bootstrap/tasks/set-platform-version.yml"
+- include_role: name=apnscp/bootstrap tasks_from="set-platform-version.yml"
   vars:
     version: "{{apnscp_platform_version}}"
 - name: "Setup /dev on {{ apnscp_filesystem_template }}"

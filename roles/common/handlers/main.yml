@@ -39,6 +39,7 @@
   changed_when: false
   register: sa_present
   listen: Restart spamassassin
+
 - systemd: state=restarted name=spamassassin enabled=yes
   when: sa_present.rc == 0
   listen: Restart spamassassin

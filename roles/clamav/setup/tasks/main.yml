@@ -15,7 +15,7 @@
   when: not (clamav_enabled | bool)
 
 - name: "Set clamav installation state in apnscp"
-  include_tasks: "{{ role_path }}/../../apnscp/bootstrap/tasks/set-config.yml"
+  include_role: name="apnscp/bootstrap" tasks_from="set-config.yml"
   vars:
     section: antivirus
     option: "installed"
