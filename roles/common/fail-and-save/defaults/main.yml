@@ -1,12 +1,12 @@
 ---
 reboot: "{{ apnscp_bootstrapper_reboot | default(true) }}"
-apnscp_bootstrapper_resume_script: /root/resume_apnscp_setup.sh
+apnscp_bootstrapper_resume_script: "{{ lookup('env', 'BOOTSTRAP_SH') | default('/root/resume_apnscp_setup.sh', true) }}"
 msg: |
   Someone forgot to set "msg"!
 __reboot_template: |
   >>> IMPORTANT <<<
 
-  We're rebooting your server automatically to 
+  We're rebooting your server automatically to
   process some changes. Once it comes back up
   in a few minutes, bootstrapping will continue.
 
@@ -14,7 +14,7 @@ __reboot_template: |
   {%if lookup('env', 'ANSIBLE_LOG_PATH') %}
 
   You can view progress from the terminal at any time:
-  
+
   tail -f {{ lookup('env', 'ANSIBLE_LOG_PATH') }}
   {%endif%}
 
@@ -36,9 +36,10 @@ __failure_template: |
   OR RUN THE FOLLOWING FROM THE SHELL:
 
   {{ apnscp_bootstrapper_resume_script }}
-  
+
   >>> IMPORTANT <<<
 apnscp_bootstrapper_resume_cmd: |
-  export ANSIBLE_LOG_PATH="{{ lookup('env', 'ANSIBLE_LOG_PATH')| default('/dev/null', true) }}"
+  export ANSIBLE_LOG_PATH="{{ lookup('env', 'ANSIBLE_LOG_PATH')| default('/dev/null', true) }}" \
+      ANSIBLE_STDOUT_CALLBACK="{{ lookup('env', 'ANSIBLE_STDOUT_CALLBACK') | default('default', true) }}"
   cd {{ ansible_env['PWD'] }} && {{ argv | join(" ") }} && \
-  rm -f {{ apnscp_bootstrapper_resume_script }}
+      rm -f {{ apnscp_bootstrapper_resume_script }}
