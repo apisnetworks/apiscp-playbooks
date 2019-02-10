@@ -30,6 +30,15 @@
   become_user: postgres
   register: user
 
+- name: Merge custom config
+  block:
+  - include_tasks: "{{ playbook_dir }}/roles/common/tasks/implicitly-import-overrides.yml"
+    vars:
+      base: "{{ postfix_config }}"
+      varname: postfix_config
+      prefix: postfix
+      name: ""
+
 - name: Copy Postfix configuration templates
   template:
     src: "templates/{{ item }}"
@@ -40,8 +49,9 @@
   with_items: "{{ template_files }}"
   notify: Restart postfix
 - include_tasks: set-configuration.yml
-  with_dict: "{{ config }}"
+  with_dict: "{{ postfix_config }}"
   vars:
+    config_file: "{{ postfix_config_file }}"
     notify: Restart postfix
   loop_control:
     label: "Set {{ item.key }} => {{ item.value }}"
@@ -91,7 +101,7 @@
     key: "key_format"
   with_items:
     - "{{ postfix_memcache_maps }}"
-  when: (postfix_memcache_server | default('', true) | length > 0)
+  when: ((postfix_memcache_server | default('', true)) | length > 0)
 
 - name: Set postscreen/address verify caches
   include_tasks: set-configuration.yml
@@ -99,7 +109,7 @@
     config_file: "{{ postfix_conf_dir }}/{{ subitem.0.config }}"
     item: "{{ lookup('dict', subitem.1) }}"
     notify: Restart postfix
-  when: (postfix_memcache_server | default('', true) | length > 0)
+  when: ((postfix_memcache_server | default('', true)) | length > 0)
   loop_control:
     label: "Setting {{ lookup('dict', subitem.1).key }} in {{ subitem.0.config }}"
     loop_var: subitem

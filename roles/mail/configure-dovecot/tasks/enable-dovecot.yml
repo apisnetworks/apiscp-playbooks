@@ -28,13 +28,11 @@
 - include_vars:
     file: ../spamassassin/defaults/main.yml
   when: mail_spamassassin_marker is not defined
-- name: Install Dovecot RPM
-  yum: name=dovecot,dovecot-pigeonhole state=installed
 - name: Verify Dovecot starts on boot
   systemd:
     name: dovecot
-    enabled: "{{ mail_enabled | bool | ternary('yes', 'no') }}"
-    state: "{{ mail_enabled | bool | ternary('started', 'stopped') }}"
+    enabled: yes
+    state: started
   failed_when: false
 - name: Remove conflicting Dovecot configuration
   file:

@@ -4,5 +4,5 @@
     section: null
     option: "{{ item.key }}"
     value: "{{ item.value }}"
-    state: "{{ item.value | default(false, True) | ternary('present', 'absent') }}"
+    state: "{{ ((item.value | default(None, true)) != None) | ternary('present', 'absent') }}"
   notify: "{{ notify | default(omit) }}"

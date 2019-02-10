@@ -15,6 +15,13 @@
   until: result is succeeded
   retries: "{{ network_max_retries }}"
 
+- name: "Add {{ rspamd_user }} user to mail group"
+  user:
+    append: yes
+    groups: mail
+    name: "{{ rspamd_user }}"
+  notify: Restart rspamd
+
 - name: Create Redis server
   include_tasks: setup-redis.yml
   when: rspamd_redis_service

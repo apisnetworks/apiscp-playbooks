@@ -1,0 +1,12 @@
+---
+- name: "{{ mode | default('add', true) | capitalize }} direct firewall rule {{ rule }}"
+  command: >
+      /bin/firewall-cmd {{ permanent|default(default_permanent, true)| bool | default(default_permanent) | ternary("--permanent", "") }}
+      --direct --{{ mode | default('add', true) }}-rule {{ net | default(default_net, true) }}
+      {{ table | default(default_table, true) }}
+      {{ chain | default(default_chain, true) }}
+      {{ priority | default("0", true) }}
+      {{ rule }}
+  register: o
+  changed_when: "o.stdout is search('success') and not o.stderr is search('Warning')"
+  notify: "{{ notify | default('Reload firewalld', true) }}"

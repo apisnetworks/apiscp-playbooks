@@ -3,10 +3,10 @@ network_setup_firewall_marker: true
 # From apnscp-vars.yml
 user_daemons: true
 panel_headless: false
-default_chain: filter
+default_table: filter
+default_chain: OUTPUT
 default_zone: public
 default_immediate: false
 default_permanent: true
 default_net: ipv4
 mysql_conn_limit: 20/s
-sshd_port: 22

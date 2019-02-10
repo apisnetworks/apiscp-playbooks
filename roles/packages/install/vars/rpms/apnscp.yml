@@ -16,8 +16,6 @@ rpms:
   - courier-authlib-pgsql
   - courier-unicode
   - curl
-  - dovecot
-  - dovecot22-apnscp
   - httpd
   - httpd-tools
   - httpd-devel

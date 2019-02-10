@@ -1,10 +1,11 @@
 ---
 # Bug workaround, https://github.com/ansible/ansible/issues/30599
 - name: "Check if configuration {{ path }} needs creation"
-  stat: path="{{postfix_conf_dir}}/{{ item.config }}"
+  stat: path="{{ path }}"
   register: s
 - name: "Make a sacrifice to ini_file module - {{ path }} empty"
   copy:
     dest: "{{ path }}"
     content: "{{ key }}="
+
   when: not s.stat.exists or s.stat.size == 0

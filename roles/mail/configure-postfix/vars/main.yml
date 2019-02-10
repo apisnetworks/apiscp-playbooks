@@ -1,6 +1,6 @@
 ---
-config_file: /etc/postfix/main.cf
-config:
+postfix_config_file: /etc/postfix/main.cf
+postfix_config:
   smtpd_tls_cert_file: /etc/ssl/certs/server.pem
   virtual_mailbox_domains: proxy:pgsql:/etc/postfix/domains.cf
   alias_maps: "proxy:hash:{{aliases_file}}"

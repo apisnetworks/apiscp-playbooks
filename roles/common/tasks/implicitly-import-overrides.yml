@@ -10,4 +10,6 @@
 
 ---
 - set_fact:
-    "{{ varname }}": "{{ base | combine(lookup('vars', (prefix | bool | ternary(prefix + '_', '')) + name + '_custom_config', default={}), recursive=True) }}"
+    "{{ varname }}": >
+      {{ base | combine(lookup('vars', ((prefix | default('', true) | length > 0) | ternary(prefix + '_', '')) +
+      ((name | default('', true) | length > 0) | ternary(name + '_', '')) + 'custom_config', default={}), recursive=True) }}

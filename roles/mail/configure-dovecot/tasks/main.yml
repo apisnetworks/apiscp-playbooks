@@ -1,7 +1,10 @@
 ---
+- name: "{{ mail_enabled | ternary('Install','Remove') }} Dovecot RPMs"
+  yum:
+    name:
+      - dovecot
+      - dovecot-pigeonhole
+      - dovecot22-apnscp
+    state: '{{ mail_enabled | ternary("installed","absent") }}'
 - include_tasks: enable-dovecot.yml
   when: mail_enabled
-- block:
-  - name: Remove Dovecot package
-    yum: name=dovecot state=absent
-  when: not mail_enabled

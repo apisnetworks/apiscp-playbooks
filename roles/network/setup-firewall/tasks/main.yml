@@ -38,20 +38,20 @@
     loop_var: ipset_name
     label: "Create ipset {{ ipset_name }}"
 - name: "Apply direct firewalld rules"
-  command: >
-    /bin/firewall-cmd {{ item.permanent|default(default_permanent)| bool | default(default_permanent) | ternary("--permanent", "") }}
-    --direct --add-rule {{ item.net | default(default_net) }}
-    {{ item.table | default(default_chain) }}
-    {{ item.chain | default("OUTPUT") }}
-    {{ item.priority | default("0") }}
-    {{ item.rule }}
-  register: o
-  changed_when: "o.stdout is search('success') and not o.stderr is search('Warning')"
+  include_tasks: "set-direct-rule.yml"
+  vars:
+    permanent: "{{ item.permanent | default(None) }}"
+    mode: "{{ item.mode | default('add') }}"
+    net: "{{ item.net | default(default_net) }} "
+    table: "{{ item.table | default(default_table) }}"
+    chain: "{{ item.chain | default(default_chain) }}"
+    priority: "{{ item.priority | default('0') }}"
+    rule: "{{ item.rule }}"
+    notify:
+      - Reload firewalld
+      - Reload fail2ban
   with_items: "{{ direct_rules }}"
   loop_control:
-    label: "Setting {{ item.rule }}"
-  notify:
-    - Reload firewalld
-    - Reload fail2ban
+    label: "Setting {{ item.net | default(default_net, true) }} {{ item.rule }}"
 # Defer reloading fail2ban until after fail2ban/configure-jails
 # Missing fail2ban.log will cause reload to fail on first run

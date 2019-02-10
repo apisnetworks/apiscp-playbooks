@@ -14,6 +14,7 @@ rspamd_runtime_dir: "{{ rspamd_lib_dir }}"
 rspamd_config_dir: /etc/rspamd
 rspamd_local_config_dir: "{{ rspamd_config_dir }}/local.d"
 rspamd_user: _rspamd
+rspamd_group: "{{ rspamd_user }}"
 
 ###################
 # Workers
@@ -181,7 +182,7 @@ maildrop_files:
 #####################
 # Postfix integration
 #####################
-postfix_config:
+rspamd_postfix_config:
   # All inbound and forwarded mail
   smtpd_milters: "{{ rspamd_enabled | ternary('inet:' + rspamd_proxy_host + ':' + rspamd_proxy_port|string, None) }}"
   milter_default_action: accept

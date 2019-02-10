@@ -103,6 +103,7 @@
     src: "{{ ansible_mounts | json_query('[?mount==`/`] | [0].device') }}"
     dest: "{{ apnscp_filesystem_template }}/siteinfo/dev"
     archive: yes
+    times: false
 - name: Verify /etc/mtab in FST
   stat: path="{{ apnscp_filesystem_template }}/siteinfo/etc/mtab"
   register: st
