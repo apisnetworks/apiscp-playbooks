@@ -1,4 +1,11 @@
 ---
+######################################
+# Custom Postfix configuration format:
+# postfix_custom_config:
+#   vmaildrop_destination_rate_delay: 30
+#   maximal_backoff_time: 16h
+######################################
+
 mail_configure_postfix_marker: true
 postfix_conf_dir: /etc/postfix
 ######################################
