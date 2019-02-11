@@ -1,5 +1,6 @@
 ---
 mail_configure_postfix_marker: true
+postfix_conf_dir: /etc/postfix
 ######################################
 # Custom Postfix configuration format:
 # postfix_custom_config:
@@ -17,6 +18,9 @@ postfix_memcache_server:
 # omitting "[]" implies an MX check will be done to determine the
 # appropriate hostname
 #
+# This is applied unconditionally to all mail leaving. Use a transport map
+# for per-domain filtering
+#
 postfix_smarthost_enabled: false
 postfix_smarthost_credentials:
   host:
@@ -25,13 +29,15 @@ postfix_smarthost_credentials:
 postfix_smarthost_auth_file: "{{ postfix_conf_dir }}/smarthost-auth"
 
 aliases_file: /etc/aliases
-postfix_conf_dir: /etc/postfix
 postfix_data_dir: /var/lib/postfix
 # apnscp-specific lookup file for database configuration
 postfix_control_file: "{{ postfix_conf_dir }}/mailboxes.cf"
 # Allow unauthenticated relaying from 127.0.0.1
 # See also StealCat malware
 postfix_relay_mynetworks: false
+# Add SASL login name to Received: header.
+# Note this is shared with the entire world.
+postfix_add_sasl_auth_header: false
 
 postfix_sysuser: postfix
 postfix_sysgroup: postfix

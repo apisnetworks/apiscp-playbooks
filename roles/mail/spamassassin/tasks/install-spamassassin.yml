@@ -34,6 +34,7 @@
   with_items: "{{ spamassassin_relocation_paths }}"
 
 # Prevent multiple restarts
+- meta: flush_handlers
 - name: Start SpamAssassin
   systemd: name=spamassassin state=started enabled=yes
 - name: Enable sa-update timer

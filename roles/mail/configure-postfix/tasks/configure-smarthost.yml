@@ -1,0 +1,24 @@
+---
+- name: "Check for existence of {{ postfix_smarthost_auth_file }}"
+  stat: path="{{ postfix_smarthost_auth_file }}"
+  register: o
+- name: "Create {{ postfix_smarthost_auth_file }}"
+  file: path="{{ postfix_smarthost_auth_file }}" state=touch
+  when: not o.stat.exists
+- name: "Add credentials + assert permissions in {{ postfix_smarthost_auth_file }}"
+  lineinfile:
+    mode: 0600
+    owner: root
+    group: root
+    path: "{{ postfix_smarthost_auth_file }}"
+    # @todo return to matching when not sick
+    # need atomic grouping to force match username present but password absent
+    # if password specified; current regex misses this
+    regexp: >
+      ^\s*{{ credentials.host | regex_escape }}\s+
+      (?!{{ credentials.username | regex_escape}}(?:\s+
+      {{ credentials.password | regex_escape}}|)\s*$).*$
+    line: >
+      {{ credentials.host }}  {{ credentials.username }}  {{ credentials.password }}
+  #no_log: true
+  notify: Restart postfix

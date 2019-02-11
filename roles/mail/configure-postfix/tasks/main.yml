@@ -1,4 +1,14 @@
 ---
+- name: Verify host is set if smarthost enabled
+  fail: msg="postfix_smarthost_enabled is true and postfix_smarthost_credentials.host is not set"
+  when:
+    - (postfix_smarthost_enabled | bool)
+    - postfix_smarthost_credentials.host | trim | length < 1
+- name: Configure smarthost support
+  include_tasks: configure-smarthost.yml
+  vars:
+    credentials: "{{ postfix_smarthost_credentials }}"
+  when: postfix_smarthost_enabled | bool
 - fail:
     msg: >-
       IMPORTANT: Data center mode enabled but address verify map or

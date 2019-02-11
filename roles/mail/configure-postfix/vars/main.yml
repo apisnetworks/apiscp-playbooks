@@ -18,7 +18,7 @@ postfix_config:
   smtpd_sasl_auth_enable: "yes"
   smtpd_sasl_type: dovecot
   mail_spool_directory: /var/spool/mail
-  smtpd_sasl_path: private/auth
+  smtpd_sasl_path: "{{ mail_enabled | ternary('private/auth', None) }}"
   # plussed address notation foo+bar@domain.com
   recipient_delimiter: +
   transport_maps: hash:/etc/postfix/transport
@@ -95,11 +95,16 @@ postfix_config:
   address_verify_cache_cleanup_interval: 0
   postscreen_dnsbl_whitelist_threshold: -1
   compatibility_level: 2
-  smtp_tls_security_level: may
+  smtp_tls_security_level: "{{ postfix_smarthost_enabled | ternary('encrypt', 'may') }}"
   sender_dependent_default_transport_maps: hash:/etc/postfix/sender_transport
   inet_interfaces: "{{ postfix_inet_interfaces | default('all') }}"
   mydomain: "{{ postfix_mydomain }}"
 
+  # Smarthost
+  smtpd_sasl_authenticated_header: "{{ postfix_add_sasl_auth_header | ternary('yes', 'no')}}"
+  smtp_sasl_tls_security_options: "{{ postfix_smarthost_enabled | ternary('noanonymous', None) }}"
+  smtp_sasl_password_maps: "{{ postfix_smarthost_enabled | ternary('hash:' + postfix_smarthost_auth_file, None) }}"
+  relayhost: "{{ postfix_smarthost_enabled | ternary(postfix_smarthost_credentials.host, None) }}"
   # PostSRS
   sender_canonical_maps: "{{ postsrsd_enabled | ternary('tcp:localhost:' + postsrs_sender_map_port|string, None) }}"
   sender_canonical_classes: "{{ postsrsd_enabled | ternary('envelope_sender', None) }}"

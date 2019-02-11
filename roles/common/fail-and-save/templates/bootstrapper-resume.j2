@@ -6,7 +6,7 @@ ConditionPathExists={{ apnscp_bootstrapper_resume_script }}
 [Service]
 Type=oneshot
 # Add sudo to populate $HOME, bash for $SHELL
-ExecStart=/bin/sudo -u root /bin/bash -c "{{ apnscp_bootstrapper_resume_script }}"
+ExecStart=/bin/sudo -u root /bin/bash -c "{{ apnscp_bootstrapper_resume_script | quote }}"
 ExecStartPost=/bin/systemctl disable bootstrapper-resume
 
 [Install]
