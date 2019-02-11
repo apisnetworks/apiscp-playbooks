@@ -102,6 +102,6 @@ postfix_config:
 
   # PostSRS
   sender_canonical_maps: "{{ postsrsd_enabled | ternary('tcp:localhost:' + postsrs_sender_map_port|string, None) }}"
-  sender_canonical_classes: "{{ postsrsd_enabled | ternary('envelope_sender', None) }} "
+  sender_canonical_classes: "{{ postsrsd_enabled | ternary('envelope_sender', None) }}"
   recipient_canonical_maps: "{{ postsrsd_enabled | ternary('tcp:localhost:' + postsrs_recipient_map_port|string, None) }}"
   recipient_canonical_classes: "{{ postsrsd_enabled | ternary('envelope_recipient,header_recipient', None) }}"
