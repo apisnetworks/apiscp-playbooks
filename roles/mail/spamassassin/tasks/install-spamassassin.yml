@@ -25,12 +25,12 @@
 
   # @XXX include_role + passing "handler" will result in infinite recursion
 - name: Relocate SpamAssassin to {{ apnscp_shared_root }}
-  include_tasks: "{{ playbook_dir }}/roles/apnscp/initialize-filesystem-template/tasks/relocate-shared-directory.yml"
+  include_role: name=apnscp/initialize-filesystem-template tasks_from="relocate-shared-directory.yml"
   vars:
     service: "{{ item.service }}"
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    handler: "{{ item.handler }}"
+    notify: Restart spamassassin
   with_items: "{{ spamassassin_relocation_paths }}"
 
 # Prevent multiple restarts

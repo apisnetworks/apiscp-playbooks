@@ -21,7 +21,7 @@ relocated_paths:
       service: siteinfo,
       src: "{{ apnscp_shared_root }}/perl/lib64",
       dest: /usr/lib64/perl5,
-      handler: Restart spamassassin
+      notify: Restart spamassassin
     }
   - {
       service: siteinfo,
@@ -32,7 +32,7 @@ relocated_paths:
       service: siteinfo,
       src: "{{ apnscp_shared_root }}/postfix",
       dest: /var/spool/postfix,
-      handler: Restart postfix
+      notify: Restart postfix
     }
   - {
       service: siteinfo,
