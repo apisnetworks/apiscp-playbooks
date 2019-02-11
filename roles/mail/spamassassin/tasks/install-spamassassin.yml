@@ -23,15 +23,16 @@
   when: spamassassin_enable_spamd_tell | bool
   notify: Restart spamassassin
 
+  # @XXX include_role + passing "handler" will result in infinite recursion
 - name: Relocate SpamAssassin to {{ apnscp_shared_root }}
-  include_role: name="apnscp/initialize-filesystem-template" tasks_from="relocate-shared-directory.yml"
+  include_tasks: "{{ playbook_dir }}/roles/apnscp/initialize-filesystem-template/tasks/relocate-shared-directory.yml"
   vars:
     service: "{{ item.service }}"
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
     handler: "{{ item.handler }}"
   with_items: "{{ spamassassin_relocation_paths }}"
-- meta: flush_handlers
+
 # Prevent multiple restarts
 - name: Start SpamAssassin
   systemd: name=spamassassin state=started enabled=yes

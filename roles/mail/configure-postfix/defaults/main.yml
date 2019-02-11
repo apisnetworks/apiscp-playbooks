@@ -1,15 +1,28 @@
 ---
+mail_configure_postfix_marker: true
 ######################################
 # Custom Postfix configuration format:
 # postfix_custom_config:
 #   vmaildrop_destination_rate_delay: 30
 #   maximal_backoff_time: 16h
 ######################################
-
-mail_configure_postfix_marker: true
 # Configure in data_center_mode to enable a centralized memcache server
 # Server formatted as ip.addr:port, [ip6::addr]:port, or /path/to/unix/domain.sock
 postfix_memcache_server:
+#
+# Smarthost support- relay all outbound mail through
+# this nexthop. May be GMail, Mailchannels, etc
+#
+# host MUST be set and typically follows the form '[some.host.name]'
+# omitting "[]" implies an MX check will be done to determine the
+# appropriate hostname
+#
+postfix_smarthost_enabled: false
+postfix_smarthost_credentials:
+  host:
+  username:
+  password:
+postfix_smarthost_auth_file: "{{ postfix_conf_dir }}/smarthost-auth"
 
 aliases_file: /etc/aliases
 postfix_conf_dir: /etc/postfix
