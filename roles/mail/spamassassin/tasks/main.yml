@@ -1,4 +1,5 @@
   # SA only performs after-queue filtering
+- meta: flush_handlers
 - name: Install SpamAssassin
   include_tasks: install-spamassassin.yml
   when: (spamassassin_enabled | bool) and (mail_enabled | bool)
