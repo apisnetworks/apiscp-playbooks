@@ -25,7 +25,7 @@
   when: -1 == o.stdout.find('rake')
   # Use system Ruby
 - name: Build Passenger
-  command: /bin/bash -ic 'rbenv exec rake -j"{{ compile_max_jobs }}" apache2'
+  command: /bin/bash -ic 'rbenv exec rake -j"{{ (ansible_processor_vcpus + 1) | int }}" apache2'
   args:
     chdir: "{{ passenger_home }}"
   environment:
