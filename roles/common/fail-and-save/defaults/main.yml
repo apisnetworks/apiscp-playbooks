@@ -39,7 +39,7 @@ __failure_template: |
 
   >>> IMPORTANT <<<
 apnscp_bootstrapper_resume_cmd: |
-  export ANSIBLE_LOG_PATH="{{ lookup('env', 'ANSIBLE_LOG_PATH')| default('/dev/null', true) }}" \
-      ANSIBLE_STDOUT_CALLBACK="{{ lookup('env', 'ANSIBLE_STDOUT_CALLBACK') | default('default', true) }}"
-  cd {{ ansible_env['PWD'] }} && {{ argv | join(" ") }} && \
-      rm -f {{ apnscp_bootstrapper_resume_script }}
+  export ANSIBLE_LOG_PATH="{{ lookup('env', 'ANSIBLE_LOG_PATH')| default('/dev/null', true) | quote }}" \
+      ANSIBLE_STDOUT_CALLBACK="{{ lookup('env', 'ANSIBLE_STDOUT_CALLBACK') | default('default', true) | quote }}"
+  cd {{ ansible_env['PWD'] | quote }} && {{ argv | join(" ") }} && \
+      rm -f {{ apnscp_bootstrapper_resume_script | quote }}

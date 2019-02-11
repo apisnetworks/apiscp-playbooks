@@ -1,5 +1,6 @@
 ---
 mail_configure_postfix_marker: true
+postfix_conf_dir: /etc/postfix
 ######################################
 # Custom Postfix configuration format:
 # postfix_custom_config:
@@ -16,6 +17,9 @@ postfix_memcache_server:
 # host MUST be set and typically follows the form '[some.host.name]'
 # omitting "[]" implies an MX check will be done to determine the
 # appropriate hostname
+#
+# This is applied unconditionally to all mail leaving. Use a transport map
+# for per-domain filtering
 #
 postfix_smarthost_enabled: false
 postfix_smarthost_credentials:

@@ -32,7 +32,8 @@
 - name: Reload fail2ban
   systemd: state=reloaded name=fail2ban enabled=yes
 
-- command: rpm -q spamassassin
+- name: Check for spamassassin presence
+  command: rpm -q spamassassin
   args:
     warn: false
   failed_when: false
@@ -40,11 +41,13 @@
   register: sa_present
   listen: Restart spamassassin
 
-- systemd: state=restarted name=spamassassin enabled=yes
+- name: Restart spamassassin
+  systemd: state=restarted name=spamassassin enabled=yes
   when: sa_present.rc == 0
   listen: Restart spamassassin
 
-- command: rpm -q rspamd
+- name: Check for rspamd existence
+  command: rpm -q rspamd
   args:
     warn: false
   changed_when: false
@@ -52,7 +55,8 @@
   register: rspamd_present
   listen: Restart rspamd
 
-- systemd: state=restarted name=rspamd enabled=yes
+- name: Restart rspamd
+  systemd: state=restarted name=rspamd enabled=yes
   when: rspamd_present.rc == 0
   listen: Restart rspamd
 
