@@ -15,8 +15,9 @@ postfix_config:
   disable_vrfy_command: "yes"
   virtual_minimum_uid: 500
   virtual_mailbox_maps: proxy:pgsql:/etc/postfix/mailboxes.cf
-  smtpd_sasl_auth_enable: "yes"
-  smtpd_sasl_type: dovecot
+  smtp_sasl_auth_enable: "{{ postfix_smarthost_enabled | ternary('yes', 'no') }}"
+  smtpd_sasl_auth_enable: "{{ mail_enabled | ternary('yes', 'no') }}"
+  smtpd_sasl_type: "{{ mail_enabled | ternary('dovecot', 'cyrus') }}"
   mail_spool_directory: /var/spool/mail
   smtpd_sasl_path: "{{ mail_enabled | ternary('private/auth', None) }}"
   # plussed address notation foo+bar@domain.com

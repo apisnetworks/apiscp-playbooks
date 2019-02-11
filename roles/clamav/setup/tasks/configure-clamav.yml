@@ -17,6 +17,7 @@
     # and trigger a changed state on each iteration
     clamav_user: "{{ _clamav_update_user }}"
     clamav_group: clamscan
+    clamav_network_max_retries: "{{ network_max_retries }}"
 - name: Link /etc/clamd.d/clamd.conf to /etc/clamd.conf
   file:
     path: /etc/clamd.conf
