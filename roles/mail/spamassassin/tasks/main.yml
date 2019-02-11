@@ -5,6 +5,12 @@
 - block:
     - name: Remove SpamAssassin
       yum: name=spamassassin state=absent
+      register: r
+    - name: Remove SpamAssassin from FST
+      include_role: name=apnscp/initialize-filesystem-template tasks_from="remove-package.yml"
+      vars:
+        package: spamassassin
+      when: r.changed
     - name: Unlink SpamAssassin relocations
       file: path="{{ item.src }}" state=absent
       with_items: "{{ spamassassin_relocation_paths }}"
