@@ -30,7 +30,7 @@
     service: "{{ item.service }}"
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    #notify: Restart spamassassin
+    notify: Restart spamassassin
   with_items: "{{ spamassassin_relocation_paths }}"
 
 - name: Enable sa-update timer
