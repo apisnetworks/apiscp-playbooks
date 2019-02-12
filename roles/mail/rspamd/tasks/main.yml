@@ -31,7 +31,7 @@
     name: apnscp/initialize-filesystem-template
     tasks_from: "remove-package.yml"
   vars:
-    package: "{{ item.package }}"
+    package: "{{ item }}"
   with_items: "{{ rspamd_packages.packages }}"
   when: not rspamd_enabled
 

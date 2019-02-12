@@ -21,9 +21,9 @@
     line: 'SPAMDOPTIONS=\g<quote>\g<options> -l\g<quote>'
     state: present
   when: spamassassin_enable_spamd_tell | bool
-  notify: Restart spamassassin
+  #notify: Restart spamassassin
 
-  # @XXX include_role + passing "handler" will result in infinite recursion
+  # Handler gets called 5+ times? WTF.
 - name: Relocate SpamAssassin to {{ apnscp_shared_root }}
   include_role: name=apnscp/initialize-filesystem-template tasks_from="relocate-shared-directory.yml"
   vars:
@@ -35,6 +35,8 @@
 
 - name: Enable sa-update timer
   systemd: name=sa-update.timer enabled=yes
+- name: Ensure SpamAssassin is running
+  systemd: name=spamassassin state=started enabled=yes
 
 # Prevent multiple restarts
 - meta: flush_handlers

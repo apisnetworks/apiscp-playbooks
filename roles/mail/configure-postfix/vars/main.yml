@@ -106,6 +106,7 @@ postfix_config:
   smtp_sasl_tls_security_options: "{{ postfix_smarthost_enabled | ternary('noanonymous', None) }}"
   smtp_sasl_password_maps: "{{ postfix_smarthost_enabled | ternary('hash:' + postfix_smarthost_auth_file, None) }}"
   relayhost: "{{ postfix_smarthost_enabled | ternary(postfix_smarthost_credentials.host, None) }}"
+
   # PostSRS
   sender_canonical_maps: "{{ postsrsd_enabled | ternary('tcp:localhost:' + postsrs_sender_map_port|string, None) }}"
   sender_canonical_classes: "{{ postsrsd_enabled | ternary('envelope_sender', None) }}"
