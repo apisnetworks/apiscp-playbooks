@@ -111,3 +111,7 @@ postfix_config:
   sender_canonical_classes: "{{ postsrsd_enabled | ternary('envelope_sender', None) }}"
   recipient_canonical_maps: "{{ postsrsd_enabled | ternary('tcp:localhost:' + postsrs_recipient_map_port|string, None) }}"
   recipient_canonical_classes: "{{ postsrsd_enabled | ternary('envelope_recipient,header_recipient', None) }}"
+
+  # UTF8 BOM
+  strict_rfc821_envelopes: "{{ postfix_strict_envelope | ternary('yes', 'no')}}"
+  strict_smtputf8: "{{ postfix_strict_envelope | ternary('yes', 'no')}}"

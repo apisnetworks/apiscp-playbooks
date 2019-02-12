@@ -39,6 +39,10 @@ postfix_relay_mynetworks: false
 # Note this is shared with the entire world.
 postfix_add_sasl_auth_header: false
 
+# Require RFC compliant mailers. Reject UTF-8 without SMTPUTF8 command
+# May break things. Use at your own peril.
+postfix_strict_envelope: false
+
 postfix_sysuser: postfix
 postfix_sysgroup: postfix
 postfix_user: postfix
