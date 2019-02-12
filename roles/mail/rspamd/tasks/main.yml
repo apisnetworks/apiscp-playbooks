@@ -22,9 +22,8 @@
     name: apnscp/initialize-filesystem-template
     tasks_from: "install-package.yml"
   vars:
-    package: "{{ item.package }}"
-    service: "{{ item.service }}"
-  with_items: "{{ rspamd_packages }}"
+    package: "{{ rspamd_packages.packages | join(' ') }}"
+    service: "{{ rspamd_packages.service }}"
   when: rspamd_enabled
 
 - name: Remove rspamd package
@@ -33,7 +32,7 @@
     tasks_from: "remove-package.yml"
   vars:
     package: "{{ item.package }}"
-  with_items: "{{ rspamd_packages }}"
+  with_items: "{{ rspamd_packages.packages }}"
   when: not rspamd_enabled
 
 - name: "{{ rspamd_enabled | ternary('Add', 'Remove') }} dpt:25 access to {{ rspamd_group }}"

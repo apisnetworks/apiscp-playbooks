@@ -20,14 +20,26 @@
   when: >
     populate_filesystem_template == "auto" and not fst_pure.stat.exists or
     (populate_filesystem_template | bool) and populate_filesystem_template != "auto"
+
 - include_role: role="packages/install" tasks_from="configure-default-vars.yml"
-- include_tasks: install-package.yml
-  vars:
-    package: "{{ item.package }}"
-    service: "{{item.service}}"
-    notify: "{{ item.handler | default(omit) }}"
-  with_items: "{{ apnscp_fst_packages }}"
+- block:
+  - name: Install unconditional packages
+    include_tasks: install-package.yml
+    vars:
+      service: "{{ item.service }}"
+      package: "{{ lookup('items', item.packages) | rejectattr('when', 'defined') | map(attribute='name') | list | join(' ') }}"
+      # Handler could make this tricky...
+    with_items: "{{ apnscp_fst_packages }}"
+
+  - name: Install unconditional packages
+    include_tasks: "install-conditional-packages.yml"
+    vars:
+      service: "{{ item.service }}"
+      packages: "{{ item.packages }}"
+    with_items: "{{ apnscp_fst_packages }}"
+
   when: item.when | default(true) and __populate_filesystem_template
+
 - name: "Build synchronizer RPM index"
   command: "{{ synchronizer }} generate"
   when: __populate_filesystem_template

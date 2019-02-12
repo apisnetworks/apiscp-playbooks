@@ -1,0 +1,16 @@
+# Expects: packages, service
+---
+- name: Filter conditional packages
+  set_fact:
+    conditional_packages: "{{ lookup('items', packages) | selectattr('when', 'defined') | list }}"
+    __service: "{{ service }}"
+- name: Install conditional packages
+  include_tasks: install-package.yml
+  vars:
+    service: "{{ __service }}"
+    package: "{{ pkg.name }}"
+  when: pkg.when
+  with_items: "{{ conditional_packages }}"
+  loop_control:
+    loop_var: pkg
+    label: "Testing {{ pkg.name }} condition {{ pkg.when }}"

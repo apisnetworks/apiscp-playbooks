@@ -31,7 +31,7 @@
         PHPIZE: "{{ phpize }}"
         PHPCONFIG: "{{ phpconfig }}"
         XTRACFG: "{{ extra_flags }}"
-        MAKEFLAGS: "-j{{ ansible_processor_vcpus }}"
+        MAKEFLAGS: "-j{{ compile_max_jobs }}"
       notify: "{{ notify | default('Restart apache') }}"
       when: not stres.stat.exists or force is defined and force
       register: module_install

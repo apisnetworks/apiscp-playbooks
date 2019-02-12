@@ -11,6 +11,6 @@ RUBY_CONFIG_OPTS="--prefix=/usr/local/"
 JAVA_OPTS="-Xmx256M"
 ANT_OPTS=$JAVA_OPTS
 GS_DEVICE="display"
-MAKEFLAGS='-j {{ ansible_processor_vcpus | int }}'
+MAKEFLAGS='-j{{ compile_max_jobs }}'
 export HOSTNAME MAKEFLAGS
 [[ -f /proc/self/oom_score_adj ]] && echo 600 > /proc/self/oom_score_adj

@@ -1,7 +1,7 @@
 [[ -f /etc/sysconfig/apnscp ]] && . /etc/sysconfig/apnscp
 APNSCP_HOME=${APNSCP_HOME:-/usr/local/apnscp}
 APNSCPCMD=${APNSCPCMD:-${APNSCP_HOME}/bin/cmd}
-MAKEFLAGS='-j {{ ansible_processor_vcpus | int }}'
+MAKEFLAGS='-j{{ compile_max_jobs }}'
 export MAKEFLAGS
 
 alias upcp="[[ -d $APNSCP_HOME ]] && env APNSCP_HOME=${APNSCP_HOME} $APNSCP_HOME/build/upcp.sh"
@@ -20,29 +20,29 @@ mount() {
 alias rm='rm -i --one-file-system'
 alias htrebuild="/etc/systemd/user/httpd.init buildconfig"
 
-function site_stats { 
-	if [ -z $1 ] ; then 
+function site_stats {
+	if [ -z $1 ] ; then
 		CONSTRAINT="%"
-	else 
-		CONSTRAINT=$1 
+	else
+		CONSTRAINT=$1
 	fi
-	echo "select domain, ROUND(quota/1024./1024., 2)||' MB' as disk_quota, ROUND(threshold/1024./1024/1024,2)||' GB' as bw_quota FROM siteinfo JOIN bandwidth USING (site_id) JOIN diskquota USING (site_id) WHERE domain LIKE '$CONSTRAINT' OR email LIKE '$CONSTRAINT' ORDER BY domain" | psql -t appldb; 
+	echo "select domain, ROUND(quota/1024./1024., 2)||' MB' as disk_quota, ROUND(threshold/1024./1024/1024,2)||' GB' as bw_quota FROM siteinfo JOIN bandwidth USING (site_id) JOIN diskquota USING (site_id) WHERE domain LIKE '$CONSTRAINT' OR email LIKE '$CONSTRAINT' ORDER BY domain" | psql -t appldb;
 }
 
 # Change account username
-function change_username { 
+function change_username {
 	$APNSCPCMD -d "$1" auth_change_username "$2"
 }
 
 # Change account domain
-function change_domain { 
+function change_domain {
 	$APNSCPCMD -d "$1" auth_change_domain "$2"
 }
 
 # Assume an account gets compromised, provide
 # an easy way to change the password for the user
 # @TODO use chage or better yet integrate it
-function change_password { 
+function change_password {
 	$APNSCPCMD -d "$1" auth_change_username "$2"
 }
 
@@ -60,8 +60,8 @@ function temp_password {
 }
 
 
-function get_config { 
-	DOMAIN=$1 
+function get_config {
+	DOMAIN=$1
 	CLASS=$2
 	PARAM=$3
 	if [ -z $PARAM ] ; then
@@ -111,7 +111,7 @@ function rmspam {
 	EMAIL=$1
 	let CNT=0
 	grep -rsl "$EMAIL" $SPOOL/active/ $SPOOL/bounce/ $SPOOL/deferred/ $SPOOL/incoming/ | \
-		{  while read ID ; do 
+		{  while read ID ; do
 				ID=${ID##*/}
 				((CNT++))
 				postsuper -d $ID 2> /dev/null

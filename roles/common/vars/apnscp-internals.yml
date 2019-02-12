@@ -91,6 +91,8 @@ sshd_port: 22
 # Maximum number of retries for components that may fail due
 # to flaky network settings
 network_max_retries: 3
+compile_max_jobs: "{{ (not has_low_memory) | ternary(ansible_processor_vcpus + 1, 1) }}"
 # Ansible lockfile
+bootstrapper_acquire_lock: true
 bootstrapper_lock_file: "{{ apnscp_root }}/storage/run/.ansible.lock"
 bootstrapper_lock_max_wait: 900

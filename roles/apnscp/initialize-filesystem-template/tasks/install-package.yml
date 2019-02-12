@@ -1,5 +1,5 @@
 ---
-- name: "Install {{ package }} to {{ service }}"
+- name: "Verify service base {{ service }} exists"
   file:
     name: "{{ apnscp_filesystem_template }}/{{ service }}"
     state: directory
@@ -22,8 +22,9 @@
 
 - name: "Verify {{ package }} installed"
   yum:
-    name: "{{ package }}"
+    name: "{{ package | regex_replace(' ', ',') }}"
     state: present
+  when: implicit_install_before_replication
 
 - name: "Install {{ package }} into FST/{{ service }}"
   command: "{{ synchronizer }} install {{ __populate_filesystem_template | ternary('--force', None)}} {{ package }} {{ service }}"

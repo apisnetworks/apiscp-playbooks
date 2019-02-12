@@ -1,4 +1,5 @@
 ---
+implicit_install_before_replication: false
 handler: noop
 apnscp_initialize_filesystem_template_marker: true
 apnscp_filesystem_template_purity_marker: "{{ apnscp_filesystem_template }}/.pure"
