@@ -61,7 +61,7 @@
         chdir: "{{ build_dir }}"
         target: all
         params:
-          '--jobs': "{{ ((ansible_processor_vcpus | int) + 1) }}"
+          '--jobs': "{{ compile_max_jobs }}"
     - command: "strip {{ build_dir }}/.libs/libphp{{__php_version | regex_replace('^(\\d+)\\..*$', '\\1') }}.so"
       when: not php_debug
     - make: chdir="{{ build_dir }}" target=install
