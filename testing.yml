@@ -18,10 +18,11 @@
           when: true
         - package: apr
           when: false
-  roles:
-    - apnscp/initialize-filesystem-template
   tasks:
-    - fail:
-        msg: >
-          {{ lookup('items', test['siteinfo']) |
-            rejectattr('when', 'defined') | list | join(' ') }}
+    - name: Check for rspamd existence
+      systemd: name=rspamd state=restarted
+      register: r
+      failed_when: >
+        "msg" in r and r.msg.find("Could not find the") == -1 or
+        "status" in r and (r.status.ExecMainCode | int) != 0
+    - fail: msg="{{ r }}"

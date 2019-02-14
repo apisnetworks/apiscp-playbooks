@@ -32,33 +32,20 @@
 - name: Reload fail2ban
   systemd: state=reloaded name=fail2ban enabled=yes
 
-- name: Check for spamassassin presence
-  command: rpm -q spamassassin
-  args:
-    warn: false
-  failed_when: false
-  changed_when: false
-  register: sa_present
-  listen: Restart spamassassin
-
 - name: Restart spamassassin
   systemd: state=restarted name=spamassassin enabled=yes
-  when: sa_present.rc == 0
-  listen: Restart spamassassin
-
-- name: Check for rspamd existence
-  command: rpm -q rspamd
-  args:
-    warn: false
-  changed_when: false
-  failed_when: false
-  register: rspamd_present
-  listen: Restart rspamd
+  register: r
+  failed_when: >
+    "msg" in r and r.msg.find("Could not find the") == -1 or
+    "status" in r and (r.status.ExecMainCode | int) != 0
 
 - name: Restart rspamd
   systemd: state=restarted name=rspamd enabled=yes
-  when: rspamd_present.rc == 0
-  listen: Restart rspamd
+  register: r
+  failed_when: >
+    "msg" in r and r.msg.find("Could not find the") == -1 or
+    "status" in r and (r.status.ExecMainCode | int) != 0
+
 
 - name: Restart postfix
   systemd: state=restarted name=postfix enabled=yes
