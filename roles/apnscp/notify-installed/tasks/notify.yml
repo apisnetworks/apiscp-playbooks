@@ -57,10 +57,17 @@
 
       Masquerade as a domain and list its commands:
         cpcmd -d domain.com misc_list_commands
+
+      Get help on adding a domain:
+        AddDomain -h
+      {% if not panel_headless %}
+        >>> You can add sites in the panel under "Nexus" <<<
+      {% endif %}
       --------------------------------------------------------------
 
-      For further help get in touch.
+      For further help see the v3 TR announcement or get in touch.
 
+      https://hq.apnscp.com/apnscp-pre-alpha-technical-release/
       https://apnscp.com/support
 
       Happy hacking!
