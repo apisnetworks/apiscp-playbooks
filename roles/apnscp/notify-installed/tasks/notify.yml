@@ -1,0 +1,66 @@
+---
+- name: Send and confirm login email
+  block:
+  - name: Send login email
+    command: |
+      {{ apnscp_root }}/bin/cmd misc_notify_installed {{ __apnscp_admin_password | default("") }}
+    when: apnscp_admin_email | default(None, true) != None
+  - name: Validate mail was sent
+    command: >
+      grep -F {{ apnscp_admin_email | quote }} /var/log/maillog
+    register: r
+    until: r is succeeded
+    retries: 10
+    delay: 3
+  - name: Inform user email has been sent
+    debug:
+      msg: |
+        An email has been sent to the "apnscp_admin_email" contact: {{ apnscp_admin_email }}
+
+        According to the mail server logs, here's what I received:
+
+        {{ r.stdout }}
+  when: apnscp_admin_email | default(None, true) != None
+- name: Login information
+  debug:
+    msg: |
+      Your copy of apnscp has been personalized!
+
+      {% if not panel_headless %}
+      You may login to apnscp with the following information:
+
+      URL: {{ panel_uri }}
+      Username: {{ apnscp_admin_user }}
+      Password: <hidden>
+      {% endif %}
+
+      Here are a few helpful commands to get you acquianted. Before running any of
+      these peform a one-time shell update:
+
+      exec $SHELL -i
+
+      --------------------------------------------------------------
+      Reset password:
+        cpcmd auth_change_password "<new password>"
+
+      Change email:
+        cpcmd common_set_email "<new email>"
+
+      Update panel:
+        upcp
+
+      List all internal tunables:
+        cpcmd config_list
+
+      List all commands for admin:
+        cpcmd misc_list_commands
+
+      Masquerade as a domain and list its commands:
+        cpcmd -d domain.com misc_list_commands
+      --------------------------------------------------------------
+
+      For further help get in touch.
+
+      https://apnscp.com/support
+
+      Happy hacking!

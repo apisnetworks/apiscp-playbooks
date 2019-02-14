@@ -1,0 +1,2 @@
+---
+panel_uri: "https://{{ system_hostname | default(apnscp_ip4_address | default(ansible_default_ipv4.address, true), true) }}:2083"

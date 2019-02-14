@@ -1,0 +1,18 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# - Open dpt:25 to _rspamd for MX check
+
+---
+- block:
+    # Updated in network/setup-firewall
+    - name: Change priority on "-p tcp -m tcp --dport 25 -j REJECT --reject-with icmp-port-unreachable"
+      command: >
+        firewall-cmd --permanent --direct --remove-rule ipv4 filter OUTPUT 1 -p tcp -m tcp --dport 25 -m owner --gid-owner postfix -j ACCEPT
+      register: o
+      changed_when: -1 != o.stderr.find('NOT_ENABLED')
+    - name: Update firewall rules
+      include_role: name=network/setup-firewall
+    - name: Update rspamd configuration
+      include_role: name=mail/rspamd
+      when: rspamd_enabled
+  tags: ['up']
