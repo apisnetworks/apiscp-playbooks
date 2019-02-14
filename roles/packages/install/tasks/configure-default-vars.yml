@@ -7,3 +7,5 @@
 - set_fact:
     pgversion: "{{ pgsql_version | default(pgsql.default) }}"
     pg_pkgversion: "{{ pgsql_version | default(pgsql.default) | regex_replace('\\.','') }}"
+- set_fact:
+    pg_init_bin: "/usr/pgsql-{{pgversion}}/bin/postgresql{{pgversion is version('10', '<') | ternary('', '-') }}{{pgversion is version('10', '<') | ternary(pg_pkgversion, pgversion) }}-setup initdb"

@@ -11,7 +11,7 @@
 - stat: path="/var/lib/pgsql/{{pgversion}}/data/base"
   register: ddir
 - name: Initialize PostgreSQL data dictionary
-  command: /usr/pgsql-{{pgversion}}/bin/postgresql-{{pgversion}}-setup initdb
+  command: "{{ pg_init_bin }}"
   args:
     creates: /var/lib/pgsql/{{pgversion}}/postgresql.conf
   when: not ddir.stat.exists
