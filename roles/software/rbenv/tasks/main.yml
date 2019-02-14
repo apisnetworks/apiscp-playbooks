@@ -7,6 +7,12 @@
 # and version (default_ruby) settings, so it always triggers
 # idempotency violations; sorry!
 ---
+- include_role: name=apnscp/initialize-filesystem-template tasks_from="install-package.yml"
+  vars:
+    package: "{{ ruby_system_packages | join(' ') }}"
+    service: ssh
+    implicit_install_before_replication: true
+  when: sys_ruby_version == 'system'
 - set_fact:
     __rbenv_version: "v{{ rbenv_version }}"
 - name: Prepare {{ git_target }}

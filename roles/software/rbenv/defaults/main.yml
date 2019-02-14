@@ -3,4 +3,9 @@ rbenv_version: 'v{{ rbenv_version|default("1.0.0") }}'
 rbenv_service_install: ssh
 git_target: "/usr/local/share/ruby/rbenv"
 rbenv_script: "/etc/profile.d/rbenv.sh"
-
+ruby_system_packages:
+  - ruby-devel
+  - ruby-irb
+  - ruby-libs
+  - rubygems
+  - ruby
