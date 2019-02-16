@@ -15,3 +15,8 @@
       file: path="{{ item.src }}" state=absent
       with_items: "{{ spamassassin_relocation_paths }}"
   when: not (spamassassin_enabled | bool) or not (mail_enabled | bool)
+- name: Configure SpamAssassin Argos profile
+  include_role: name=software/argos tasks_from=toggle-service.yml
+  vars:
+    name: spamassassin
+    state: "{{ ((spamassassin_enabled | bool) and (mail_enabled | bool)) | ternary('enabled', 'disabled') }}"

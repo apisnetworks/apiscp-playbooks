@@ -1,2 +1,10 @@
 ---
+argos_monitoring_dir: /etc/monit.d
 ntfy_version: 2.6.0
+argos_monitoring_services:
+  - name: spamassassin
+    when: "{{ ((spamassassin_enabled | bool) and (mail_enabled | bool)) | ternary('enabled', 'disabled') }}"
+  - name: dovecot
+    when: "{{ mail_enabled }}"
+  - name: vsftpd
+    when: "{{ ftp_enabled }}"

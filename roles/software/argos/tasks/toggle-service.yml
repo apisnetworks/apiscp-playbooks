@@ -1,0 +1,20 @@
+---
+- name: Assign src/dest configuration profiles
+  set_fact:
+    _argos_src_file: "{{ argos_monitoring_dir }}/{{ name }}.conf.disabled"
+    _argos_dest_file: "{{ argos_monitoring_dir }}/{{ name }}.conf"
+- name: Flip src/dest assignment
+  set_fact:
+    _argos_src_file: "{{ _argos_dest_file }}"
+    _argos_dest_file: "{{ _argos_src_file }}"
+  when: state == 'disabled'
+- name: "Toggle Argos service {{ name }} -> {{ state }}"
+  stat: path="{{ _argos_src_file }}"
+  register: r
+- name: "Move {{ _argos_src_file }} to {{ _argos_dest_file }}"
+  command: >
+    mv -f {{ _argos_src_file | quote }} {{ _argos_dest_file | quote }}
+  args:
+    creates: "{{ _argos_dest_file }}"
+  notify: Restart monit
+  when: r.stat.exists

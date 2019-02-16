@@ -15,3 +15,10 @@
     dest: /etc/monit.d/apnscp.conf
     force: yes
   notify: Restart monit
+- name: Update monitoring profiles
+  include_tasks: toggle-service.yml
+  vars:
+    name: "{{ item.name }}"
+    state: "{{ item.when | ternary('enabled', 'disabled') }}"
+  with_items:
+    - "{{ argos_monitoring_services }}"

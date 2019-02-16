@@ -8,3 +8,8 @@
     state: '{{ mail_enabled | ternary("installed","absent") }}'
 - include_tasks: enable-dovecot.yml
   when: mail_enabled
+- name: Configure Dovecot Argos profile
+  include_role: name=software/argos tasks_from=toggle-service.yml
+  vars:
+    name: dovecot
+    state: "{{ mail_enabled | ternary('enabled', 'disabled') }}"
