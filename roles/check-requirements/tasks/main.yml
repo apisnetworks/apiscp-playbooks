@@ -1,4 +1,11 @@
 ---
+- name: Force admin lowercase
+  set_fact:
+    apnscp_admin_user: "{{ apnscp_admin_user | lower }}"
+    cacheable: true
+  when: (apnscp_admin_user | lower) != apnscp_admin_user
+  tags:
+    - always
 - name: Fail if OS is not RHEL/CentOS
   fail:
     msg: OS must be RHEL 7.x/CentOS 7.x - try again!
