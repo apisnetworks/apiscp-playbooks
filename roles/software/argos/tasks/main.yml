@@ -19,6 +19,6 @@
   include_tasks: toggle-service.yml
   vars:
     name: "{{ item.name }}"
-    state: "{{ item.when | ternary('enabled', 'disabled') }}"
+    state: "{{ item.when | bool | ternary('enabled', 'disabled') }}"
   with_items:
     - "{{ argos_monitoring_services }}"
