@@ -95,7 +95,7 @@ rspamd_filter_origination: true
 # Valid values: standalone, piggyback.
 # Setting spamfilter in apnscp-vars.yml to spamassassin implies piggyback
 # "piggyback" will feed off SA data
-rspamd_method: "{{ (spamfilter == 'spamassassin') | ternary('piggyback', 'standalone') }}"
+rspamd_method: "{{ (spamfilter == 'spamassassin') and mail_enabled | ternary('piggyback', 'standalone') }}"
 
 # piggyback off results from spamassassin to train algorithm
 rspamd_passive_learning_mode: "{{ rspamd_enabled and (rspamd_method == 'piggyback') }}"
