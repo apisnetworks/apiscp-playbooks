@@ -1,0 +1,14 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# - PHP 7.0 removed # from ini comments
+---
+- block:
+    - name: Update comment delimiter
+      replace:
+        regexp: '^\s*#+(.*(?<=APNSCP MANAGED BLOCK)\s*)$'
+        replace: ';\1'
+        path: "{{ item }}"
+      with_items:
+        - /etc/php.ini
+        - "{{ apnscp_filesystem_template }}/siteinfo/etc/php.ini"
+  tags: ['up']

@@ -1,4 +1,6 @@
 ---
+# Override to update rbenv versions
+rbenv_freshen_build: false
 rbenv_version: 'v{{ rbenv_version|default("1.0.0") }}'
 rbenv_service_install: ssh
 git_target: "/usr/local/share/ruby/rbenv"
