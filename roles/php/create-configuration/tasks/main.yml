@@ -17,7 +17,7 @@
   when: not s.stat.exists
 - name: Set PHP defaults
   blockinfile:
-    marker: '#{mark} APNSCP MANAGED BLOCK'
+    marker: ';{mark} APNSCP MANAGED BLOCK'
     path: "{{ php_main_config }}"
     content: "{{ php_default_config }}"
   notify: Restart apache
