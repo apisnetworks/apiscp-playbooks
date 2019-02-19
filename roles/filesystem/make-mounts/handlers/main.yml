@@ -1,6 +1,6 @@
 ---
 - name: Update grub
-  command: grub2-mkconfig -o /etc/grub2.cfg
+  command: /usr/sbin/grub2-mkconfig -o /etc/grub2.cfg
   # Handle /tmp presence gracefully
 - name: Remount tmp
   command: mount -o remount /tmp
