@@ -1,11 +1,40 @@
-- name: Alter mount options for / (ext4)
-  mount:
-    path: /
-    src: "{{ ansible_mounts | json_query('[?mount==`/`] | [0].device') }}"
-    fstype: ext4
-    opts: "noatime,user_xattr,acl,jqfmt=vfsv1,usrjquota=aquota.user,grpjquota=aquota.group"
-    state: present
-  register: ext4
+# Possible to put FST on separate mount than apnscp_account_root
+# Cannot check apnscp_filesystem_template/apnscp_is_crosslinked as with copy-link.yml
+- name: Check if / and {{ apnscp_account_root }} on same mount point
+  block:
+    - stat: path=/
+      register: s1
+    - stat: path={{ apnscp_account_root }}
+      register: s2
+    - set_fact:
+        _separate_home_mount: "{{ s1.stat.dev != s2.stat.dev }}"
+        cacheable: yes
+    - name: Get device of {{ apnscp_account_root }}
+      command: "findmnt -n -o SOURCE --target {{ apnscp_account_root }}"
+      register: o
+      changed_when: false
+      when: _separate_home_mount
+    - set_fact:
+        _home_mount_device: "{{ o.stdout | trim }}"
+      when: _separate_home_mount
+- name: Set mount options
+  block:
+  - name: Alter mount options for / (ext4)
+    mount:
+      path: /
+      src: "{{ ansible_mounts | json_query('[?mount==`/`] | [0].device') }}"
+      fstype: ext4
+      opts: "noatime,user_xattr,acl{{ _separate_home_mount | ternary('', ',jqfmt=vfsv1,usrjquota=aquota.user,grpjquota=aquota.group') }}"
+      state: present
+    register: ext4
+  - name: Alter mount options for {{ apnscp_account_root }} (ext4)
+    mount:
+      path: "{{ ansible_mounts | json_query('[?device==`' + _home_mount_device + '`] | [0].mount') }}"
+      src: "{{ _home_mount_device }}"
+      fstype: ext4
+      opts: "noatime,user_xattr,acl,jqfmt=vfsv1,usrjquota=aquota.user,grpjquota=aquota.group"
+      state: present
+    when: _separate_home_mount
   when: xfs.rc != 0 and ext4.rc == 0
 - block:
     - yum: name=quota state=present
@@ -28,6 +57,13 @@
         state: present
       register: update
       notify: Update grub
+    - mount:
+        path: "{{ ansible_mounts | json_query('[?device==`' + _home_mount_device + '`] | [0].mount') }}"
+        src: "{{ _home_mount_device }}"
+        fstype: xfs
+        opts: "attr2,inode64,usrquota,grpquota"
+        state: present
+      when: _separate_home_mount
     - lineinfile: >
         dest=/etc/sysconfig/grub regexp='^GRUB_CMDLINE_LINUX\s*='
         line='GRUB_CMDLINE_LINUX="quiet rhgb crashkernel=auto rootflags=usrquota,grpquota"'

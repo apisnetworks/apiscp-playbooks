@@ -2,11 +2,11 @@
 ---
 - name: Check if / and {{ apnscp_filesystem_template }} are cross-linked
   block:
-    - stat: path=/ 
+    - stat: path=/
       register: s1
-    - stat: path={{ apnscp_filesystem_template }} 
+    - stat: path={{ apnscp_filesystem_template }}
       register: s2
-    - set_fact: 
+    - set_fact:
         apnscp_is_crosslinked: "{{ s1.stat.dev != s2.stat.dev }}"
         cacheable: yes
   when: apnscp_is_crosslinked is not defined
