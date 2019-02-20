@@ -7,3 +7,14 @@
   failed_when: false
   tags:
     - skip_ansible_lint
+
+- name: Verify quota package installed
+  yum: name=quota state=present
+  listen: Rebuild quotas
+# Make sure new options are picked up
+- name: Build quotas
+  shell: >
+    mount -o remount / && quotaoff -augv && quotacheck -augvm && quotaon -augv
+  args:
+    warn: false
+  listen: Rebuild quotas

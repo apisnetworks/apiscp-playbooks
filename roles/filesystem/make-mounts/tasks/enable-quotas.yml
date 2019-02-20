@@ -26,6 +26,7 @@
       fstype: ext4
       opts: "noatime,user_xattr,acl{{ _separate_home_mount | ternary('', ',jqfmt=vfsv1,usrjquota=aquota.user,grpjquota=aquota.group') }}"
       state: present
+    notify: Rebuild quotas
   - name: Alter mount options for {{ apnscp_account_root }} (ext4)
     mount:
       path: "{{ ansible_mounts | json_query('[?device==`' + _home_mount_device + '`] | [0].mount') }}"
@@ -33,19 +34,9 @@
       fstype: ext4
       opts: "noatime,user_xattr,acl,jqfmt=vfsv1,usrjquota=aquota.user,grpjquota=aquota.group"
       state: present
+    notify: Rebuild quotas
     when: _separate_home_mount
   when: xfs.rc != 0 and ext4.rc == 0
-- block:
-    - yum: name=quota state=present
-    # Make sure new options are picked up
-    - command: mount -o remount /
-      args:
-        warn: false
-    - name: Building quotas
-      command: quotaoff -augv
-    - command: quotacheck -augvm
-    - command: quotaon -augv
-  when: xfs.rc != 0 and ext4.changed
 - name: Alter mount options for / (xfs)
   block:
     - mount:
