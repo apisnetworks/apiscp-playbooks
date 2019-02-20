@@ -1,3 +1,3 @@
-*:remove:{{ apnscp_root }}/bin/scripts/yum-post.php $state --soft $name $ver $rel
-*:install:{{ apnscp_root }}/bin/scripts/yum-post.php $state --update $name $ver $rel
-*:update:{{ apnscp_root }}/bin/scripts/yum-post.php $state $name $ver $rel
+*:remove:{{ apnscp_root }}/bin/scripts/yum-post.php $state --soft $name $ver $rel $arch
+*:install:{{ apnscp_root }}/bin/scripts/yum-post.php $state --update $name $ver $rel $arch
+*:update:{{ apnscp_root }}/bin/scripts/yum-post.php $state $name $ver $rel $arch

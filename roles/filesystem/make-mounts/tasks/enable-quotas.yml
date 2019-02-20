@@ -26,7 +26,6 @@
       fstype: ext4
       opts: "noatime,user_xattr,acl{{ _separate_home_mount | ternary('', ',jqfmt=vfsv1,usrjquota=aquota.user,grpjquota=aquota.group') }}"
       state: present
-    register: ext4
   - name: Alter mount options for {{ apnscp_account_root }} (ext4)
     mount:
       path: "{{ ansible_mounts | json_query('[?device==`' + _home_mount_device + '`] | [0].mount') }}"
@@ -64,7 +63,8 @@
         opts: "attr2,inode64,usrquota,grpquota"
         state: present
       when: _separate_home_mount
-    - lineinfile: >
+    - name: Add usrquota,grpquota to grub
+      lineinfile: >
         dest=/etc/sysconfig/grub regexp='^GRUB_CMDLINE_LINUX\s*='
         line='GRUB_CMDLINE_LINUX="quiet rhgb crashkernel=auto rootflags=usrquota,grpquota"'
       notify: Update grub
