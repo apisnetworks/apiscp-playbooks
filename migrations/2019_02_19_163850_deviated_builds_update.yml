@@ -5,10 +5,10 @@
 # - Add ::1 to <VirtualHost>
 ---
 - block:
-    - name: Update quota mounts
-      include_role: filesystem/make-mounts
-    - name: Add $arch to post-actions
-      include_role: system/yum
-    - name: Add ::1 to <VirtualHost>
-      include_role: apache/configure
+  - name: Update quota mounts
+    include_role: name=filesystem/make-mounts
+  - name: Add $arch to post-actions
+    include_role: name=system/yum
+  - name: Add ::1 to <VirtualHost>
+    include_role: name=apache/configure
   tags: ['up']
