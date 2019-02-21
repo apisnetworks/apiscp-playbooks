@@ -1,0 +1,14 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# - Update post-actions to bypass i686 arch updates
+# - Mount /home with quota if separate partition
+# - Add ::1 to <VirtualHost>
+---
+- block:
+    - name: Update quota mounts
+      include_role: filesystem/make-mounts
+    - name: Add $arch to post-actions
+      include_role: system/yum
+    - name: Add ::1 to <VirtualHost>
+      include_role: apache/configure
+  tags: ['up']
