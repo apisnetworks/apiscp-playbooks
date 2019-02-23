@@ -1,7 +1,7 @@
 ---
 cron_daily: /etc/cron.daily
 cron_weekly: /etc/cron.weekly
-cron_monthly: /etc/cron.weekly
+cron_monthly: /etc/cron.monthly
 nightly_fst_sync: "{{ cron_daily }}/99resync_fst"
 cron_copy:
   - src: changeownership.sh
@@ -22,6 +22,8 @@ cron_template:
     dest: "{{ cron_daily }}/99lockdown_procs"
   - src: locate_webapps.sh.j2
     dest: "{{ cron_monthly }}/locate_webapps"
+  - src: webapp_monthly_digest.sh.j2
+    dest: "{{ cron_monthly }}/webapp_monthly_digest"
 # Automatically run Bootstrapper on update when auto-update
 # Otherwise just migrations will run
 apnscp_update_bootstrapper: false

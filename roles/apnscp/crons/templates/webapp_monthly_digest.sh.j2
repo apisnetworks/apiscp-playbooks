@@ -1,0 +1,19 @@
+#!/usr/bin/env apnscp_php
+<?php declare(strict_types=1);
+
+	include('{{ apnscp_root }}/lib/CLI/cmd.php');
+	Error_Reporter::set_verbose(0);
+	$args = \cli\parse();
+	$afi  = \cli\get_instance();
+	if (!$afi) {
+	    fatal("cannot init afi instance");
+	}
+
+	if (!($email = $afi->common_get_email())) {
+		return warn("No email set for admin, cannot dispatch notice");
+	}
+	$job = \Lararia\Jobs\Job::create(\Lararia\Jobs\SimpleCommandJob::class, \Auth::profile(), 'admin_list_failed_webapps');
+	$job->setTags(['admin', 'cron']);
+	$job->setMailTemplate(\Lararia\Mail\WebappFailureDigestReport::class);
+	$job->dispatch();
+	return true;
