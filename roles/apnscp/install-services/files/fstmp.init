@@ -1,14 +1,12 @@
-#!/bin/sh
-
+#!/bin/bash
 # chkconfig: 345 01 99
 # description: Build /tmp if necessary
-
-
 # Check that all necessary files exist first
-
 # See how we were called.
+
+# shellcheck disable=SC2034
 prog="fstmp"
-[[ -f /etc/sysconfig/apnscp ]] && . /etc/sysconfig/apnscp
+test -f /etc/sysconfig/apnscp  && . /etc/sysconfig/apnscp
 SESSIONDIR=/tmp/sessions
 [ -d $SESSIONDIR ] && exit 0
 umask 0077
@@ -17,15 +15,15 @@ RANGE="a b c d e f g h i j k l m n o \
     6 7 8 9"
 echo -n "Populating /tmp: "
 
-mkdir $SESSIONDIR
+mkdir "$SESSIONDIR"
 for dir in $RANGE ; do
-    mkdir $SESSIONDIR/$dir
+    mkdir "$SESSIONDIR"/"$dir"
     for subdir in $RANGE ; do
-        mkdir $SESSIONDIR/$dir/$subdir
+        mkdir "$SESSIONDIR"/"$dir"/"$subdir"
     done
 done
-chown -R apache:apache $SESSIONDIR
-chmod -R 0770 $SESSIONDIR
+chown -R apache:apache "$SESSIONDIR"
+chmod -R 0770 "$SESSIONDIR"
 
 mkdir -p /tmp/fcgi/dynamic
 chown -R apache:apache /tmp/fcgi
