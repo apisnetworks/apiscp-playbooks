@@ -1,0 +1,13 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# - Load virtualcron after database
+# - Monthly web app digest
+---
+- block:
+  - name: Update virtualcron service
+    include_role: name=apnscp/install-services
+  - name: Unlink erroneous monthly task
+    file: path="/etc/cron.weekly/locate_webapps" state=absent
+  - name: Add web app monthly digest
+    include_role: name=apnscp/crons
+  tags: ['up']
