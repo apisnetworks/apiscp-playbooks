@@ -1,4 +1,5 @@
 ---
+- meta: flush_handlers
 - get_argv:
 - copy:
     content: |

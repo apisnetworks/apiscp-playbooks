@@ -1,0 +1,27 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# - Build quotas as necessary on ext4
+---
+- name: Find mount point for {{ apnscp_account_root }}
+  command: findmnt -n -o SOURCE --target {{ apnscp_account_root }}
+  register: o
+- name: Check if {{ o.stdout }} is ext4
+  shell: grep '^{{ o.stdout | trim }}\b' /proc/mounts | grep ext4
+  failed_when: false
+  register: o2
+- name: Check if /aquota.user exists
+  stat: path=/aquota.user
+  register: s
+- name: Build quotas if missing
+  block:
+  - name: Import filesystem/make-mounts
+    include_role: name=filesystem/make-mounts tasks_from=enable-quotas.yml
+    vars:
+      xfs:
+        rc: 1
+      ext4:
+        rc: 0
+  - name: Trigger quota build
+    command: /bin/true
+    notify: Rebuild quotas
+  when: o2.rc == 0 and not s.stat.exists
