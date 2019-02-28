@@ -61,3 +61,4 @@
       notify: Update grub
       when: update.changed
   when: xfs.rc == 0
+- meta: flush_handlers

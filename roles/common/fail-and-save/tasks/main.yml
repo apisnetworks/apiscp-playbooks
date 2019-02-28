@@ -2,15 +2,15 @@
 - get_argv:
 - copy:
     content: |
-      #!/bin/sh    
+      #!/bin/sh
       {{ apnscp_bootstrapper_resume_cmd }}
     dest: "{{ apnscp_bootstrapper_resume_script }}"
     mode: 0777
 - name: Install Bootstrapper service
-  include_role: 
+  include_role:
     name: apnscp/install-services
   vars:
-    templated_services: 
+    templated_services:
       - service: bootstrapper-resume
         template: bootstrapper-resume.j2
     services:
