@@ -20,8 +20,8 @@
         vars:
           Options: "{{ tmpfs_attrs }}"
     # Can't unmount /tmp without a reboot
-    notify:
-      - Restart services
+    # Remove notify: Restart services
+    # Apache + PostgreSQL aren't available this early
 - name: Unmask tmp.mount
   systemd:
     name: tmp.mount
