@@ -53,6 +53,7 @@
         fstype: xfs
         opts: "attr2,inode64,usrquota,grpquota"
         state: present
+      notify: Update grub
       when: _separate_home_mount
     - name: Add usrquota,grpquota to grub
       lineinfile: >
@@ -61,4 +62,6 @@
       notify: Update grub
       when: update.changed
   when: xfs.rc == 0
+- name: Verify quota package installed
+  yum: name=quota state=present
 - meta: flush_handlers

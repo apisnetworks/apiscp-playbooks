@@ -8,9 +8,6 @@
   tags:
     - skip_ansible_lint
 
-- name: Verify quota package installed
-  yum: name=quota state=present
-  listen: Rebuild quotas
 # Make sure new options are picked up
 - name: Build quotas
   shell: >
