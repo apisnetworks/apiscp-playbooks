@@ -1,3 +1,4 @@
 ---
+subdomain_glob_spec: "{{ apnscp_account_root }}/site*/fst/var/subdomain"
 addr_list: []
 fcgi_path: /var/tmp/fcgi

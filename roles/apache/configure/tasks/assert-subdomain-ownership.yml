@@ -1,0 +1,5 @@
+- name: Assert ownership of /var/subdomain is {{ apnscp_system_user }}
+  file: path="{{ item }}" state=directory owner="{{ apnscp_system_user }}"
+  # https://github.com/ansible/ansible/issues/17136
+  with_lines:
+    - '( [[ -n "{{ subdomain_glob_spec }}" ]] && find {{ subdomain_glob_spec }} -maxdepth 0 -type d ) || true'

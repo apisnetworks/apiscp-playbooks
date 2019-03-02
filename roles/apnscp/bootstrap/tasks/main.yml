@@ -70,7 +70,15 @@
 
 - file: path=/var/log/bw state=directory
 - file: path=/etc/virtualhosting state=directory mode=0700 owner="{{ apnscp_system_user }}"
-- file: path=/etc/opcenter/webhost state=directory mode=0700 owner="{{ apnscp_system_user }}"
+- name: Set /etc/opcenter/webhost ownership
+  file: path=/etc/opcenter/webhost state=directory mode=0700 owner="{{ apnscp_system_user }}"
+- name: Set /etc/opcenter ownership
+  file: path=/etc/opcenter state=directory mode=0700 owner="{{ apnscp_system_user }}"
+  register: c
+
+- name: Update /var/subdomain ownership
+  include_role: name=apache/configure tasks_from=assert-subdomain-ownership.yml
+  when: c.changed
 
 - include_vars: "vars/opcenter-links.yml"
 - name: Link opcenter resources to /etc
