@@ -1,4 +1,6 @@
 ---
+argos_user: monit
+argos_delivery_user: root
 argos_monitoring_dir: /etc/monit.d
 ntfy_version: 2.6.0
 argos_monitoring_services:

@@ -12,7 +12,7 @@
   register: installed_php_version
 - set_fact:
     do_install_php: >
-      force or extra_flags or
+      (php_force_build | default(false)) or force or extra_flags or
       installed_php_version.skipped is defined or
       installed_php_version.stdout != __php_version or
       s1.stat.exists and s2.stat.exists and s1.stat.mtime > s2.stat.mtime

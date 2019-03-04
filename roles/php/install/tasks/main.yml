@@ -1,7 +1,15 @@
 ---
+- name: Check for LoadModule presence in /etc/httpd/conf/httpd.conf
+  command: grep -Eqs '^\s*LoadModule\s+php[[:digit:]]_' /etc/httpd/conf/httpd.conf
+  failed_when: false
+  changed_when: false
+  register: s
+- set_fact:
+    __php_force_build: "{{ ((s.rc == 0 and php_has_isapi) | bool) | ternary('no', 'yes') }}"
 - name: Import php/build-from-source role
   import_role: name=php/build-from-source
-
+  vars:
+    php_force_build: "{{ __php_force_build }}"
 - stat: path="{{ apnscp_shared_root}}/php/pear"
   register: stdst
 - name: "Migrate pear to {{ apnscp_shared_root }}"

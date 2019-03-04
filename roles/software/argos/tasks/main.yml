@@ -22,3 +22,8 @@
     state: "{{ (item.when | bool) | ternary('enabled', 'disabled') }}"
   with_items:
     - "{{ argos_monitoring_services }}"
+- name: Set {{ argos_user }} => {{ argos_delivery_user }} alias
+  include_role: name=mail/configure-postfix tasks_from=manage-alias.yml
+  vars:
+    email: "{{ argos_user }}"
+    destination: "{{ argos_delivery_user }}"

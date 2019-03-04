@@ -1,2 +1,3 @@
 # used by some PEAR packages, can get clobbered, make sure it's always there
+php_has_isapi: true
 php_pear_data_path: /usr/share/pear-data

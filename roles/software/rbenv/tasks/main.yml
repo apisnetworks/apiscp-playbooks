@@ -170,3 +170,9 @@
   lineinfile:
     path: "{{ apnscp_filesystem_template}}/siteinfo/etc/profile"
     line: 'export GEM_PATH="$GEM_PATH:$HOME/.gems"'
+- name: Symlink versions/{{ sys_ruby_version }}/bin/ruby to /usr/local/bin
+  file:
+    src: "{{ git_target }}/versions/{{ sys_ruby_version }}/bin/ruby"
+    path: /usr/local/bin/ruby
+    state: link
+  when: sys_ruby_version != 'system'

@@ -21,6 +21,8 @@ auth_worker_max_count = {{ [ansible_processor_vcpus | int, 4] | min}}
 valid_chroot_dirs = /home
 default_login_user = dovecot
 ssl_verify_client_cert = no
+ssl = {{ dovecot_strict_ssl | ternary("required", "yes") }}
+
 service director {
   unix_listener login/director {
   }
@@ -50,7 +52,6 @@ service imap-login {
 }
 service pop3-login {
 }
-
 
 service imap-login {
   inet_listener imap {

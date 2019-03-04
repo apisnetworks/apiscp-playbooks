@@ -11,6 +11,10 @@ dovecot_conflicting_conf:
   - 10-auth.conf
   # Mailbox namespace inbox=yes
   - 10-mail.conf
+  # Conflicts with SSL
+  - 10-ssl.conf
+  # mailbox namespacing
+  - 15-mailboxes.conf
 dovecot_home: /etc/dovecot
 config_file: "{{ dovecot_home }}/apnscp.conf"
 postfix_auth_socket: /var/spool/postfix/private/auth
@@ -18,7 +22,9 @@ dovecot_conf_dir: "{{ dovecot_home }}/conf.d"
 # In secure_mode each IMAP connection creates a separate
 # process. SSL/TLS also creates a separate process
 dovecot_secure_mode: "{{ not (has_low_memory | bool) }}"
-
+# Enabling disallows remote login without SSL. All logins must
+# be sent over plain-text to work with PAM
+dovecot_strict_ssl: false
 # Enable stats module. Requires world-writeable socket.
 dovecot_enable_stats: false
 # Sieve for spam filtering

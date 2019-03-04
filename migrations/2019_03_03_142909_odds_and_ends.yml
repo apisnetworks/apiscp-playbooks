@@ -1,0 +1,16 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# - Last planned migration for 3.0
+# - Link ruby to /usr/local/bin for Argos
+# - Cleanup Dovecot config
+# - quota package may not be present with xfs
+---
+- block:
+  - name: Link non-system ruby to /usr/local/bin
+    include_role: name=software/rbenv
+  - name: Cleanup conflicting Dovecot configuration
+    include_role: name=mail/configure-dovecot
+  - name: Ensure quota RPM installed
+    yum: name=quota state=installed
+  tags:
+    - up
