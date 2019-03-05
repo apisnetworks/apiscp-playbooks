@@ -9,4 +9,5 @@ default_zone: public
 default_immediate: false
 default_permanent: true
 default_net: ipv4
-mysql_conn_limit: 20/s
+# Maximum connection rate for auditing
+mysql_conn_limit: 10/s

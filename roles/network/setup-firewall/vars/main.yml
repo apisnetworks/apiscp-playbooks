@@ -53,6 +53,10 @@ rules:
     zone: public
     state: present
     immediate: false
+  - rule: rule service name="postgresql" audit limit value="{{ mysql_conn_limit }}" accept
+    zone: public
+    state: present
+    immediate: false
 direct_rules:
   # Block sneaky bastards
   - rule: "-d 127.0.0.1/32 -p tcp -m tcp --dport 25 -j ACCEPT"

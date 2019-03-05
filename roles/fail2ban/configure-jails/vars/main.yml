@@ -77,5 +77,6 @@ jails:
       findtime: "{{ f2b_findtime }}"
       maxretry: "{{ f2b_maxretry }}"
       logpath: "/var/lib/mysql/mysqld.log"
-      enabled: true
+      enabled: "{{ allow_remote_db | ternary('true', 'false') }}"
       banaction: "{{ f2b_default_banaction }}"
+  # @TODO PostgreSQL

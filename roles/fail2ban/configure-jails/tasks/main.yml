@@ -22,6 +22,23 @@
     insertafter: "^.*\\(__prefix_line.*<HOST>.*$\n"
     path: "{{ fail2ban_directory }}/filter.d/sshd.conf"
   notify: Restart fail2ban
+- name: Correct failregex in mysqld-auth.conf
+  ini_file:
+    path: "{{ fail2ban_directory }}/filter.d/mysqld-auth.conf"
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+    state: present
+  with_items:
+    - section: Definition
+      option: failregex
+      value: >
+        ^%(__prefix_line)s\s*(?:\d+ |\d{1,2}:\d{2}:\d{2}(?:\s+\d+)?\s*)?\[\w+\] Access denied for user '[^']+'@'<HOST>' (to database '[^']*'|\(using password: (YES|NO)\))*\s*$
+    # Bad MariaDB! Bad bad! Pads left two spaces on time
+    - section: Init
+      option: datepattern
+      value: '%%Y(?P<_sep>[-/.])%%m(?P=_sep)%%d\s{1,2}%%H:%%M:%%S(?:,%%f)?'
+  notify: Restart fail2ban
 - template:
     src: templates/apnscp.conf.j2
     dest: /etc/fail2ban/jail.d/01-apnscp.conf
