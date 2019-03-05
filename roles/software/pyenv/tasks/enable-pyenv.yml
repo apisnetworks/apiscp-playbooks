@@ -1,0 +1,81 @@
+# /.socket doesn't copy-up, it's direct write. Put pyenv
+# on a copy-up layer in FST to allow write-access by admin
+# Downside is that anything root installs will also propagate
+# to child nodes, so don't do that!
+---
+- set_fact:
+    __pyenv_version: "v{{ pyenv_version }}"
+- name: Prepare {{ git_target }}
+  file:
+    path: "{{ git_target|dirname}}"
+    state: directory
+- name: Install pyenv
+  include_role: name="{{ role_path }}/../pyenv-support"
+  vars:
+    pyenv_root: "{{ apnscp_filesystem_template }}/{{pyenv_service_install }}/{{ git_target }}"
+    pyenv_version: "{{ __pyenv_version }}"
+    pyenv_update: false
+- name: Link {{ git_target }}
+  file:
+    path: "{{ git_target }}"
+    src: "{{ apnscp_filesystem_template }}/{{pyenv_service_install }}/{{git_target}}"
+    state: link
+- name: Add {{ git_target }} to wheel
+  shell:
+    find {{ git_target | quote }} -follow
+      -iname ".git" -prune -o -not -group wheel -print
+      -exec chgrp wheel {} +
+  register: pyenv_chmod
+  changed_when: pyenv_chmod.stdout != ""
+- name: Ensure wheel has permissions to install binaries
+  file:
+    path: "{{ apnscp_filesystem_template }}/{{pyenv_service_install }}/{{git_target}}/versions"
+    mode: g+rwx
+    group: wheel
+    owner: root
+    state: directory
+- name: Fix pip location
+  copy:
+    src: files/updatePipPath.bash
+    dest: "{{ apnscp_filesystem_template }}/{{pyenv_service_install }}/{{ git_target }}"
+- name: Get pyenv code
+  command: "{{ git_target }}/bin/pyenv init -"
+  environment:
+    PYENV_ROOT: "{{ git_target }}"
+  register: pyenv_code
+  changed_when: false
+- name: Create pyenv.sh
+  copy:
+    dest: "{{ pyenv_script }}"
+    content: |
+      #!/bin/sh
+      export PYENV_ROOT="{{ git_target }}"
+      {{ pyenv_code.stdout }}
+    mode: 0644
+  register: pyenv_create
+- name: Check for pyenv.sh in FST
+  stat: path="{{ apnscp_filesystem_template }}/{{ pyenv_service_install }}/{{pyenv_script}}"
+  register: s
+- name: Link pyenv to /usr/bin
+  file:
+    path: "/usr/bin/pyenv"
+    src: "{{ git_target }}/bin/pyenv"
+    state: link
+- name: Link pyenv.sh to FST
+  include_tasks: "{{ playbook_dir }}/roles/common/tasks/copy-link.yml"
+  vars:
+    src: "{{ pyenv_script }}"
+    path: "{{ apnscp_filesystem_template }}/{{ pyenv_service_install }}/{{pyenv_script}}"
+    notify: Reload filesystem template
+  when: pyenv_create.changed or not s.stat.exists
+- name: Remove shim writeable notice for secondary users
+  lineinfile:
+    path: "{{ git_target }}/libexec/pyenv-rehash"
+    regexp: >
+      echo "pyenv: cannot rehash: \$SHIM_PATH isn't writable"
+    state: absent
+- name: Symlink pyenv to {{git_target}}
+  file:
+    src: "{{ git_target }}/bin/pyenv"
+    path: "{{ apnscp_filesystem_template }}/{{ pyenv_service_install }}/usr/bin/pyenv"
+    state: link

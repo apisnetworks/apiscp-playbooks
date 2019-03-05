@@ -5,4 +5,5 @@ grants_backup: /var/lib/mysql/mysql-grants
 # Large journals (= 4 GB) will cause fail2ban to segfault
 systemd_journald_config:
   # systemd defaults to 10% of max FS
-  SystemMaxUse: "{{ [(ansible_mounts | json_query('[?mount==`/`] | [0].size_total')) | int * 0.10, 3*1024*1024*1024] | min | int }}"
+  # Large journals cause fail2ban to fail on reload
+  SystemMaxUse: "{{ [(ansible_mounts | json_query('[?mount==`/`] | [0].size_total')) | int * 0.10, 1*1024*1024*1024] | min | int }}"

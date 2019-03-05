@@ -9,7 +9,7 @@ jails:
     vars:
       port: 25,587,465
       logpath: "%(dovecot_log)s"
-      banaction: "{{ f2b_default_banaction }}"    
+      banaction: "{{ f2b_default_banaction }}"
       enabled: true
       bantime: "{{ f2b_bantime }}"
       findtime: "{{ f2b_findtime }}"
@@ -34,7 +34,7 @@ jails:
       enabled: true
       bantime: "{{ f2b_recidive_bantime }}"
       findtime: "{{ f2b_recidive_findtime }}"
-      maxretry: "{{ f2b_recidive_maxretry }}" 
+      maxretry: "{{ f2b_recidive_maxretry }}"
   - name: dovecot
     vars:
       port: 110,995,143,993
@@ -68,5 +68,14 @@ jails:
       findtime: "{{ f2b_findtime }}"
       maxretry: "{{ f2b_maxretry }}"
       logpath: "%(vsftpd_log)s"
+      enabled: true
+      banaction: "{{ f2b_default_banaction }}"
+  - name: mysqld-auth
+    vars:
+      port: 3306
+      bantime: "{{ f2b_bantime }}"
+      findtime: "{{ f2b_findtime }}"
+      maxretry: "{{ f2b_maxretry }}"
+      logpath: "/var/lib/mysql/mysqld.log"
       enabled: true
       banaction: "{{ f2b_default_banaction }}"

@@ -1,11 +1,3 @@
-# /.socket doesn't copy-up, it's direct write. Put rbenv
-# on a copy-up layer in FST to allow write-access by admin
-# Downside is that anything root installs will also propagate
-# to child nodes, so don't do that!
-#
-# rbenv forcefully overwrites a few things, including rbenv.sh
-# and version (default_ruby) settings, so it always triggers
-# idempotency violations; sorry!
 ---
 - include_role: name=apnscp/initialize-filesystem-template tasks_from="install-package.yml"
   vars:
@@ -13,166 +5,20 @@
     service: ssh
     implicit_install_before_replication: true
   when: sys_ruby_version == 'system'
-- set_fact:
-    __rbenv_version: "v{{ rbenv_version }}"
-- name: Prepare {{ git_target }}
-  file:
-    path: "{{ git_target|dirname}}"
-    state: directory
-- name: Short-circuit rbenv idempotency
-  stat: path={{ git_target }}/bin/rbenv
-  register: r
-- name: Install rbenv
-  include_role: name="{{ role_path }}/../rbenv-support"
-  vars:
-    rbenv_root: "{{ apnscp_filesystem_template }}/{{rbenv_service_install }}/{{ git_target }}"
-    rbenv_tmpdir: "{{ apnscp_root }}/storage/cache"
-    rbenv:
-      env: system
-      default_ruby:
-      version: "{{ __rbenv_version }}"
-      rubies: []
-  when: not (rbenv_idempotency_hotfix | default(true))  or not r.stat.exists
-- name: Link {{ git_target }}
-  file:
-    path: "{{ git_target }}"
-    src: "{{ apnscp_filesystem_template }}/{{rbenv_service_install }}/{{git_target}}"
-    state: link
-- name: Add GEM_HOME pathing support
-  git:
-    clone: yes
-    repo: git://github.com/apisnetworks/rbenv-usergems
-    dest: "{{ apnscp_filesystem_template }}/{{rbenv_service_install }}/{{git_target}}/plugins/rbenv-usergems"
-    force: "{{ rbenv_usergems_force | default('yes') }}"
-    version: "{{ rbenv_usergems_version | default('HEAD') }}"
-  register: result
-  until: result is succeeded
-  retries: "{{ network_max_retries }}"
-# Run two separate rbenvs: system-wide and localized. System-wide is used by Passenger
-# whereas localized allows users to create gem bundles within their home directory
-- name: Get rbenv code - root
-  command: "{{ git_target }}/bin/rbenv init -"
-  environment:
-    RBENV_ROOT: "{{ git_target }}"
-  register: rbenv_code
-  changed_when: false
-- name: Create rbenv.sh - root
-  copy:
-    dest: "{{rbenv_script}}"
-    content: |
-      #!/bin/sh
-      export RBENV_ROOT="{{ git_target }}"
-      {{ rbenv_code.stdout }}
-    mode: 0644
-- name: Get rbenv code - non-root
-  command: "{{ git_target }}/bin/rbenv usergems-init - | sed -e 's!\"/root!\"$HOME!g'"
-  environment:
-    RBENV_ROOT: "{{ git_target }}"
-  register: rbenv_code
-  changed_when: false
-- name: Create rbenv.sh - non-root
-  copy:
-    dest: "{{ apnscp_filesystem_template }}/{{ rbenv_service_install }}/{{rbenv_script}}"
-    content: |
-      #!/bin/sh
-      export RBENV_ROOT="{{ git_target }}"
-      {{ rbenv_code.stdout | regex_replace('(PATH="/[^/]*(?<!\$HOME)/?\.rbenv-usergems/)', 'PATH="$HOME/.rbenv-usergems/') }}
-    mode: 0644
-  notify: Reload filesystem template
-# End duplication
-- name: Link rbenv to /usr/bin
-  file:
-    path: "/usr/bin/rbenv"
-    src: "{{ git_target }}/bin/rbenv"
-    state: link
-- name: Check if {{ sys_ruby_version }} installed
-  stat: path={{ git_target }}/versions/{{sys_ruby_version | default("")}}
-  register: rv
-  when: (sys_ruby_version | default("system", true)) != "system"
 
-- name: Remove old Ruby builds
-  file: path="{{ item }}" state="absent"
-  with_fileglob: "{{ apnscp_root }}/storage/cache/ruby-build*"
-# Install Ruby manually to avoid using incorrect FST markup in playbook
-- block:
-    - name: Verify Ruby {{ sys_ruby_version }} is known to rbenv
-      command: >
-        rbenv install --list | grep -E '\s{{ sys_ruby_version | regex_escape() }}$'
-      register: r
-      changed_when: false
-      failed_when: r.rc not in [0,1]
-    - name: Update ruby-build rubies
-      command: git fetch
-      args:
-        chdir: "{{ apnscp_filesystem_template }}/{{rbenv_service_install }}/{{git_target}}/plugins/ruby-build"
-        warn: false
-      register: o
-      changed_when: -1 != o.stdout.find('->')
-  when: >
-    rbenv_freshen_build or
-    (sys_ruby_version | default("system", true)) != "system" and not rv.stat.exists
-- name: Build Ruby {{ sys_ruby_version }} outside FST
-  shell: >
-    $SHELL -lc "{{ git_target }}/bin/rbenv install {{ sys_ruby_version }}"
-  environment:
-    TMPDIR: "{{ apnscp_root }}/storage/cache"
-    RBENV_SHELL: bash
-    RBENV_ROOT: "{{ git_target }}"
-    MAKEFLAGS: "-j{{compile_max_jobs}}"
-  when: (sys_ruby_version | default("system", true)) != "system" and not rv.stat.exists
-- name: Add {{ git_target }} to wheel
-  command: >
-    find {{ git_target | quote }} -follow
-      -iname ".git" -prune -o -not -group wheel
-      -exec chgrp -c wheel {} +
-  register: rbenv_chown
-  changed_when: rbenv_chown.stdout != ""
-- name: Ensure wheel has permissions to install binaries
+- name: Enable any-version Ruby
+  include_tasks: enable-rbenv.yml
+  when: anyversion_ruby
+
+- name: Remove any-version Ruby
   file:
-    path: "{{ apnscp_filesystem_template }}/{{rbenv_service_install }}/{{git_target}}/{{ item }}"
-    mode: g+rwx
-    state: directory
-    group: wheel
-    owner: root
+    path: "{{ item }}"
+    state: absent
   with_items:
-    - versions
-    - shims
-# Stolen from rbenv-support playbook, needs late init to correct path
-- name: Check if current system ruby version is {{ sys_ruby_version }}
-  shell: $SHELL -ic "{{ git_target }}/bin/rbenv version | cut -d ' ' -f 1 | grep -Fx '{{ sys_ruby_version }}'"
-  register: ruby_selected
-  changed_when: false
-  ignore_errors: yes
-  failed_when: false
-  check_mode: no
-
-- name: Set Ruby {{ sys_ruby_version }} for system
-  become: yes
-  shell: $SHELL -ic "{{ git_target }}/bin/rbenv global {{ sys_ruby_version }} && {{ git_target }}/bin/rbenv rehash"
-  when:
-    - ruby_selected.rc != 0
-
-- name: Set defaults for /etc/gemrc
-  include_role: name=apnscp/service-template
-  vars:
-    files:
-      - content: |
-          gem: --no-document -E
-        service: ssh
-        path: /etc/gemrc
-
-- name: Symlink rbenv to {{git_target}}
-  file:
-    src: "{{ git_target }}/bin/rbenv"
-    path: "{{ apnscp_filesystem_template }}/{{ rbenv_service_install }}/usr/bin/rbenv"
-    state: link
-- name: Set GEM_HOME
-  lineinfile:
-    path: "{{ apnscp_filesystem_template}}/siteinfo/etc/profile"
-    line: 'export GEM_PATH="$GEM_PATH:$HOME/.gems"'
-- name: Symlink versions/{{ sys_ruby_version }}/bin/ruby to /usr/local/bin
-  file:
-    src: "{{ git_target }}/versions/{{ sys_ruby_version }}/bin/ruby"
-    path: /usr/local/bin/ruby
-    state: link
-  when: sys_ruby_version != 'system'
+    - "{{ git_target }}"
+    - "{{ rbenv_script }}"
+    - "{{ apnscp_filesystem_template}}/{{rbenv_service_install}}/{{ git_target }}"
+    - "{{ apnscp_filesystem_template}}/{{rbenv_service_install}}/{{ rbenv_script }}"
+  loop_control:
+    label: "Removing rbenv asset {{ item }}"
+  when: not anyversion_ruby

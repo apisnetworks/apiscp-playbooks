@@ -1,0 +1,35 @@
+---
+- name: "Prepare {{ git_target }}"
+  file:
+    path: "{{ git_target|dirname}}"
+    state: directory
+- name: Download nvm
+  git:
+    repo: "{{ git_repo }}"
+    dest: "{{ git_target }}"
+    version: "{{ (git_version != 'master') | ternary('v', '') }}{{ git_version }}"
+- name: Add nvm.sh
+  template:
+    dest: "{{ nvm_script }}"
+    group: root
+    owner: root
+    mode: 0755
+    src: "templates/nvm.sh.j2"
+- name: Link nvm.sh to FST
+  import_role: name=common tasks_from=copy-link.yml
+  vars:
+    src: "{{ nvm_script }}"
+    path: "{{ apnscp_filesystem_template }}/{{ nvm_service_install }}/{{nvm_script}}"
+- name: Check for LTS installation
+  shell: . {{ nvm_script }} ; nvm ls | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g"
+  register: o1
+  failed_when: false
+  changed_when: o1.stdout is not search("lts/.*\s+v")
+- name: Install Node LTS
+  # Need to source nvm.sh
+  shell: . {{ nvm_script }} ; nvm install --lts
+  register: o2
+  changed_when: "'already installed' not in o2.stderr"
+- name: Configure LTS as default interpreter
+  shell: . {{ nvm_script }} && nvm use --lts
+  when: o1.stdout is not search('\s+default\s+->\s+lts/.*?((?!=N/A|$))')

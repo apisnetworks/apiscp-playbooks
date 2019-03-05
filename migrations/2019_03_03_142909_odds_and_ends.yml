@@ -12,5 +12,10 @@
     include_role: name=mail/configure-dovecot
   - name: Ensure quota RPM installed
     yum: name=quota state=installed
+  - name: Update systemd journal size
+    include_role: name=system/logs
+  - name: Add mysqld.log fail2ban detection
+    include_role: name=fail2ban/configure-jails
+    when: allow_remote_db
   tags:
     - up
