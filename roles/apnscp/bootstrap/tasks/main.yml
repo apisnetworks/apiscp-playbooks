@@ -99,7 +99,7 @@
     dest: "{{ apnscp_root }}/config/httpd-custom.conf"
     owner: "{{ apnscp_system_user }}"
     group: "{{ apnscp_system_user }}"
-  when: not httpdchk.stat.exists or (force | bool | default(false, true))
+  when: not httpdchk.stat.exists or ((force | default(false, true)) | bool)
   notify: Restart apnscp
 
 - include_tasks: "set-config.yml"
