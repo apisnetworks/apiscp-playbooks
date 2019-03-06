@@ -33,13 +33,13 @@ apnscp_ca_rpm: http://yum.apnscp.com/apnscp-latest.rpm
 # Platform version. Changes internally with each new release
 apnscp_platform_version: 7.5
 # Any-version support. Set to true to implicitly enable all AV languages below
-#anyversion_enabled: true
+anyversion_enabled: '{{ passenger_enabled }}'
 # By default this is tied to Passenger's presence
 # Or individually toggle languages below. May break Passenger!
-anyversion_python: '{{ anyversion_enabled | default(passenger_enabled) }}'
-anyversion_ruby: '{{ anyversion_enabled | default(passenger_enabled) }}'
-anyversion_node: '{{ anyversion_enabled | default(passenger_enabled) }}'
-anyversion_go: '{{ anyversion_enabled | default(passenger_enabled) }}'
+anyversion_python: '{{ anyversion_enabled }}'
+anyversion_ruby: '{{ anyversion_enabled }}'
+anyversion_node: '{{ anyversion_enabled }}'
+anyversion_go: '{{ anyversion_enabled }}'
 # apnscp fixes
 nvm_version: master
 pyenv_version: 1.2.4
