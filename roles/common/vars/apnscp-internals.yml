@@ -33,7 +33,8 @@ apnscp_ca_rpm: http://yum.apnscp.com/apnscp-latest.rpm
 # Platform version. Changes internally with each new release
 apnscp_platform_version: 7.5
 # Any-version support. Set to true to implicitly enable all AV languages below
-anyversion_enabled: true
+#anyversion_enabled: true
+# By default this is tied to Passenger's presence
 # Or individually toggle languages below. May break Passenger!
 anyversion_python: '{{ anyversion_enabled | default(passenger_enabled) }}'
 anyversion_ruby: '{{ anyversion_enabled | default(passenger_enabled) }}'
@@ -47,7 +48,7 @@ goenv_version: 1.14.0
 # Others may be installed via "rbenv install", this is used primarily for
 # bootstrapping Passenger. system Ruby shipped with RHEL 7 (2.0) is too
 # old and too broken to be of use
-sys_ruby_version: "{{ passenger_enabled | ternary('2.4.5','system') }}"
+sys_ruby_version: "{{ (anyversion_ruby or passenger_enabled) | ternary('2.4.5','system') }}"
 rbenv_usergems_version: ad2fd08
 
 # Enable remote FTP connections. FTP will always be enable for Wordpress

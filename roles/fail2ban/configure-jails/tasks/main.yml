@@ -32,7 +32,7 @@
   with_items:
     - section: Definition
       option: failregex
-      value: >
+      value: >-
         ^%(__prefix_line)s\s*(?:\d+ |\d{1,2}:\d{2}:\d{2}(?:\s+\d+)?\s*)?\[\w+\] Access denied for user '[^']+'@'<HOST>' (to database '[^']*'|\(using password: (YES|NO)\))*\s*$
     # Bad MariaDB! Bad bad! Pads left two spaces on time
     - section: Init
