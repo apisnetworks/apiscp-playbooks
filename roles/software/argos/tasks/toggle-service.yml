@@ -14,7 +14,5 @@
 - name: "Move {{ _argos_src_file }} to {{ _argos_dest_file }}"
   command: >
     mv -f {{ _argos_src_file | quote }} {{ _argos_dest_file | quote }}
-  args:
-    creates: "{{ _argos_dest_file }}"
   notify: Restart monit
   when: r.stat.exists
