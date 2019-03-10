@@ -1,4 +1,6 @@
 ---
+- name: Setup cyrus
+  include_tasks: setup-cyrus.yml
 - name: Verify host is set if smarthost enabled
   fail: msg="postfix_smarthost_enabled is true and postfix_smarthost_credentials.host is not set"
   when:
@@ -126,5 +128,6 @@
   with_subelements:
     - "{{ postfix_memcache_maps }}"
     - params
-
+- name: Setup cyrus
+  include_tasks: setup-cyrus.yml
 - meta: flush_handlers

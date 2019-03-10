@@ -1,0 +1,21 @@
+- name: Verify saslauthd installed
+  yum: name=cyrus-sasl state=installed
+# Postfix needs some form of privileged SMTP authentication against user
+# accounts for Monit to work
+- name: Limit saslauthd workers
+  ini_file:
+    path: /etc/sysconfig/saslauthd
+    section: null
+    option: FLAGS
+    value: "-n{{ saslauthd_worker_count }} {{ saslauthd_extra_flags }}"
+    no_extra_spaces: yes
+  when: not mail_enabled
+  notify: Restart saslauthd
+# Dovecot available
+- name: "{{ mail_enabled | ternary('Disable', 'Enable') }} saslauthd"
+  systemd:
+    name: saslauthd
+    enabled: "{{ mail_enabled | ternary('no', 'yes') }}"
+    state: "{{ mail_enabled | ternary('stopped', 'started') }}"
+  notify: "{{ mail_enabled | ternary('noop', 'Restart saslauthd') }}"
+- meta: flush_handlers

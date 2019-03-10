@@ -1,2 +1,4 @@
 - name: Update aliases
   command: /usr/sbin/postalias "{{ aliases_file }}"
+- name: Restart saslauthd
+  systemd: name=saslauthd state="{{ mail_enabled | ternary('disabled', 'restarted') }}"

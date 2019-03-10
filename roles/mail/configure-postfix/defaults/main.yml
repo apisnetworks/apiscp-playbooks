@@ -92,3 +92,8 @@ postfix_memcache_maps:
       - memcache: "{{ (postfix_memcache_server[0] == '/') | ternary('unix', 'inet')}}:{{ postfix_memcache_server }}"
       - backup: "{{ postfix_local_postscreen_cache_map }}"
       - key_format: "ps:%s"
+
+# saslauthd when mail_enabled is false
+saslauthd_worker_count: 3
+# Additional flags to pass to FLAGS= in /etc/sysconfig/saslauthd
+saslauthd_extra_flags: ""
