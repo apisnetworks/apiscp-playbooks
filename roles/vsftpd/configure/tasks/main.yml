@@ -1,6 +1,4 @@
 ---
-- name: Enable vsftpd
-  systemd: name=vsftpd state=started enabled=yes
 - include_role: name=common tasks_from=touch-if-not-exists
   vars:
     file: "{{ item }}"
@@ -24,3 +22,5 @@
     dest: /etc/logrotate.d/vsftpd
     src: templates/vsftpd.j2
     force: no
+- name: Enable vsftpd
+  systemd: name=vsftpd state=started enabled=yes

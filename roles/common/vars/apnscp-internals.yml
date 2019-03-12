@@ -105,3 +105,7 @@ compile_max_jobs: "{{ (not has_low_memory) | ternary(ansible_processor_vcpus + 1
 bootstrapper_acquire_lock: true
 bootstrapper_lock_file: "{{ apnscp_root }}/storage/run/.ansible.lock"
 bootstrapper_lock_max_wait: 900
+
+# IPv4/6 family detection
+has_ipv4: "{{ (ansible_all_ipv4_addresses | length) > 0 }}"
+has_ipv6: "{{ (ansible_all_ipv6_addresses | length) > 0 }}"

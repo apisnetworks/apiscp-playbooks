@@ -6,6 +6,9 @@
       - dovecot-pigeonhole
       - dovecot22-apnscp
     state: '{{ mail_enabled | ternary("installed","absent") }}'
+- name: Remove Dovecot relocation
+  file: path="{{ dovecot_shared_root }}" state=absent
+  when: not mail_enabled
 - include_tasks: enable-dovecot.yml
   when: mail_enabled
 - name: Configure Dovecot Argos profile

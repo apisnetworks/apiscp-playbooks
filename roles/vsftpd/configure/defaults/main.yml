@@ -4,7 +4,7 @@ vsftpd_config_path: /etc/vsftpd/vsftpd.conf
 vsftpd_login_banner: /etc/vsftpd/login.txt
 vsftpd_directives:
   # If a user is attached to an account
-  # and later removed, seccomp will vomit 
+  # and later removed, seccomp will vomit
   # during uid -> pwd translation
   seccomp_sandbox: "NO"
   banner_file: "{{ vsftpd_login_banner }}"
@@ -38,3 +38,5 @@ vsftpd_directives:
   session_support: "YES"
   pasv_min_port: 40000
   pasv_max_port: "{{ user_daemons | bool | ternary(49999, pasv_max_port) }}"
+  listen: "{{ (has_ipv4 and not has_ipv6) | ternary('YES', 'NO') }}"
+  listen_ipv6: "{{ has_ipv6 | ternary('YES', 'NO') }}"
