@@ -40,7 +40,6 @@ postfix_config:
   smtpd_recipient_restrictions:
     '{{ postfix_relay_mynetworks | bool | ternary("permit_mynetworks,", "") }}
     permit_sasl_authenticated,
-    reject_unauth_destination,
     reject_unknown_recipient_domain,
     reject_non_fqdn_helo_hostname,
     reject_non_fqdn_sender,
@@ -82,8 +81,8 @@ postfix_config:
   postscreen_dnsbl_action: enforce
   postscreen_greet_action: enforce
   postscreen_non_smtp_command_enable: "yes"
-  smtpd_tls_mandatory_protocols: "!SSLv2"
-  smtp_tls_mandatory_protocols: "!SSLv2"
+  smtpd_tls_mandatory_protocols: "!SSLv2, !SSLv3"
+  smtp_tls_mandatory_protocols: "${smtpd_tls_mandatory_protocols}"
   smtpd_tls_exclude_ciphers: SSLv2
   require_home_directory: "yes"
   home_mailbox: "{{ maildir_home }}/"
@@ -109,9 +108,9 @@ postfix_config:
   relayhost: "{{ postfix_smarthost_enabled | ternary(postfix_smarthost_credentials.host, None) }}"
 
   # PostSRS
-  sender_canonical_maps: "{{ postsrsd_enabled | ternary('tcp:localhost:' + postsrs_sender_map_port|string, None) }}"
+  sender_canonical_maps: "{{ postsrsd_enabled | ternary('tcp:localhost:' + postsrsd_sender_map_port|string, None) }}"
   sender_canonical_classes: "{{ postsrsd_enabled | ternary('envelope_sender', None) }}"
-  recipient_canonical_maps: "{{ postsrsd_enabled | ternary('tcp:localhost:' + postsrs_recipient_map_port|string, None) }}"
+  recipient_canonical_maps: "{{ postsrsd_enabled | ternary('tcp:localhost:' + postsrsd_recipient_map_port|string, None) }}"
   recipient_canonical_classes: "{{ postsrsd_enabled | ternary('envelope_recipient,header_recipient', None) }}"
 
   # UTF8 BOM

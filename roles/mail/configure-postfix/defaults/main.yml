@@ -65,8 +65,9 @@ postfix_mydomain: "{{ ((data_center_mode | bool) or (ansible_nodename | regex_fi
 # of an inundated mailbox since SA has a very limited number of slots to scan mail.
 postfix_local_delivery_delay: "{{ ( (spamfilter == 'spamassassin') and (mail_enabled | bool) )  | ternary('3s', '0') }}"
 # PostSRS
-postsrs_sender_map_port: 10001
-postsrs_recipient_map_port: 10002
+postsrsd_sender_map_port: 10001
+postsrsd_recipient_map_port: 10002
+postsrsd_hash_length: 8
 
 # Address verification/postscreen map cache
 # When data_center_mode is true, replace the maps

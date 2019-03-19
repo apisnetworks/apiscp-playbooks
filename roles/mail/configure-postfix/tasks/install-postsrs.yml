@@ -8,6 +8,9 @@
   ini_file:
     path: /etc/default/postsrsd
     section: null
-    option: SRS_DOMAIN
-    value: "{{ srs_domain|default(system_hostname | default(ansible_fqdn, true)) }}"
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+  with_dict:
+    SRS_DOMAIN: "{{ postsrsd_domain|default(system_hostname | default(ansible_fqdn, true)) }}"
+    SRS_HASHLENGTH: "{{ postsrsd_hash_length }}"
   notify: Restart postsrsd
