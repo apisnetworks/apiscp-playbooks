@@ -196,4 +196,12 @@ plugin {
   # track per-IMAP command statistics (optional)
   stats_track_cmds = yes
 }
+
+{% endif %}
+
+{% if dovecot_enable_zlib_storage and dovecot_enable_zlib %}
+plugin {
+  zlib_save_level = {{ dovecot_zlib_compression_level | int }}
+  zlib_save = {{ dovecot_zlib_compression_handler }}
+}
 {% endif %}
