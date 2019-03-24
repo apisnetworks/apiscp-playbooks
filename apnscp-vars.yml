@@ -127,6 +127,10 @@ mysqld_per_account_innodb: "{{ data_center_mode }}"
 # requires more care than other webmail options
 enable_horde: "{{ mail_enabled | bool }}"
 
+# Run the entire playbook once a month to verify platform integrity
+# Results will be emailed to admin email on server
+monthly_platform_check: true
+
 # apnscp provides a watchdog service to reboot your server when all hope is lost
 # Set this to a value CPU x process depth. On a 2 CPU system the system is deemed
 # out to lunch if more than 50 processes are waiting for CPU acknowledgement.

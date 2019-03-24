@@ -41,6 +41,9 @@
 - name: Disable apnscp nightly updates
   file: path={{ apnscp_update_cron }} state=absent
   when: not (apnscp_nightly_update | bool) or apnscp_update_policy == false
+- name: Disable monthly integrity checks
+  file: path="{{ platform_check_job }}" state=absent
+  when: not monthly_platform_check
 - name: Set apnscp update policy
   ini_file:
     path: /etc/sysconfig/apnscp

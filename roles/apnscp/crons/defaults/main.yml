@@ -3,6 +3,7 @@ cron_daily: /etc/cron.daily
 cron_weekly: /etc/cron.weekly
 cron_monthly: /etc/cron.monthly
 nightly_fst_sync: "{{ cron_daily }}/99resync_fst"
+platform_check_job: "{{ cron_monthly }}/Zplatform_integrity_check"
 cron_copy:
   - src: changeownership.sh
     dest: "{{ cron_daily }}/98update_web_ownership"
@@ -24,6 +25,9 @@ cron_template:
     dest: "{{ cron_monthly }}/locate_webapps"
   - src: webapp_monthly_digest.sh.j2
     dest: "{{ cron_monthly }}/webapp_monthly_digest"
+  - src: platform_integrity_check.sh.j2
+    dest: "{{ platform_check_job }}"
+    when: monthly_platform_check
 # Automatically run Bootstrapper on update when auto-update
 # Otherwise just migrations will run
 apnscp_update_bootstrapper: false

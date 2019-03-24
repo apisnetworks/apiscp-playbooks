@@ -1,0 +1,12 @@
+#!/usr/bin/env apnscp_php
+<?php declare(strict_types=1);
+
+include('{{ apnscp_root }}/lib/CLI/cmd.php');
+
+if (!\Lararia\JobDaemon::checkState()) {
+	warn("Skipping integrity check, job runner inactive");
+	exit(1);
+}
+
+$job = \Lararia\Jobs\Job::create(\Lararia\Jobs\MonthlyIntegrityJob::class);
+$job->dispatch();
