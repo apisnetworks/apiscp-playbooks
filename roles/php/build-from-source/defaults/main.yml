@@ -2,4 +2,4 @@
 php_force_build: false
 force: false
 extra_flags: ""
-php_release_feed: http://www.php.net/releases/?json
+php_release_feed: https://www.php.net/releases/?json
