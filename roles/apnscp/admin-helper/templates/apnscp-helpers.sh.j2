@@ -1,3 +1,5 @@
+#!/bin/bash
+
 [[ -f /etc/sysconfig/apnscp ]] && . /etc/sysconfig/apnscp
 APNSCP_HOME=${APNSCP_HOME:-/usr/local/apnscp}
 APNSCPCMD=${APNSCPCMD:-${APNSCP_HOME}/bin/cmd}
@@ -10,10 +12,10 @@ alias ntfy="ntfy -c /root/.argos.conf"
 
 # Cleanup /home/virtual binds
 df() {
-	command df $@ | grep -v " {{ apnscp_account_root }}"
+	command df "$@" | grep -v " {{ apnscp_account_root }}"
 }
 mount() {
-	command mount $@ | grep -v " {{ apnscp_account_root }}"
+	command mount "$@" | grep -v " {{ apnscp_account_root }}"
 }
 
 # avoid blowing up /.socket or bind mounts
@@ -21,7 +23,7 @@ alias rm='rm -i --one-file-system'
 alias htrebuild="/etc/systemd/user/httpd.init buildconfig"
 
 function site_stats {
-	if [ -z $1 ] ; then
+	if [ -z "$1" ] ; then
 		CONSTRAINT="%"
 	else
 		CONSTRAINT=$1
@@ -54,54 +56,56 @@ function temp_password {
 		echo "usage: $0 <domain>"
 		return 1
 	fi
-	adminuser=`$APNSCPCMD admin_get_meta_from_domain $1 siteinfo admin_user`
-	newpass=`$APNSCPCMD auth_set_temp_password $1`
+	adminuser="$($APNSCPCMD admin_get_meta_from_domain "$1" siteinfo admin_user)"
+	newpass="$($APNSCPCMD auth_set_temp_password "$1")"
 	echo "$adminuser -> $newpass"
 }
 
-
 function get_config {
-	DOMAIN=$1
-	CLASS=$2
-	PARAM=$3
-	if [ -z $PARAM ] ; then
-		echo "usage: get_config domain svc_class svc_param"
+	local DOMAIN=$1
+	local CLASS=$2
+	local PARAM=$3
+	if [ -z "$PARAM" ] ; then
+		>&2 echo "usage: get_config domain svc_class svc_param"
 		return 255
 	fi
-	SITE=$(get_site $DOMAIN)
-	if [ ! -d /home/virtual/$SITE/info ] ; then
+	SITE=$(get_site "$DOMAIN")
+	if [[ -z "$SITE" || ! -d /home/virtual/$SITE/info ]]; then
 		echo "Invalid domain $DOMAIN"
 		return 1
 	fi
-	if [ ! -f /home/virtual/$SITE/info/current/$CLASS ] ; then
+	if [ ! -f "/home/virtual/$SITE/info/current/$CLASS" ] ; then
 		echo "Service class $CLASS does not exist"
 		return 1
 	fi
 	set -f +B  VAL
-	VAL=`perl -n  -e 'if (/^'$PARAM'\s*=/) { s/['\'']//g ;  s/^\s*'$PARAM'\s*=\s*//g ;  print; exit ; }' <  /home/virtual/$SITE/info/current/$CLASS`
-	if [ $? -ne 0 ]; then
+	VAL=$(perl -n  -e 'if (/^'"$PARAM"'\s*=/) { s/['\'']//g ;  s/^\s*'"$PARAM"'\s*=\s*//g ;  print; exit ; }' <  "/home/virtual/$SITE/info/current/$CLASS")
+	STATUS=$?
+	if [ $STATUS -ne 0 ]; then
 		echo "Param $PARAM does not exist";
 		return 1;
 	fi;
-	echo $VAL
+	echo "$VAL"
 	set +f
 	return 0
 }
 
 # Get siteXX from domain
 function get_site {
-	DOMAIN=$1
+	local DOMAIN=$1
 	if [[ ! "$DOMAIN" =~ ^site[[:digit:]]+$ ]] ; then
 		DOMAIN=$(tcamgr  get /etc/virtualhosting/mappings/domainmap.tch "$DOMAIN" 2> /dev/null)
+		STATUS=$?
+		[[ $STATUS -ne 0 ]] && return $STATUS
 	fi
-	echo $DOMAIN
+	echo "$DOMAIN"
 	return
 }
 
 # Get numeric site identifier from site
 function get_site_id {
-	var=$(get_site $1)
-	echo ${var#site}
+	var=$(get_site "$1")
+	echo "${var#site}"
 }
 
 # Match mail queue on term and remove
@@ -109,12 +113,12 @@ function get_site_id {
 function rmspam {
 	SPOOL=/var/spool/postfix
 	EMAIL=$1
-	let CNT=0
+	CNT=0
 	grep -rsl "$EMAIL" $SPOOL/active/ $SPOOL/bounce/ $SPOOL/deferred/ $SPOOL/incoming/ | \
-		{  while read ID ; do
+		{  while read -r ID ; do
 				ID=${ID##*/}
 				((CNT++))
-				postsuper -d $ID 2> /dev/null
+				postsuper -d "$ID" 2> /dev/null
 			done
 			echo "Removed $CNT messages"
 		}
@@ -124,8 +128,31 @@ function rmspam {
 # Useful when building up new filesystem services
 function bintrospect {
 	BIN=$1
-	ldd "$BIN"  | awk '{print $3}'  | grep '^/' | while read lib ; do
+	ldd "$BIN"  | awk '{print $3}'  | grep '^/' | while read -r lib ; do
 		[ -f "$lib" ] || continue
-		strings "$lib" | egrep '^[A-Z_]+$'
+		strings "$lib" | grep -E '^[A-Z_]+$'
 	done | sort | uniq
 }
+
+{% if helpers_use_su %}
+# Simplify user switching
+function su {
+	if test $# -ne 1 ; then
+		command su "$@"
+	fi
+
+	local DOMAIN=$1
+	local USER
+	getent passwd "$DOMAIN" > /dev/null
+	STATUS=$?
+	if ( ! test $STATUS -eq 0 && get_site "$DOMAIN" ) > /dev/null; then
+		USER="$(get_config "$DOMAIN" siteinfo admin_user)"
+		STATUS=$?
+		if test $STATUS -eq 0; then
+			command su "${USER}@${DOMAIN}"
+		fi
+	fi
+
+	command su "$@"
+}
+{% endif %}

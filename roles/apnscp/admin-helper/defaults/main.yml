@@ -1,0 +1,3 @@
+---
+# Enable "su domain.com" translation
+helpers_use_su: true
