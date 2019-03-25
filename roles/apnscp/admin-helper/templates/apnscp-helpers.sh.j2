@@ -139,6 +139,7 @@ function bintrospect {
 function su {
 	if test $# -ne 1 ; then
 		command su "$@"
+		return
 	fi
 
 	local DOMAIN=$1
@@ -150,6 +151,7 @@ function su {
 		STATUS=$?
 		if test $STATUS -eq 0; then
 			command su "${USER}@${DOMAIN}"
+			return
 		fi
 	fi
 
