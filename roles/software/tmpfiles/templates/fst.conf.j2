@@ -1,2 +1,6 @@
+r! /etc/httpd/conf/building - - - -
+{% if tmpfiles_purge_root_mail %}
+e /root/Mail/{cur,new} - - - 60d
+{% endif %}
 e /home/virtual/site*/fst/tmp 3777 root root 7d
 e /home/virtual/site*/fst/home/*/Mail/.Spam/{new,cur} - - - 30d

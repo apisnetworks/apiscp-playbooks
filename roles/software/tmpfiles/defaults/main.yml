@@ -1,3 +1,5 @@
 ---
+# Purge root's mail after 60 days
+tmpfiles_purge_root_mail: true
 tmpfiles_dir: /etc/tmpfiles.d/
 src_files: templates/*.j2
