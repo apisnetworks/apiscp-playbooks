@@ -9,16 +9,16 @@ jails:
     vars:
       port: 25,587,465
       logpath: "%(dovecot_log)s"
-      banaction: "{{ f2b_default_banaction }}"
+      banaction: "{{ f2b_postfix_banaction | default(f2b_default_banaction) }}"
       enabled: true
-      bantime: "{{ f2b_bantime }}"
-      findtime: "{{ f2b_findtime }}"
-      maxretry: "{{ f2b_maxretry }}"
+      bantime: "{{ f2b_dovecot_bantime | default(f2b_bantime) }}"
+      findtime: "{{ f2b_dovecot_findtime | default(f2b_findtime) }}"
+      maxretry: "{{ f2b_postfix_maxretry | default(f2b_maxretry) }}"
   - name: evasive
     vars:
       port: 80,443
       logpath: "%(syslog_daemon)s"
-      banaction: "{{ f2b_default_banaction }}"
+      banaction: "{{ f2b_evasive_banaction | default(f2b_default_banaction) }}"
       ignoreip: 127.0.0.1
       filter: "apache-modevasive"
       bantime: "{{ f2b_evasive_bantime | default(120) }}"
@@ -38,45 +38,47 @@ jails:
   - name: dovecot
     vars:
       port: 110,995,143,993
-      bantime: "{{ f2b_bantime }}"
-      findtime: "{{ f2b_findtime }}"
-      maxretry: "{{ f2b_maxretry }}"
+      bantime: "{{ f2b_dovecot_bantime | default(f2b_bantime) }}"
+      findtime: "{{ f2b_dovecot_findtime | default(f2b_findtime) }}"
+      maxretry: "{{ f2b_dovecot_maxretry | default(f2b_maxretry) }}"
       logpath: "%(dovecot_log)s"
       enabled: true
-      banaction: "{{ f2b_default_banaction }}"
+      banaction: "{{ f2b_dovecot_banaction | default(f2b_default_banaction) }}"
   - name: sshd
     vars:
       port: 22
-      bantime: "{{ f2b_bantime }}"
-      findtime: "{{ f2b_findtime }}"
-      maxretry: "{{ sshd_f2b_maxretry | default(f2b_maxretry) | int}}"
+      bantime: "{{ f2b_sshd_bantime | default(f2b_bantime) }}"
+      findtime: "{{ f2b_sshd_findtime | default(f2b_findtime) }}"
+      maxretry: "{{ f2b_sshd_maxretry | default(f2b_maxretry) | int}}"
       logpath: "%(sshd_log)s"
       enabled: true
   - name: spambots
     vars:
       port: 25,587
-      bantime: "{{ f2b_bantime }}"
-      findtime: "{{ f2b_findtime }}"
-      maxretry: "{{ f2b_maxretry }}"
+      bantime: "{{ f2b_spambots_bantime | default(f2b_bantime) }}"
+      findtime: "{{ f2b_spambots_findtime | default(f2b_findtime) }}"
+      maxretry: "{{ f2b_spambots_maxretry | default(f2b_maxretry) }}"
       logpath: "%(postfix_log)s"
       enabled: true
-      banaction: "{{ f2b_default_banaction }}"
+      banaction: "{{ f2b_spambots_banaction | default(f2b_default_banaction) }}"
   - name: vsftpd
     vars:
       port: ftp,ftp-data,ftps,ftps-data
-      bantime: "{{ f2b_bantime }}"
-      findtime: "{{ f2b_findtime }}"
-      maxretry: "{{ f2b_maxretry }}"
+      bantime: "{{ f2b_vsftpd_bantime | default(f2b_bantime) }}"
+      findtime: "{{ f2b_vsftpd_findtime | default(f2b_findtime) }}"
+      maxretry: "{{ f2b_vsftpd_maxretry | default(f2b_maxretry) }}"
       logpath: "%(vsftpd_log)s"
       enabled: true
-      banaction: "{{ f2b_default_banaction }}"
-  - name: mysqld-auth
+      banaction: "{{ f2b_vsftpd_banaction | default(f2b_default_banaction) }}"
+  - name: mysqld
     vars:
       port: 3306
-      bantime: "{{ f2b_bantime }}"
-      findtime: "{{ f2b_findtime }}"
-      maxretry: "{{ f2b_maxretry }}"
+      # rename jail to "mysqld" for consistency
+      filter: mysqld-auth
+      bantime: "{{ f2b_mysqld_bantime | default(f2b_bantime) }}"
+      findtime: "{{ f2b_mysqld_findtime | default(f2b_findtime) }}"
+      maxretry: "{{ f2b_mysqld_maxretry | default(f2b_maxretry) }}"
       logpath: "/var/lib/mysql/mysqld.log"
       enabled: "{{ allow_remote_db | ternary('true', 'false') }}"
-      banaction: "{{ f2b_default_banaction }}"
+      banaction: "{{ f2b_mysqld_banaction | default(f2b_default_banaction) }}"
   # @TODO PostgreSQL

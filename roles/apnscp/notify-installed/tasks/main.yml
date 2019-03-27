@@ -4,3 +4,8 @@
 - name: Notify admin apnscp is installed
   include_tasks: notify.yml
   when: __apnscp_admin_password is defined
+- name: Fast-forward pending platform migrations
+  command: "{{ apnscp_root }}/artisan migrate:platform --ff --force"
+  register: r
+  changed_when: -1 != r.stdout.find("Fast-forwarded")
+  when: __apnscp_admin_password is defined

@@ -1,0 +1,16 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# - Rename mysqld-auth to mysqld
+---
+- block:
+  - name: Disable mysqld-auth usage
+    include_role: name=common tasks_from=write-config.yml
+    vars:
+      file: '/etc/fail2ban/jail.conf'
+      cfgvars:
+        enabled: false
+      group: "mysqld-auth"
+      notify: Restart fail2ban
+  - name: Rename mysqld-auth jail to mysqld
+    include_role: name=fail2ban/configure-jails
+  tags: up
