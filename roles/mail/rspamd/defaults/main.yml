@@ -248,6 +248,7 @@ config_files:
   - file: actions.conf
     vars:
       rewrite_subject: "{{ rspamd_rewrite_subject_score }}"
+      add_header: null
       # greylist and reject are computed in enable-rspamd.yml
       subject: "{{ rspamd_passive_learning_mode | ternary('%s', '[SPAM] (%d) %s') }}"
   - file: classifier-bayes.conf
@@ -334,11 +335,11 @@ config_files:
   - file: milter_headers.conf
     vars:
       extended_spam_headers: "{{ rspamd_extended_spam_headers }}"
-      use: ["x-spam-score","spam-header",'x-spam-level']
+      use: ['x-spam-score','spam-header']
       routines:
         spam-header:
           header: "X-Spam-Flag"
-          value: Yes
+          value: "Yes"
       custom:
         x-spam-score: |
           return function(task, common_meta)
