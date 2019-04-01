@@ -1,4 +1,5 @@
 ---
+maildrop_delete_threshold: "{{ (spamfilter == 'spamassassin') | ternary('7.0','25') }}"
 maildir_home: Mail
 root_maildir: /root/Mail
 mutt_svc: ssh

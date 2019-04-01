@@ -126,7 +126,7 @@ rspamd_reject_score: 15
 rspamd_greylist_piggyback_score: 10
 # Used when spamfilter == rspamd, triggers delivery in Spam mailbox
 # When piggybacking, a SA score of 4 adds this header anyway
-rspamd_add_header_score: 8
+rspamd_rewrite_subject_score: 8
 rspamd_greylist_score: 4
 # Add headers to email
 rspamd_extended_spam_headers: "{{ (rspamd_method == 'piggyback') }}"
@@ -247,7 +247,7 @@ config_files:
           backend: *redis
   - file: actions.conf
     vars:
-      add_header: "{{ rspamd_add_header_score }}"
+      rewrite_subject: "{{ rspamd_rewrite_subject_score }}"
       # greylist and reject are computed in enable-rspamd.yml
       subject: "{{ rspamd_passive_learning_mode | ternary('%s', '[SPAM] (%d) %s') }}"
   - file: classifier-bayes.conf
@@ -334,6 +334,24 @@ config_files:
   - file: milter_headers.conf
     vars:
       extended_spam_headers: "{{ rspamd_extended_spam_headers }}"
+      use: ["x-spam-score","spam-header",'x-spam-level']
+      routines:
+        spam-header:
+          header: "X-Spam-Flag"
+          value: Yes
+      custom:
+        x-spam-score: |
+          return function(task, common_meta)
+            local sc = common_meta['metric_score'] or task:get_metric_score()
+            -- return no error
+            return nil,
+            -- header(s) to add
+            {['X-Spam-Score'] = string.format('%.2f', sc[1])},
+            -- header(s) to remove
+            {['X-Spam-Score'] = 1},
+            -- metadata to store
+            {}
+          end
   - file: mx_check.conf
     vars:
       timeout: 5
