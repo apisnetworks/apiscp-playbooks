@@ -11,7 +11,7 @@ if ($SIZE < 524288)
 DELETE_THRESHOLD="{{ maildrop_delete_threshold }}"
 if (/^X-Spam(?:-Flag)?: Yes/)
 {
-    /X-Spam-Score: ([-\.\d]+)/
+    /^X-Spam-Score: ([-\.\d]+)/
     if ($MATCH1 >= $DELETE_THRESHOLD)
     {
         to /dev/null
