@@ -8,7 +8,7 @@ if ($SIZE < 524288)
     }
 }
 
-DELETE_THRESHOLD=7.0
+DELETE_THRESHOLD="{{ maildrop_delete_threshold }}"
 if (/^X-Spam(?:-Flag)?: Yes/)
 {
     /X-Spam-Score: ([-\.\d]+)/
