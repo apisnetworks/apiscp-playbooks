@@ -3,6 +3,8 @@
   debug: msg=noop verbosity=4
 - name: Restart rsyslog
   systemd: state=restarted name=rsyslog enabled=yes
+- name: Restart haproxy
+  systemd: name=haproxy state=restarted
 - name: Restart apnscp
   systemd: state=restarted name=apnscp enabled=yes
 - name: Restart apache

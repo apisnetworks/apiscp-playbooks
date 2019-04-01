@@ -1,7 +1,10 @@
 ---
 sysctl_file: /etc/sysctl.d/apnscp.conf
 sysctl_config:
+  # User services
+  net.ipv4.ip_local_reserved_ports: "{{ user_daemons | ternary('40000-49999', '') }}"
   net.ipv4.tcp_slow_start_after_idle: 0
+  net.core.somaxconn: 512
   # Fixes ab timeouts
   net.ipv4.tcp_max_syn_backlog: 1024
   net.ipv4.tcp_tw_reuse: 1
