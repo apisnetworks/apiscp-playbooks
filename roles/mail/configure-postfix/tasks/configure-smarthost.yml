@@ -8,9 +8,9 @@
 - name: "Ensure {{ credentials.host }} in {{ postfix_smarthost_auth_file }}"
   lineinfile:
     path: "{{ postfix_smarthost_auth_file }}"
-    regexp: '^\s*{{ credentials.host | regex_escape }}\s+'
     state: present
     line: '{{credentials.host}} '
+  when: not (lookup('file', postfix_smarthost_auth_file) is match('^\s*' + (credentials.host | regex_escape) + '\s+'))
 - name: "Add credentials + assert permissions in {{ postfix_smarthost_auth_file }}"
   replace:
     mode: 0600
@@ -21,7 +21,7 @@
     # need atomic grouping to force match username present but password absent
     # if password specified; current regex misses this
     regexp: '^\s*{{ credentials.host | regex_escape }}\s+(?!{{ credentials.username | regex_escape}}(?::{{ credentials.password | regex_escape}}|)\s*$).*$'
-    replace: "{{ credentials.host }}  {{ credentials.username }}:{{ credentials.password }}"
+    replace: "{{ credentials.host }} {{ credentials.username }}:{{ credentials.password }}"
   no_log: true
   register: r
 - name: "Create hash DB for  {{ postfix_smarthost_auth_file }}"
