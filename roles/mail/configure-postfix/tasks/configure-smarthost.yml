@@ -5,6 +5,12 @@
 - name: "Create {{ postfix_smarthost_auth_file }}"
   file: path="{{ postfix_smarthost_auth_file }}" state=touch
   when: not o.stat.exists
+- name: "Ensure {{ credentials.host }} in {{ postfix_smarthost_auth_file }}"
+  lineinfile:
+    path: "{{ postfix_smarthost_auth_file }}"
+    regexp: '^\s*{{ credentials.host | regex_escape }}\s+'
+    state: present
+    line: '{{credentials.host}} '
 - name: "Add credentials + assert permissions in {{ postfix_smarthost_auth_file }}"
   replace:
     mode: 0600
