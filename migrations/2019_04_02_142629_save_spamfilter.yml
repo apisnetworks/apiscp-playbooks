@@ -1,0 +1,12 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# - Rename mysqld-auth to mysqld
+---
+- block:
+  - name: Save spamfilter name
+    include_role: name=apnscp/bootstrap tasks_from=set-config.yml
+    vars:
+      section: mail
+      option: spam_filter
+      value: "{{ spamfilter }}"
+  tags: up

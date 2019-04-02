@@ -20,3 +20,10 @@
   vars:
     name: spamassassin
     state: "{{ ((spamassassin_enabled | bool) and (mail_enabled | bool)) | ternary('enabled', 'disabled') }}"
+  # @TODO extract to general role
+- name: Save spamfilter name
+  include_role: name=apnscp/bootstrap tasks_from=set-config.yml
+  vars:
+    section: mail
+    option: spam_filter
+    value: "{{ spamfilter }}"
