@@ -122,12 +122,12 @@ rspamd_fuzzy_learning_active: true
 # 13.19 is approximately 15% percentile with a trained data set
 # n = 532, mu = 18.90, s = 5.39
 rspamd_reject_piggyback_score: 25
-rspamd_reject_score: 15
-rspamd_greylist_piggyback_score: 10
+rspamd_reject_score: 20
 # Used when spamfilter == rspamd, triggers delivery in Spam mailbox
 # When piggybacking, a SA score of 4 adds this header anyway
-rspamd_rewrite_subject_score: 8
+rspamd_greylist_piggyback_score: 10
 rspamd_greylist_score: 4
+rspamd_rewrite_subject_score: 8
 # Add headers to email
 rspamd_extended_spam_headers: "{{ (rspamd_method == 'piggyback') }}"
 # Duration an IP address that revisits the mail server will be
@@ -268,10 +268,18 @@ config_files:
           spam: true
   - file: dmarc.conf
     vars:
-      reporting: "{{ rspamd_redis_enabled }}"
+      reporting: false
       actions:
           quarantine: add_header
           reject: reject
+  - file: force_actions.conf
+    vars:
+      rules:
+        DMARC_FLAG_QUARANTINE:
+          action: "rewrite_subject"
+          subject:  "[SPAM] (%d) %s"
+          require_action: ["add_header"]
+          expression: "DMARC_POLICY_QUARANTINE"
   - file: fuzzy_check.conf
     vars:
       rule:
@@ -334,7 +342,7 @@ config_files:
 
   - file: milter_headers.conf
     vars:
-      extended_spam_headers: "{{ rspamd_extended_spam_headers }}"
+      extended_spam_headers: "{{ rspamd_extended_spam_headers | bool }}"
       use: ['x-spam-score','spam-header']
       routines:
         spam-header:
