@@ -22,7 +22,13 @@ valid_chroot_dirs = /home
 default_login_user = dovecot
 ssl_verify_client_cert = no
 ssl = {{ dovecot_strict_ssl | ternary("required", "yes") }}
+{% if not haproxy_enabled %}
 listen = {% if has_ipv4 %}*{% endif %} {%if has_ipv6 %}[::]{% endif %}
+{% else %}
+haproxy_trusted_networks = 127.0.0.1
+listen = {% if has_ipv4 %}127.0.0.1{% else %}[::1]{% endif %}
+{% endif %}
+
 
 service director {
   unix_listener login/director {
@@ -50,14 +56,16 @@ service managesieve {
 }
 
 service imap-login {
-}
-service pop3-login {
-}
-
-service imap-login {
   inet_listener imap {
+    {% if haproxy_enabled %}
+    port = {{ haproxy_imap_proxied_port }}
+    haproxy = yes
+    {% endif %}
   }
   inet_listener imaps {
+  {% if haproxy_enabled %}
+    port = 0
+  {% endif %}
   }
   service_count = {{ dovecot_secure_mode | bool | ternary("1", "0") }}
 }
@@ -72,9 +80,15 @@ protocol imap {
 
 service pop3-login {
   inet_listener pop3 {
+    {% if haproxy_enabled %}
+    port = {{ haproxy_pop3_proxied_port }}
+    haproxy = yes
+    {% endif %}
   }
-
   inet_listener pop3s {
+  {% if haproxy_enabled %}
+    port = 0
+  {% endif %}
   }
   service_count = {{ dovecot_secure_mode | bool | ternary("1", "0") }}
 }

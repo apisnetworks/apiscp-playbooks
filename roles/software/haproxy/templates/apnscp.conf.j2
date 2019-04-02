@@ -1,0 +1,97 @@
+global
+	daemon
+	{% if haproxy_enable_stats %}
+	stats socket /var/run/haproxy.sock mode 600 level admin
+	stats timeout 2m
+	{% endif %}
+	nbproc {{ haproxy_worker_count }}
+	# expands to cpu-map n n-1 to n
+	cpu-map 1- 0-
+	user haproxy
+	group haproxy
+	ssl-default-bind-ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:RSA+AESGCM:RSA+AES:!aNULL:!MD5:!DSS
+	ssl-default-bind-options no-sslv3
+	chroot      /var/lib/haproxy
+	pidfile     /var/run/haproxy.pid
+	crt-base		{{ haproxy_ssl_directory}}
+	maxconn     4000
+	tune.ssl.default-dh-param 2048
+
+
+defaults
+	option dontlog-normal
+	no option http-server-close
+	# Timeouts
+	timeout client {{ haproxy_tcp_timeout}}
+	timeout server {{ haproxy_tcp_timeout}}
+	timeout connect {{ haproxy_connect_timeout}}
+	timeout server {{ haproxy_tcp_timeout}}
+	timeout client-fin 1s
+
+# Postfix
+frontend ft_smtp
+	bind :25
+	mode tcp
+	default_backend bk_smtp
+frontend ft_smtps
+	bind :465 ssl crt server.pem crt ./
+	mode tcp
+	default_backend bk_submission
+frontend ft_submission
+	bind :587
+	mode tcp
+	default_backend bk_submission
+
+backend bk_smtp
+	mode tcp
+	timeout connect 5s
+	balance leastconn
+	stick store-request src
+	stick-table type ip size 200k expire 30m
+	server s1 {% if has_ipv4 %}127.0.0.1:{{ haproxy_smtp_proxied_port }}{% else %}[::1]:{{ haproxy_smtp_proxied_port }}{% endif %} send-proxy-v2
+
+backend bk_submission
+	timeout connect 5s
+	mode tcp
+	balance leastconn
+	stick store-request src
+	stick-table type ip size 200k expire 30m
+	server s1 {% if has_ipv4 %}127.0.0.1:{{ haproxy_submission_proxied_port }}{% else %}[::1]:{{ haproxy_submission_proxied_port }}{% endif %} send-proxy-v2
+
+# Dovecot
+frontend ft_imap
+	bind :143
+	mode tcp
+	default_backend bk_imap
+
+frontend ft_imaps
+	bind :993 ssl crt server.pem crt ./
+	mode tcp
+	no option http-server-close
+	default_backend bk_imap
+
+frontend ft_pop3
+	bind :110
+	mode tcp
+	no option http-server-close
+	default_backend bk_pop3
+
+frontend ft_pop3s
+	bind :995 ssl crt server.pem crt ./
+	mode tcp
+	no option http-server-close
+	default_backend bk_pop3
+
+backend bk_imap
+	mode tcp
+	balance leastconn
+	stick store-request src
+	stick-table type ip size 200k expire 30m
+	server s1 {% if has_ipv4 %}127.0.0.1:{{ haproxy_imap_proxied_port }}{% else %}[::1]:{{ haproxy_imap_proxied_port }}{% endif %} send-proxy-v2
+
+backend bk_pop3
+	mode tcp
+	balance leastconn
+	stick store-request src
+	stick-table type ip size 200k expire 30m
+	server s1 {% if has_ipv4 %}127.0.0.1:{{ haproxy_pop3_proxied_port }}{% else %}[::1]:{{ haproxy_pop3_proxied_port }}{% endif %} send-proxy-v2

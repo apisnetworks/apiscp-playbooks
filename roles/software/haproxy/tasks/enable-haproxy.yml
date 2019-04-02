@@ -1,0 +1,33 @@
+---
+- name: Create haproxy data directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ haproxy_user }}"
+    group: "{{ haproxy_group }}"
+    mode: 0700
+  with_items:
+    - "{{ haproxy_data_directory }}"
+    - "{{ haproxy_ssl_directory }}"
+  loop_control:
+    label: "Creating {{ item }}"
+- name: Update haproxy.cfg
+  template:
+    src: "{{ haproxy_config_src }}"
+    dest: "{{ haproxy_config_dest }}"
+  notify: Restart haproxy
+- name: "Link server certificate to {{ haproxy_data_directory }}/ssl"
+  file:
+    path: "{{ haproxy_ssl_directory }}/server.pem"
+    src: "/etc/pki/tls/certs/server.pem"
+    state: link
+- name: Update haproxy startup options
+  ini_file:
+    path: /etc/sysconfig/haproxy
+    no_extra_spaces: yes
+    section: none
+    option: OPTIONS
+    value: "{{ haproxy_startup_options }}"
+  notify: Restart haproxy
+- name: Enable haproxy
+  systemd: name=haproxy state=started enabled=yes

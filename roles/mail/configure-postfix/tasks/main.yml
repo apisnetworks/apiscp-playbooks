@@ -1,6 +1,11 @@
 ---
 - name: Setup cyrus
   include_tasks: setup-cyrus.yml
+
+- name: Import haproxy vars
+  include_vars: "{{ playbook_dir }}/roles/software/haproxy/defaults/main.yml"
+  when: haproxy_enabled and not (software_haproxy_marker is defined)
+
 - name: Verify host is set if smarthost enabled
   fail: msg="postfix_smarthost_enabled is true and postfix_smarthost_credentials.host is not set"
   when:
@@ -22,6 +27,11 @@
       -1 == postfix_address_verify_map.find("memcache:") or
       -1 == postfix_postscreen_cache_map.find("memcache:")
     )
+- name: Update master.cf
+  template:
+    src: "{{ postfix_master_template }}"
+    dest: /etc/postfix/master.cf
+  when: (postfix_master_template | string) | length
 
 - include_vars: "{{playbook_dir}}/roles/mail/maildir/defaults/main.yml"
 - include_tasks: register-password.yml
@@ -75,7 +85,7 @@
     destination: "{{ item.value }}"
   with_dict:
     site_blackhole: >
-      {{ (spamfilter == 'rspamd') | ternary('rspamc learn_spam', '/dev/null') }}
+      {{ (spamfilter == 'rspamd') | ternary('learn_spam', '/dev/null') }}
     "{{ apnscp_system_user }}": root
   loop_control:
     label: "Adding alias {{ item.key }} to {{ item.value }}"

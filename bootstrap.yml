@@ -60,6 +60,7 @@
     - apache/modpagespeed
     - apnscp/link-bins
     - apnscp/initialize-filesystem-template
+    - software/haproxy
     - mail/configure-dovecot
     - mail/configure-postfix
     - mail/configure-courier-authlib

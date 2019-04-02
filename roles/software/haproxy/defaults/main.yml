@@ -1,0 +1,28 @@
+---
+# @TODO SELinux,  setsebool -P haproxy_connect_any 1
+software_haproxy_marker: yes
+# Maximal count of haproxy workers
+haproxy_worker_count: "{{ ansible_processor_vcpus | int }}"
+haproxy_pop3_proxied_port: 1100
+haproxy_imap_proxied_port: 1430
+haproxy_smtp_proxied_port: 250
+haproxy_smtps_proxied_port: 4650
+haproxy_submission_proxied_port: 5870
+haproxy_enable_stats: false
+
+# Timeouts
+# Connection timeout to Postfix/Dovecot
+haproxy_connect_timeout: 4s
+# All other timeouts
+haproxy_tcp_timeout: 1m
+
+# haproxy default configuration
+haproxy_config_src: apnscp.conf.j2
+haproxy_config_dest: /etc/haproxy/haproxy.cfg
+# Passed to haproxy on start
+haproxy_data_directory: "{{ haproxy_config_dest | dirname }}/conf.d"
+# SSL PEM storage
+haproxy_ssl_directory: "{{ haproxy_config_dest | dirname }}/ssl.d"
+haproxy_startup_options: "-f {{ haproxy_data_directory }}"
+haproxy_user: haproxy
+haproxy_group: haproxy

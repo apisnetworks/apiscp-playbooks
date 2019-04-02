@@ -1,0 +1,10 @@
+- name: "{{ haproxy_enabled | ternary('Install', 'Remove') }} haproxy"
+  yum: name=haproxy state="{{ haproxy_enabled | ternary('present', 'absent') }}"
+  when: haproxy_enabled
+- include_tasks: enable-haproxy.yml
+  when: haproxy_enabled
+- include_role: name=apnscp/bootstrap tasks_from=set-config.yml
+  vars:
+    section: mail
+    option: proxy
+    config_val: "{{ (haproxy_enabled | bool) | ternary('haproxy', None) }}"

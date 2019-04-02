@@ -1,6 +1,11 @@
 ---
 mail_configure_postfix_marker: true
 postfix_conf_dir: /etc/postfix
+
+# Additional services in master.cf
+postfix_custom_master_config: ""
+postfix_master_template: "master.cf.j2"
+
 ######################################
 # Custom Postfix configuration format:
 # postfix_custom_config:
@@ -59,7 +64,7 @@ template_files:
   - client_access.j2
   - domains.cf.j2
 
-postfix_inet_interfaces: "{{ mail_enabled | bool | ternary('all','loopback-only') }}"
+postfix_inet_interfaces: "{{ (mail_enabled | bool and not (haproxy_enabled | bool)) | ternary('all','loopback-only') }}"
 postfix_mydomain: "{{ ((data_center_mode | bool) or (ansible_nodename | regex_findall('\\.') | length) < 2) | ternary(ansible_nodename, None) }}"
 # Same recipient delivery delay. With SpamAssassin, set to a number > 0 to prevent monopolization
 # of an inundated mailbox since SA has a very limited number of slots to scan mail.
@@ -98,3 +103,7 @@ postfix_memcache_maps:
 saslauthd_worker_count: 3
 # Additional flags to pass to FLAGS= in /etc/sysconfig/saslauthd
 saslauthd_extra_flags: ""
+
+postfix_smtps_port: "{{ haproxy_enabled | ternary(haproxy_smtps_proxied_port, 'smtps') }}"
+postfix_smtp_port: "{{ haproxy_enabled | ternary(haproxy_smtp_proxied_port, 'smtp') }}"
+postfix_submission_port: "{{ haproxy_enabled | ternary(haproxy_submission_proxied_port, 'submission') }}"

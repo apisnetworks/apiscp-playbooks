@@ -28,6 +28,9 @@
 - include_vars:
     file: ../spamassassin/defaults/main.yml
   when: mail_spamassassin_marker is not defined
+- include_vars:
+    file: ../../software/haproxy/defaults/main.yml
+  when: software_haproxy_marker is not defined and haproxy_enabled
 - name: Verify Dovecot starts on boot
   systemd:
     name: dovecot

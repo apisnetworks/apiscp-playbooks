@@ -10,7 +10,6 @@ postfix_config:
   vmaildrop_destination_recipient_limit: 1
   localmaildrop_destination_recipient_limit: $vmaildrop_destination_recipient_limit
   virtual_uid_maps: proxy:pgsql:/etc/postfix/uids.cf
-  virtual_gid_maps: proxy:pgsql:/etc/postfix/gids.cf
   virtual_mailbox_base: /home/virtual
   disable_vrfy_command: "yes"
   virtual_minimum_uid: 500
@@ -83,7 +82,6 @@ postfix_config:
   postscreen_non_smtp_command_enable: "yes"
   smtpd_tls_mandatory_protocols: "!SSLv2, !SSLv3"
   smtp_tls_mandatory_protocols: "${smtpd_tls_mandatory_protocols}"
-  smtpd_tls_exclude_ciphers: SSLv2
   require_home_directory: "yes"
   home_mailbox: "{{ maildir_home }}/"
   postscreen_dnsbl_ttl: 24h
@@ -91,15 +89,24 @@ postfix_config:
   address_verify_map: "{{ postfix_address_verify_map }}"
   postscreen_cache_map: "{{ postfix_postscreen_cache_map }}"
   postscreen_cache_cleanup_interval: "{{ postfix_postscreen_cache_cleanup_interval | default(43200) }}"
-  inet_protocols: ipv4
+  inet_protocols: >-
+    {{ (has_ipv4 and has_ipv6) | ternary('all', '') }}
+    {{ (has_ipv4 and not has_ipv6) | ternary('ipv4', None) }}
+    {{ (not has_ipv4 and has_ipv6) | ternary('ipv6', None) }}
   postscreen_greet_wait: ${stress?2}${stress:6}s
   address_verify_cache_cleanup_interval: 0
   postscreen_dnsbl_whitelist_threshold: -1
   compatibility_level: 2
   smtp_tls_security_level: "{{ postfix_smarthost_enabled | ternary('encrypt', 'may') }}"
+  # SMTP-to-SMTP encryption
+  smtpd_tls_security_level: may
   sender_dependent_default_transport_maps: hash:/etc/postfix/sender_transport
   inet_interfaces: "{{ postfix_inet_interfaces | default('all') }}"
   mydomain: "{{ postfix_mydomain }}"
+
+  # haproxy/SNI
+  smtpd_upstream_proxy_protocol: "{{ haproxy_enabled | ternary('haproxy', None) }}"
+  postscreen_upstream_proxy_protocol: "{{ haproxy_enabled | ternary('haproxy', None) }}"
 
   # Smarthost
   smtpd_sasl_authenticated_header: "{{ postfix_add_sasl_auth_header | ternary('yes', 'no')}}"

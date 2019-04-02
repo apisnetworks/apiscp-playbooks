@@ -8,6 +8,8 @@ apnscp_last_run_vars: /root/apnscp-vars-runtime.yml
 apnscp_bootstrapper_log: /root/apnscp-bootstrapper.log
 # SRS - reformatting forwarded email
 postsrsd_enabled: "{{ mail_enabled | bool }}"
+# haproxy terminates SNI SSL for mail
+haproxy_enabled: "{{ (mail_enabled | bool) and not (has_low_memory | bool) }}"
 # Restrict last/lastlog usage
 wtmp_limit_snooping: true
 # Enable apnscp testing repo
