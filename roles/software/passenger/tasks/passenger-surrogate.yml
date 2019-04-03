@@ -47,6 +47,9 @@
   environment:
     TMPDIR: "{{ apnscp_root }}/storage/cache"
   when: ch.matched|int == 0
+  register: r
+  until: r is succeeded
+  retries: "{{ network_max_retries }}"
 # End Python support
 
 - name: Copy Passenger configuration
