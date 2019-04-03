@@ -23,3 +23,5 @@ configuration:
 # resulting in systemd incorrectly terminating it as hung
 # default 90 seconds
 mysql_startup_timeout: 3min
+# Ensure auth errors are logged for fail2ban
+log_warnings: 2

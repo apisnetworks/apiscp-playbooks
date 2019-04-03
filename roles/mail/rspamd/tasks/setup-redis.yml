@@ -14,6 +14,12 @@
     redis_enabled: false
     redis_handler: Restart redis-rspamd
 
+- name: Assert Redis permissions
+  file:
+    path: "{{ rspamd_redis_config }}"
+    owner: "{{ rspamd_redis_user }}"
+    mode: 0600
+
 - name: Install Redis rspamd service
   include_role: role=apnscp/install-services
   vars:
