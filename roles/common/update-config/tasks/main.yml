@@ -1,2 +1,26 @@
 # Nothing for now
 ---
+- name: Improve DNS resolution quality
+  block:
+    - name: Remove conflicting resolvers
+      lineinfile:
+        path: /etc/resolv.conf
+        regexp: '^\s*nameserver\s+(?!{{ dns_robust_nameservers | map("regex_escape") | join("|") }}).*$'
+        state: absent
+    - name: Check if NetworkManager present
+      stat: path=/etc/NetworkManager/NetworkManager.conf
+      register: r
+    - name: Disable NetworkManager DNS management
+      ini_file:
+        path: /etc/NetworkManager/NetworkManager.conf
+        section: main
+        option: dns
+        value: "none"
+      when: r.stat.exists
+    - name: Append robust resolvers to /etc/resolv.conf
+      lineinfile:
+        path: /etc/resolv.conf
+        line: "nameserver {{ item }}"
+        state: present
+      with_items: "{{ dns_robust_nameservers }}"
+  when: use_robust_dns

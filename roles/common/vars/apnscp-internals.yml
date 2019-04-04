@@ -109,3 +109,7 @@ bootstrapper_lock_max_wait: 900
 # IPv4/6 family detection
 has_ipv4: "{{ (ansible_all_ipv4_addresses | length) > 0 }}"
 has_ipv6: "{{ (ansible_all_ipv6_addresses | length) > 0 }}"
+
+# Robust nameservers
+# Reference performance: https://www.dnsperf.com/#!dns-resolvers
+dns_robust_nameservers: '{{ has_ipv4 | ternary(["1.0.0.1","1.1.1.1"], ["2606:4700:4700::1111","2606:4700:4700::1001"]) }}'
