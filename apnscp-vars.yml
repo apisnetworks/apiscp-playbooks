@@ -146,3 +146,8 @@ watchdog_load_threshold: "{{ ansible_processor_count * 25 }}"
 # In multi-server setups this should be overridden and consistent among all servers
 # See also https://github.com/apisnetworks/cp-proxy
 cookie_secret: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=48') }}"
+
+# Update nameservers in /etc/resolv.conf with CloudFlare
+# Helps during install when flakey nameservers can cause network timeouts
+# Set dns_robust_nameservers to override CF defaults
+use_robust_dns: false
