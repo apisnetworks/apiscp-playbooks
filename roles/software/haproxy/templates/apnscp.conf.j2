@@ -45,18 +45,12 @@ frontend ft_submission
 backend bk_smtp
 	mode tcp
 	timeout connect 5s
-	balance leastconn
-	stick store-request src
-	stick-table type ip size 200k expire 30m
-	server s1 {% if has_ipv4 %}127.0.0.1:{{ haproxy_smtp_proxied_port }}{% else %}[::1]:{{ haproxy_smtp_proxied_port }}{% endif %} send-proxy-v2
+	server s1 {% if has_ipv4 %}127.0.0.1:{{ haproxy_smtp_proxied_port }}{% else %}[::1]:{{ haproxy_smtp_proxied_port }}{% endif %} send-proxy
 
 backend bk_submission
 	timeout connect 5s
 	mode tcp
-	balance leastconn
-	stick store-request src
-	stick-table type ip size 200k expire 30m
-	server s1 {% if has_ipv4 %}127.0.0.1:{{ haproxy_submission_proxied_port }}{% else %}[::1]:{{ haproxy_submission_proxied_port }}{% endif %} send-proxy-v2
+	server s1 {% if has_ipv4 %}127.0.0.1:{{ haproxy_submission_proxied_port }}{% else %}[::1]:{{ haproxy_submission_proxied_port }}{% endif %} send-proxy
 
 # Dovecot
 frontend ft_imap
@@ -67,31 +61,22 @@ frontend ft_imap
 frontend ft_imaps
 	bind :993 ssl crt server.pem crt ./
 	mode tcp
-	no option http-server-close
 	default_backend bk_imap
 
 frontend ft_pop3
 	bind :110
 	mode tcp
-	no option http-server-close
 	default_backend bk_pop3
 
 frontend ft_pop3s
 	bind :995 ssl crt server.pem crt ./
 	mode tcp
-	no option http-server-close
 	default_backend bk_pop3
 
 backend bk_imap
 	mode tcp
-	balance leastconn
-	stick store-request src
-	stick-table type ip size 200k expire 30m
 	server s1 {% if has_ipv4 %}127.0.0.1:{{ haproxy_imap_proxied_port }}{% else %}[::1]:{{ haproxy_imap_proxied_port }}{% endif %} send-proxy-v2
 
 backend bk_pop3
 	mode tcp
-	balance leastconn
-	stick store-request src
-	stick-table type ip size 200k expire 30m
 	server s1 {% if has_ipv4 %}127.0.0.1:{{ haproxy_pop3_proxied_port }}{% else %}[::1]:{{ haproxy_pop3_proxied_port }}{% endif %} send-proxy-v2
