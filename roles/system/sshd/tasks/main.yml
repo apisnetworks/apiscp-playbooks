@@ -10,6 +10,7 @@
       MaxAuthTries {{ sshd_max_auth_tries }}
       GSSAPIAuthentication no
       X11Forwarding no
+      ClientAliveInterval 180
     state: present
   notify: Restart sshd
 - name: Convert sshd_port to list

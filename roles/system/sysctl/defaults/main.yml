@@ -16,3 +16,5 @@ sysctl_config:
   # Symlink hardening, only follow if outside sticky world-writable directory
   # or when the UID <-> follower match
   fs.protected_symlinks: 1
+  # https://lwn.net/Articles/616241/
+  net.core.default_qdisc: fq_codel
