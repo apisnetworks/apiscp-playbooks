@@ -1,0 +1,49 @@
+---
+- name: Install long-term kernel
+  include_role: name=packages/install tasks_from=setup-channel.yml
+  vars:
+    rv:
+      bootstrap:
+        repo_rpm: "{{ kernel_repo_url }}"
+        repo_key: "{{ kernel_repo_key }}"
+      # defer to enable elrepo-kernel
+      rpms: []
+    channel: null
+    notify: Reboot nag
+  when: prefer_experimental_kernel
+
+- name: "{{ prefer_experimental_kernel | ternary('Enable', 'Disable') }} EL-kernel repo"
+  ini_file:
+    path: /etc/yum.repos.d/elrepo.repo
+    section: elrepo-kernel
+    option: enabled
+    value: "{{ prefer_experimental_kernel | ternary(1, 0) }}"
+
+- block:
+  - name: "Install {{ kernel_lt_rpm }}"
+    yum: name="{{ kernel_lt_rpm }}" state=present
+  - name: Query LT kernel version
+    command: >
+      rpm -q kernel-lt --queryformat="%{VERSION}-%{RELEASE}"
+    args:
+      warn: false
+    register: release
+    changed_when: false
+  - name: Enumerate kernels
+    shell: >
+      awk -F\' '/^menuentry / {print $2}' {{ grub_cfg }} |
+      cat -n | awk '{print $1-1,$1="",$0}' | grep -F "{{ release.stdout }}" |
+      awk  '{print $1}'
+    register: idx
+    failed_when: idx.stdout == ""
+    changed_when: false
+  - name: Get current kernel version
+    command: uname -r
+    changed_when: false
+    register: r
+  - name: Change default kernel to {{ release.stdout }}
+    command: >
+      grub2-set-default "{{ idx.stdout | default(0) }}"
+    when: -1 == r.stdout.find(release.stdout)
+  - debug: msg="Reboot to bring up new kernel"
+  when: prefer_experimental_kernel

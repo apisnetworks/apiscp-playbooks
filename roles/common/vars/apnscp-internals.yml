@@ -52,7 +52,8 @@ goenv_version: 1.14.0
 # old and too broken to be of use
 sys_ruby_version: "{{ (anyversion_ruby or passenger_enabled) | ternary('2.4.5','system') }}"
 rbenv_usergems_version: ad2fd08
-
+# 4.x kernel from EL. Newer technology, potentially less stable
+prefer_experimental_kernel: false
 # Enable remote FTP connections. FTP will always be enable for Wordpress
 # to operate. If off, WebDAV, sftp, ssh (rsync), and git are the only
 # means to manage files

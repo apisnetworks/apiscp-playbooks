@@ -1,0 +1,3 @@
+- name: Save argv
+  get_argv:
+  listen: Save and reboot

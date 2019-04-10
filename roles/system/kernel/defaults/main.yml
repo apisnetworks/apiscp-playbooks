@@ -1,0 +1,4 @@
+kernel_lt_rpm: kernel-lt
+kernel_repo_key: https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+kernel_repo_url: https://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm
+grub_cfg: /boot/grub2/grub.cfg

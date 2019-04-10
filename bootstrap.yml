@@ -28,6 +28,7 @@
     - common/update-config
     - packages/configure-rhel
     - filesystem/make-mounts
+    - system/kernel
     - system/selinux
     - epel
     - systemd/mask-services
