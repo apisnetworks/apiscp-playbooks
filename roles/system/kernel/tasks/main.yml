@@ -12,12 +12,17 @@
     notify: Reboot nag
   when: prefer_experimental_kernel
 
+- name: Check if elrepo exists
+  stat: path="{{ elrepo_repo_cfg }}"
+  register: r
+
 - name: "{{ prefer_experimental_kernel | ternary('Enable', 'Disable') }} EL-kernel repo"
   ini_file:
-    path: /etc/yum.repos.d/elrepo.repo
+    path: "{{ elrepo_repo_cfg }}"
     section: elrepo-kernel
     option: enabled
     value: "{{ prefer_experimental_kernel | ternary(1, 0) }}"
+  when: r.stat.exists
 
 - block:
   - name: "Install {{ custom_kernel_rpm }}"
