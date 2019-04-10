@@ -20,11 +20,11 @@
     value: "{{ prefer_experimental_kernel | ternary(1, 0) }}"
 
 - block:
-  - name: "Install {{ kernel_lt_rpm }}"
-    yum: name="{{ kernel_lt_rpm }}" state=present
-  - name: Query LT kernel version
+  - name: "Install {{ custom_kernel_rpm }}"
+    yum: name="{{ custom_kernel_rpm }}" state=latest
+  - name: Query kernel version
     command: >
-      rpm -q kernel-lt --queryformat="%{VERSION}-%{RELEASE}"
+      rpm -q "{{ custom_kernel_rpm }}" --queryformat="%{VERSION}-%{RELEASE}"
     args:
       warn: false
     register: release

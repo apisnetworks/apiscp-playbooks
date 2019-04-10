@@ -142,8 +142,8 @@ rspamd_greylist_expire: 432000
 # Various weighted scores maximums. As p → 100%, score → var
 rspamd_weight_neural_spam: 3.0
 rspamd_weight_neural_ham: -3.0
-# 5.10 is default, with a mature Bayes DB bump this value up to 10
-rspamd_weight_bayes_spam: 5.10
+# Scoring function is sigmoid
+rspamd_weight_bayes_spam: 10
 rspamd_weight_bayes_ham: -3.0
 # Periodically cull infrequently seen symbols from database
 rspamd_bayes_expiry_time: 2592000
@@ -276,9 +276,9 @@ config_files:
     vars:
       rules:
         DMARC_FLAG_QUARANTINE:
-          action: "rewrite_subject"
-          subject:  "[SPAM] (%d) %s"
-          require_action: ["add_header"]
+          action: "rewrite subject"
+          subject:  "[DMARC] (%d) %s"
+          honor_action: ["add header"]
           expression: "DMARC_POLICY_QUARANTINE"
   - file: fuzzy_check.conf
     vars:
