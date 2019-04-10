@@ -1,14 +1,15 @@
 ---
-- name: Load packages from {{ channel }}
+- name: Load packages from {{ channel | default(omit) }}
   include_vars:
     file: "vars/rpms/{{ channel }}"
     name: rv
+  when: channel is defined and channel is string
 - name: Add RPM channel {{ rv.title | default("")}}
   yum:
     name: "{{ rv.bootstrap.repo_rpm }}"
     state: present
   register: rpm_repo_status
-  until: rpm_repo is succeeded
+  until: rpm_repo_status is succeeded
   retries: "{{ network_max_retries }}"
   when:
     - rv.bootstrap is defined
@@ -20,9 +21,9 @@
     key: "{{ rv.bootstrap.repo_key }}"
     state: present
   when:
-    - rpm_repo_status.skipped == false
     - rv.bootstrap is defined
     - rv.bootstrap.repo_key is defined
+    - (rpm_repo_status.skipped | default(false)) == false
 
 - name: "Install packages"
   yum: state="installed" name="{{ rv.rpms }}" skip_broken=yes
@@ -33,6 +34,7 @@
   notify: "{{ rv.notify | default('noop') }}"
   when:
     - rv.when | default(true)
+    - rv.rpms | length > 0
 
   # Workaround for https://github.com/ansible/ansible/issues/26995
 - name: "Update packages"
