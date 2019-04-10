@@ -15,6 +15,13 @@
   with_dict: "{{ __config }}"
   loop_control:
     label: "Setting sysctl {{ item.key }} = {{ item.value }}"
+  # Alternatvely modprobe --first-time if this state becomes important
+- name: Load BBR module
+  modprobe:
+    name: tcp_bbr
+    state: present
+  failed_when: false
+  changed_when: false
   # https://queue.acm.org/detail.cfm?id=3022184
 - name: Enable BBR congestion control
   sysctl:
