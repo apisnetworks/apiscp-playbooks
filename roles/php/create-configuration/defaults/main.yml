@@ -6,7 +6,7 @@ php_default_config: |
   pgsql.allow_persistent = Off
   upload_max_filesize = 16M
   post_max_size = 20M
-  disable_functions = syslog
+  disable_functions = syslog,posix_getpwnam
   expose_php = off
   session.save_path = "2;/tmp/sessions"
   output_buffering = 4096
