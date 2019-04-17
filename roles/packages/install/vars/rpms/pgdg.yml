@@ -2,6 +2,8 @@
 # pgversion is fact after importing config
 title: PostgreSQL v{{ pgversion }}
 repo_name: "pgdg{{ pg_pkgversion }}"
+# Postgres uses unified repo as of 2019/04/15
+repo_path: /etc/yum.repos.d/pgdg-redhat-all.repo
 rpms:
   - postgis24_{{ pg_pkgversion }}
   - postgresql{{ pg_pkgversion }}

@@ -32,7 +32,6 @@
   when: mariadb_repo is defined and mariadb_repo.changed
 
 - name: "Install PostgreSQL"
-  tags: ['install', 'sql', 'pgsql']
   block:
     - set_fact:
         # PostgreSQL packages are xx-<MAJOR><MINOR> sans period
@@ -43,7 +42,35 @@
       register: result
       until: result is succeeded
       retries: "{{ network_max_retries }}"
-
+      # 2019/04/16 - RPM spec broken
+    - name: Check if GPG key needs relink
+      stat: path=/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG
+      register: r
+    - name: Link PGDG-{{pg_pkgversion}} to PGDG
+      file:
+        path: "/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG"
+        state: link
+        src: "/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-{{ pg_pkgversion }}"
+      when: not r.stat.exists
+    - name: Validate if new repo format used
+      stat: path="{{ repo_path }}"
+      register: r
+    - name: Disable all non-essential PostgreSQL repos
+      ini_file:
+        path: "{{ repo_path }}"
+        section: 'pgdg{{ item | regex_replace("\.","")  }}'
+        option: enabled
+        value: "0"
+      with_items:  "{{ repo_location.keys() | reject('match', '^' + pg_pkgversion + '$') | list }}"
+      when: r.stat.exists
+    - name: Enable PostgreSQL v{{ pgversion }} repo
+      ini_file:
+        path: "{{ repo_path }}"
+        section: "pgdg{{ pg_pkgversion }}"
+        option: enabled
+        value: 1
+      when: r.stat.exists
+  tags: ['install', 'sql', 'pgsql']
 - name: "Install MongoDB"
   tags: ['install', 'sql', 'mongodb']
   block:
