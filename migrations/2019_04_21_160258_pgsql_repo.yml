@@ -1,0 +1,12 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# Update PostgreSQL repo settings
+---
+- block:
+  - name: Remove conflicting postgresql11-libs RPM
+    yum: name=postgresql11-libs state=absent
+    when: (pgsql_version | default(10)) != 11
+  - name: Update PostgreSQL repos
+    include_role: name=packages/install
+  tags:
+    - up
