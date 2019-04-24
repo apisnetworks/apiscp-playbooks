@@ -270,7 +270,9 @@ config_files:
     vars:
       reporting: false
       actions:
-          quarantine: add_header
+          quarantine:
+            - add_header
+            - rewrite_subject
           reject: reject
   - file: force_actions.conf
     vars:
