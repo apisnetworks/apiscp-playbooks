@@ -27,13 +27,30 @@
 - block:
   - name: "Install {{ custom_kernel_rpm }}"
     yum: name="{{ custom_kernel_rpm }}" state=latest
+    register: c
   - name: Query kernel version
-    command: >
-      rpm -q "{{ custom_kernel_rpm }}" --queryformat="%{VERSION}-%{RELEASE}"
+    shell: >
+      rpm -q "{{ custom_kernel_rpm }}" --queryformat="%{VERSION}-%{RELEASE}\n" | tail -n 1
     args:
       warn: false
     register: release
     changed_when: false
+  - name: Get current kernel version
+    command: uname -r
+    changed_when: false
+    register: curker
+  - name: List all installed kernels
+    shell: >
+      rpm -q "{{ custom_kernel_rpm }}" --queryformat="%{VERSION}-%{RELEASE}\n" | sed '$d' | grep -vF "{{ release.stdout }}\n{{ curker.stdout }}"
+    args:
+      warn: false
+    failed_when: false
+    register: all
+    changed_when: (all.stdout | trim) != ''
+    when: (custom_kernel_remove_additional | bool)
+  - name: Remove additional kernels
+    yum: name='{{ (all.stdout | trim).split("\n") | map("regex_replace", "^", custom_kernel_rpm + "-")  | list }}' state=absent
+    when: (custom_kernel_remove_additional | bool) and (all.stdout | trim) != ''
   - name: Enumerate kernels
     shell: >
       awk -F\' '/^menuentry / {print $2}' {{ grub_cfg }} |
@@ -42,13 +59,9 @@
     register: idx
     failed_when: idx.stdout == ""
     changed_when: false
-  - name: Get current kernel version
-    command: uname -r
-    changed_when: false
-    register: r
   - name: Change default kernel to {{ release.stdout }}
     command: >
       grub2-set-default "{{ idx.stdout | default(0) }}"
-    when: -1 == r.stdout.find(release.stdout)
+    when: -1 == curker.stdout.find(release.stdout)
   - debug: msg="Reboot to bring up new kernel"
   when: prefer_experimental_kernel

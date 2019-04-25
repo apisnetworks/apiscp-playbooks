@@ -54,13 +54,15 @@ backend bk_submission
 
 # Dovecot
 frontend ft_imap
-	bind :143
+	bind :143 tcp-ut 60s
 	mode tcp
+	timeout client 600s
 	default_backend bk_imap
 
 frontend ft_imaps
-	bind :993 ssl crt server.pem crt ./
+	bind :993 ssl crt server.pem crt ./ tcp-ut 60s
 	mode tcp
+	timeout client 600s
 	default_backend bk_imap
 
 frontend ft_pop3
@@ -75,6 +77,7 @@ frontend ft_pop3s
 
 backend bk_imap
 	mode tcp
+	timeout server 600s
 	server s1 {% if has_ipv4 %}127.0.0.1:{{ haproxy_imap_proxied_port }}{% else %}[::1]:{{ haproxy_imap_proxied_port }}{% endif %} send-proxy-v2
 
 backend bk_pop3
