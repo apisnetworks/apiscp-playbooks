@@ -41,7 +41,7 @@
     register: curker
   - name: List all installed kernels
     shell: >
-      rpm -q "{{ custom_kernel_rpm }}" --queryformat="%{VERSION}-%{RELEASE}\n" | sed '$d' | grep -vF "{{ release.stdout }}\n{{ curker.stdout }}"
+      rpm -q "{{ custom_kernel_rpm }}" --queryformat="%{VERSION}-%{RELEASE}\n" | sed '$d' | grep -vE "{{ release.stdout | regex_escape() }}|{{ curker.stdout | regex_replace('\.x86_64$', '') | regex_escape() }}"
     args:
       warn: false
     failed_when: false

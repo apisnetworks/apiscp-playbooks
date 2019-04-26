@@ -280,7 +280,7 @@ config_files:
         DMARC_FLAG_QUARANTINE:
           action: "rewrite subject"
           subject:  "[DMARC] (%d) %s"
-          honor_action: ["add header"]
+          honor_action: ["add header", "reject"]
           expression: "DMARC_POLICY_QUARANTINE"
   - file: fuzzy_check.conf
     vars:
