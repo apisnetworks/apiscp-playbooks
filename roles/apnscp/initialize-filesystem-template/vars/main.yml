@@ -138,6 +138,7 @@ apnscp_fst_packages:
       - name: bind-libs
       - name: bind-utils
       - name: boost
+      - name: brotli
       - name: bzip2-libs
       - name: bzip2
       - name: ca-certificates
