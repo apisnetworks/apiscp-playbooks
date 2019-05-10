@@ -52,6 +52,8 @@
       - group: Service
         vars:
           LimitNOFILE: 4096
+          TimeoutStartSec: "{{ fail2ban_service_timeout }}"
+          TimeoutStopSec: "{{ fail2ban_service_timeout }}"
 - include_role: name=apnscp/bootstrap tasks_from=set-config.yml
   vars:
     section: rampart
