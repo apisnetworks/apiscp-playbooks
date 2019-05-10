@@ -1,6 +1,6 @@
 ---
 mariadb:
-  default: 10.3
+  default: "{{ mariadb_version }}"
   allowed:
     - 10.4
     - 10.3
@@ -9,7 +9,7 @@ mariadb:
     - 10.0
     - 5.5
 pgsql:
-  default: 10
+  default: "{{ pgsql_version }}"
   allowed:
     - 11
     - 10
