@@ -1,0 +1,9 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# Revert database startup type to inotify
+---
+- block:
+  - name: Update MariaDB systemd service settings
+    include_role: name=mysql/install
+  tags:
+    - up
