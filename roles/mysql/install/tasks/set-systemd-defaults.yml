@@ -11,8 +11,8 @@
     config:
       - group: Service
         vars:
-          ProtectSystem: false
-          ProtectHome: false
+          ProtectSystem: "False"
+          ProtectHome: "False"
           Type: "{{ mariadb_version is version('10.1.0', '>=') | ternary('notify','simple') }}"
           OOMScoreAdjust: -500
           LimitNOFILE: 131070

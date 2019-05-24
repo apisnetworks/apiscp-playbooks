@@ -1,8 +1,8 @@
 # Mange /etc/systemd/system/<service>.d/override.conf config
 # Accepts:
-# override_file, service, 
+# override_file, service,
 ---
-- set_fact: 
+- set_fact:
     __systemd_svc_path: /etc/systemd/system/{{service | regex_replace('\.?(service|timer|target|path|mount|$)$', '.\1') | regex_replace('\.$', '.service')}}
 - set_fact:
     __systemd_svc_name: "{{ __systemd_svc_path | basename }}"
@@ -18,13 +18,15 @@
 - file:
     path: '/etc/systemd/system/{{__systemd_svc_name}}.d'
     state: directory
+- set_fact:
+    _override_notify: "{{ notify | default('Reload systemd') }}"
 - name: "Override {{__systemd_service_name}}"
   include_tasks: roles/common/tasks/write-config.yml
   vars:
     file: '/etc/systemd/system/{{__systemd_svc_name}}.d/{{ override_file | default("override.conf") }}'
     cfgvars: "{{ config_grp.vars }}"
-    group: "{{ config_grp.group }}"    
+    group: "{{ config_grp.group }}"
+    notify: "{{ _override_notify }}"
   with_items: "{{ config }}"
   loop_control:
     loop_var: config_grp
-  notify: "{{ notify | default('Reload systemd') }}"

@@ -5,10 +5,8 @@
     - 'apnscp-vars.yml'
     - 'roles/common/vars/apnscp-internals.yml'
     - ['{{ apnscp_user_defaults }}', '/dev/null']
-    - ['{{ apnscp_last_run_vars }}', '/dev/null']
-  #vars:
+    - ['{{ apnscp_last_run_vars }}', '/dev/null']:
   vars:
-    apnscp_user_defaults: /root/apnscp-vars.yml
     test:
       siteinfo:
         - package: sudo

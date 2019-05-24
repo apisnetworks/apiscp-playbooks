@@ -6,6 +6,7 @@ DEV_TAG: ">>> DEVELOPMENT PLAY ONLY - REMOVE BEFORE FLIGHT <<<"
 apnscp_release_repo: https://gitlab.com/apisnetworks/apnscp.git
 apnscp_last_run_vars: /root/apnscp-vars-runtime.yml
 apnscp_bootstrapper_log: /root/apnscp-bootstrapper.log
+apnscp_user_defaults: /root/apnscp-vars.yml
 # SRS - reformatting forwarded email
 postsrsd_enabled: "{{ mail_enabled | bool }}"
 # Restrict last/lastlog usage

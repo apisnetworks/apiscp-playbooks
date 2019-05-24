@@ -13,8 +13,6 @@
   become: yes
   connection: local
   gather_facts: yes
-  vars:
-    apnscp_user_defaults: /root/apnscp-vars.yml
   vars_files:
     - 'apnscp-vars.yml'
     - 'roles/common/vars/apnscp-internals.yml'
