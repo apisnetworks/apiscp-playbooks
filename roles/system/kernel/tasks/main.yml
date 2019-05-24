@@ -10,7 +10,7 @@
       rpms: []
     channel: null
     notify: Reboot nag
-  when: prefer_experimental_kernel
+  when: prefer_experimental_kernel | bool
 
 - name: Check if elrepo exists
   stat: path="{{ elrepo_repo_cfg }}"
@@ -64,4 +64,4 @@
       grub2-set-default "{{ idx.stdout | default(0) }}"
     when: -1 == curker.stdout.find(release.stdout)
   - debug: msg="Reboot to bring up new kernel"
-  when: prefer_experimental_kernel
+  when: prefer_experimental_kernel | bool

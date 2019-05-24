@@ -44,8 +44,6 @@
     filter: OUTPUT
     priority: 1
     rule: -p tcp -m tcp --dport 25 -m owner --gid-owner postfix -j ACCEPT
-  register: o
-  changed_when: -1 != o.stderr.find('NOT_ENABLED')
 # General spam filtering
 # @TODO move to separate role?
 

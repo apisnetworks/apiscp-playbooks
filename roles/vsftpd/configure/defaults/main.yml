@@ -31,7 +31,7 @@ vsftpd_directives:
   #pasv_promiscuous: "YES"
   vsftpd_log_file: "/var/log/vsftpd.log"
   xferlog_std_format: "NO"
-  allow_writeable_chroot: YES
+  allow_writeable_chroot: "YES"
   background: "YES"
   idle_session_timeout: "0"
   # Necessary for cgroup accounting

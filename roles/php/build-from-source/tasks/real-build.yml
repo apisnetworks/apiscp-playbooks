@@ -68,4 +68,4 @@
       notify: "{{ notify_handler }}"
     - file: path="{{ scan_dir }}" state=directory
     - set_fact: force_module_rebuild=true
-  when: do_install_php
+  when: do_install_php | bool
