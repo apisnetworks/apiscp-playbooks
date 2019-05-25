@@ -9,14 +9,14 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
@@ -29,7 +29,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: bandwidth; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: bandwidth; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE TABLE bandwidth (
@@ -41,7 +41,7 @@ CREATE TABLE bandwidth (
 
 ALTER TABLE public.bandwidth OWNER TO {{ appliance_user }};
 ---
--- Name: users; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: users; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE TABLE users (
@@ -54,17 +54,7 @@ CREATE TABLE users (
 ALTER TABLE public.users OWNER TO {{ appliance_user }};
 
 --
--- Name: alloc_users_view; Type: VIEW; Schema: public; Owner: {{ appliance_user }}
---
-
-CREATE VIEW alloc_users_view AS
-    SELECT reseller.reseller_id, sum(users.maxusers) AS alloc_maxusers FROM users users, reseller reseller WHERE ((reseller.site_id = users.site_id) AND (reseller.reseller_id > 0)) GROUP BY reseller.reseller_id;
-
-
-ALTER TABLE public.alloc_users_view OWNER TO {{ appliance_user }};
-
---
--- Name: apache; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: apache; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE TABLE apache (
@@ -77,7 +67,7 @@ CREATE TABLE apache (
 
 ALTER TABLE public.apache OWNER TO {{ appliance_user }};
 --
--- Name: bandwidth_extendedinfo; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: bandwidth_extendedinfo; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE TABLE bandwidth_extendedinfo (
@@ -112,7 +102,7 @@ ALTER SEQUENCE bandwidth_extendedinfo_ext_id_seq OWNED BY bandwidth_extendedinfo
 
 
 --
--- Name: bandwidth_log; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: bandwidth_log; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE TABLE bandwidth_log (
@@ -128,7 +118,7 @@ CREATE TABLE bandwidth_log (
 ALTER TABLE public.bandwidth_log OWNER TO {{ appliance_user }};
 
 --
--- Name: bandwidth_services; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: bandwidth_services; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE TABLE bandwidth_services (
@@ -177,7 +167,7 @@ ALTER TABLE ONLY public.bandwidth_services
 
 
 --
--- Name: bandwidth_spans; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: bandwidth_spans; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE TABLE bandwidth_spans (
@@ -199,7 +189,7 @@ ALTER TABLE public.domain_lookup OWNER TO {{ appliance_user }};
 
 
 --
--- Name: siteinfo; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: siteinfo; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE TABLE siteinfo (
@@ -213,7 +203,7 @@ CREATE TABLE siteinfo (
 ALTER TABLE public.siteinfo OWNER TO {{ appliance_user }};
 
 --
--- Name: email_lookup; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: email_lookup; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE TABLE email_lookup (
@@ -240,7 +230,7 @@ COMMENT ON COLUMN email_lookup.type IS '0 = fs
 
 
 --
--- Name: free_uids; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: free_uids; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE TABLE free_uids (
@@ -252,7 +242,7 @@ CREATE TABLE free_uids (
 ALTER TABLE public.free_uids OWNER TO {{ appliance_user }};
 
 --
--- Name: gids; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: gids; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE TABLE gids (
@@ -265,7 +255,7 @@ CREATE TABLE gids (
 ALTER TABLE public.gids OWNER TO {{ appliance_user }};
 
 --
--- Name: site_packages; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: site_packages; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 
@@ -285,13 +275,13 @@ ALTER TABLE public.reseller_info OWNER TO {{ appliance_user }};
 -- Data for Name: reseller_info; Type: TABLE DATA; Schema: public; Owner: {{ appliance_user }}
 --
 
-COPY reseller_info (reseller_id, username, email, password, fullname, enabled) FROM stdin;
-0                                       1
+COPY reseller_info (reseller_id, username, email, password, fullname, enabled) FROM stdin WITH DELIMITER ',';
+0, \N, \N, \N, \N, 1
 \.
 
 
 --
--- Name: reseller_info_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: reseller_info_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 ALTER TABLE ONLY reseller_info
@@ -299,7 +289,7 @@ ALTER TABLE ONLY reseller_info
 
 
 --
--- Name: reseller_info_username_key; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: reseller_info_username_key; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE UNIQUE INDEX reseller_info_username_key ON reseller_info USING btree (username);
@@ -316,7 +306,7 @@ CREATE TABLE site_packages (
 ALTER TABLE public.site_packages OWNER TO {{ appliance_user }};
 
 --
--- Name: ssh_port_indexes; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: ssh_port_indexes; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE TABLE ssh_port_indexes (
@@ -329,7 +319,7 @@ CREATE TABLE ssh_port_indexes (
 ALTER TABLE public.ssh_port_indexes OWNER TO {{ appliance_user }};
 
 --
--- Name: uids; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: uids; Type: TABLE; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE TABLE uids (
@@ -39268,7 +39258,7 @@ COPY free_uids (uid, site_id) FROM stdin;
 --
 
 --
--- Name: Constraint0; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: Constraint0; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 ALTER TABLE ONLY gids
@@ -39276,7 +39266,7 @@ ALTER TABLE ONLY gids
 
 
 --
--- Name: apache_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: apache_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 ALTER TABLE ONLY apache
@@ -39284,7 +39274,7 @@ ALTER TABLE ONLY apache
 
 
 --
--- Name: bandwidth_extendedinfo_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: bandwidth_extendedinfo_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 ALTER TABLE ONLY bandwidth_extendedinfo
@@ -39292,23 +39282,14 @@ ALTER TABLE ONLY bandwidth_extendedinfo
 
 
 --
--- Name: bandwidth_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: bandwidth_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 ALTER TABLE ONLY bandwidth
     ADD CONSTRAINT bandwidth_pkey PRIMARY KEY (site_id);
 
-
 --
--- Name: bandwidth_services_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
---
-
-ALTER TABLE ONLY bandwidth_services
-    ADD CONSTRAINT bandwidth_services_pkey PRIMARY KEY (svc_id);
-
-
---
--- Name: domain_lookup_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: domain_lookup_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 ALTER TABLE ONLY domain_lookup
@@ -39316,7 +39297,7 @@ ALTER TABLE ONLY domain_lookup
 
 
 --
--- Name: email_lookup_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: email_lookup_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 ALTER TABLE ONLY email_lookup
@@ -39324,7 +39305,7 @@ ALTER TABLE ONLY email_lookup
 
 
 --
--- Name: free_uids_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: free_uids_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 ALTER TABLE ONLY free_uids
@@ -39332,21 +39313,21 @@ ALTER TABLE ONLY free_uids
 
 
 --
--- Name: gids_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: gids_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 ALTER TABLE ONLY gids
     ADD CONSTRAINT gids_pkey PRIMARY KEY (site_id);
 
 --
--- Name: siteinfo_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: siteinfo_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 ALTER TABLE ONLY siteinfo
     ADD CONSTRAINT siteinfo_pkey PRIMARY KEY (site_id);
 
 --
--- Name: uids_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: uids_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 ALTER TABLE ONLY uids
@@ -39354,7 +39335,7 @@ ALTER TABLE ONLY uids
 
 
 --
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 ALTER TABLE ONLY users
@@ -39362,94 +39343,58 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: bandwidth_extendedinfo_site; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: bandwidth_extendedinfo_site; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE INDEX bandwidth_extendedinfo_site ON bandwidth_extendedinfo USING btree (site_id);
 
 
 --
--- Name: domain_key; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: domain_key; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE UNIQUE INDEX domain_key ON siteinfo USING btree (domain);
 
 
 --
--- Name: ipinfo_namebased_index; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
---
-
-CREATE INDEX ipinfo_namebased_index ON ipinfo USING btree (namebased);
-
-
---
--- Name: log_site_id_index; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: log_site_id_index; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE INDEX log_site_id_index ON bandwidth_log USING btree (site_id);
 
 
 --
--- Name: log_ts_index; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: log_ts_index; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE INDEX log_ts_index ON bandwidth_log USING btree (ts);
 
 
 --
--- Name: pk; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: pk; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE UNIQUE INDEX pk ON site_packages USING btree (package_name);
 
-
 --
--- Name: reseller_info_username_key; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
---
-
-CREATE UNIQUE INDEX reseller_info_username_key ON reseller_info USING btree (username);
-
-
---
--- Name: reseller_reseller_id; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
---
-
-CREATE INDEX reseller_reseller_id ON reseller USING btree (reseller_id);
-
-
---
--- Name: site_id; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: site_id; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE INDEX site_id ON domain_lookup USING btree (site_id);
 
 
 --
--- Name: spans_site_id_key; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: spans_site_id_key; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE INDEX spans_site_id_key ON bandwidth_spans USING btree (site_id);
 
 
 --
--- Name: svc_lookup; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace: 
+-- Name: svc_lookup; Type: INDEX; Schema: public; Owner: {{ appliance_user }}; Tablespace:
 --
 
 CREATE INDEX svc_lookup ON bandwidth_extendedinfo USING btree (ext_id, site_id);
-
-
---
--- Name: $1; Type: FK CONSTRAINT; Schema: public; Owner: {{ appliance_user }}
---
-
-ALTER TABLE ONLY ipinfo
-    ADD CONSTRAINT "$1" FOREIGN KEY (site_id) REFERENCES siteinfo(site_id) DEFERRABLE INITIALLY DEFERRED;
-
-
---
--- Name: $1; Type: FK CONSTRAINT; Schema: public; Owner: {{ appliance_user }}
---
-
 
 --
 -- Name: $1; Type: FK CONSTRAINT; Schema: public; Owner: {{ appliance_user }}
@@ -39572,8 +39517,6 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 REVOKE ALL ON TABLE domain_lookup FROM PUBLIC;
 REVOKE ALL ON TABLE domain_lookup FROM {{ appliance_user }};
 GRANT ALL ON TABLE domain_lookup TO {{ appliance_user }};
-GRANT SELECT ON TABLE domain_lookup TO postfix;
-
 
 --
 -- Name: siteinfo; Type: ACL; Schema: public; Owner: {{ appliance_user }}
@@ -39582,8 +39525,6 @@ GRANT SELECT ON TABLE domain_lookup TO postfix;
 REVOKE ALL ON TABLE siteinfo FROM PUBLIC;
 REVOKE ALL ON TABLE siteinfo FROM {{ appliance_user }};
 GRANT ALL ON TABLE siteinfo TO {{ appliance_user }};
-GRANT SELECT ON TABLE siteinfo TO postfix;
-
 
 --
 -- Name: email_lookup; Type: ACL; Schema: public; Owner: {{ appliance_user }}
@@ -39592,8 +39533,6 @@ GRANT SELECT ON TABLE siteinfo TO postfix;
 REVOKE ALL ON TABLE email_lookup FROM PUBLIC;
 REVOKE ALL ON TABLE email_lookup FROM {{ appliance_user }};
 GRANT ALL ON TABLE email_lookup TO {{ appliance_user }};
-GRANT SELECT ON TABLE email_lookup TO postfix;
-
 
 --
 -- Name: gids; Type: ACL; Schema: public; Owner: {{ appliance_user }}
@@ -39602,8 +39541,6 @@ GRANT SELECT ON TABLE email_lookup TO postfix;
 REVOKE ALL ON TABLE gids FROM PUBLIC;
 REVOKE ALL ON TABLE gids FROM {{ appliance_user }};
 GRANT ALL ON TABLE gids TO {{ appliance_user }};
-GRANT SELECT ON TABLE gids TO postfix;
-
 
 --
 -- Name: uids; Type: ACL; Schema: public; Owner: {{ appliance_user }}
@@ -39612,10 +39549,7 @@ GRANT SELECT ON TABLE gids TO postfix;
 REVOKE ALL ON TABLE uids FROM PUBLIC;
 REVOKE ALL ON TABLE uids FROM {{ appliance_user }};
 GRANT ALL ON TABLE uids TO {{ appliance_user }};
-GRANT SELECT ON TABLE uids TO postfix;
-
 
 --
 -- PostgreSQL database dump complete
 --
-
