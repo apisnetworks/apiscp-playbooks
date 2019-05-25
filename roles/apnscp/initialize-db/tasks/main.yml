@@ -101,8 +101,6 @@
           dest: "{{ temp.path }}"
       - postgresql_db:
           name: "{{ appliance_db}}"
-          become_user: postgres
-          become: yes
           state: restore
           target: "{{ temp.path }}"
           owner: "{{ appliance_user }}"
