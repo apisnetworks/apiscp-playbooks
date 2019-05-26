@@ -5,3 +5,12 @@ sshd_old_port: 22
 sshd_ports_close: []
 # Ports to open
 sshd_ports_open: [22]
+sshd_pubkey_only: false
+# List of directives controlled by pubkey-only authentication
+sshd_pubkey_directives:
+  - directive: PasswordAuthentication
+    enabled: "no"
+    disabled: "yes"
+  - directive: PermitRootLogin
+    enabled: "without-password"
+    disabled: "yes"
