@@ -17,10 +17,10 @@
     path: "{{ path | default(dest) }}"
     force: yes
   notify: "{{ notify | default(omit) }}"
-  when: not apnscp_is_crosslinked
+  when: not apnscp_is_crosslinked | bool
 - name: Copy {{ src }} to {{ path | default(dest) }} (cross-link protection)
   synchronize:
     src: "{{ src }}"
     dest: "{{ path | default(dest) }}"
   notify: "{{ notify | default(omit) }}"
-  when: apnscp_is_crosslinked
+  when: apnscp_is_crosslinked | bool

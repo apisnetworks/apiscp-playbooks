@@ -1,6 +1,6 @@
 [submodule "roles/php/composer"]
 	path = roles/php/composer
-	url = https://github.com/geerlingguy/ansible-role-composer.git
+	url = https://github.com/msaladna/ansible-role-composer.git
 [submodule "roles/php/ioncube-loader"]
 	path = roles/php/ioncube-loader
 	url = https://github.com/apisnetworks/ansible-role-ioncube-loader.git

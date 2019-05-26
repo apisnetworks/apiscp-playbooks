@@ -19,10 +19,10 @@
   - name: Link stats-mail to "{{ dovecot_shared_root }}"
     file: path="{{ dovecot_virtual_rundir }}/stats-mail" state=link src="{{ dovecot_shared_root }}/stats-mail"
     notify: Reload filesystem template
-  when: dovecot_enable_stats
+  when: dovecot_enable_stats | bool
 - name: Remove stats-mail link
   file: path="{{ apnscp_filesystem_template }}"
-  when: not dovecot_enable_stats
+  when: not dovecot_enable_stats | bool
   notify: Reload filesystem template
 
 - include_vars:

@@ -34,7 +34,7 @@
     section: cron
     option: low_memory
     value: true
-  when: has_low_memory
+  when: has_low_memory | bool
 
 - include_tasks: set-config.yml
   vars:

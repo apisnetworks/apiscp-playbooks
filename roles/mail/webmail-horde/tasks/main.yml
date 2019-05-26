@@ -2,6 +2,6 @@
 - stat: path="{{ horde_path }}"
   register: hs
 - include_tasks: install-horde.yml
-  when: enable_horde and not hs.stat.exists
+  when: enable_horde | bool and not hs.stat.exists
 - include_tasks: configure-horde.yml
-  when: enable_horde
+  when: enable_horde | bool

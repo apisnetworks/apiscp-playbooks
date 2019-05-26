@@ -7,14 +7,9 @@
 - set_fact:
     __systemd_svc_name: "{{ __systemd_svc_path | basename }}"
 - set_fact:
-    __systemd_svc_installed: "{{ systemd_service_path }}"
-  with_first_found:
-    - files: '{{ systemd_lookup_paths | map("regex_replace", "(.*)", "\1/" + __systemd_svc_name) | list }}'
-      skip: true
-  loop_control:
-    loop_var: systemd_service_path
+    __systemd_svc_installed: "{{ lookup('first_found', dict(files=systemd_lookup_paths | map('regex_replace', '(.*)', '\\1/' + __systemd_svc_name) | list), errors='ignore') }}"
 - fail: msg="Unknown service {{ service }}"
-  when: __systemd_svc_installed is not defined
+  when: __systemd_svc_installed == ""
 - file:
     path: '/etc/systemd/system/{{__systemd_svc_name}}.d'
     state: directory

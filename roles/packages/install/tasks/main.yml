@@ -78,7 +78,7 @@
       register: mongodb_stat
     - template: src=mongodb.repo.j2 dest=/etc/yum.repos.d/mongodb.repo owner=root group=root mode=0644
       when: mongodb_stat is defined and mongodb_stat.stat.exists == False
-  when: mongodb_enabled
+  when: mongodb_enabled | bool
 - name: "Install CloudFlare"
   tags: ['cloudflare', 'apache']
   block:

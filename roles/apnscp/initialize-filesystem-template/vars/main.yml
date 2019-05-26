@@ -514,15 +514,15 @@ apnscp_fst_packages:
       - name: mesa-libglapi
       - name: mesa-libGL
       - name: mongodb-org-mongos
-        when: '{{ mongodb_enabled }}'
+        when: '{{ mongodb_enabled | bool }}'
       - name: mongodb-org-server
-        when: '{{ mongodb_enabled }}'
+        when: '{{ mongodb_enabled | bool }}'
       - name: mongodb-org-shell
-        when: '{{ mongodb_enabled }}'
+        when: '{{ mongodb_enabled | bool }}'
       - name: mongodb-org-tools
-        when: '{{ mongodb_enabled }}'
+        when: '{{ mongodb_enabled | bool }}'
       - name: mongodb-org
-        when: '{{ mongodb_enabled }}'
+        when: '{{ mongodb_enabled | bool }}'
       - name: mutt
       - name: nano
       - name: ncurses-base

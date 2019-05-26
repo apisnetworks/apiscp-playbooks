@@ -24,7 +24,7 @@
   vars:
     package: "{{ rspamd_packages.packages | join(' ') }}"
     service: "{{ rspamd_packages.service }}"
-  when: rspamd_enabled
+  when: rspamd_enabled | bool
 
 - name: Remove rspamd package
   include_role:

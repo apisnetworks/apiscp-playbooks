@@ -42,7 +42,7 @@ rspamd_fuzzy_socket: "127.0.0.1:11335"
 # Redis configuration
 ######################
 # Enable redis for rspamd. Enable if worker exists on local socket
-rspamd_redis_enabled: "{{ not has_low_memory and rspamd_worker_socket.find('/') != -1 }}"
+rspamd_redis_enabled: "{{ (not (has_low_memory | bool) and rspamd_worker_socket.find('/') != -1) | bool }}"
 # Give an absolute path to use a UNIX socket + install service
 rspamd_redis_runtime_dir: "{{ rspamd_runtime_dir }}/redis"
 rspamd_redis_server: "{{ rspamd_redis_runtime_dir }}/redis.sock"

@@ -8,7 +8,7 @@
 
 - name: Enable any-version Ruby
   include_tasks: enable-rbenv.yml
-  when: (anyversion_ruby or passenger_enabled)
+  when: (anyversion_ruby | bool) or (passenger_enabled | bool)
 
 - name: Remove any-version Ruby
   file:
@@ -21,4 +21,4 @@
     - "{{ apnscp_filesystem_template}}/{{rbenv_service_install}}/{{ rbenv_script }}"
   loop_control:
     label: "Removing rbenv asset {{ item }}"
-  when: not (anyversion_ruby or passenger_enabled)
+  when: not ( (anyversion_ruby | bool) or (passenger_enabled | bool))

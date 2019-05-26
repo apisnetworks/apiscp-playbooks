@@ -48,7 +48,7 @@
     label: "Removing group/other permissions from {{ item }}"
 - name: "Open /usr/bin/horde-alarms to {{ apnscp_system_user }}"
   file: path=/usr/bin/horde-alarms group={{ apnscp_system_user }} mode=0750
-  when: horde_cron_enabled
+  when: horde_cron_enabled | bool
   changed_when: false
   # Otherwise apache has php interp access blocked
 - name: Add Horde path for {{ apnscp_system_user }} task
@@ -56,7 +56,7 @@
     pear config-set  horde_dir {{ horde_path }}
   become: yes
   become_user: "{{ apnscp_system_user }}"
-  when: horde_cron_enabled
+  when: horde_cron_enabled | bool
   changed_when: false
 - name: Add Horde alarm job
   cron:
@@ -65,4 +65,4 @@
     name: horde-alarms
     job: /usr/bin/horde-alarms
     user: "{{ apnscp_system_user }}"
-  when: horde_cron_enabled
+  when: horde_cron_enabled | bool

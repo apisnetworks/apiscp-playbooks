@@ -15,4 +15,4 @@
     home: /opt/tomcat
     system: yes
 - include_tasks: configure-tomcat.yml
-  when: tomcat_enable
+  when: tomcat_enable | bool

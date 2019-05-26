@@ -42,7 +42,7 @@
 
 - name: "Build synchronizer RPM index"
   command: "{{ synchronizer }} generate"
-  when: __populate_filesystem_template
+  when: __populate_filesystem_template | bool
 # Ensure rsyslog log device is propagated
 - stat: path={{ apnscp_shared_root }}/log
   register: st

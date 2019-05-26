@@ -9,4 +9,4 @@ rpms:
   - mongodb-org-tools
 notify:
   - Disable mongodb
-when: '{{ mongodb_enabled }}'
+when: '{{ mongodb_enabled | bool }}'

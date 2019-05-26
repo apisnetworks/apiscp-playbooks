@@ -5,7 +5,7 @@
     - 'apnscp-vars.yml'
     - 'roles/common/vars/apnscp-internals.yml'
     - ['{{ apnscp_user_defaults }}', '/dev/null']
-    - ['{{ apnscp_last_run_vars }}', '/dev/null']:
+    - ['{{ apnscp_last_run_vars }}', '/dev/null']
   vars:
     test:
       siteinfo:
@@ -17,10 +17,13 @@
         - package: apr
           when: false
   tasks:
-    - name: Check for rspamd existence
-      systemd: name=rspamd state=restarted
-      register: r
-      failed_when: >
-        "msg" in r and r.msg.find("Could not find the") == -1 or
-        "status" in r and (r.status.ExecMainCode | int) != 0
-    - fail: msg="{{ r }}"
+    - name: Override check
+      include_role: name=systemd/override-config
+      vars:
+        service: watchdog-pinga
+        config:
+          - group: Service
+            vars:
+              LimitNOFILE: 4096
+              TimeoutStartSec: "{{ fail2ban_service_timeout }}"
+              TimeoutStopSec: "{{ fail2ban_service_timeout }}"

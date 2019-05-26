@@ -8,9 +8,9 @@
     state: '{{ mail_enabled | ternary("installed","absent") }}'
 - name: Remove Dovecot relocation
   file: path="{{ dovecot_shared_root }}" state=absent
-  when: not mail_enabled
+  when: not mail_enabled | bool
 - include_tasks: enable-dovecot.yml
-  when: mail_enabled
+  when: mail_enabled | bool
 - name: Configure Dovecot Argos profile
   include_role: name=software/argos tasks_from=toggle-service.yml
   vars:

@@ -34,4 +34,4 @@
 
 - name: Enable Redis
   systemd: name="{{ redis_service }}" enabled=yes state=started
-  when: redis_enabled
+  when: redis_enabled | bool
