@@ -59,9 +59,9 @@
     - apache/modpagespeed
     - apnscp/link-bins
     - apnscp/initialize-filesystem-template
-    - software/haproxy
     - mail/configure-dovecot
     - mail/configure-postfix
+    - software/haproxy
     - mail/configure-courier-authlib
     - apnscp/service-template
     - apnscp/php-filesystem-template

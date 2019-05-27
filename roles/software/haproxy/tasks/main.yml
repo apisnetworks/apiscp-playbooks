@@ -1,3 +1,5 @@
+- name: Ensure Dovecot/Postfix configuration current
+  meta: flush_handlers
 - name: "{{ haproxy_enabled | ternary('Install', 'Remove') }} haproxy"
   yum: name=haproxy state="{{ haproxy_enabled | ternary('present', 'absent') }}"
   when: haproxy_enabled | bool
