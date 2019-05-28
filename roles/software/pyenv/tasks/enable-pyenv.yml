@@ -34,6 +34,16 @@
     group: wheel
     owner: root
     state: directory
+- name: Check if global interpreter control exists
+  stat: path="{{ apnscp_filesystem_template }}/{{pyenv_service_install }}/{{git_target}}/version"
+  register: r
+- name: Ensure wheel has permission to set global interpreter
+  file:
+    path: "{{ apnscp_filesystem_template }}/{{pyenv_service_install }}/{{git_target}}/version"
+    mode: 0664
+    owner: root
+    group: wheel
+    state: "{{ r.stat.exists | ternary('file','touch') }}"
 - name: Fix pip location
   copy:
     src: files/updatePipPath.bash

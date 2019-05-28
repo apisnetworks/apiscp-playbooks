@@ -1,8 +1,8 @@
 #######################
-#   apnscp Migrator   #
+#    apnscp addins    #
 #######################
 #
-# Runs migration routines for apnscp
+# Runs a named addin under addins/
 #
 # Part of apnscp core playbooks
 # https://github.com/apisnetworks/apnscp-playbooks
@@ -19,6 +19,6 @@
     - ['{{ apnscp_last_run_vars }}', '/dev/null']
   roles:
     - common/acquire-lock
-    - custom/premigrate
-    - common/migrate
-    - custom/postmigrate
+    - custom/preaddin
+    - common/addin
+    - custom/postaddin
