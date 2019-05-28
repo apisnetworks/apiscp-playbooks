@@ -89,3 +89,10 @@
     src: "{{ git_target }}/bin/pyenv"
     path: "{{ apnscp_filesystem_template }}/{{ pyenv_service_install }}/usr/bin/pyenv"
     state: link
+- set_fact:
+    _pyenv_virtenv_version: "{{ (pyenv_virtenv_version != 'master') | ternary('v', '') }}{{ pyenv_virtenv_version }}"
+- name: Add pyenv-virtenv support
+  git:
+    repo: "{{ pyenv_virtenv_repo }}"
+    version: "{{ _pyenv_virtenv_version }}"
+    dest: "{{ apnscp_filesystem_template }}/{{ git_target }}/plugins/pyenv-virtualenv"
