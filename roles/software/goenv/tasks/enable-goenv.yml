@@ -22,11 +22,21 @@
   changed_when: goenv_chmod.stdout != ""
 - name: Ensure wheel has permissions to install binaries
   file:
-    path: "{{ apnscp_filesystem_template }}/{{goenv_service_install }}/{{git_target}}/versions"
+    path: "{{ apnscp_filesystem_template }}/{{goenv_service_install}}/{{git_target}}/versions"
     mode: g+rwx
     owner: root
     group: wheel
     state: directory
+- name: Check if global interpreter control exists
+  stat: path="{{ apnscp_filesystem_template }}/{{goenv_service_install}}/{{git_target}}/version"
+  register: r
+- name: Ensure wheel has permission to set global interpreter
+  file:
+    path: "{{ apnscp_filesystem_template }}/{{goenv_service_install}}/{{git_target}}/version"
+    mode: 0664
+    owner: root
+    group: wheel
+    state: "{{ r.stat.exists | ternary('file','touch') }}"
 - name: Get goenv code
   command: "{{ git_target }}/bin/goenv init -"
   environment:

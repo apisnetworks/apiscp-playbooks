@@ -1,0 +1,25 @@
+# apnscp addin helper
+# Runtime usage:
+# ansible-playbook addin.yml --extra-vars=play=some/role
+# or
+# ansible-playbook addin.yml --extra-vars=play=play.yml
+---
+- assert:
+    that: addin is defined
+    fail_msg: "Run addin helper with play parameter: --extra-var=addin=ADDIN-NAME"
+- name: Determine inclusion type (play)
+  stat: path="{{ playbook_dir }}/addins/{{ addin }}.yml"
+  register: s
+- name: Determine inclusion type (role)
+  stat: path="{{ playbook_dir }}/addins/{{ addin }}"
+  register: s
+  when: not s.stat.exists
+- assert:
+    that: s.stat.exists
+    fail_msg: "Unable to locate addin '{{ addin }}'"
+- name: Include role {{ addin }}
+  include_role: name="addins/{{ addin }}"
+  when: not s.stat.isreg
+- name: Include play {{ addin }}
+  include_tasks: "addins/{{addin}}.yml"
+  when: s.stat.isreg
