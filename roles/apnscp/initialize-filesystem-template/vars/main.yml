@@ -146,7 +146,6 @@ apnscp_fst_packages:
       - name: c-ares
       - name: chkconfig
       - name: compat-libtidy
-      - name: coolkey
       - name: coreutils
       - name: courier-unicode
       - name: cpio
