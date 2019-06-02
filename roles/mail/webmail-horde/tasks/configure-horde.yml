@@ -40,6 +40,7 @@
     recurse: yes
   with_items:
     - "{{ horde_storage_path }}"
+    - "{{ horde_log_file | dirname }}"
 - name: Lockdown Horde
   file: path={{ horde_path }} owner=root recurse=yes
 - file: path={{ item }} mode=0700 owner=root
