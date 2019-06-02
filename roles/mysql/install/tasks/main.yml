@@ -5,7 +5,12 @@
 - systemd: name=mariadb state=started enabled=yes
 - set_fact:
     password: "{{ lookup('password', '/dev/null chars=ascii_letters length=25') }}"
-
+  # service command won't forward to systemd if alias,
+  # "service mysql restart" with notify leaves service in failed state
+- name: Remove /etc/init.d/mysql SysV service
+  file:
+    path: /etc/init.d/mysql
+    state: absent
 - name: Check for password presence
   stat: path={{ mysql_pass_file }}
   register: s

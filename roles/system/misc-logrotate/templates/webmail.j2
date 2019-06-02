@@ -1,5 +1,6 @@
-{{ horde_log_file | dirname }}/*
-{{ roundcube_log_file  | dirname }}/* {
+{{ horde_log_file }}
+{{ roundcube_log_file  | dirname }}/errors
+{{ roundcube_log_file  | dirname }}/sendmail {
     missingok
     notifempty
     rotate 4

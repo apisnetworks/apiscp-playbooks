@@ -6,6 +6,7 @@ DEV_TAG: ">>> DEVELOPMENT PLAY ONLY - REMOVE BEFORE FLIGHT <<<"
 apnscp_release_repo: https://gitlab.com/apisnetworks/apnscp.git
 apnscp_last_run_vars: /root/apnscp-vars-runtime.yml
 apnscp_bootstrapper_log: /root/apnscp-bootstrapper.log
+apnscp_user_defaults: /root/apnscp-vars.yml
 # SRS - reformatting forwarded email
 postsrsd_enabled: "{{ mail_enabled | bool }}"
 # haproxy terminates SNI SSL for mail
@@ -45,8 +46,13 @@ anyversion_go: '{{ anyversion_enabled }}'
 # apnscp fixes
 nvm_version: master
 pyenv_version: 1.2.4
+pyenv_virtenv_version: 1.1.5
 rbenv_version: 1.1.1
 goenv_version: 1.14.0
+# Default MySQL version
+mariadb_version: 10.3
+# Default PostgreSQL version
+pgsql_version: 10
 # Others may be installed via "rbenv install", this is used primarily for
 # bootstrapping Passenger. system Ruby shipped with RHEL 7 (2.0) is too
 # old and too broken to be of use

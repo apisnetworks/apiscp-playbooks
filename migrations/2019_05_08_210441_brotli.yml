@@ -1,0 +1,20 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# Enable Brotli compression by default
+# Add brotli package support for Discourse and others
+---
+- block:
+  - name: Check if Brotli enabled
+    command: "{{ apnscp_root }}/bin/cmd config:get apache.brotli"
+    register: r
+    changed_when: false
+  - name: Enable Broti in Apache
+    command: "{{ apnscp_root }}/bin/cmd config:set apache.brotli true"
+    changed_when: -1 == r.stdout.find("1")
+  - name: Add Brotli to FST
+    include_role: name=apnscp/initialize-filesystem-template tasks_from=install-package.yml
+    vars:
+      service: siteinfo
+      package: brotli
+  tags:
+    - up

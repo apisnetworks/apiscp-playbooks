@@ -4,7 +4,7 @@
 
 - name: Import haproxy vars
   include_vars: "{{ playbook_dir }}/roles/software/haproxy/defaults/main.yml"
-  when: haproxy_enabled and not (software_haproxy_marker is defined)
+  when: haproxy_enabled | bool and not (software_haproxy_marker is defined)
 
 - name: Verify host is set if smarthost enabled
   fail: msg="postfix_smarthost_enabled is true and postfix_smarthost_credentials.host is not set"
@@ -36,10 +36,10 @@
 - include_vars: "{{playbook_dir}}/roles/mail/maildir/defaults/main.yml"
 - include_tasks: register-password.yml
 - include_tasks: install-postsrs.yml
-  when: postsrsd_enabled
+  when: postsrsd_enabled | bool
 - name: Remove postsrsd
   yum: name=postsrsd state=absent
-  when: not postsrsd_enabled
+  when: not postsrsd_enabled | bool
 
 - name: Create Postfix user
   postgresql_user:

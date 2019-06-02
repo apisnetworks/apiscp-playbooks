@@ -9,9 +9,10 @@
     command: >
       grep -F {{ apnscp_admin_email | quote }} /var/log/maillog
     register: r
-    until: r is succeeded
-    retries: 10
-    delay: 3
+    until: r is succeeded or r.stdout.find(apnscp_admin_email) != -1
+    # Postfix times out after 60 seconds. Firewall restrictions may block port 25 resulting in deferral
+    retries: 13
+    delay: 5
   - name: Inform user email has been sent
     debug:
       msg: |

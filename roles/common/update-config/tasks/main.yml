@@ -23,4 +23,4 @@
         line: "nameserver {{ item }}"
         state: present
       with_items: "{{ dns_robust_nameservers }}"
-  when: use_robust_dns
+  when: use_robust_dns | bool

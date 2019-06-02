@@ -31,7 +31,7 @@
     reload: yes
     sysctl_file: "{{ sysctl_file }}"
   when:
-    - has_ipv4
+    - has_ipv4 | bool
     - -1 != lookup('file', '/proc/sys/net/ipv4/tcp_available_congestion_control').find('bbr')
   with_dict:
     "net.ipv4.tcp_congestion_control": "bbr"

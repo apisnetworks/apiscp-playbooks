@@ -10,10 +10,11 @@
   fail:
     msg: OS must be RHEL 7.x/CentOS 7.x - try again!
   when: ansible_os_family != "RedHat"
+  # Semantics changed in 2.8.0 - see #50141
 - name: Fail if RHEL/CentOS is not sufficient version
-  fail:
-    msg: apnscp requires RHEL 7.4 or greater
-  when: ansible_distribution_version is version_compare('7.4.0', '<')
+  command:
+    grep -E '\b(7\.[4-9]\.|[89]\.\d\.|[1-9][0-9]\.\d\.)\b' /etc/centos-release
+  changed_when: false
 - name: Fail if memory less than 1 GB
   fail:
       msg: >

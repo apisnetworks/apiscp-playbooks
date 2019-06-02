@@ -13,6 +13,15 @@
       ClientAliveInterval 180
     state: present
   notify: Restart sshd
+- name: " {{ sshd_pubkey_only | ternary('Disable', 'Enable') }} password-based login"
+  lineinfile:
+    # First directive usage wins
+    firstmatch: true
+    path: "{{ sshd_config }}"
+    regexp: '^\s*{{ item.directive }}\s+'
+    line: "{{ item.directive }} {{ sshd_pubkey_only | ternary(item.enabled, item.disabled) }}"
+  with_items: "{{ sshd_pubkey_directives }}"
+  notify: Restart sshd
 - name: Convert sshd_port to list
   set_fact:
     sshd_port: "{{ [sshd_port] }}"

@@ -1,0 +1,23 @@
+# Migration play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# Correct permissions on global any-version control
+# Block pubkey access from suspended account
+# Remove PC/SC
+---
+- block:
+  - name: Update any-version controls
+    include_role: name="software/{{ rolename }}"
+    with_items:
+      - pyenv
+      - goenv
+      - rbenv
+    loop_control:
+      loop_var: rolename
+  - name: Update PAM permissions
+    include_role: name=system/pam tasks_from=sshd.yml
+  - name: Remove PC/SC daemon
+    yum:
+      name: coolkey,pcsc-lite,pcsc-lite-ccid
+      state: absent
+  tags:
+    - up

@@ -1,7 +1,7 @@
 ---
 - name: Enable any-version Go
   include_tasks: enable-goenv.yml
-  when: anyversion_go
+  when: anyversion_go | bool
 - name: Remove any-version Go
   file:
     path: "{{ item }}"
@@ -13,4 +13,4 @@
     - "{{ apnscp_filesystem_template}}/{{goenv_service_install}}/{{ goenv_script }}"
   loop_control:
     label: "Removing Go asset {{ item }}"
-  when: not anyversion_go
+  when: not anyversion_go | bool

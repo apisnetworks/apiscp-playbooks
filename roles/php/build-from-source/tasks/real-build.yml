@@ -11,11 +11,11 @@
   when: s2.stat.exists
   register: installed_php_version
 - set_fact:
-    do_install_php: >
-      (php_force_build | default(false)) or force or extra_flags or
+    do_install_php: >-
+      {{ ( (php_force_build | default(false)) or force or extra_flags or
       installed_php_version.skipped is defined or
       installed_php_version.stdout != __php_version or
-      s1.stat.exists and s2.stat.exists and s1.stat.mtime > s2.stat.mtime
+      s1.stat.exists and s2.stat.exists and s1.stat.mtime > s2.stat.mtime ) }}
 - name: Cleanup older PHPs
   find:
     file_type: directory
@@ -68,4 +68,4 @@
       notify: "{{ notify_handler }}"
     - file: path="{{ scan_dir }}" state=directory
     - set_fact: force_module_rebuild=true
-  when: do_install_php
+  when: do_install_php | bool

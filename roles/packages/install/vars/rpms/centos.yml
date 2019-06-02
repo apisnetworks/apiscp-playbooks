@@ -56,7 +56,6 @@ rpms:
   - checkpolicy
   - chkconfig
   - clucene-core
-  - coolkey
   - coreutils
   - cpio
   - cpp
@@ -327,7 +326,6 @@ rpms:
   - pciutils
   - pcre
   - pcre-devel
-  - pcsc-lite-libs
   - perl
   - pixman
   - pixman-devel

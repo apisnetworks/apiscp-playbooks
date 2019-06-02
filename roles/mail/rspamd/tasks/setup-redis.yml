@@ -34,4 +34,4 @@
         systemd:
           state: started
           enabled: yes
-  when: rspamd_redis_service
+  when: rspamd_redis_service | bool

@@ -1,5 +1,6 @@
 ---
 fail2ban_directory: /etc/fail2ban
+fail2ban_service_timeout: "5m"
 f2b_default_backend: gamin
 f2b_default_banaction: firewallcmd-ipset
 f2b_rampart_driver: ipset
@@ -15,7 +16,6 @@ f2b_recidive_findtime: 43200
 f2b_recidive_maxretry: 5
 # Enough time to ensure recidive can be purged
 f2b_dbpurgeage: "{{ (f2b_recidive_bantime | int) + 43200 }}"
-
 # Additional per-jail overrides can be set. Replace - with _
 # in jail name when necessary
 #f2b_jail_bantime ...

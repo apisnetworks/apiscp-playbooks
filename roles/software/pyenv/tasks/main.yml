@@ -1,16 +1,16 @@
 ---
 - name: Enable any-version Python
   include_tasks: enable-pyenv.yml
-  when: anyversion_python
+  when: anyversion_python | bool
 - name: Remove any-version Python
   file:
     path: "{{ item }}"
     state: absent
   with_items:
     - "{{ git_target }}"
-    - "{{ goenv_script }}"
+    - "{{ pyenv_script }}"
     - "{{ apnscp_filesystem_template}}/{{pyenv_service_install}}/{{ git_target }}"
     - "{{ apnscp_filesystem_template}}/{{pyenv_service_install}}/{{ pyenv_script }}"
   loop_control:
     label: "Removing Python asset {{ item }}"
-  when: not anyversion_python
+  when: not anyversion_python | bool

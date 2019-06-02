@@ -24,13 +24,13 @@
 
 - name: Create Redis server
   include_tasks: setup-redis.yml
-  when: rspamd_redis_service
+  when: rspamd_redis_service | bool
 
 - name: Remove Redis rspamd service
   systemd: service=redis-rspamd state=stopped enabled=no
   register: c
   ignore_errors: true
-  when: not rspamd_redis_service
+  when: not rspamd_redis_service | bool
 
 - name: Populate rspamd configuration
   include_tasks: set-rspamd-configuration.yml
@@ -41,19 +41,19 @@
   with_items:
     - "{{ config_files }}"
     - "{{ rspamd_use_spamassassin_rules | ternary(rspamd_spamassassin_config, None) }}"
-  when: item
+  when: item | bool
   loop_control:
     label: "Installing {{ item }} to {{ rspamd_config_dir }}"
 - name: Type coercion workaround - passive mode
   set_fact:
     __rspamd_rejection_threshold: "{{ rspamd_reject_piggyback_score }}"
     __rspamd_greylist_score: "{{ rspamd_greylist_piggyback_score }}"
-  when: rspamd_passive_learning_mode
+  when: rspamd_passive_learning_mode | bool
 - name: Type coercion workaround - active enforcement
   set_fact:
     __rspamd_rejection_threshold: "{{ rspamd_reject_score }}"
     __rspamd_greylist_score: "{{ rspamd_greylist_score }}"
-  when: not rspamd_passive_learning_mode
+  when: not rspamd_passive_learning_mode | bool
 
 # Type coercion workaround. Deferenced vars coerced to string
 # Fixed supposedly in 2.7:

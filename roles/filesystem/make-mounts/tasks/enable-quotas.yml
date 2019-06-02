@@ -13,10 +13,10 @@
       command: "findmnt -n -o SOURCE --target {{ apnscp_account_root }}"
       register: o
       changed_when: false
-      when: _separate_home_mount
+      when: _separate_home_mount | bool
     - set_fact:
         _home_mount_device: "{{ o.stdout | trim }}"
-      when: _separate_home_mount
+      when: _separate_home_mount | bool
 - name: Set mount options
   block:
   - name: Alter mount options for / (ext4)
@@ -35,7 +35,7 @@
       opts: "noatime,user_xattr,acl,jqfmt=vfsv1,usrjquota=aquota.user,grpjquota=aquota.group"
       state: present
     notify: Rebuild quotas
-    when: _separate_home_mount
+    when: _separate_home_mount | bool
   when: xfs.rc != 0 and ext4.rc == 0
 - name: Alter mount options for / (xfs)
   block:
@@ -54,7 +54,7 @@
         opts: "attr2,inode64,usrquota,grpquota"
         state: present
       notify: Update grub
-      when: _separate_home_mount
+      when: _separate_home_mount | bool
     - name: Add usrquota,grpquota to grub
       lineinfile: >
         dest=/etc/sysconfig/grub regexp='^GRUB_CMDLINE_LINUX\s*='

@@ -27,6 +27,13 @@
     - "{{ _pam_file }}"
   loop_control:
     loop_var: pam_item
+- name: Apply pam_nologin to public key authentication
+  include_tasks: nologin.yml
+  vars:
+    pam_file: "{{ apnscp_filesystem_template }}/ssh/etc/pam.d/sshd"
+    pam_interface: account
+    # Necessary for public key login
+    pam_deduplicate_nologin: false
 - include_tasks: ./cgroup.yml
   vars:
     aftermodule: '^\s*session\s+\S+\s+pam_loginuid.so'

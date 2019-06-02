@@ -11,11 +11,11 @@
     config:
       - group: Service
         vars:
-          ProtectSystem: false
-          ProtectHome: false
-          Type: simple
+          ProtectSystem: "False"
+          ProtectHome: "False"
+          Type: "{{ mariadb_version is version('10.1.0', '>=') | ternary('notify','simple') }}"
           OOMScoreAdjust: -500
-          LimitNOFILE: 65535
+          LimitNOFILE: 131070
           Nice: -15
           TimeoutStartSec: "{{ mysql_startup_timeout }}"
           ExecStartPre: "{{ mysql_check_path }}"

@@ -24,7 +24,7 @@
   yum:
     name: "{{ package | regex_replace(' ', ',') }}"
     state: present
-  when: implicit_install_before_replication
+  when: implicit_install_before_replication | bool
 
 - name: "Install {{ package }} into FST/{{ service }}"
   command: "{{ synchronizer }} install {{ __populate_filesystem_template | ternary('--force', None)}} {{ package }} {{ service }}"

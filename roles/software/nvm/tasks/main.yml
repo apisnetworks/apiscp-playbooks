@@ -1,7 +1,7 @@
 ---
 - name: Enable any-version Node
   include_tasks: enable-nvm.yml
-  when: anyversion_node
+  when: anyversion_node | bool
 - name: Remove any-version Node
   file:
     path: "{{ item }}"
@@ -13,4 +13,4 @@
     - "{{ apnscp_filesystem_template}}/{{nvm_service_install}}/{{ nvm_script }}"
   loop_control:
     label: "Removing nvm asset {{ item }}"
-  when: not anyversion_node
+  when: not anyversion_node | bool
